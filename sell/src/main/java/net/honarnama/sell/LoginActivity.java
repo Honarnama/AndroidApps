@@ -1,5 +1,7 @@
 package net.honarnama.sell;
 
+import com.parse.ParseUser;
+
 import net.honarnama.HonarNamaBaseActivity;
 
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class LoginActivity extends HonarNamaBaseActivity implements View.OnClickListener {
@@ -15,6 +18,15 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            // TODO: check whether the user has verified?
+            // TODO: Go to next page if yes
+            Toast.makeText(this, "Currently logged in!", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         setContentView(R.layout.activity_login);
         mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
         mRegisterAsSellerTextView.setOnClickListener(this);
