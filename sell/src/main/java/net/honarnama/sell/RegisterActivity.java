@@ -217,6 +217,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
             }
         }, new ProgressCallback() {
             public void done(Integer percentDone) {
+
                 Log.d(getLocalClassName(), "Uploading National Card Image - percentDone= " + percentDone);
                 // Update your progress spinner here. percentDone will be between 0 and 100.
             }
@@ -228,7 +229,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private void signUserUpInParse(ParseFile parseFile) {
         String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
 
-        ParseUser user = new ParseUser();
+        final ParseUser user = new ParseUser();
         if (activationMethod == "email") {
             user.setUsername(mEmailAddressEditText.getText().toString());
         } else {
@@ -244,7 +245,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         user.put("activationMethod", activationMethod);
         user.put("bankCardNumber", mBankCardNumberEditText.getText().toString());
         user.put("isShopOwner", true);
-        user.put("nationalCardImageFile", parseFile);
+        user.put("nationalCardImage", parseFile);
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
