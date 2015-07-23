@@ -5,5 +5,4 @@ package net.honarnama.sell;
  */
 public class HonarNamaSellApp extends net.honarnama.HonarNamaBaseApp {
 
-    public static final boolean DEBUG = BuildConfig.DEBUG;
 }

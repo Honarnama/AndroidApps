@@ -1,15 +1,15 @@
 package net.honarnama.sell;
 
+import net.honarnama.HonarNamaBaseActivity;
+
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
+public class LoginActivity extends HonarNamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
 
     @Override
@@ -18,6 +18,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
         mRegisterAsSellerTextView.setOnClickListener(this);
+
+        logI(null, "created!");
     }
 
     @Override

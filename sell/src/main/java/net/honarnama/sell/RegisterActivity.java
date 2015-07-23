@@ -1,23 +1,26 @@
 package net.honarnama.sell;
 
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.ProgressCallback;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
+import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.utils.GenericGravityTextWatcher;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.view.ContextThemeWrapper;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,18 +29,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class RegisterActivity extends Activity implements View.OnClickListener {
+public class RegisterActivity extends HonarNamaBaseActivity implements View.OnClickListener {
     private TextView mAddNationalCardTextView;
     private ImageView mNationalCardImageView;
     private String[] mNationalCardImageSourceProvider;
-    private String mScannedNationalCardPhotoPath;
+    private String mNationalCardPhotoPath;
 
     private EditText mLastnameEditText;
     private EditText mFirstnameEditText;
@@ -88,6 +93,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         mRegisterButton.setOnClickListener(this);
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithMobileNumber.setOnClickListener(this);
+
+        logI(null, "created!");
     }
 
     @Override
@@ -122,7 +129,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.register_button:
-                registerUser();
+                registerSeller();
                 break;
 
             case R.id.register_activate_with_email:
@@ -133,25 +140,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
         }
 
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch (requestCode) {
-            case 1001:
-                if (resultCode == RESULT_OK) {
-                    mNationalCardImageView.setImageURI(Uri.parse(mScannedNationalCardPhotoPath));
-                    mNationalCardImageIsSet = true;
-                }
-                break;
-            case 1002:
-                if (resultCode == RESULT_OK) {
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    mNationalCardImageView.setImageURI(selectedImage);
-                    mNationalCardImageIsSet = true;
-                }
-                break;
-        }
     }
 
     private File createImageFile() throws IOException {
@@ -167,7 +155,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mScannedNationalCardPhotoPath = "file:" + image.getAbsolutePath();
+        mNationalCardPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
@@ -202,15 +190,42 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             }
         });
         nationalCardImageOptionDialog.show();
+
+
     }
 
-
-    public void registerUser() {
+    public void registerSeller() {
 
         if (!enteredValuesAreValid()) {
             return;
         }
 
+        Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] nationalCardImageFile = stream.toByteArray();
+        final ParseFile parseFile = new ParseFile("nationalCardImageFile.jpeg", nationalCardImageFile);
+
+        parseFile.saveInBackground(new SaveCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    signUserUpInParse(parseFile);
+                } else {
+                    logE("Uploading National Card Image Failed. Code: " + e.getCode(),
+                            e.getMessage(), e);
+                }
+            }
+        }, new ProgressCallback() {
+            public void done(Integer percentDone) {
+                Log.d(getLocalClassName(), "Uploading National Card Image - percentDone= " + percentDone);
+                // Update your progress spinner here. percentDone will be between 0 and 100.
+            }
+        });
+
+
+    }
+
+    private void signUserUpInParse(ParseFile parseFile) {
         String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
 
         ParseUser user = new ParseUser();
@@ -229,20 +244,16 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         user.put("activationMethod", activationMethod);
         user.put("bankCardNumber", mBankCardNumberEditText.getText().toString());
         user.put("isShopOwner", true);
+        user.put("nationalCardImageFile", parseFile);
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
                 if (e == null) {
-                    // Hooray! Let them use the app now.
+                    Toast.makeText(RegisterActivity.this, "Signup Done!", Toast.LENGTH_LONG).show();
                 } else {
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                    if (HonarNamaSellApp.DEBUG) {
-                        Log.e(getLocalClassName(), "Sign-up Failed. Code: " + e.getCode() +
-                                ", Message: " + e.getMessage(), e);
-                    } else {
-                        Log.e(HonarNamaSellApp.PRODUCTION_TAG, "Sign-up Failed. Code: " + e.getCode());
-                    }
+                    Toast.makeText(RegisterActivity.this, "Signup Failed!", Toast.LENGTH_LONG).show();
+                    logE("Sign-up Failed. Code: " + e.getCode(),
+                            e.getMessage(), e);
                 }
             }
         });
@@ -331,5 +342,25 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         return true;
 
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case 1001:
+                if (resultCode == RESULT_OK) {
+                    mNationalCardImageView.setImageURI(Uri.parse(mNationalCardPhotoPath));
+                    mNationalCardImageIsSet = true;
+                }
+                break;
+            case 1002:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    mNationalCardPhotoPath = selectedImage.getPath();
+                    mNationalCardImageView.setImageURI(selectedImage);
+                    mNationalCardImageIsSet = true;
+                }
+                break;
+        }
     }
 }
