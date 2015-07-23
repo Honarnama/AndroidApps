@@ -1,0 +1,335 @@
+package net.honarnama.sell;
+
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
+import net.honarnama.utils.GenericGravityTextWatcher;
+
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.internal.view.ContextThemeWrapper;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+public class RegisterActivity extends Activity implements View.OnClickListener {
+    private TextView mAddNationalCardTextView;
+    private ImageView mNationalCardImageView;
+    private String[] mNationalCardImageSourceProvider;
+    private String mScannedNationalCardPhotoPath;
+
+    private EditText mLastnameEditText;
+    private EditText mFirstnameEditText;
+    private EditText mMobileNumberEditText;
+    private EditText mEmailAddressEditText;
+    private EditText mPasswordEdiText;
+    private EditText mConfirmPasswordEditText;
+    private EditText mBankCardNumberEditText;
+
+    private RadioButton mActivateWithEmail;
+    private RadioButton mActivateWithMobileNumber;
+
+    private Button mRegisterButton;
+    private boolean mNationalCardImageIsSet;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
+
+        mNationalCardImageIsSet = false;
+        mAddNationalCardTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
+        mAddNationalCardTextView.setOnClickListener(this);
+
+        mNationalCardImageView = (ImageView) findViewById(R.id.register_national_card_image_view);
+        mNationalCardImageView.setOnClickListener(this);
+
+        mNationalCardImageSourceProvider = new String[]{getString(R.string.camera_option_text), getString(R.string.choose_from_gallery_option_text)};
+
+        mLastnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
+        mFirstnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
+        mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);
+        mEmailAddressEditText = (EditText) findViewById(R.id.register_email_address_edit_text);
+        mPasswordEdiText = (EditText) findViewById(R.id.register_password_edit_text);
+        mConfirmPasswordEditText = (EditText) findViewById(R.id.register_confirm_password_edit_text);
+        mBankCardNumberEditText = (EditText) findViewById(R.id.register_bank_card_number_edit_text);
+        mRegisterButton = (Button) findViewById(R.id.register_button);
+
+        mActivateWithEmail = (RadioButton) findViewById(R.id.register_activate_with_email);
+        mActivateWithMobileNumber = (RadioButton) findViewById(R.id.register_activate_with_telegram);
+
+        mMobileNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mMobileNumberEditText));
+        mEmailAddressEditText.addTextChangedListener(new GenericGravityTextWatcher(mEmailAddressEditText));
+        mPasswordEdiText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEdiText));
+        mConfirmPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mConfirmPasswordEditText));
+        mBankCardNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mBankCardNumberEditText));
+        mRegisterButton.setOnClickListener(this);
+        mActivateWithEmail.setOnClickListener(this);
+        mActivateWithMobileNumber.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_register, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.register_national_card_title_text_view:
+            case R.id.register_national_card_image_view:
+                takePhoto();
+                break;
+
+            case R.id.register_button:
+                registerUser();
+                break;
+
+            case R.id.register_activate_with_email:
+            case R.id.register_activate_with_telegram:
+                changeMandatoryFieldsStarMarker();
+            default:
+                break;
+
+        }
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case 1001:
+                if (resultCode == RESULT_OK) {
+                    mNationalCardImageView.setImageURI(Uri.parse(mScannedNationalCardPhotoPath));
+                    mNationalCardImageIsSet = true;
+                }
+                break;
+            case 1002:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    mNationalCardImageView.setImageURI(selectedImage);
+                    mNationalCardImageIsSet = true;
+                }
+                break;
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "Honarnama_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mScannedNationalCardPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    public void takePhoto() {
+        final AlertDialog.Builder nationalCardImageOptionDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.NationalCardImageOptionDialogStyle));
+        nationalCardImageOptionDialog.setTitle(getString(R.string.select_national_card_image_dialog_title));
+        nationalCardImageOptionDialog.setItems(mNationalCardImageSourceProvider, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                        }
+                        // Continue only if the File was successfully created
+                        if (photoFile != null) {
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                    Uri.fromFile(photoFile));
+                            startActivityForResult(takePictureIntent, 1001);
+                        }
+
+                    }
+                } else if (which == 1) {
+                    Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhotoIntent, 1002);
+                }
+                dialog.dismiss();
+            }
+        });
+        nationalCardImageOptionDialog.show();
+    }
+
+
+    public void registerUser() {
+
+        if (!enteredValuesAreValid()) {
+            return;
+        }
+
+        String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
+
+        ParseUser user = new ParseUser();
+        if (activationMethod == "email") {
+            user.setUsername(mEmailAddressEditText.getText().toString());
+        } else {
+            user.setUsername(mMobileNumberEditText.getText().toString());
+        }
+
+        user.setPassword(mPasswordEdiText.getText().toString());
+        user.setEmail(mEmailAddressEditText.getText().toString());
+
+        user.put("mobileNumber", mMobileNumberEditText.getText().toString());
+        user.put("firstname", mFirstnameEditText.getText().toString());
+        user.put("lastname", mLastnameEditText.getText().toString());
+        user.put("activationMethod", activationMethod);
+        user.put("bankCardNumber", mBankCardNumberEditText.getText().toString());
+        user.put("isShopOwner", true);
+
+        user.signUpInBackground(new SignUpCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    // Hooray! Let them use the app now.
+                } else {
+                    // Sign up didn't succeed. Look at the ParseException
+                    // to figure out what went wrong
+                    if (HonarNamaSellApp.DEBUG) {
+                        Log.e(getLocalClassName(), "Sign-up Failed. Code: " + e.getCode() +
+                                ", Message: " + e.getMessage(), e);
+                    } else {
+                        Log.e(HonarNamaSellApp.PRODUCTION_TAG, "Sign-up Failed. Code: " + e.getCode());
+                    }
+                }
+            }
+        });
+    }
+
+    private void changeMandatoryFieldsStarMarker() {
+
+        if (mActivateWithEmail.isChecked()) {
+            findViewById(R.id.register_email_star_marker).setVisibility(View.VISIBLE);
+            findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.register_email_star_marker).setVisibility(View.GONE);
+            findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean enteredValuesAreValid() {
+        if (mActivateWithEmail.isChecked()) {
+            if (mEmailAddressEditText.getText().toString().length() == 0) {
+                mEmailAddressEditText.requestFocus();
+                mEmailAddressEditText.setError("فیلد آدرس ایمیل نمی‌تواند خالی باشد. ");
+                return false;
+            } else {
+                boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString()).matches();
+                if (!isOK) {
+                    mEmailAddressEditText.requestFocus();
+                    mEmailAddressEditText.setError(" آدرس ایمیل معتبر نیست. ");
+                    return false;
+                }
+            }
+        }
+
+        if (mActivateWithMobileNumber.isChecked()) {
+            if (mMobileNumberEditText.getText().toString().length() == 0) {
+                mMobileNumberEditText.requestFocus();
+                mMobileNumberEditText.setError(" فیلد شماره تلفن همراه نمی‌تواند خالی باشد. ");
+                return false;
+            } else {
+                String mobileNumberPattern = "^09\\d{9}$";
+                if (!mMobileNumberEditText.getText().toString().matches(mobileNumberPattern)) {
+                    mMobileNumberEditText.requestFocus();
+                    mMobileNumberEditText.setError(" شماره تلفن همراه معتبر نیست. ");
+                    return false;
+                }
+
+            }
+        }
+
+        if (mPasswordEdiText.getText().toString().length() == 0) {
+            mPasswordEdiText.requestFocus();
+            mPasswordEdiText.setError(" فیلد رمز عبور نمی‌تواند خالی باشد. ");
+            return false;
+        }
+
+        if (mConfirmPasswordEditText.getText().toString().length() == 0) {
+            mConfirmPasswordEditText.requestFocus();
+            mConfirmPasswordEditText.setError(" فیلد تکرار رمز عبور نمی‌تواند خالی باشد. ");
+            return false;
+        }
+
+        if (!mConfirmPasswordEditText.getText().toString().equals(mPasswordEdiText.getText().toString())) {
+            mPasswordEdiText.requestFocus();
+            mPasswordEdiText.setError(" مقدار فیلد رمز عبور و تکرار آن یکی نیست. ");
+            return false;
+        }
+
+        if (!mNationalCardImageIsSet) {
+            mNationalCardImageView.requestFocus();
+            TextView nationalCardTitleTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
+            nationalCardTitleTextView.setError(" تصویر کارت ملی انتخاب نشده است. ");
+            return false;
+        }
+        if (mBankCardNumberEditText.getText().toString().length() == 0) {
+            mBankCardNumberEditText.requestFocus();
+            mBankCardNumberEditText.setError(" شماره کارت عضو شتاب نمی‌تواند خالی باشد. ");
+            return false;
+        }
+
+        String bankCardNumberPattern = "^((\\d{4}-\\d{4}-\\d{4}-\\d{4})|(\\d{4}\\s{1}\\d{4}\\s{1}\\d{4}\\s{1}\\d{4})|(\\d{16}))$";
+        if (!mBankCardNumberEditText.getText().toString().matches(bankCardNumberPattern)) {
+            mBankCardNumberEditText.requestFocus();
+            mBankCardNumberEditText.setError(" شماره کارت عضو شتاب معتبر نیست. ");
+            return false;
+        }
+
+        return true;
+
+
+    }
+}

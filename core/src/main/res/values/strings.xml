@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Sell on Honarnama</string>
+    <string name="sell_on_honarnama"> برنامه‌ی غرفه‌داران هنرنما </string>
+    <string name="slogan_for_sellers">هنر دست خود را در سراسر ایران بفروشید</string>
+    <string name="username_hint">آدرس ایمیل یا شماره‌ی تلفن همراه</string>
+    <string name="password_hint">رمز عبور</string>
+    <string name="confirm_password_hint"> تکرار رمز عبور </string>
+
+    <string name="enter_button"> ورود </string>
+    <string name="forgot_password"> رمز عبور خود را فراموش کرده‌اید؟ </string>
+    <string name="register_as_seller"> ثبت‌نام حساب غرفه‌داری </string>
+
+    <string name="resend_activation_link"> ارسال مجدد لینک فعال‌سازی </string>
+
+    <string name="action_settings">تنظیمات</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="name">نام</string>
+    <string name="register_form_subtitle"> *وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی است. </string>
+    <string name="register_form_name_alert"> نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند، اما اختیاری هستند. </string>
+    <string name="select_activation_method"> *‌نحوه‌ی فعال‌سازی حساب: </string>
+    <string name="email_address_hint"> آدرس ایمیل - مثال: your_name@yahoo.com </string>
+    <string name="mobile_number_hint"> شماره تلفن همراه - مثال: 09123456789 </string>
+    <string name="add_national_card_image_text">  * افزودن تصویر کارت ملی:  </string>
+    <string name="register_card_number_alert_text">نام صاحب شماره کارت باید با اطلاعات کارت ملی
+        مطابقت داشته باشد.
+    </string>
+    <string name="register">ثبت‌نام</string>
+    <string name="shetab_catd_number_hint_text">شماره کارت عضو شتاب</string>
+    <string name="send_register_activation_link_to_email">ارسال لینک فعال‌سازی به آدرس ایمیل
+    </string>
+    <string name="send_register_activation_link_to_telegram">ارسال لینک فعال‌سازی به تلگرام</string>
+    <string name="select_national_card_image_dialog_title">انتخاب تصویر</string>
+    <string name="camera_option_text">دوربین</string>
+    <string name="choose_from_gallery_option_text">انتخاب از گالری</string>
+    <string name="family_name">نام خانوادگی</string>
+</resources>

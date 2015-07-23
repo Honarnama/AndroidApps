@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nokhodi_back">#FFDFAA</color>
+    <color name="nokhodi_botte_jeghe">#ffbf54</color>
+    <color name="aabi_logo">#3465a4</color>
+    <color name="nokhodi_ghahvei">#503F21</color>
+    <color name="narenji">#e75748</color>
+    <color name="nokhodi_tire">#F5AF3A</color>
+    <color name="nokhodi_khardeli">#875C15</color>
+    <color name="hint_color_custom">#9F907C</color>
+    <color name="android_default_hint_color">#808080</color>
+    <color name="red">#ff0000</color>
+</resources>
