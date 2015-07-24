@@ -41,6 +41,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 />
+
         <RelativeLayout
                 android:id="@+id/login_form_layout"
                 android:layout_width="wrap_content"
@@ -50,16 +51,25 @@
                 android:layout_below="@id/login_slogan_for_sellers_text_view"
                 android:layout_marginTop="20dp"
                 >
+            <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                      android:id="@+id/login_error_msg"
+                      style="@style/error_msg"
+                      android:text=""
+                      android:padding="10dp"
+                      android:gravity="right"
+                      android:layout_alignParentTop="true"
+                      android:visibility="gone"
+                    />
             <EditText
                     android:id="@+id/login_username_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textWebEmailAddress"
                     android:hint="@string/username_hint"
-                    android:layout_alignParentTop="true"
                     android:singleLine="true"
                     android:gravity="right"
                     android:ellipsize="start"
                     android:textColorHint="@color/android_default_hint_color"
+                    android:layout_below="@+id/login_error_msg"
 
                     />
             <EditText
@@ -75,7 +85,7 @@
 
                     />
             <Button
-                    android:id="@+id/login_enter_btn"
+                    android:id="@+id/login_button"
                     android:layout_width="fill_parent" android:layout_height="45dp"
                     android:background="@color/nokhodi_botte_jeghe"
                     android:textColor="#ffffff"

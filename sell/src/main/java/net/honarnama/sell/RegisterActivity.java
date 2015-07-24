@@ -73,8 +73,8 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
         mNationalCardImageSourceProvider = new String[]{getString(R.string.camera_option_text), getString(R.string.choose_from_gallery_option_text)};
 
-        mLastnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
-        mFirstnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
+        mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
+        mLastnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
         mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);
         mEmailAddressEditText = (EditText) findViewById(R.id.register_email_address_edit_text);
         mPasswordEdiText = (EditText) findViewById(R.id.register_password_edit_text);
@@ -230,7 +230,8 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
 
         final ParseUser user = new ParseUser();
-        if (activationMethod == "email") {
+
+        if ("email".equals(activationMethod)) {
             user.setUsername(mEmailAddressEditText.getText().toString());
         } else {
             user.setUsername(mMobileNumberEditText.getText().toString());
@@ -275,13 +276,13 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         if (mActivateWithEmail.isChecked()) {
             if (mEmailAddressEditText.getText().toString().length() == 0) {
                 mEmailAddressEditText.requestFocus();
-                mEmailAddressEditText.setError("فیلد آدرس ایمیل نمی‌تواند خالی باشد. ");
+                mEmailAddressEditText.setError(getString(R.string.error_email_field_can_not_be_empty));
                 return false;
             } else {
                 boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString()).matches();
                 if (!isOK) {
                     mEmailAddressEditText.requestFocus();
-                    mEmailAddressEditText.setError(" آدرس ایمیل معتبر نیست. ");
+                    mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
                     return false;
                 }
             }
@@ -290,13 +291,13 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         if (mActivateWithMobileNumber.isChecked()) {
             if (mMobileNumberEditText.getText().toString().length() == 0) {
                 mMobileNumberEditText.requestFocus();
-                mMobileNumberEditText.setError(" فیلد شماره تلفن همراه نمی‌تواند خالی باشد. ");
+                mMobileNumberEditText.setError(getString(R.string.error_mobile_number_field_can_not_be_empty));
                 return false;
             } else {
                 String mobileNumberPattern = "^09\\d{9}$";
                 if (!mMobileNumberEditText.getText().toString().matches(mobileNumberPattern)) {
                     mMobileNumberEditText.requestFocus();
-                    mMobileNumberEditText.setError(" شماره تلفن همراه معتبر نیست. ");
+                    mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
                     return false;
                 }
 
@@ -305,38 +306,38 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
         if (mPasswordEdiText.getText().toString().length() == 0) {
             mPasswordEdiText.requestFocus();
-            mPasswordEdiText.setError(" فیلد رمز عبور نمی‌تواند خالی باشد. ");
+            mPasswordEdiText.setError(getString(R.string.error_password_field_can_not_be_empty));
             return false;
         }
 
         if (mConfirmPasswordEditText.getText().toString().length() == 0) {
             mConfirmPasswordEditText.requestFocus();
-            mConfirmPasswordEditText.setError(" فیلد تکرار رمز عبور نمی‌تواند خالی باشد. ");
+            mConfirmPasswordEditText.setError(getString(R.string.error_confirm_password_field_cant_be_empty));
             return false;
         }
 
         if (!mConfirmPasswordEditText.getText().toString().equals(mPasswordEdiText.getText().toString())) {
             mPasswordEdiText.requestFocus();
-            mPasswordEdiText.setError(" مقدار فیلد رمز عبور و تکرار آن یکی نیست. ");
+            mPasswordEdiText.setError(getString(R.string.error_password_and_confirmpassword_does_not_match));
             return false;
         }
 
         if (!mNationalCardImageIsSet) {
             mNationalCardImageView.requestFocus();
             TextView nationalCardTitleTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
-            nationalCardTitleTextView.setError(" تصویر کارت ملی انتخاب نشده است. ");
+            nationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
             return false;
         }
         if (mBankCardNumberEditText.getText().toString().length() == 0) {
             mBankCardNumberEditText.requestFocus();
-            mBankCardNumberEditText.setError(" شماره کارت عضو شتاب نمی‌تواند خالی باشد. ");
+            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_cant_be_empty));
             return false;
         }
 
         String bankCardNumberPattern = "^((\\d{4}-\\d{4}-\\d{4}-\\d{4})|(\\d{4}\\s{1}\\d{4}\\s{1}\\d{4}\\s{1}\\d{4})|(\\d{16}))$";
         if (!mBankCardNumberEditText.getText().toString().matches(bankCardNumberPattern)) {
             mBankCardNumberEditText.requestFocus();
-            mBankCardNumberEditText.setError(" شماره کارت عضو شتاب معتبر نیست. ");
+            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_is_not_valid));
             return false;
         }
 
