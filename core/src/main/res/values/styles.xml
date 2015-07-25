@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="NationalCardImageOptionDialogStyle" parent="@android:style/Theme.Dialog">
+    <style name="DialogStyle" parent="@android:style/Theme.Dialog">
         <item name="android:textColor">@color/nokhodi_khardeli</item>
         <item name="android:textSize">18sp</item>
     </style>

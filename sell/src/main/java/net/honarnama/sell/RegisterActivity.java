@@ -1,7 +1,9 @@
 package net.honarnama.sell;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
@@ -160,7 +162,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     }
 
     public void takePhoto() {
-        final AlertDialog.Builder nationalCardImageOptionDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.NationalCardImageOptionDialogStyle));
+        final AlertDialog.Builder nationalCardImageOptionDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
         nationalCardImageOptionDialog.setTitle(getString(R.string.select_national_card_image_dialog_title));
         nationalCardImageOptionDialog.setItems(mNationalCardImageSourceProvider, new DialogInterface.OnClickListener() {
             @Override
@@ -197,8 +199,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     public void registerSeller() {
 
         if (!enteredValuesAreValid()) {
-            return;
+            return; // TODO: feedback
         }
+
+        mRegisterButton.setEnabled(false);
 
         Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -213,6 +217,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 } else {
                     logE("Uploading National Card Image Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
+                    mRegisterButton.setEnabled(true);
                 }
             }
         }, new ProgressCallback() {
@@ -227,7 +232,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     }
 
     private void signUserUpInParse(ParseFile parseFile) {
-        String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
+        final String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
 
         final ParseUser user = new ParseUser();
 
@@ -251,14 +256,43 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(RegisterActivity.this, "Signup Done!", Toast.LENGTH_LONG).show();
+                    user.fetchInBackground(new GetCallback<ParseObject>() {
+
+                        @Override
+                        public void done(ParseObject parseObject, ParseException e) {
+                            if ("mobileNumber".equals(activationMethod)) {
+                                showTelegramActivationDialog(parseObject.getString("telegramCode"));
+                            }
+                            Toast.makeText(RegisterActivity.this, "Signup Done!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
                     Toast.makeText(RegisterActivity.this, "Signup Failed!", Toast.LENGTH_LONG).show();
                     logE("Sign-up Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
                 }
+                mRegisterButton.setEnabled(false);
             }
         });
+    }
+
+    private void showTelegramActivationDialog(final String activationCode) {
+        final AlertDialog.Builder telegramActivationDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
+        telegramActivationDialog.setTitle(getString(R.string.telegram_activation_dialog_title));
+        telegramActivationDialog.setItems(new String[]{getString(R.string.telegram_activation_option_text)},
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
+                            if (telegramIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(telegramIntent, 1003);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        telegramActivationDialog.show();
     }
 
     private void changeMandatoryFieldsStarMarker() {
@@ -362,6 +396,9 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                     mNationalCardImageView.setImageURI(selectedImage);
                     mNationalCardImageIsSet = true;
                 }
+                break;
+            case 1003:
+                finish();
                 break;
         }
     }

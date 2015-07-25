@@ -37,6 +37,9 @@
     <string name="choose_from_gallery_option_text">انتخاب از گالری</string>
     <string name="family_name">نام خانوادگی</string>
 
+    <string name="telegram_activation_dialog_title">فعال‌سازی حساب با تلگرام</string>
+    <string name="telegram_activation_option_text">ارسال پیغام از طریق تلگرام این دستگاه</string>
+
     <string name="error_email_field_can_not_be_empty">"فیلد آدرس ایمیل نمی‌تواند خالی باشد. "</string>
     <string name="error_email_address_is_not_valid">" آدرس ایمیل معتبر نیست. "</string>
     <string name="error_mobile_number_field_can_not_be_empty">" فیلد شماره تلفن همراه نمی‌تواند خالی باشد.
