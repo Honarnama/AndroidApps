@@ -1,0 +1,7 @@
+<resources>
+    <string name="title_activity_control_panel">ControlPanel</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

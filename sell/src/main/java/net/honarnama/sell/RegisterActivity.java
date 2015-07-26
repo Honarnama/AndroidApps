@@ -11,8 +11,10 @@ import com.parse.SignUpCallback;
 
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.utils.GenericGravityTextWatcher;
+import net.honarnama.utils.NetworkManager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -61,11 +63,11 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private boolean mNationalCardImageIsSet;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         mNationalCardImageIsSet = false;
         mAddNationalCardTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
         mAddNationalCardTextView.setOnClickListener(this);
@@ -198,11 +200,18 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     public void registerSeller() {
 
+        if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+            return;
+        }
+
         if (!enteredValuesAreValid()) {
             return; // TODO: feedback
         }
 
-        mRegisterButton.setEnabled(false);
+        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);
+        sendingDataProgressDialog.setCancelable(false);
+        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
+        sendingDataProgressDialog.show();
 
         Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -213,11 +222,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         parseFile.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 if (e == null) {
-                    signUserUpInParse(parseFile);
+                    signUserUpInParse(parseFile, sendingDataProgressDialog);
                 } else {
                     logE("Uploading National Card Image Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
-                    mRegisterButton.setEnabled(true);
                 }
             }
         }, new ProgressCallback() {
@@ -231,7 +239,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     }
 
-    private void signUserUpInParse(ParseFile parseFile) {
+    private void signUserUpInParse(ParseFile parseFile, ProgressDialog sendingDataProgressDialog) {
         final String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
 
         final ParseUser user = new ParseUser();
@@ -252,9 +260,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         user.put("bankCardNumber", mBankCardNumberEditText.getText().toString());
         user.put("isShopOwner", true);
         user.put("nationalCardImage", parseFile);
-
+        final ProgressDialog progressDialog = sendingDataProgressDialog;
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
+                progressDialog.dismiss();
                 if (e == null) {
                     user.fetchInBackground(new GetCallback<ParseObject>() {
 
@@ -308,7 +317,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     private boolean enteredValuesAreValid() {
         if (mActivateWithEmail.isChecked()) {
-            if (mEmailAddressEditText.getText().toString().length() == 0) {
+            if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
                 mEmailAddressEditText.requestFocus();
                 mEmailAddressEditText.setError(getString(R.string.error_email_field_can_not_be_empty));
                 return false;
@@ -323,7 +332,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         }
 
         if (mActivateWithMobileNumber.isChecked()) {
-            if (mMobileNumberEditText.getText().toString().length() == 0) {
+            if (mMobileNumberEditText.getText().toString().trim().length() == 0) {
                 mMobileNumberEditText.requestFocus();
                 mMobileNumberEditText.setError(getString(R.string.error_mobile_number_field_can_not_be_empty));
                 return false;
@@ -338,13 +347,13 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
             }
         }
 
-        if (mPasswordEdiText.getText().toString().length() == 0) {
+        if (mPasswordEdiText.getText().toString().trim().length() == 0) {
             mPasswordEdiText.requestFocus();
             mPasswordEdiText.setError(getString(R.string.error_password_field_can_not_be_empty));
             return false;
         }
 
-        if (mConfirmPasswordEditText.getText().toString().length() == 0) {
+        if (mConfirmPasswordEditText.getText().toString().trim().length() == 0) {
             mConfirmPasswordEditText.requestFocus();
             mConfirmPasswordEditText.setError(getString(R.string.error_confirm_password_field_cant_be_empty));
             return false;
@@ -362,7 +371,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
             nationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
             return false;
         }
-        if (mBankCardNumberEditText.getText().toString().length() == 0) {
+        if (mBankCardNumberEditText.getText().toString().trim().length() == 0) {
             mBankCardNumberEditText.requestFocus();
             mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_cant_be_empty));
             return false;

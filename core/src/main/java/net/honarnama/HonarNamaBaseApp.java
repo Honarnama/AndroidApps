@@ -2,6 +2,8 @@ package net.honarnama;
 
 import com.parse.Parse;
 
+import net.honarnama.base.BuildConfig;
+
 import android.app.Application;
 
 /**
@@ -9,6 +11,7 @@ import android.app.Application;
  */
 public class HonarNamaBaseApp extends Application {
 
+    public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String PRODUCTION_TAG = "HonarNama";
     private static HonarNamaBaseApp singleton;
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";

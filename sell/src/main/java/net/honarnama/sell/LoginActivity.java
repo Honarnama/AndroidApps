@@ -5,7 +5,11 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarNamaBaseActivity;
+import net.honarnama.utils.GenericGravityTextWatcher;
+import net.honarnama.utils.HonarNamaUser;
+import net.honarnama.utils.NetworkManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -27,9 +31,9 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
-            checkUserState(currentUser);
+        if (HonarNamaUser.isShopOwner()) {
+            //Go to controlPanel Activity
+            gotoControlPanel();
         }
 
         setContentView(R.layout.activity_login);
@@ -43,56 +47,28 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
         mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
 
+
+        mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
+        mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
+
         logI(null, "created!");
+    }
+
+    private void gotoControlPanel() {
+        Intent intent = new Intent(this, ControlPanel.class);
+        startActivity(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
-            checkUserState(currentUser);
+        if (HonarNamaUser.isShopOwner()) {
+            //Go to controlPanel Activity
+            gotoControlPanel();
         }
     }
 
-    private void checkUserState(ParseUser currentUser) {
-        String activationMethod = currentUser.getString("activationMethod");
-        boolean isVerified = false;
-        if ("email".equals(activationMethod)) {
-            isVerified = currentUser.getBoolean("emailVerified");
-        } else if ("mobileNumber".equals(activationMethod)) {
-            isVerified = currentUser.getBoolean("telegramVerified");
-        }
-
-        if (!isVerified) {
-            Toast.makeText(this, "You have not verified your account yet!", Toast.LENGTH_LONG).show();
-        }
-
-        boolean isShopOwner = currentUser.getBoolean("isShopOwner");
-        if (isShopOwner) {
-            Toast.makeText(this, "Currently logged in!", Toast.LENGTH_LONG).show();
-            //finish();
-            // TODO: Go to next page if yes
-        } else {
-            // TODO: Error message
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onClick(View view) {
@@ -114,22 +90,43 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
 
-        if (username.length() == 0) {
+        if (!(NetworkManager.getInstance().isNetworkEnabled(this, true))) {
+            return;
+        }
+
+        if (username.trim().length() == 0) {
             mUsernameEditText.requestFocus();
             mUsernameEditText.setError(getString(R.string.error_register_username_is_empty));
             return;
         }
 
-        if (password.length() == 0) {
+        if (password.trim().length() == 0) {
             mPasswordEditText.requestFocus();
             mPasswordEditText.setError(getString(R.string.error_register_password_is_empty));
             return;
         }
 
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setMessage(getString(R.string.sending_data));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
+                progressDialog.dismiss();
                 if (user != null) {
-                    Toast.makeText(LoginActivity.this, "Horray!", Toast.LENGTH_LONG).show();
+                    if (!HonarNamaUser.isVerified()) {
+                        logE("Sign-up Failed. Account is not activated");
+                        mErrorMessageTextView.setVisibility(View.VISIBLE);
+                        mErrorMessageTextView.setText(" شما هنوز حساب کاربری خود را فعال نکردید. ارسال مجدد لینک ");
+                    } else if (!HonarNamaUser.isShopOwner()) {
+                        logE("Sign-up Failed. User is not a shop owner");
+                        mErrorMessageTextView.setVisibility(View.VISIBLE);
+                        mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. باز کردن حساب ");
+                    }else
+                    {
+                        gotoControlPanel();
+                    }
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("Sign-up Failed. Code: ", e.getMessage(), e);

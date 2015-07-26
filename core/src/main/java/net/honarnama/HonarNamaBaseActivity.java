@@ -46,6 +46,9 @@ public class HonarNamaBaseActivity extends Activity {
         }
     }
 
+    public void logE(String message) {
+        logE(message, message);
+    }
     public void logI(String productionMsg, String debugMsg) {
         if ((debugMsg != null) && BuildConfig.DEBUG) {
             String message;
