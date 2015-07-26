@@ -25,6 +25,15 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <data
+                        android:host="both"
+                        android:pathPrefix="login"
+                        android:scheme="honarnama" />
+                <data
+                        android:host="sell"
+                        android:pathPrefix="login"
+                        android:scheme="honarnama" />
             </intent-filter>
         </activity>
         <activity
@@ -38,10 +47,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:host="both/register"
+                    android:host="both"
+                    android:pathPrefix="register"
                     android:scheme="honarnama" />
                 <data
-                    android:host="sell/register"
+                    android:host="sell"
+                    android:pathPrefix="register"
                     android:scheme="honarnama" />
             </intent-filter>
         </activity>

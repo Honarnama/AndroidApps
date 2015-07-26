@@ -1,7 +1,9 @@
 package net.honarnama.sell;
 
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarNamaBaseActivity;
@@ -12,13 +14,10 @@ import net.honarnama.utils.NetworkManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 public class LoginActivity extends HonarNamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
@@ -31,25 +30,42 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (HonarNamaUser.isShopOwner()) {
+        if (HonarNamaUser.isShopOwner() && HonarNamaUser.isVerified()) {
             //Go to controlPanel Activity
             gotoControlPanel();
+        } else {
+            setContentView(R.layout.activity_login);
+            mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
+            mRegisterAsSellerTextView.setOnClickListener(this);
+
+            mLoginButton = (Button) findViewById(R.id.login_button);
+            mLoginButton.setOnClickListener(this);
+
+            mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
+            mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
+            mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
+
+            mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
+            mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
+
+            if (HonarNamaUser.getCurrentUser() != null) {
+                mUsernameEditText.setEnabled(false);
+                mPasswordEditText.setEnabled(false);
+                mLoginButton.setEnabled(false);
+                // TODO: show progress / dialog?
+
+                HonarNamaUser.getCurrentUser().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        gotoControlPanelOrError();
+
+                        mUsernameEditText.setEnabled(true);
+                        mPasswordEditText.setEnabled(true);
+                        mLoginButton.setEnabled(true);
+                    }
+                });
+            }
         }
-
-        setContentView(R.layout.activity_login);
-        mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
-        mRegisterAsSellerTextView.setOnClickListener(this);
-
-        mLoginButton = (Button) findViewById(R.id.login_button);
-        mLoginButton.setOnClickListener(this);
-
-        mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
-        mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
-        mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
-
-
-        mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
-        mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
         logI(null, "created!");
     }
@@ -57,14 +73,14 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     private void gotoControlPanel() {
         Intent intent = new Intent(this, ControlPanel.class);
         startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (HonarNamaUser.isShopOwner()) {
-            //Go to controlPanel Activity
+        if (HonarNamaUser.isShopOwner() && HonarNamaUser.isVerified()) {
             gotoControlPanel();
         }
     }
@@ -115,26 +131,28 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             public void done(ParseUser user, ParseException e) {
                 progressDialog.dismiss();
                 if (user != null) {
-                    if (!HonarNamaUser.isVerified()) {
-                        logE("Sign-up Failed. Account is not activated");
-                        mErrorMessageTextView.setVisibility(View.VISIBLE);
-                        mErrorMessageTextView.setText(" شما هنوز حساب کاربری خود را فعال نکردید. ارسال مجدد لینک ");
-                    } else if (!HonarNamaUser.isShopOwner()) {
-                        logE("Sign-up Failed. User is not a shop owner");
-                        mErrorMessageTextView.setVisibility(View.VISIBLE);
-                        mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. باز کردن حساب ");
-                    }else
-                    {
-                        gotoControlPanel();
-                    }
+                    gotoControlPanelOrError();
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("Sign-up Failed. Code: ", e.getMessage(), e);
                     mErrorMessageTextView.setVisibility(View.VISIBLE);
                     mErrorMessageTextView.setText("نام کاربری یا رمز عبور اشتباه است.");
-
                 }
             }
         });
+    }
+
+    private void gotoControlPanelOrError() {
+        if (!HonarNamaUser.isVerified()) {
+            logE("Sign-up Failed. Account is not activated");
+            mErrorMessageTextView.setVisibility(View.VISIBLE);
+            mErrorMessageTextView.setText(" شما هنوز حساب کاربری خود را فعال نکردید. ارسال مجدد لینک ");
+        } else if (!HonarNamaUser.isShopOwner()) {
+            logE("Sign-up Failed. User is not a shop owner");
+            mErrorMessageTextView.setVisibility(View.VISIBLE);
+            mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. باز کردن حساب ");
+        } else {
+            gotoControlPanel();
+        }
     }
 }

@@ -16,15 +16,12 @@ public class HonarNamaUser extends ParseUser {
         return false;
     }
 
-    public static  boolean isShopOwner() {
+    public static boolean isShopOwner() {
         if (getCurrentUser() == null) {
             return false;
         }
         boolean isShopOwner = getCurrentUser().getBoolean("isShopOwner");
-        if (isShopOwner) {
-            return false;
-        }
-        return true;
+        return isShopOwner;
     }
 
 

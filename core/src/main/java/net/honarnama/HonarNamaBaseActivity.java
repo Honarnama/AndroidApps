@@ -18,7 +18,7 @@ public class HonarNamaBaseActivity extends Activity {
         }
     }
 
-    public void logE(String productionMsg, String debugMsg, Throwable throwable) {
+    String getMessage(String productionMsg, String debugMsg) {
         if ((debugMsg != null) && BuildConfig.DEBUG) {
             String message;
             if (productionMsg != null) {
@@ -26,41 +26,35 @@ public class HonarNamaBaseActivity extends Activity {
             } else {
                 message = debugMsg;
             }
-            Log.e(getTag(), message, throwable);
+            return message;
+        } else if (productionMsg != null) {
+            return productionMsg;
+        }
+        return null;
+    }
+
+    public void logE(String productionMsg, String debugMsg, Throwable throwable) {
+        if (BuildConfig.DEBUG) {
+            Log.e(getTag(), getMessage(productionMsg, debugMsg), throwable);
         } else if (productionMsg != null) {
             Log.e(getTag(), productionMsg);
         }
     }
 
     public void logE(String productionMsg, String debugMsg) {
-        if ((debugMsg != null) && BuildConfig.DEBUG) {
-            String message;
-            if (productionMsg != null) {
-                message = productionMsg + " // " + debugMsg;
-            } else {
-                message = debugMsg;
-            }
-            Log.e(getTag(), message);
-        } else if (productionMsg != null) {
-            Log.e(getTag(), productionMsg);
-        }
+        Log.e(getTag(), getMessage(productionMsg, debugMsg));
     }
 
     public void logE(String message) {
-        logE(message, message);
+        logE(message, null);
     }
+
     public void logI(String productionMsg, String debugMsg) {
-        if ((debugMsg != null) && BuildConfig.DEBUG) {
-            String message;
-            if (productionMsg != null) {
-                message = productionMsg + " // " + debugMsg;
-            } else {
-                message = debugMsg;
-            }
-            Log.i(getTag(), message);
-        } else if (productionMsg != null) {
-            Log.i(getTag(), productionMsg);
-        }
+        Log.i(getTag(), getMessage(productionMsg, debugMsg));
+    }
+
+    public void logD(String productionMsg, String debugMsg) {
+        Log.d(getTag(), getMessage(productionMsg, debugMsg));
     }
 
 }

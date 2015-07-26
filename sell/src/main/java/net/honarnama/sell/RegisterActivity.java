@@ -231,7 +231,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         }, new ProgressCallback() {
             public void done(Integer percentDone) {
 
-                Log.d(getLocalClassName(), "Uploading National Card Image - percentDone= " + percentDone);
+                logD(null, "Uploading National Card Image - percentDone= " + percentDone);
                 // Update your progress spinner here. percentDone will be between 0 and 100.
             }
         });
