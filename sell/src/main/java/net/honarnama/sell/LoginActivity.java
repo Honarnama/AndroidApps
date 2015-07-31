@@ -13,6 +13,7 @@ import net.honarnama.utils.NetworkManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
     private TextView mErrorMessageTextView;
+    private ProgressDialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         if (HonarNamaUser.isShopOwner() && HonarNamaUser.isVerified()) {
             //Go to controlPanel Activity
             gotoControlPanel();
+
         } else {
             setContentView(R.layout.activity_login);
             mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
@@ -49,25 +52,70 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
             if (HonarNamaUser.getCurrentUser() != null) {
-                mUsernameEditText.setEnabled(false);
-                mPasswordEditText.setEnabled(false);
-                mLoginButton.setEnabled(false);
-                // TODO: show progress / dialog?
+                showLoadingDialog();
 
                 HonarNamaUser.getCurrentUser().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         gotoControlPanelOrError();
-
-                        mUsernameEditText.setEnabled(true);
-                        mPasswordEditText.setEnabled(true);
-                        mLoginButton.setEnabled(true);
+                        hideLoadingDialog();
                     }
                 });
+            } else {
+                processIntent(getIntent());
             }
         }
 
         logI(null, "created!");
+    }
+
+    private void showLoadingDialog() {
+        mUsernameEditText.setEnabled(false);
+        mPasswordEditText.setEnabled(false);
+        mLoginButton.setEnabled(false);
+
+        mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.login_dialog_text), false);
+    }
+
+    private void hideLoadingDialog() {
+        mUsernameEditText.setEnabled(true);
+        mPasswordEditText.setEnabled(true);
+        mLoginButton.setEnabled(true);
+
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+            mLoadingDialog.hide();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        processIntent(intent);
+    }
+
+    private void processIntent(Intent intent) {
+        Uri data = intent.getData();
+        final String token = data.getQueryParameter("token");
+        final String register = data.getQueryParameter("register");
+
+        if (token != null && token.length() > 0) {
+            HonarNamaUser.telegramLogInInBackground(token, new LogInCallback() {
+                @Override
+                public void done(ParseUser parseUser, ParseException e) {
+                    hideLoadingDialog();
+                    if (e == null) {
+                        gotoControlPanelOrError();
+                    } else {
+                        // TODO: error message
+                        logE("Error while logging in using token", "token= " + token, e);
+                    }
+                }
+            });
+        } else if ("true".equals(register)) {
+            Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(registerIntent);
+        }
     }
 
     private void gotoControlPanel() {

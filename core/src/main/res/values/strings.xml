@@ -9,6 +9,7 @@
     <string name="enter_button"> ورود </string>
     <string name="forgot_password"> رمز عبور خود را فراموش کرده‌اید؟ </string>
     <string name="register_as_seller"> ثبت‌نام حساب غرفه‌داری </string>
+    <string name="login_dialog_text">لطفاً چند لحظه صبر کنید&#8230;</string>
 
     <string name="resend_activation_link"> ارسال مجدد لینک فعال‌سازی </string>
 
