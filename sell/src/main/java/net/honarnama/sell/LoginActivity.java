@@ -15,6 +15,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +27,9 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     private Button mLoginButton;
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
+    private View mErrorMessageContainer;
     private TextView mErrorMessageTextView;
+    private View mErrorMessageButton;
     private ProgressDialog mLoadingDialog;
 
     @Override
@@ -46,7 +50,9 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
 
             mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
             mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
+            mErrorMessageContainer = findViewById(R.id.login_error_container);
             mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
+            mErrorMessageButton = findViewById(R.id.login_error_btn);
 
             mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
@@ -138,9 +144,20 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
                 startActivity(intent);
                 break;
             case R.id.login_button:
-                mErrorMessageTextView.setVisibility(View.GONE);
+                mErrorMessageContainer.setVisibility(View.GONE);
                 signUserIn();
                 break;
+            case R.id.forgot_password_text_view:
+                // TODO: what about email?
+                Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
+                if (telegramIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(telegramIntent);
+                }
+            case R.id.login_error_btn:
+                Intent telegramIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + HonarNamaUser.getCurrentUser().getString("telegramCode")));
+                if (telegramIntent2.resolveActivity(getPackageManager()) != null) {
+                    startActivity(telegramIntent2);
+                }
             default:
                 break;
         }
@@ -179,8 +196,9 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("Sign-up Failed. Code: ", e.getMessage(), e);
-                    mErrorMessageTextView.setVisibility(View.VISIBLE);
+                    mErrorMessageContainer.setVisibility(View.VISIBLE);
                     mErrorMessageTextView.setText("نام کاربری یا رمز عبور اشتباه است.");
+                    mErrorMessageButton.setVisibility(View.GONE);
                 }
             }
         });
@@ -189,12 +207,23 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     private void gotoControlPanelOrRaiseError() {
         if (!HonarNamaUser.isVerified()) {
             logE("Login Failed. Account is not activated");
-            mErrorMessageTextView.setVisibility(View.VISIBLE);
-            mErrorMessageTextView.setText(" شما هنوز حساب کاربری خود را فعال نکردید. ارسال مجدد لینک ");
+            mErrorMessageContainer.setVisibility(View.VISIBLE);
+            mErrorMessageTextView.setText(R.string.not_verified);
+            switch (HonarNamaUser.getActivationMethod()) {
+                case MOBILE_NUMBER:
+                    // TODO: onlt if telegram is installed
+                    mErrorMessageButton.setVisibility(View.VISIBLE);
+                    break;
+
+                default:
+                    mErrorMessageButton.setVisibility(View.GONE);
+                    break;
+            }
         } else if (!HonarNamaUser.isShopOwner()) {
             logE("Login Failed. User is not a shop owner");
-            mErrorMessageTextView.setVisibility(View.VISIBLE);
+            mErrorMessageContainer.setVisibility(View.VISIBLE);
             mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. ");
+            mErrorMessageButton.setVisibility(View.GONE);
         } else {
             gotoControlPanel();
         }

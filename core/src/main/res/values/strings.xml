@@ -11,7 +11,9 @@
     <string name="register_as_seller"> ثبت‌نام حساب غرفه‌داری </string>
     <string name="login_dialog_text">لطفاً چند لحظه صبر کنید&#8230;</string>
 
-    <string name="resend_activation_link"> ارسال مجدد لینک فعال‌سازی </string>
+    <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکردید. </string>
+    <string name="resend_telegram">ارسال کد از طریق تلگرام</string>
+    <string name="login_using_telegram">ورود از طریق تلگرام</string>
 
     <string name="action_settings">تنظیمات</string>
     <string name="title_activity_register">RegisterActivity</string>

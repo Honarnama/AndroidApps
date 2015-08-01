@@ -10,11 +10,15 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="error_msg" >
-        <item name="android:textSize">13sp</item>
+    <style name="ErrorStyle" >
+        <item name="android:textSize">14sp</item>
         <item name="android:background">@color/narenji</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="ErrorButtonStyle" >
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
 
 </resources>

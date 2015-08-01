@@ -43,16 +43,37 @@ public class HonarNamaUser extends ParseUser {
         return isShopOwner;
     }
 
+    public static ActivationMethod getActivationMethod() {
+        String activationMethod = getCurrentUser().getString("activationMethod");
+        if ("email".equals(activationMethod)) {
+            return ActivationMethod.EMAIL;
+        } else if ("mobileNumber".equals(activationMethod)) {
+            return ActivationMethod.MOBILE_NUMBER;
+        } else {
+            return ActivationMethod.UNKNOWN;
+        }
+    }
 
     public static boolean isVerified() {
+        return getActivationMethod().isUserVerified(getCurrentUser());
+    }
 
-        String activationMethod = getCurrentUser().getString("activationMethod");
-        boolean isVerified = false;
-        if ("email".equals(activationMethod)) {
-            isVerified = getCurrentUser().getBoolean("emailVerified");
-        } else if ("mobileNumber".equals(activationMethod)) {
-            isVerified = getCurrentUser().getBoolean("telegramVerified");
+    public static enum ActivationMethod {
+        EMAIL("emailVerified"),
+        MOBILE_NUMBER("telegramVerified"),
+        UNKNOWN(null);
+
+        private final String verificationFieldName;
+
+        ActivationMethod(String verificationFieldName) {
+            this.verificationFieldName = verificationFieldName;
         }
-        return isVerified;
+
+        public boolean isUserVerified(ParseUser user) {
+            if (verificationFieldName != null) {
+                return user.getBoolean(verificationFieldName);
+            }
+            return false;
+        }
     }
 }
