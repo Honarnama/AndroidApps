@@ -67,6 +67,14 @@
     <string name="error_network_is_not_enabled">   دستگاه شما به اینترنت متصل نیست.  </string>
     <string name="error_no_internet_connection">  مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را بررسی کنید.  </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
+    <string name="error_signup_duplicated_email">" ایمیل وارد شده پیشتر ثبت شده است. "</string>
+    <string name="error_signup_duplicated_mobile_number">" شماره تلفن همراه وارد شده پیشتر ثبت شده
+        است. "
+    </string>
+    <string name="error_signup_correct_mistakes_and_try_again">لطفا خطاهای رخ داده را تصحیح و دوباره
+        تلاش کنید.
+    </string>
+    <string name="successful_signup">" ثبت‌نام با موفقیت انجام شد "</string>
 
 
 </resources>

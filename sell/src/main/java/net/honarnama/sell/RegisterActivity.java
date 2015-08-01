@@ -230,8 +230,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 if (e == null) {
                     signUserUpInParse(parseFile, sendingDataProgressDialog);
                 } else {
+                    Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
                     logE("Uploading National Card Image Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
+                    sendingDataProgressDialog.dismiss();
                 }
             }
         }, new ProgressCallback() {
@@ -282,12 +284,21 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                         public void done(ParseObject parseObject, ParseException e) {
                             if ("mobileNumber".equals(activationMethod)) {
                                 showTelegramActivationDialog(parseObject.getString("telegramCode"));
+                                Toast.makeText(RegisterActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
                             }
-                            Toast.makeText(RegisterActivity.this, "Signup Done!", Toast.LENGTH_LONG).show();
+
                         }
                     });
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Signup Failed!", Toast.LENGTH_LONG).show();
+                    if (e.getCode() == 202) {
+                        if ("email".equals(activationMethod)) {
+                            mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
+                        } else {
+                            mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
+                        }
+                    }
+
+                    Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
                     logE("Sign-up Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
                 }
@@ -432,7 +443,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 // get the returned data
                 Bundle extras = intent.getExtras();
                 // get the cropped bitmap
-                if(extras != null) {
+                if (extras != null) {
                     Bitmap thePic = extras.getParcelable("data");
                     mNationalCardImageView.setImageBitmap(thePic);
                 }
