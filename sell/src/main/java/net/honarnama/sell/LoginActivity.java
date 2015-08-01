@@ -52,12 +52,12 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
             if (HonarNamaUser.getCurrentUser() != null) {
+                logE("Parse user is not empty");
                 showLoadingDialog();
-
-                HonarNamaUser.getCurrentUser().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                HonarNamaUser.getCurrentUser().fetchInBackground(new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
-                        gotoControlPanelOrError();
+                        gotoControlPanelOrRaiseError();
                         hideLoadingDialog();
                     }
                 });
@@ -70,18 +70,11 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     }
 
     private void showLoadingDialog() {
-        mUsernameEditText.setEnabled(false);
-        mPasswordEditText.setEnabled(false);
-        mLoginButton.setEnabled(false);
-
         mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.login_dialog_text), false);
+        mLoadingDialog.setCancelable(false);
     }
 
     private void hideLoadingDialog() {
-        mUsernameEditText.setEnabled(true);
-        mPasswordEditText.setEnabled(true);
-        mLoginButton.setEnabled(true);
-
         if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.hide();
         }
@@ -96,25 +89,28 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
 
     private void processIntent(Intent intent) {
         Uri data = intent.getData();
-        final String token = data.getQueryParameter("token");
-        final String register = data.getQueryParameter("register");
 
-        if (token != null && token.length() > 0) {
-            HonarNamaUser.telegramLogInInBackground(token, new LogInCallback() {
-                @Override
-                public void done(ParseUser parseUser, ParseException e) {
-                    hideLoadingDialog();
-                    if (e == null) {
-                        gotoControlPanelOrError();
-                    } else {
-                        // TODO: error message
-                        logE("Error while logging in using token", "token= " + token, e);
+        if (data != null) {
+            final String token = data.getQueryParameter("token");
+            final String register = data.getQueryParameter("register");
+
+            if (token != null && token.length() > 0) {
+                HonarNamaUser.telegramLogInInBackground(token, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser parseUser, ParseException e) {
+                        hideLoadingDialog();
+                        if (e == null) {
+                            gotoControlPanelOrRaiseError();
+                        } else {
+                            // TODO: error message
+                            logE("Error while logging in using token", "token= " + token, e);
+                        }
                     }
-                }
-            });
-        } else if ("true".equals(register)) {
-            Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(registerIntent);
+                });
+            } else if ("true".equals(register)) {
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
+            }
         }
     }
 
@@ -179,7 +175,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             public void done(ParseUser user, ParseException e) {
                 progressDialog.dismiss();
                 if (user != null) {
-                    gotoControlPanelOrError();
+                    gotoControlPanelOrRaiseError();
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("Sign-up Failed. Code: ", e.getMessage(), e);
@@ -190,15 +186,15 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         });
     }
 
-    private void gotoControlPanelOrError() {
+    private void gotoControlPanelOrRaiseError() {
         if (!HonarNamaUser.isVerified()) {
-            logE("Sign-up Failed. Account is not activated");
+            logE("Login Failed. Account is not activated");
             mErrorMessageTextView.setVisibility(View.VISIBLE);
             mErrorMessageTextView.setText(" شما هنوز حساب کاربری خود را فعال نکردید. ارسال مجدد لینک ");
         } else if (!HonarNamaUser.isShopOwner()) {
-            logE("Sign-up Failed. User is not a shop owner");
+            logE("Login Failed. User is not a shop owner");
             mErrorMessageTextView.setVisibility(View.VISIBLE);
-            mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. باز کردن حساب ");
+            mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. ");
         } else {
             gotoControlPanel();
         }

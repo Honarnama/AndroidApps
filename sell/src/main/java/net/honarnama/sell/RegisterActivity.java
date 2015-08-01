@@ -10,8 +10,10 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import net.honarnama.HonarNamaBaseActivity;
+import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
+import net.honarnama.utils.file.SimpleImageCropper;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,7 +25,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,7 +63,12 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private Button mRegisterButton;
     private boolean mNationalCardImageIsSet;
 
+    public static final int INTENT_CAPTURE_IMAGE_CODE = 1001;
+    public static final int INTENT_SELECT_IMAGE_CODE = 1002;
+    public static final int INTENT_TELEGRAM_CODE = 1003;
+    public static final int INTENT_CROP_IMAGE_CODE = 1004;
 
+    SimpleImageCropper mSimpleImageCropper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +104,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithMobileNumber.setOnClickListener(this);
 
+        mSimpleImageCropper = new SimpleImageCropper(this);
         logI(null, "created!");
     }
 
@@ -181,20 +188,19 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                         if (photoFile != null) {
                             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                                     Uri.fromFile(photoFile));
-                            startActivityForResult(takePictureIntent, 1001);
+                            startActivityForResult(takePictureIntent, INTENT_CAPTURE_IMAGE_CODE);
                         }
 
                     }
                 } else if (which == 1) {
                     Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhotoIntent, 1002);
+                    startActivityForResult(pickPhotoIntent, INTENT_SELECT_IMAGE_CODE);
                 }
                 dialog.dismiss();
             }
         });
         nationalCardImageOptionDialog.show();
-
 
     }
 
@@ -245,19 +251,24 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         final ParseUser user = new ParseUser();
 
         if ("email".equals(activationMethod)) {
-            user.setUsername(mEmailAddressEditText.getText().toString());
+            user.setUsername(mEmailAddressEditText.getText().toString().trim());
         } else {
-            user.setUsername(mMobileNumberEditText.getText().toString());
+            user.setUsername(mMobileNumberEditText.getText().toString().trim());
+        }
+
+        if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
+            user.setEmail(mMobileNumberEditText.getText().toString().trim() + "@" + HonarNamaBaseApp.DOMAIN);
+        } else {
+            user.setEmail(mEmailAddressEditText.getText().toString().trim());
         }
 
         user.setPassword(mPasswordEdiText.getText().toString());
-        user.setEmail(mEmailAddressEditText.getText().toString());
 
-        user.put("mobileNumber", mMobileNumberEditText.getText().toString());
-        user.put("firstname", mFirstnameEditText.getText().toString());
-        user.put("lastname", mLastnameEditText.getText().toString());
+        user.put("mobileNumber", mMobileNumberEditText.getText().toString().trim());
+        user.put("firstname", mFirstnameEditText.getText().toString().trim());
+        user.put("lastname", mLastnameEditText.getText().toString().trim());
         user.put("activationMethod", activationMethod);
-        user.put("bankCardNumber", mBankCardNumberEditText.getText().toString());
+        user.put("bankCardNumber", mBankCardNumberEditText.getText().toString().trim());
         user.put("isShopOwner", true);
         user.put("nationalCardImage", parseFile);
         final ProgressDialog progressDialog = sendingDataProgressDialog;
@@ -280,7 +291,6 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                     logE("Sign-up Failed. Code: " + e.getCode(),
                             e.getMessage(), e);
                 }
-                mRegisterButton.setEnabled(false);
             }
         });
     }
@@ -295,7 +305,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                         if (which == 0) {
                             Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
                             if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(telegramIntent, 1003);
+                                startActivityForResult(telegramIntent, INTENT_TELEGRAM_CODE);
                             }
                         }
                         dialog.dismiss();
@@ -389,25 +399,43 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
-            case 1001:
+            case INTENT_CAPTURE_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
-                    mNationalCardImageView.setImageURI(Uri.parse(mNationalCardPhotoPath));
+                    Uri imageUri = Uri.parse(mNationalCardPhotoPath);
+                    if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
+                        mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
+                    } else {
+                        mNationalCardImageView.setImageURI(imageUri);
+                    }
                     mNationalCardImageIsSet = true;
                 }
                 break;
-            case 1002:
+            case INTENT_SELECT_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    mNationalCardPhotoPath = selectedImage.getPath();
-                    mNationalCardImageView.setImageURI(selectedImage);
+                    Uri imageUri = intent.getData();
+                    if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
+                        mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
+                    } else {
+                        mNationalCardPhotoPath = imageUri.getPath();
+                        mNationalCardImageView.setImageURI(imageUri);
+                    }
                     mNationalCardImageIsSet = true;
                 }
                 break;
-            case 1003:
+            case INTENT_TELEGRAM_CODE:
                 finish();
+                break;
+            case INTENT_CROP_IMAGE_CODE:
+                // get the returned data
+                Bundle extras = intent.getExtras();
+                // get the cropped bitmap
+                if(extras != null) {
+                    Bitmap thePic = extras.getParcelable("data");
+                    mNationalCardImageView.setImageBitmap(thePic);
+                }
                 break;
         }
     }

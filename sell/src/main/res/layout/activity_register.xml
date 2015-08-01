@@ -129,7 +129,7 @@
                         android:textSize="14sp"
                         android:button="@null"
                         android:drawableRight="@drawable/radio_button_image"
-                        android:checked="true"
+                        android:checked="false"
                         android:layout_marginBottom="15dp"
                         android:textColor="@color/aabi_logo"/>
                 <RadioButton
@@ -140,7 +140,9 @@
                         android:textSize="14sp"
                         android:button="@null"
                         android:drawableRight="@drawable/radio_button_image"
-                        android:textColor="@color/aabi_logo"/>
+                        android:textColor="@color/aabi_logo"
+                        android:checked="true"
+                        />
             </RadioGroup>
         </RelativeLayout>
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -171,6 +173,7 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     />
         </LinearLayout>
 
@@ -201,7 +204,6 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
-                    android:visibility="gone"
                     />
 
         </LinearLayout>
