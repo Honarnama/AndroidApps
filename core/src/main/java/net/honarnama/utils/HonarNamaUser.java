@@ -53,9 +53,6 @@ public class HonarNamaUser extends ParseUser {
         } else if ("mobileNumber".equals(activationMethod)) {
             isVerified = getCurrentUser().getBoolean("telegramVerified");
         }
-        if (!isVerified) {
-            return false;
-        }
-        return false;
+        return isVerified;
     }
 }
