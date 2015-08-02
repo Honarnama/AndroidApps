@@ -53,6 +53,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             mErrorMessageContainer = findViewById(R.id.login_error_container);
             mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
             mErrorMessageButton = findViewById(R.id.login_error_btn);
+            mErrorMessageButton.setOnClickListener(this);
 
             mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
@@ -121,7 +122,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     }
 
     private void gotoControlPanel() {
-        Intent intent = new Intent(this, ControlPanel.class);
+        Intent intent = new Intent(this, ControlPanelActivity.class);
         startActivity(intent);
         finish();
     }
@@ -197,7 +198,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("Sign-up Failed. Code: ", e.getMessage(), e);
                     mErrorMessageContainer.setVisibility(View.VISIBLE);
-                    mErrorMessageTextView.setText("نام کاربری یا رمز عبور اشتباه است.");
+                    mErrorMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
                     mErrorMessageButton.setVisibility(View.GONE);
                 }
             }
@@ -222,7 +223,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         } else if (!HonarNamaUser.isShopOwner()) {
             logE("Login Failed. User is not a shop owner");
             mErrorMessageContainer.setVisibility(View.VISIBLE);
-            mErrorMessageTextView.setText(" شما هنوز حساب غرفه‌داری باز نکردید. ");
+            mErrorMessageTextView.setText(getString(R.string.error_login_you_are_not_shop_owner));
             mErrorMessageButton.setVisibility(View.GONE);
         } else {
             gotoControlPanel();

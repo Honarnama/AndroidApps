@@ -77,6 +77,10 @@
         تلاش کنید.
     </string>
     <string name="successful_signup">" ثبت‌نام با موفقیت انجام شد "</string>
+    <string name="error_login_you_are_not_shop_owner">" شما هنوز حساب غرفه‌داری باز نکردید. "
+    </string>
+    <string name="error_login_invalid_user_or_password">نام کاربری یا رمز عبور اشتباه است.</string>
+    <string name="seller_profile">" اطلاعات شما "</string>
 
 
 </resources>

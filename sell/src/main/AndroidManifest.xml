@@ -27,29 +27,27 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                        android:host="www.honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="http" />
+                    android:host="www.honarnama.net"
+                    android:pathPrefix="/app_landing"
+                    android:scheme="http" />
                 <data
-                        android:host="www.honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="https" />
-
+                    android:host="www.honarnama.net"
+                    android:pathPrefix="/app_landing"
+                    android:scheme="https" />
                 <data
-                        android:host="both"
-                        android:pathPrefix="login"
-                        android:scheme="honarnama" />
+                    android:host="both"
+                    android:pathPrefix="login"
+                    android:scheme="honarnama" />
                 <data
-                        android:host="sell"
-                        android:pathPrefix="login"
-                        android:scheme="honarnama" />
+                    android:host="sell"
+                    android:pathPrefix="login"
+                    android:scheme="honarnama" />
             </intent-filter>
         </activity>
         <activity
@@ -74,7 +72,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ControlPanel"
+            android:name=".ControlPanelActivity"
             android:label="@string/title_activity_control_panel" >
         </activity>
     </application>
