@@ -1,0 +1,170 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:background="#ffffff">
+
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/edit_item_photos_title"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/aabi_logo"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                />
+
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/edit_item_photos_description"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:textColor="@color/hint_color_custom"
+                android:layout_margin="5dp"
+                android:textSize="12sp"
+                />
+
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dip">
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <ImageView android:id="@+id/imageView1"
+                           android:src="@drawable/camera"
+                           android:layout_gravity="center"
+                           android:layout_margin="5dp"
+                           android:scaleType="centerInside"
+                           android:layout_weight="1"/>
+                <ImageView android:id="@+id/imageView2"
+                           android:src="@drawable/camera"
+                           android:layout_gravity="center"
+                           android:layout_margin="5dp"
+                           android:scaleType="centerInside"
+                           android:layout_weight="1"/>
+            </TableRow>
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <ImageView android:id="@+id/imageView3"
+                           android:src="@drawable/camera"
+                           android:layout_gravity="center"
+                           android:layout_margin="5dp"
+                           android:scaleType="centerInside"
+                           android:layout_weight="1"/>
+                <ImageView android:id="@+id/imageView4"
+                           android:src="@drawable/camera"
+                           android:layout_gravity="center"
+                           android:layout_margin="5dp"
+                           android:scaleType="centerInside"
+                           android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="@color/android_default_hint_color"/>
+
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/edit_item_details_title"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/aabi_logo"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                />
+
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/edit_item_details_description"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:textColor="@color/hint_color_custom"
+                android:layout_margin="5dp"
+                android:textSize="12sp"
+                />
+
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:layout_marginTop="5dp"
+                      android:layout_marginRight="5dp" android:layout_marginLeft="5dp">
+            <EditText
+                    android:layout_width="0dp" android:layout_height="45dp"
+                    android:hint="@string/edit_item_title_hint"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:layout_weight="2"
+                    android:ellipsize="start"
+                    android:textColorHint="@color/android_default_hint_color"
+                    android:gravity="right"
+                    />
+            <TextView
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+                    />
+        </LinearLayout>
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/edit_item_title_sub_hint"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:textColor="@color/hint_color_custom"
+                android:textSize="12sp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                />
+
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:layout_margin="5dp">
+            <EditText
+                    android:layout_width="0dp" android:layout_height="100dp"
+                    android:hint="@string/edit_item_description_hint"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:layout_weight="2"
+                    android:lines="5"
+                    android:ellipsize="start"
+                    android:textColorHint="@color/android_default_hint_color"
+                    android:gravity="right"
+                    />
+            <TextView
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+                    />
+        </LinearLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="@color/android_default_hint_color"/>
+
+        <Button
+                android:id="@+id/preview_button"
+                android:layout_width="fill_parent" android:layout_height="45dp"
+                android:background="@color/nokhodi_botte_jeghe"
+                android:textColor="#ffffff"
+                android:text="@string/edit_item_preview"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                />
+
+    </LinearLayout>
+</ScrollView>

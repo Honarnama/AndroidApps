@@ -76,8 +76,10 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     }
 
     private void showLoadingDialog() {
-        mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.login_dialog_text), false);
-        mLoadingDialog.setCancelable(false);
+        if (mLoadingDialog == null || !mLoadingDialog.isShowing()) {
+            mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.login_dialog_text), false);
+            mLoadingDialog.setCancelable(false);
+        }
     }
 
     private void hideLoadingDialog() {
@@ -101,6 +103,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             final String register = data.getQueryParameter("register");
 
             if (token != null && token.length() > 0) {
+                showLoadingDialog();
                 HonarNamaUser.telegramLogInInBackground(token, new LogInCallback() {
                     @Override
                     public void done(ParseUser parseUser, ParseException e) {

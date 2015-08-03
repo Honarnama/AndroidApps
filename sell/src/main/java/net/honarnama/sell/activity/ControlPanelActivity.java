@@ -1,6 +1,7 @@
 package net.honarnama.sell.activity;
 
 import net.honarnama.sell.R;
+import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.FragmentDrawer;
 import net.honarnama.sell.fragments.ProfileFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
@@ -85,6 +86,10 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
 //                fragment = new MessagesFragment();
 //                title = getString(R.string.title_messages);
 //                break;
+            case 3:
+                fragment = EditItemFragment.newInstance();
+                title = getString(R.string.nav_title_new_product);
+                break;
             default:
                 break;
         }
