@@ -3,6 +3,7 @@ package net.honarnama.sell.activity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.FragmentDrawer;
 import net.honarnama.sell.fragments.ProfileFragment;
+import net.honarnama.sell.fragments.StoreInfoFragment;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
@@ -55,8 +56,6 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
-
 //        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
 //            return true;
@@ -78,11 +77,10 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
                 fragment = ProfileFragment.newInstance();
                 title = getString(R.string.seller_profile);
                 break;
-            //TODO CHANGE based on other options
-//            case 1:
-//                fragment = new FriendsFragment();
-//                title = getString(R.string.title_friends);
-//                break;
+            case 1:
+                fragment = StoreInfoFragment.newInstance();
+                title = getString(R.string.nav_title_store_info);
+                break;
 //            case 2:
 //                fragment = new MessagesFragment();
 //                title = getString(R.string.title_messages);

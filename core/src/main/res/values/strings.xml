@@ -88,19 +88,18 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="nav_item_home">Home</string>
-    <string name="nav_item_friends">Friends</string>
-    <string name="nav_item_notifications">Messages</string>
-
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
-        <item>@string/nav_item_home</item>
-        <item>@string/nav_item_friends</item>
-        <item>@string/nav_item_notifications</item>
+        <item>@string/nav_title_profile</item>
+        <item>@string/nav_title_store_info</item>
+        <item>@string/nav_title_products</item>
+        <item>@string/nav_exit_app</item>
     </string-array>
 
-    <string name="title_messages">Messages</string>
-    <string name="title_friends">Friends</string>
-    <string name="title_home">Home</string>
+    <string name="nav_title_products">  محصولات </string>
+    <string name="nav_title_store_info"> اطلاعات فروشگاه </string>
+    <string name="nav_title_profile"> اطلاعات شما </string>
+    <string name="nav_exit_app"> خروج </string>
+    <string name="app_title">هنرنما</string>
 
 </resources>

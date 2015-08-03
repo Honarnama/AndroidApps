@@ -75,7 +75,9 @@
         </activity>
         <activity
                 android:name=".activity.ControlPanelActivity"
-                android:label="@string/title_activity_control_panel">
+                android:label="@string/app_title"
+                android:screenOrientation="portrait"
+                >
         </activity>
     </application>
 
