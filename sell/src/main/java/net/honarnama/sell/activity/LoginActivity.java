@@ -1,4 +1,4 @@
-package net.honarnama.sell;
+package net.honarnama.sell.activity;
 
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -7,6 +7,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarNamaBaseActivity;
+import net.honarnama.sell.R;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.HonarNamaUser;
 import net.honarnama.utils.NetworkManager;
@@ -15,8 +16,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;

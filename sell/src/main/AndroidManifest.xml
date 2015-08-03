@@ -1,79 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.honarnama.sell" >
+          package="net.honarnama.sell">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
+            android:name="android.hardware.camera"
+            android:required="true"/>
 
     <application
-        android:name=".HonarNamaSellApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".LoginActivity"
+            android:name=".HonarNamaSellApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:theme="@style/MyMaterialTheme"
+            android:supportsRtl="true"
+            >
+        <activity
+                android:name=".activity.LoginActivity"
+                android:label="@string/app_name"
+                android:launchMode="singleTask"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
 
                 <data
-                    android:host="www.honarnama.net"
-                    android:pathPrefix="/app_landing"
-                    android:scheme="http" />
+                        android:host="www.honarnama.net"
+                        android:pathPrefix="/app_landing"
+                        android:scheme="http"/>
                 <data
-                    android:host="www.honarnama.net"
-                    android:pathPrefix="/app_landing"
-                    android:scheme="https" />
+                        android:host="www.honarnama.net"
+                        android:pathPrefix="/app_landing"
+                        android:scheme="https"/>
                 <data
-                    android:host="both"
-                    android:pathPrefix="login"
-                    android:scheme="honarnama" />
+                        android:host="both"
+                        android:pathPrefix="login"
+                        android:scheme="honarnama"/>
                 <data
-                    android:host="sell"
-                    android:pathPrefix="login"
-                    android:scheme="honarnama" />
+                        android:host="sell"
+                        android:pathPrefix="login"
+                        android:scheme="honarnama"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+                android:name=".activity.RegisterActivity"
+                android:label="@string/title_activity_register"
+                android:launchMode="singleTask"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
 
                 <data
-                    android:host="both"
-                    android:pathPrefix="register"
-                    android:scheme="honarnama" />
+                        android:host="both"
+                        android:pathPrefix="register"
+                        android:scheme="honarnama"/>
                 <data
-                    android:host="sell"
-                    android:pathPrefix="register"
-                    android:scheme="honarnama" />
+                        android:host="sell"
+                        android:pathPrefix="register"
+                        android:scheme="honarnama"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".ControlPanelActivity"
-            android:label="@string/title_activity_control_panel" >
+                android:name=".activity.ControlPanelActivity"
+                android:label="@string/title_activity_control_panel">
         </activity>
     </application>
 

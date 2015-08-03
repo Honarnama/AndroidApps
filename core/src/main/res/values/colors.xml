@@ -10,4 +10,15 @@
     <color name="hint_color_custom">#9F907C</color>
     <color name="android_default_hint_color">#808080</color>
     <color name="red">#ff0000</color>
+
+
+
+    <color name="colorPrimary">#ffbf54</color>
+    <color name="colorPrimaryDark">#F5AF3A</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#FF80AB</color>
+
+
 </resources>
