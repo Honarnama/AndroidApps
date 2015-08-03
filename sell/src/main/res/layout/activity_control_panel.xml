@@ -1,50 +1,48 @@
-<android.support.v4.widget.DrawerLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.example.toolbar.Drawer">
 
 
     <LinearLayout
+            android:id="@+id/container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="right"
+            android:gravity="right"
+            >
+
+        <include
+                android:id="@+id/control_panel_toolbar"
+                layout="@layout/toolbar"
+                />
+    </LinearLayout>
+
+
+    <android.support.v4.widget.DrawerLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        <LinearLayout
-                android:id="@+id/container_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="right"
-                android:gravity="right"
-                >
-
-            <include
-                    android:id="@+id/control_panel_toolbar"
-                    layout="@layout/toolbar"
-
-                    />
-        </LinearLayout>
-
+            >
         <FrameLayout
                 android:id="@+id/container_body"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
+        <fragment
+                android:id="@+id/fragment_navigation_drawer"
+                android:name="net.honarnama.sell.fragments.FragmentDrawer"
+                android:layout_width="@dimen/nav_drawer_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                app:layout="@layout/fragment_navigation_drawer"
+                tools:layout="@layout/fragment_navigation_drawer"/>
 
-    </LinearLayout>
-
-
-    <fragment
-            android:id="@+id/fragment_navigation_drawer"
-            android:name="net.honarnama.sell.fragments.FragmentDrawer"
-            android:layout_width="@dimen/nav_drawer_width"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            app:layout="@layout/fragment_navigation_drawer"
-            tools:layout="@layout/fragment_navigation_drawer"/>
-
-</android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

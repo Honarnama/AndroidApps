@@ -2,7 +2,7 @@
 <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:local="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
@@ -11,13 +11,7 @@
         local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_gravity="right"
         android:gravity="right"
+        android:layoutDirection="rtl"
         >
-    <ImageButton
-            android:id="@+id/navigation_drawer_hamburger_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:onClick="backButtonHandler"
-            android:background="@drawable/abc_ic_menu_copy_mtrl_am_alpha"/>
 
 </android.support.v7.widget.Toolbar>
