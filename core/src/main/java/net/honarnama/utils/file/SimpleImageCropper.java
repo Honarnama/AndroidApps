@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -38,16 +40,17 @@ public class SimpleImageCropper {
         }
     }
 
-    public void crop(Uri picUri, int intentCode, int width, int height, int aspectX, int aspectY) {
+    public void crop(Uri picUri, File imageFile, int intentCode, int width, int height, int aspectX, int aspectY) {
         mCropIntent.setData(picUri);
         mCropIntent.putExtra("outputX", width);
         mCropIntent.putExtra("outputY", height);
         mCropIntent.putExtra("aspectX", aspectX);
         mCropIntent.putExtra("aspectY", aspectY);
         mCropIntent.putExtra("scale", true);
-        mCropIntent.putExtra("return-data", true);
-        //TODO
-//        mCropIntent.putExtra("output", Uri.fromFile(output));
+        mCropIntent.putExtra("return-data", false);
+        mCropIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFile);
+
+        mCropIntent.putExtra("output", Uri.fromFile(imageFile));
 
         if (mAvailableCroppingAppCount >= 1) {
             Intent intent = new Intent(mCropIntent);

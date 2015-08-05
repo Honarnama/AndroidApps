@@ -66,6 +66,8 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     SimpleImageCropper mSimpleImageCropper;
 
+    private File mCroppedFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +101,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         mActivateWithMobileNumber.setOnClickListener(this);
 
         mSimpleImageCropper = new SimpleImageCropper(this);
-        logI(null, "created!");
+        mCroppedFile = new File(HonarNamaBaseApp.imagesFolder, "national_card.jpg");
     }
 
     @Override
@@ -361,7 +363,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                     Uri imageUri = Uri.parse(mImageSelector.getImagePath());
 //                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
+                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
                     } else {
                         mNationalCardImageView.setImageURI(imageUri);
                     }
@@ -372,7 +374,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = intent.getData();
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
+                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
                     } else {
                         mNationalCardImageView.setImageURI(imageUri);
                     }
@@ -383,13 +385,14 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 finish();
                 break;
             case HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE:
-                // get the returned data
-                Bundle extras = intent.getExtras();
-                // get the cropped bitmap
-                if (extras != null) {
-                    Bitmap thePic = extras.getParcelable("data");
-                    mNationalCardImageView.setImageBitmap(thePic);
-                }
+//                // get the returned data
+//                Bundle extras = intent.getExtras();
+//                // get the cropped bitmap
+//                if (extras != null) {
+//                    Bitmap thePic = extras.getParcelable("data");
+//                    mNationalCardImageView.setImageBitmap(thePic);
+//                }
+                mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
                 break;
         }
     }

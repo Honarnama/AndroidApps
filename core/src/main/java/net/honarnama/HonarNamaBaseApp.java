@@ -5,6 +5,9 @@ import com.parse.Parse;
 import net.honarnama.base.BuildConfig;
 
 import android.app.Application;
+import android.os.Environment;
+
+import java.io.File;
 
 /**
  * Created by elnaz on 7/22/15.
@@ -23,9 +26,12 @@ public class HonarNamaBaseApp extends Application {
     public static final int INTENT_TELEGRAM_CODE = 1003;
     public static final int INTENT_CROP_IMAGE_CODE = 1004;
 
+    public static File imagesFolder;
+
+
     public static HonarNamaBaseApp getInstance() {
         return singleton;
-    }
+       }
 
     @Override
     public void onCreate() {
@@ -36,6 +42,10 @@ public class HonarNamaBaseApp extends Application {
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, HonarNamaBaseApp.getParseApplicationId(), HonarNamaBaseApp.getParseClientKey());
+
+        imagesFolder = new File(new File(Environment.getExternalStorageDirectory(), "icm"), "honarnama");
+        imagesFolder.mkdirs();
+
 
     }
 
