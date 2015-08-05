@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import net.honarnama.sell.R;
 import net.honarnama.sell.adapter.NavigationDrawerAdapter;
@@ -121,8 +122,15 @@ public class FragmentDrawer extends Fragment {
                 super.onDrawerSlide(drawerView, slideOffset);
                 toolbar.setAlpha(1 - slideOffset / 2);
             }
+
+            @Override
+            public void setDrawerIndicatorEnabled(boolean enable) {
+                super.setDrawerIndicatorEnabled(enable);
+            }
         };
 
+
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mDrawerLayout.post(new Runnable() {
@@ -136,16 +144,29 @@ public class FragmentDrawer extends Fragment {
 
             @Override
             public void onClick(View v) {
-                if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    mDrawerLayout.closeDrawer(Gravity.RIGHT);
-                } else {
-                    mDrawerLayout.openDrawer(Gravity.RIGHT);
-                }
+                handleDrawerState();
+            }
+        });
+
+
+        ImageButton hamburgerIcon = (ImageButton) toolbar.findViewById(R.id.toolbar_hamburger_icon);
+        hamburgerIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleDrawerState();
             }
         });
 
     }
 
+    public void handleDrawerState()
+    {
+        if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+            mDrawerLayout.closeDrawer(Gravity.RIGHT);
+        } else {
+            mDrawerLayout.openDrawer(Gravity.RIGHT);
+        }
+    }
     public static interface ClickListener {
         public void onClick(View view, int position);
 

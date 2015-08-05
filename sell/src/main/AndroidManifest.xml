@@ -16,7 +16,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
-            android:supportsRtl="false">
+             >
         <activity
                 android:name=".activity.LoginActivity"
                 android:label="@string/app_name"

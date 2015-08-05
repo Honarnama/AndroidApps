@@ -84,6 +84,7 @@
                     android:ellipsize="start"
                     android:textColorHint="@color/android_default_hint_color"
                     android:layout_alignParentTop="true"
+                    android:textSize="16sp"
                     />
             <EditText
                     android:id="@+id/login_password_edit_text"
@@ -95,6 +96,7 @@
                     android:gravity="right"
                     android:ellipsize="start"
                     android:textColorHint="@color/android_default_hint_color"
+                    android:textSize="16sp"
                     />
             <Button
                     android:id="@+id/login_button"

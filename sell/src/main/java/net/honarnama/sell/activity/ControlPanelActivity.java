@@ -19,11 +19,14 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class ControlPanelActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
     private Toolbar mToolbar;
     private FragmentDrawer mDrawerFragment;
+    private TextView mToolbarTitleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +34,10 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
         setContentView(R.layout.activity_control_panel);
 
         mToolbar = (Toolbar) findViewById(R.id.control_panel_toolbar);
+        mToolbarTitleTextView = (TextView)findViewById(R.id.toolbar_title);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         mDrawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         mDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
@@ -57,6 +60,11 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if(id == R.id.toolbar_hamburger_icon)
+        {
+            mDrawerFragment.handleDrawerState();
+        }
+
 //        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
 //            return true;
@@ -71,6 +79,7 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
     }
 
     private void displayView(int position) {
+
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
@@ -101,7 +110,7 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
             fragmentTransaction.commit();
 
             // set the toolbar title
-            getSupportActionBar().setTitle(title);
+            mToolbarTitleTextView.setText(title);
         }
     }
 }

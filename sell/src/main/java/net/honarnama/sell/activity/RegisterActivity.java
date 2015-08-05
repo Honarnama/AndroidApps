@@ -14,6 +14,7 @@ import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.sell.R;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
+import net.honarnama.utils.file.ImageSelector;
 import net.honarnama.utils.file.SimpleImageCropper;
 
 import android.app.AlertDialog;
@@ -25,7 +26,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,8 +47,6 @@ import java.util.Date;
 public class RegisterActivity extends HonarNamaBaseActivity implements View.OnClickListener {
     private TextView mAddNationalCardTextView;
     private ImageView mNationalCardImageView;
-    private String[] mNationalCardImageSourceProvider;
-    private String mNationalCardPhotoPath;
 
     private EditText mLastnameEditText;
     private EditText mFirstnameEditText;
@@ -64,10 +62,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private Button mRegisterButton;
     private boolean mNationalCardImageIsSet;
 
-    public static final int INTENT_CAPTURE_IMAGE_CODE = 1001;
-    public static final int INTENT_SELECT_IMAGE_CODE = 1002;
     public static final int INTENT_TELEGRAM_CODE = 1003;
     public static final int INTENT_CROP_IMAGE_CODE = 1004;
+
+    private ImageSelector mImageSelector;
 
     SimpleImageCropper mSimpleImageCropper;
 
@@ -81,8 +79,6 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
         mNationalCardImageView = (ImageView) findViewById(R.id.register_national_card_image_view);
         mNationalCardImageView.setOnClickListener(this);
-
-        mNationalCardImageSourceProvider = new String[]{getString(R.string.camera_option_text), getString(R.string.choose_from_gallery_option_text)};
 
         mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
         mLastnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
@@ -137,7 +133,8 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         switch (view.getId()) {
             case R.id.register_national_card_title_text_view:
             case R.id.register_national_card_image_view:
-                takePhoto();
+                mImageSelector = new ImageSelector(this, this);
+                mImageSelector.selectPhoto();
                 break;
 
             case R.id.register_button:
@@ -151,57 +148,6 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 break;
 
         }
-
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "Honarnama_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mNationalCardPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    public void takePhoto() {
-        final AlertDialog.Builder nationalCardImageOptionDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
-        nationalCardImageOptionDialog.setTitle(getString(R.string.select_national_card_image_dialog_title));
-        nationalCardImageOptionDialog.setItems(mNationalCardImageSourceProvider, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        File photoFile = null;
-                        try {
-                            photoFile = createImageFile();
-                        } catch (IOException ex) {
-                        }
-                        // Continue only if the File was successfully created
-                        if (photoFile != null) {
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                    Uri.fromFile(photoFile));
-                            startActivityForResult(takePictureIntent, INTENT_CAPTURE_IMAGE_CODE);
-                        }
-
-                    }
-                } else if (which == 1) {
-                    Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhotoIntent, INTENT_SELECT_IMAGE_CODE);
-                }
-                dialog.dismiss();
-            }
-        });
-        nationalCardImageOptionDialog.show();
 
     }
 
@@ -414,9 +360,10 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
-            case INTENT_CAPTURE_IMAGE_CODE:
+            case ImageSelector.INTENT_CAPTURE_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
-                    Uri imageUri = Uri.parse(mNationalCardPhotoPath);
+                    Uri imageUri = Uri.parse(mImageSelector.getImagePath());
+//                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
                         mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
                     } else {
@@ -425,13 +372,12 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                     mNationalCardImageIsSet = true;
                 }
                 break;
-            case INTENT_SELECT_IMAGE_CODE:
+            case ImageSelector.INTENT_SELECT_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = intent.getData();
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
                         mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
                     } else {
-                        mNationalCardPhotoPath = imageUri.getPath();
                         mNationalCardImageView.setImageURI(imageUri);
                     }
                     mNationalCardImageIsSet = true;

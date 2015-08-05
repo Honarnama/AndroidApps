@@ -1,13 +1,74 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="net.honarnama.sell.fragments.StoreInfoFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:background="#ffffff">
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+            >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
+        <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text=" نماد فروشگاه "
+                android:gravity="right"
+                android:layout_gravity="right"
+                android:textSize="16sp"
+                android:id="@+id/store_info_image_title_text_view"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                />
 
-</FrameLayout>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/store_logo"
+                android:src="@drawable/gift_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/store_info_image_title_text_view"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius="200dip"
+                app:riv_border_width="2dip"
+                app:riv_border_color="@color/dark_gray"
+                app:riv_mutate_background="true"
+                app:riv_oval="false" />
+
+        <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:hint=" نام فروشگاه "
+                  android:layout_below="@id/store_logo"
+                  android:layout_marginTop="10dp"
+                  android:id="@+id/store_name_edit_text"
+                  android:gravity="right"
+                  android:textSize="16sp"
+                />
+
+        <EditText
+                android:inputType="textMultiLine"
+                android:lines="8"
+                android:minLines="6"
+                android:gravity="top|right"
+                android:maxLines="10"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:scrollbars="vertical"
+                android:layout_below="@id/store_name_edit_text"
+                android:id="@+id/store_policy_edit_text"
+                android:hint=" قوانین فروشگاه شما "
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                />
+        <Button
+                android:id="@+id/register_store_button"
+                android:layout_width="fill_parent" android:layout_height="45dp"
+                android:background="@color/nokhodi_botte_jeghe"
+                android:textColor="#ffffff"
+                android:text=" ثبت فروشگاه "
+                android:layout_below="@id/store_policy_edit_text"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+    </RelativeLayout>
+</ScrollView>
