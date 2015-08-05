@@ -62,9 +62,6 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private Button mRegisterButton;
     private boolean mNationalCardImageIsSet;
 
-    public static final int INTENT_TELEGRAM_CODE = 1003;
-    public static final int INTENT_CROP_IMAGE_CODE = 1004;
-
     private ImageSelector mImageSelector;
 
     SimpleImageCropper mSimpleImageCropper;
@@ -263,7 +260,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                         if (which == 0) {
                             Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
                             if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(telegramIntent, INTENT_TELEGRAM_CODE);
+                                startActivityForResult(telegramIntent, HonarNamaBaseApp.INTENT_TELEGRAM_CODE);
                             }
                         }
                         dialog.dismiss();
@@ -354,39 +351,38 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
         return true;
 
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
-            case ImageSelector.INTENT_CAPTURE_IMAGE_CODE:
+            case HonarNamaBaseApp.INTENT_CAPTURE_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = Uri.parse(mImageSelector.getImagePath());
 //                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
+                        mSimpleImageCropper.crop(imageUri, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
                     } else {
                         mNationalCardImageView.setImageURI(imageUri);
                     }
                     mNationalCardImageIsSet = true;
                 }
                 break;
-            case ImageSelector.INTENT_SELECT_IMAGE_CODE:
+            case HonarNamaBaseApp.INTENT_SELECT_IMAGE_CODE:
                 if (resultCode == RESULT_OK) {
                     Uri imageUri = intent.getData();
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, INTENT_CROP_IMAGE_CODE);
+                        mSimpleImageCropper.crop(imageUri, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
                     } else {
                         mNationalCardImageView.setImageURI(imageUri);
                     }
                     mNationalCardImageIsSet = true;
                 }
                 break;
-            case INTENT_TELEGRAM_CODE:
+            case HonarNamaBaseApp.INTENT_TELEGRAM_CODE:
                 finish();
                 break;
-            case INTENT_CROP_IMAGE_CODE:
+            case HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE:
                 // get the returned data
                 Bundle extras = intent.getExtras();
                 // get the cropped bitmap

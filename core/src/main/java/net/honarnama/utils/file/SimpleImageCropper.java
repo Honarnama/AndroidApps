@@ -38,18 +38,18 @@ public class SimpleImageCropper {
         }
     }
 
-    public void crop(Uri picUri, int intentCode) {
+    public void crop(Uri picUri, int intentCode, int width, int height, int aspectX, int aspectY) {
         mCropIntent.setData(picUri);
-        mCropIntent.putExtra("outputX", 600);
-        mCropIntent.putExtra("outputY", 420);
-        mCropIntent.putExtra("aspectX", 10);
-        mCropIntent.putExtra("aspectY", 7);
+        mCropIntent.putExtra("outputX", width);
+        mCropIntent.putExtra("outputY", height);
+        mCropIntent.putExtra("aspectX", aspectX);
+        mCropIntent.putExtra("aspectY", aspectY);
         mCropIntent.putExtra("scale", true);
         mCropIntent.putExtra("return-data", true);
         //TODO
 //        mCropIntent.putExtra("output", Uri.fromFile(output));
 
-        if (mAvailableCroppingAppCount >=  1) {
+        if (mAvailableCroppingAppCount >= 1) {
             Intent intent = new Intent(mCropIntent);
             ResolveInfo res = mResolveInfoList.get(0);
             intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));

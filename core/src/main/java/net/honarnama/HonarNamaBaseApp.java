@@ -18,6 +18,11 @@ public class HonarNamaBaseApp extends Application {
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
 
+    public static final int INTENT_CAPTURE_IMAGE_CODE = 1001;
+    public static final int INTENT_SELECT_IMAGE_CODE = 1002;
+    public static final int INTENT_TELEGRAM_CODE = 1003;
+    public static final int INTENT_CROP_IMAGE_CODE = 1004;
+
     public static HonarNamaBaseApp getInstance() {
         return singleton;
     }

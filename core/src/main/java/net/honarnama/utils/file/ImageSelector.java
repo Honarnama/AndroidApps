@@ -1,5 +1,6 @@
 package net.honarnama.utils.file;
 
+import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.R;
 
 import android.app.Activity;
@@ -26,8 +27,7 @@ public class ImageSelector {
     public String[] mImageSourceProvider;
     public String mImagePath;
     public Activity mActivity;
-    public static final int INTENT_CAPTURE_IMAGE_CODE = 1001;
-    public static final int INTENT_SELECT_IMAGE_CODE = 1002;
+
     public static final String INTENT_SELECTED_IMAGE_PATH = "net.honarnama.app.selected_image_path";
 
     public ImageSelector(Activity activity, Context context) {
@@ -55,7 +55,7 @@ public class ImageSelector {
                             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                                     Uri.fromFile(photoFile));
                             takePictureIntent.putExtra(INTENT_SELECTED_IMAGE_PATH, mImagePath);
-                            mActivity.startActivityForResult(takePictureIntent, INTENT_CAPTURE_IMAGE_CODE);
+                            mActivity.startActivityForResult(takePictureIntent, HonarNamaBaseApp.INTENT_CAPTURE_IMAGE_CODE);
                         }
 
                     }
@@ -63,7 +63,7 @@ public class ImageSelector {
                     Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     pickPhotoIntent.putExtra("IAMGE_PATH", mImagePath);
-                    mActivity.startActivityForResult(pickPhotoIntent, INTENT_SELECT_IMAGE_CODE);
+                    mActivity.startActivityForResult(pickPhotoIntent, HonarNamaBaseApp.INTENT_SELECT_IMAGE_CODE);
                 }
                 dialog.dismiss();
             }

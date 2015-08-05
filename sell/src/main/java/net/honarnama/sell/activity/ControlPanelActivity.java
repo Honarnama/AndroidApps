@@ -7,6 +7,7 @@ import net.honarnama.sell.fragments.ProfileFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +28,7 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
     private Toolbar mToolbar;
     private FragmentDrawer mDrawerFragment;
     private TextView mToolbarTitleTextView;
+    private Fragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,7 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
         setContentView(R.layout.activity_control_panel);
 
         mToolbar = (Toolbar) findViewById(R.id.control_panel_toolbar);
-        mToolbarTitleTextView = (TextView)findViewById(R.id.toolbar_title);
+        mToolbarTitleTextView = (TextView) findViewById(R.id.toolbar_title);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -45,13 +47,13 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -60,8 +62,7 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == R.id.toolbar_hamburger_icon)
-        {
+        if (id == R.id.toolbar_hamburger_icon) {
             mDrawerFragment.handleDrawerState();
         }
 
@@ -80,15 +81,14 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
 
     private void displayView(int position) {
 
-        Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                fragment = ProfileFragment.newInstance();
+                mFragment = ProfileFragment.newInstance();
                 title = getString(R.string.seller_profile);
                 break;
             case 1:
-                fragment = StoreInfoFragment.newInstance();
+                mFragment = StoreInfoFragment.newInstance();
                 title = getString(R.string.nav_title_store_info);
                 break;
 //            case 2:
@@ -96,21 +96,27 @@ public class ControlPanelActivity extends AppCompatActivity implements FragmentD
 //                title = getString(R.string.title_messages);
 //                break;
             case 3:
-                fragment = EditItemFragment.newInstance();
+                mFragment = EditItemFragment.newInstance();
                 title = getString(R.string.nav_title_new_product);
                 break;
             default:
                 break;
         }
 
-        if (fragment != null) {
+        if (mFragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.replace(R.id.container_body, mFragment);
             fragmentTransaction.commit();
 
             // set the toolbar title
             mToolbarTitleTextView.setText(title);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        mFragment.onActivityResult(requestCode, resultCode, intent);
     }
 }
