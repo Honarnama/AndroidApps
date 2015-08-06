@@ -119,7 +119,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     Uri imageUri = Uri.parse(mImageSelector.getImagePath());
 //                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 200, 200, 10, 10);
+                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 400, 400, 10, 10);
                     } else {
                         mStoreLogoImageView.setImageURI(imageUri);
                     }
@@ -129,7 +129,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 if (resultCode == getActivity().RESULT_OK) {
                     Uri imageUri = intent.getData();
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 200, 200, 10, 10);
+                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 400, 400, 10, 10);
                     } else {
                         mStoreLogoImageView.setImageURI(imageUri);
                     }
