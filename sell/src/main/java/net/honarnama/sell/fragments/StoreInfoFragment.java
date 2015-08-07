@@ -1,10 +1,20 @@
 package net.honarnama.sell.fragments;
 
+import com.makeramen.roundedimageview.RoundedDrawable;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.parse.ProgressCallback;
+import com.parse.SaveCallback;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,6 +33,7 @@ import net.honarnama.sell.R;
 import net.honarnama.utils.file.ImageSelector;
 import net.honarnama.utils.file.SimpleImageCropper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -93,7 +104,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.register_store_button:
                 if (isFormInputsValid()) {
-
+                    uploadStoreLogo();
                 }
                 break;
             case R.id.store_logo_image_view:
@@ -101,11 +112,11 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 if (mTempImageFile == null) {
                     try {
                         mTempImageFile = mImageSelector.createImageFile();
-                    } catch (Exception ex) {
+                    } catch (Exception e) {
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error creating temp Image file");
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error creating temp Image file: " + e.getMessage() + " // " + e);
                         } else {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error creating temp Image file");
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error creating temp Image file: " + e.getMessage() + " // " + e);
                         }
                     }
                 }
@@ -141,9 +152,9 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                             mImageSelector.copy(mTempImageFile, mCroppedFile);
                         } catch (IOException e) {
                             if (BuildConfig.DEBUG) {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file");
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file: " + e.getMessage() + " // " + e);
                             } else {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG,  "Error copying Image file");
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying Image file: " + e.getMessage() + " // " + e);
                             }
                         }
                         mStoreLogoImageView.setImageURI(Uri.fromFile(mCroppedFile));
@@ -160,9 +171,9 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                             mImageSelector.copy(new File(imageUri.getPath()), mCroppedFile);
                         } catch (IOException e) {
                             if (BuildConfig.DEBUG) {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file");
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file: " + e.getMessage() + " // " + e);
                             } else {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG,  "Error copying Image file");
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying Image file: " + e.getMessage() + " // " + e);
                             }
                         }
                         mStoreLogoImageView.setImageURI(Uri.fromFile(mCroppedFile));
@@ -175,4 +186,60 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         }
     }
     //TODO remove temp file
+
+    public void uploadStoreLogo() {
+        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
+        sendingDataProgressDialog.setCancelable(false);
+        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
+        sendingDataProgressDialog.show();
+
+        Bitmap bitmap = ((RoundedDrawable) mStoreLogoImageView.getDrawable()).getSourceBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] storeLogoImageFile = stream.toByteArray();
+        final ParseFile parseFile = new ParseFile("store_logo.jpeg", storeLogoImageFile);
+
+        parseFile.saveInBackground(new SaveCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    registerStore(parseFile, sendingDataProgressDialog);
+                } else {
+                    Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
+                                "//" + e.getMessage() + " // " + e);
+                    } else {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
+                                "//" + e.getMessage() + " // " + e);
+                    }
+                    sendingDataProgressDialog.dismiss();
+                }
+            }
+        }, new ProgressCallback() {
+            public void done(Integer percentDone) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Image - percentDone= " + percentDone);
+                } else {
+                    Log.d(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Image - percentDone= " + percentDone);
+                    // Update your progress spinner here. percentDone will be between 0 and 100.
+                }
+
+            }
+        });
+    }
+
+    public void registerStore(ParseFile parseFile, ProgressDialog progressDialog)
+    {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        ParseObject storeInfo = new ParseObject("storeInfo");
+        storeInfo.put("name", mStoreNameEditText.getText().toString().trim());
+        storeInfo.put("logo", parseFile);
+        storeInfo.put("policy", mStorePlicyEditText.getText().toString().trim());
+        storeInfo.put("owner", currentUser);
+
+        storeInfo.saveInBackground();
+
+        progressDialog.dismiss();
+    }
 }

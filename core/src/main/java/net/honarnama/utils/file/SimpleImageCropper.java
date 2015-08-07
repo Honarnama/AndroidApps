@@ -48,7 +48,8 @@ public class SimpleImageCropper {
         mCropIntent.putExtra("aspectY", aspectY);
         mCropIntent.putExtra("scale", true);
         mCropIntent.putExtra("return-data", false);
-        mCropIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFile);
+        mCropIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+
 
         mCropIntent.putExtra("output", Uri.fromFile(imageFile));
 

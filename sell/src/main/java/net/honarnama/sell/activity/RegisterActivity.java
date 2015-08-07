@@ -40,6 +40,8 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -404,7 +406,9 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 finish();
                 break;
             case HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE:
-                mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
+                if (resultCode == RESULT_OK) {
+                    mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
+                }
                 break;
         }
     }

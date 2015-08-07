@@ -1,6 +1,8 @@
 package net.honarnama;
 
 import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseUser;
 
 import net.honarnama.base.BuildConfig;
 
@@ -31,7 +33,7 @@ public class HonarNamaBaseApp extends Application {
 
     public static HonarNamaBaseApp getInstance() {
         return singleton;
-       }
+    }
 
     @Override
     public void onCreate() {
@@ -42,6 +44,12 @@ public class HonarNamaBaseApp extends Application {
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, HonarNamaBaseApp.getParseApplicationId(), HonarNamaBaseApp.getParseClientKey());
+
+        ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+// Optionally enable public read access while disabling public write access.
+        defaultACL.setPublicReadAccess(true);
+        ParseACL.setDefaultACL(defaultACL, true);
 
         imagesFolder = new File(new File(Environment.getExternalStorageDirectory(), "icm"), "honarnama");
         imagesFolder.mkdirs();

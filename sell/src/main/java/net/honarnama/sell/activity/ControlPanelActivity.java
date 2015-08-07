@@ -1,5 +1,6 @@
 package net.honarnama.sell.activity;
 
+import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.FragmentDrawer;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class ControlPanelActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
+public class ControlPanelActivity extends HonarNamaBaseActivity implements FragmentDrawer.FragmentDrawerListener {
     private Toolbar mToolbar;
     private FragmentDrawer mDrawerFragment;
     private TextView mToolbarTitleTextView;
