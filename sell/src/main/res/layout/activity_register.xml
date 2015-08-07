@@ -280,13 +280,14 @@
                       android:clickable="true"
                       android:id="@+id/register_national_card_title_text_view"
                     />
-            <ImageView android:layout_width="200dp"
-                       android:layout_height="140dp"
-                       android:src="@drawable/default_national_card"
-                       android:layout_gravity="center"
-                       android:layout_marginTop="10dp"
-                       android:id="@+id/register_national_card_image_view"
-                       android:scaleType="fitXY"
+            <ImageView
+                    android:id="@+id/register_national_card_image_view"
+                    android:layout_width="200dp"
+                    android:layout_height="140dp"
+                    android:src="@drawable/default_national_card"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="centerCrop"
                     />
         </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
 import net.honarnama.utils.file.ImageSelector;
 import net.honarnama.utils.file.SimpleImageCropper;
 
 import java.io.File;
+import java.io.IOException;
 
 public class StoreInfoFragment extends Fragment implements View.OnClickListener {
 
@@ -33,6 +36,8 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     private Button mRegisterStoreButton;
     private RoundedImageView mStoreLogoImageView;
     public File mCroppedFile;
+
+    File mTempImageFile;
 
     public static StoreInfoFragment newInstance() {
         StoreInfoFragment fragment = new StoreInfoFragment();
@@ -93,7 +98,18 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.store_logo_image_view:
                 mImageSelector = new ImageSelector(getActivity(), getActivity());
-                mImageSelector.selectPhoto();
+                if (mTempImageFile == null) {
+                    try {
+                        mTempImageFile = mImageSelector.createImageFile();
+                    } catch (Exception ex) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error creating temp Image file");
+                        } else {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error creating temp Image file");
+                        }
+                    }
+                }
+                mImageSelector.selectPhoto(mTempImageFile);
                 break;
             default:
                 break;
@@ -116,12 +132,21 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         switch (requestCode) {
             case HonarNamaBaseApp.INTENT_CAPTURE_IMAGE_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
-                    Uri imageUri = Uri.parse(mImageSelector.getImagePath());
+                    Uri imageUri = Uri.parse("file:" + mTempImageFile.getAbsolutePath());
 //                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
                         mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 400, 400, 10, 10);
                     } else {
-                        mStoreLogoImageView.setImageURI(imageUri);
+                        try {
+                            mImageSelector.copy(mTempImageFile, mCroppedFile);
+                        } catch (IOException e) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file");
+                            } else {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG,  "Error copying Image file");
+                            }
+                        }
+                        mStoreLogoImageView.setImageURI(Uri.fromFile(mCroppedFile));
                     }
                 }
                 break;
@@ -131,20 +156,23 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
                         mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 400, 400, 10, 10);
                     } else {
-                        mStoreLogoImageView.setImageURI(imageUri);
+                        try {
+                            mImageSelector.copy(new File(imageUri.getPath()), mCroppedFile);
+                        } catch (IOException e) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error copying Image file");
+                            } else {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG,  "Error copying Image file");
+                            }
+                        }
+                        mStoreLogoImageView.setImageURI(Uri.fromFile(mCroppedFile));
                     }
                 }
                 break;
             case HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE:
-//                // get the returned data
-//                Bundle extras = intent.getExtras();
-//                // get the cropped bitmap
-//                if (extras != null) {
-//                    Bitmap thePic = extras.getParcelable("data");
-//                    mStoreLogoImageView.setImageBitmap(thePic);
-//                }
                 mStoreLogoImageView.setImageURI(Uri.fromFile(mCroppedFile));
                 break;
         }
     }
+    //TODO remove temp file
 }
