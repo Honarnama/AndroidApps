@@ -65,6 +65,22 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         mNationalCardImageView.setActivity(this);
         mNationalCardImageView.restore(savedInstanceState);
 
+        mNationalCardImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
+            @Override
+            public boolean onImageSelected(Uri selectedImage, boolean cropped) {
+                return true;
+            }
+
+            @Override
+            public boolean onImageRemoved() {
+                return false;
+            }
+
+            @Override
+            public void onImageSelectionFailed() {
+            }
+        });
+
         mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
         mLastnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
         mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);

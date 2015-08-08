@@ -109,7 +109,7 @@
 
     <string name="title_activity_edit_item">ویرایش محصول</string>
     <string name="edit_item_photos_title">تصاویر</string>
-    <string name="edit_item_photos_description">حداقل یک عکس از محصولاتان اضافه کنید.</string>
+    <string name="edit_item_photos_description"> خداقل یک عکس از محصول خود بگذارید. </string>
     <string name="edit_item_details_title">مشخصات</string>
     <string name="edit_item_details_description">به جهانیان محصولتان را معرفی کنید و بگویید که چرا قراره عاشقش شوند.</string>
     <string name="edit_item_title_hint">عنوان محصول</string>

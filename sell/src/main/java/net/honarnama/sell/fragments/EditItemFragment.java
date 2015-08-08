@@ -1,13 +1,20 @@
 package net.honarnama.sell.fragments;
 
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.parse.ProgressCallback;
+import com.parse.SaveCallback;
 
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
 import net.honarnama.sell.widget.ImageSelector;
+import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +86,7 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
         }
 
-        mSaveButton = (Button) rootView.findViewById(R.id.saveButton);
+        mSaveButton = (Button) rootView.findViewById(R.id.saveItemButton);
         mSaveButton.setOnClickListener(this);
 
         return rootView;
@@ -87,7 +95,7 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.saveButton:
+            case R.id.saveItemButton:
                 saveItem();
                 break;
             default:
@@ -96,8 +104,8 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveItem() {
-        String title = mProductTitle.getText().toString();
-        String description = mProductDescription.getText().toString();
+        final String title = mProductTitle.getText().toString();
+        final String description = mProductDescription.getText().toString();
 
         boolean noImage = true;
         for (ImageSelector imageSelector : itemImages) {
@@ -124,20 +132,28 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            return;
+        }
+
+
+        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
+        sendingDataProgressDialog.setCancelable(false);
+        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
+        sendingDataProgressDialog.show();
+
+        final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
+
         try {
-            ArrayList<ParseFile> images = new ArrayList<ParseFile>();
             for (ImageSelector imageSelector : itemImages) {
                 if (imageSelector.getFinalImageUri() != null) {
-                    images.add(ParseIO.getParseFileFromFile(
+                    ParseFile parseFile = ParseIO.getParseFileFromFile(
                             "Item" + imageSelector.getImageSelectorIndex() + ".jpeg",
                             new File(imageSelector.getFinalImageUri().getPath())
-                    ));
+                    );
+                    parseFileImages.add(parseFile);
                 }
             }
-
-            // TODO: save images in background!
-            // TODO: save the item!
-
         } catch (IOException e) {
             if (BuildConfig.DEBUG) {
                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -146,9 +162,57 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing item images. e="
                         + e.getMessage());
             }
-            // TODO: feedback to user
+            sendingDataProgressDialog.dismiss();
+            Toast.makeText(getActivity(), "خطا در ارسال تصاویر. لطفا دوباره تلاش کنید.", Toast.LENGTH_LONG).show();
         }
+
+        for (final ParseFile parseFile : parseFileImages) {
+            parseFile.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        sendingDataProgressDialog.dismiss();
+
+                    } else {
+                        Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        } else {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        }
+                        sendingDataProgressDialog.dismiss();
+                    }
+                }
+            }, new ProgressCallback() {
+                public void done(Integer percentDone) {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Image - percentDone= " + percentDone);
+                    } else {
+                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Image - percentDone= " + percentDone);
+                        // Update your progress spinner here. percentDone will be between 0 and 100.
+                    }
+                }
+            });
+        }
+
+        ParseObject itemInfo = new ParseObject("item");
+        itemInfo.put("title", title.trim());
+        itemInfo.put("description", description.trim());
+        itemInfo.put("owner", ParseUser.getCurrentUser());
+        int count = 0;
+        for (final ParseFile parseFile : parseFileImages) {
+            count++;
+            itemInfo.put("image_" + count, parseFile);
+        }
+        itemInfo.saveInBackground();
+
+        // TODO: save images in background!
+        // TODO: save the item!
+
+
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

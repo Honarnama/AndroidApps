@@ -11,11 +11,13 @@ import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
 import net.honarnama.sell.widget.ImageSelector;
+import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -61,6 +63,21 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
         mStoreLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
 
+        mStoreLogoImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
+            @Override
+            public boolean onImageSelected(Uri selectedImage, boolean cropped) {
+                return true;
+            }
+
+            @Override
+            public boolean onImageRemoved() {
+                return false;
+            }
+
+            @Override
+            public void onImageSelectionFailed() {
+            }
+        });
         mRegisterStoreButton.setOnClickListener(this);
         mStoreLogoImageView.setActivity(this.getActivity());
         mStoreLogoImageView.restore(savedInstanceState);
@@ -82,7 +99,6 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     public void onDetach() {
         super.onDetach();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -127,6 +143,11 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     }
 
     public void uploadStoreLogo() {
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            return;
+        }
+
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
@@ -134,7 +155,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
         File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile("nationalCardImageFile.jpeg",
+            final ParseFile parseFile = ParseIO.getParseFileFromFile("store_logo.jpeg",
                     storeLogoImageFile);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
@@ -178,8 +199,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void registerStore(ParseFile parseFile, ProgressDialog progressDialog)
-    {
+    public void registerStore(ParseFile parseFile, ProgressDialog progressDialog) {
         ParseUser currentUser = ParseUser.getCurrentUser();
 
         ParseObject storeInfo = new ParseObject("StoreInfo");
@@ -194,4 +214,6 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
         // TODO: user feedback
     }
+
+    //TODO remove temp file
 }

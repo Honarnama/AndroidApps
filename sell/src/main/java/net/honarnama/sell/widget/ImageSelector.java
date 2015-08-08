@@ -140,7 +140,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
                             mTempImageUriCapture = createImageFile();
-                            if (mTempImageUriCrop != null) {
+                            if (mTempImageUriCapture != null) {
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTempImageUriCapture);
                                 mActivity.startActivityForResult(
                                         takePictureIntent, mIntentCodeCapture);
@@ -219,10 +219,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             if (resultCode == Activity.RESULT_OK) {
                 String filePath = null;
                 Uri _uri = intent.getData();
-                Log.d("","URI = "+ _uri);
+                Log.d("", "URI = " + _uri);
                 if (_uri != null && "content".equals(_uri.getScheme())) {
                     Cursor cursor = mContext.getContentResolver().query(_uri,
-                            new String[] { android.provider.MediaStore.Images.ImageColumns.DATA },
+                            new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
                             null, null, null);
                     cursor.moveToFirst();
                     filePath = cursor.getString(0);
@@ -284,7 +284,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             }
             return null;
         }
-
         // Save a file: path for use with ACTION_VIEW intents
         return Uri.fromFile(image);
     }
