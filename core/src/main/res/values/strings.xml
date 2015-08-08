@@ -36,9 +36,12 @@
     </string>
     <string name="send_register_activation_link_to_telegram">ارسال لینک فعال‌سازی به تلگرام</string>
     <string name="select_national_card_image_dialog_title">انتخاب تصویر</string>
-    <string name="camera_option_text">دوربین</string>
-    <string name="choose_from_gallery_option_text">انتخاب از گالری</string>
     <string name="family_name">نام خانوادگی</string>
+
+    <string name="image_selector_error_no_camera">برنامه‌ای برای گرفتن عکس پیدا نشد</string>
+    <string name="image_selector_option_text_capture">دوربین</string>
+    <string name="image_selector_option_text_select">انتخاب از گالری</string>
+    <string name="image_selector_option_text_remove">حذف تصویر</string>
 
     <string name="telegram_activation_dialog_title">فعال‌سازی حساب با تلگرام</string>
     <string name="telegram_activation_option_text">ارسال پیغام از طریق تلگرام این دستگاه</string>
@@ -112,6 +115,9 @@
     <string name="edit_item_title_hint">عنوان محصول</string>
     <string name="edit_item_title_sub_hint">از کلماتی استفاده کنید که مردم در سرچ استفاده خواهند کرد</string>
     <string name="edit_item_description_hint">توضیحات</string>
-    <string name="edit_item_preview">پیش‌نمایش</string>
+    <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
+    <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
+    <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
+    <string name="edit_item_save">ذخیره</string>
 
 </resources>

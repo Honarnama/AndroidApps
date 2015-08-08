@@ -11,43 +11,35 @@ import com.parse.SignUpCallback;
 
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.HonarNamaBaseApp;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
+import net.honarnama.sell.widget.ImageSelector;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
-import net.honarnama.utils.file.ImageSelector;
-import net.honarnama.utils.file.SimpleImageCropper;
+import net.honarnama.utils.ParseIO;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 
 public class RegisterActivity extends HonarNamaBaseActivity implements View.OnClickListener {
     private TextView mAddNationalCardTextView;
-    private ImageView mNationalCardImageView;
+    private ImageSelector mNationalCardImageView;
 
     private EditText mLastnameEditText;
     private EditText mFirstnameEditText;
@@ -61,24 +53,17 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     private RadioButton mActivateWithMobileNumber;
 
     private Button mRegisterButton;
-    private boolean mNationalCardImageIsSet;
-
-    private ImageSelector mImageSelector;
-
-    SimpleImageCropper mSimpleImageCropper;
-    File mTempImageFile;
-    private File mCroppedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mNationalCardImageIsSet = false;
         mAddNationalCardTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
         mAddNationalCardTextView.setOnClickListener(this);
 
-        mNationalCardImageView = (ImageView) findViewById(R.id.register_national_card_image_view);
-        mNationalCardImageView.setOnClickListener(this);
+        mNationalCardImageView = (ImageSelector) findViewById(R.id.register_national_card_image_view);
+        mNationalCardImageView.setActivity(this);
+        mNationalCardImageView.restore(savedInstanceState);
 
         mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
         mLastnameEditText = (EditText) findViewById(R.id.register_lastname_edit_text);
@@ -100,9 +85,6 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         mRegisterButton.setOnClickListener(this);
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithMobileNumber.setOnClickListener(this);
-
-        mSimpleImageCropper = new SimpleImageCropper(this);
-        mCroppedFile = new File(HonarNamaBaseApp.imagesFolder, "national_card.jpg");
     }
 
     @Override
@@ -131,20 +113,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_national_card_title_text_view:
-            case R.id.register_national_card_image_view:
-                mImageSelector = new ImageSelector(this, this);
-                if (mTempImageFile == null) {
-                    try {
-                        mTempImageFile = mImageSelector.createImageFile();
-                    } catch (Exception ex) {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Error creating temp Image file");
-                        } else {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error creating temp Image file");
-                        }
-                    }
-                }
-                mImageSelector.selectPhoto(mTempImageFile);
+                mNationalCardImageView.selectPhoto();
                 break;
 
             case R.id.register_button:
@@ -176,31 +145,37 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] nationalCardImageFile = stream.toByteArray();
-        final ParseFile parseFile = new ParseFile("nationalCardImageFile.jpeg", nationalCardImageFile);
+//        Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
+        try {
+            final ParseFile parseFile = ParseIO.getParseFileFromFile("nationalCardImageFile.jpeg", nationalCardImageFile);
 
-        parseFile.saveInBackground(new SaveCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    signUserUpInParse(parseFile, sendingDataProgressDialog);
-                } else {
-                    Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
-                    logE("Uploading National Card Image Failed. Code: " + e.getCode(),
-                            e.getMessage(), e);
-                    sendingDataProgressDialog.dismiss();
+            parseFile.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        signUserUpInParse(parseFile, sendingDataProgressDialog);
+                    } else {
+                        Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        logE("Uploading National Card Image Failed. Code: " + e.getCode(),
+                                e.getMessage(), e);
+                        sendingDataProgressDialog.dismiss();
+                    }
                 }
-            }
-        }, new ProgressCallback() {
-            public void done(Integer percentDone) {
+            }, new ProgressCallback() {
+                public void done(Integer percentDone) {
 
-                logD(null, "Uploading National Card Image - percentDone= " + percentDone);
-                // Update your progress spinner here. percentDone will be between 0 and 100.
-            }
-        });
+                    logD(null, "Uploading National Card Image - percentDone= " + percentDone);
+                    // Update your progress spinner here. percentDone will be between 0 and 100.
+                }
+            });
 
+        } catch (IOException ioe) {
+            Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+            logE("IOException while uploading file: " + ioe.getMessage(), "nationalCardImageFile= " + nationalCardImageFile, ioe);
+            sendingDataProgressDialog.dismiss();
+        }
 
     }
 
@@ -343,7 +318,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
             return false;
         }
 
-        if (!mNationalCardImageIsSet) {
+        if (mNationalCardImageView.getFinalImageUri() == null) {
             mNationalCardImageView.requestFocus();
             TextView nationalCardTitleTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
             nationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
@@ -368,49 +343,32 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        if ((mNationalCardImageView != null) &&
+                mNationalCardImageView.onActivityResult(requestCode, resultCode, intent)) {
+            return;
+        }
         switch (requestCode) {
-            case HonarNamaBaseApp.INTENT_CAPTURE_IMAGE_CODE:
-                if (resultCode == RESULT_OK) {
-                    Uri imageUri = Uri.parse("file:" + mTempImageFile.getAbsolutePath());
-//                    Bitmap photo = (Bitmap) intent.getExtras().get("data");
-                    if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
-                    } else {
-                        try {
-                            mImageSelector.copy(mTempImageFile, mCroppedFile);
-                        } catch (IOException e) {
-                            logE("Error copying File");
-                        }
-                        mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
-                    }
-                    mNationalCardImageIsSet = true;
-                }
-                break;
-            case HonarNamaBaseApp.INTENT_SELECT_IMAGE_CODE:
-                if (resultCode == RESULT_OK) {
-                    Uri imageUri = intent.getData();
-                    if (mSimpleImageCropper.checkIfDeviceSupportsImageCrop()) {
-                        mSimpleImageCropper.crop(imageUri, mCroppedFile, HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE, 600, 420, 10, 7);
-                    } else {
-                        try {
-                            mImageSelector.copy(new File(imageUri.getPath()), mCroppedFile);
-                        } catch (IOException e) {
-                            logE("Error copying File");
-                        }
-                        mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
-                    }
-                    mNationalCardImageIsSet = true;
-                }
-                break;
             case HonarNamaBaseApp.INTENT_TELEGRAM_CODE:
                 finish();
                 break;
-            case HonarNamaBaseApp.INTENT_CROP_IMAGE_CODE:
-                if (resultCode == RESULT_OK) {
-                    mNationalCardImageView.setImageURI(Uri.fromFile(mCroppedFile));
-                }
-                break;
+            default:
+                logD(null, "Unexpected requestCode= " + requestCode);
         }
     }
-    //TODO remove temp file
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mNationalCardImageView != null) {
+            mNationalCardImageView.onSaveInstanceState(outState);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mNationalCardImageView != null) {
+            mNationalCardImageView.onDestroy();
+        }
+        super.onDestroy();
+    }
 }

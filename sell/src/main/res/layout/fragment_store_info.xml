@@ -20,7 +20,7 @@
                 />
 
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <net.honarnama.sell.widget.ImageSelector
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/store_logo_image_view"
                 android:src="@drawable/gift_box"
@@ -32,7 +32,11 @@
                 app:riv_corner_radius="20dip"
                 app:riv_border_width="2dip"
                 app:riv_border_color="@color/dark_gray"
-                app:riv_oval="true" />
+                app:riv_oval="true"
+                app:removable="false"
+                app:outputX="400"
+                app:outputY="400"
+                />
 
         <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:hint=" نام فروشگاه "
