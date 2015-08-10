@@ -96,14 +96,16 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
-                saveItem();
+                if (isFormInputsValid()) {
+                    saveItemImages();
+                }
                 break;
             default:
                 break;
         }
     }
 
-    private void saveItem() {
+    private boolean isFormInputsValid() {
         final String title = mProductTitle.getText().toString();
         final String description = mProductDescription.getText().toString();
 
@@ -117,25 +119,28 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
         if (noImage) {
             mItemImageHint.requestFocus();
             mItemImageHint.setError(getString(R.string.error_edit_item_no_image));
-            return;
+            return false;
         }
 
         if (title.trim().length() == 0) {
             mProductTitle.requestFocus();
             mProductTitle.setError(getString(R.string.error_edit_item_title_is_empty));
-            return;
+            return false;
         }
 
         if (description.trim().length() == 0) {
             mProductDescription.requestFocus();
             mProductDescription.setError(getString(R.string.error_edit_item_description_is_empty));
-            return;
+            return false;
         }
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            return;
+            return false;
         }
+        return true;
+    }
 
+    private void saveItemImages() {
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
@@ -175,12 +180,12 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                 public void done(ParseException e) {
                     if (e == null) {
                         if (fileNumber == parseFileImages.size()) {
-                            Toast.makeText(getActivity(), "اتمام دانلود فایل", Toast.LENGTH_SHORT).show();
                             sendingDataProgressDialog.dismiss();
+                            saveItemInfo(parseFileImages);
                         }
                     } else {
 
-                        if(errorOccuredUploadingFiles[0] == false) {
+                        if (errorOccuredUploadingFiles[0] == false) {
                             Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
                             errorOccuredUploadingFiles[0] = true;
                         }
@@ -207,10 +212,17 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             });
         }
 
-        if(errorOccuredUploadingFiles[0])
-        {
+        if (errorOccuredUploadingFiles[0]) {
             return;
         }
+
+    }
+
+    public void saveItemInfo(ArrayList<ParseFile> parseFileImages) {
+
+        String title = mProductTitle.getText().toString();
+        String description = mProductDescription.getText().toString();
+
         ParseObject itemInfo = new ParseObject("item");
         itemInfo.put("title", title.trim());
         itemInfo.put("description", description.trim());
@@ -222,12 +234,8 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
         }
         itemInfo.saveInBackground();
 
-        // TODO: save images in background!
-        // TODO: save the item!
-
-
+        Toast.makeText(getActivity(), " محصول شما با موفقیت ذخیره شد. ", Toast.LENGTH_LONG).show();
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
