@@ -148,7 +148,7 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             for (ImageSelector imageSelector : itemImages) {
                 if (imageSelector.getFinalImageUri() != null) {
                     ParseFile parseFile = ParseIO.getParseFileFromFile(
-                            "Item" + imageSelector.getImageSelectorIndex() + ".jpeg",
+                            "image_" + imageSelector.getImageSelectorIndex() + ".jpeg",
                             new File(imageSelector.getFinalImageUri().getPath())
                     );
                     parseFileImages.add(parseFile);
@@ -166,14 +166,24 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "خطا در ارسال تصاویر. لطفا دوباره تلاش کنید.", Toast.LENGTH_LONG).show();
         }
 
-        for (final ParseFile parseFile : parseFileImages) {
+        final boolean[] errorOccuredUploadingFiles = {false};
+        for (int count = 0; count < parseFileImages.size(); count++) {
+//        for (final ParseFile parseFile : parseFileImages) {
+            final int fileNumber = count + 1;
+            final ParseFile parseFile = parseFileImages.get(count);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        sendingDataProgressDialog.dismiss();
-
+                        if (fileNumber == parseFileImages.size()) {
+                            Toast.makeText(getActivity(), "اتمام دانلود فایل", Toast.LENGTH_SHORT).show();
+                            sendingDataProgressDialog.dismiss();
+                        }
                     } else {
-                        Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+
+                        if(errorOccuredUploadingFiles[0] == false) {
+                            Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                            errorOccuredUploadingFiles[0] = true;
+                        }
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
@@ -182,6 +192,7 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                                     "//" + e.getMessage() + " // " + e);
                         }
                         sendingDataProgressDialog.dismiss();
+                        return;
                     }
                 }
             }, new ProgressCallback() {
@@ -196,12 +207,16 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             });
         }
 
+        if(errorOccuredUploadingFiles[0])
+        {
+            return;
+        }
         ParseObject itemInfo = new ParseObject("item");
         itemInfo.put("title", title.trim());
         itemInfo.put("description", description.trim());
         itemInfo.put("owner", ParseUser.getCurrentUser());
         int count = 0;
-        for (final ParseFile parseFile : parseFileImages) {
+        for (ParseFile parseFile : parseFileImages) {
             count++;
             itemInfo.put("image_" + count, parseFile);
         }
