@@ -8,6 +8,7 @@ import net.honarnama.base.BuildConfig;
 
 import android.app.Application;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 
@@ -26,7 +27,10 @@ public class HonarNamaBaseApp extends Application {
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 10000;
     public static final int INTENT_TELEGRAM_CODE = 1003;
 
-    public static File imagesFolder;
+    public static File APP_FOLDER;
+    public static File APP_IMAGES_FOLDER;
+
+    public static String STORE_LOGO_FILE_NAME = "store_logo.jpg";
 
 
     public static HonarNamaBaseApp getInstance() {
@@ -49,10 +53,22 @@ public class HonarNamaBaseApp extends Application {
         defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
 
-        imagesFolder = new File(new File(Environment.getExternalStorageDirectory(), "icm"), "honarnama");
-        imagesFolder.mkdirs();
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            if (BuildConfig.DEBUG) {
+                Log.e(PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        "NO SDCARD");
+            } else {
+                Log.e(PRODUCTION_TAG, "NO SDCARD");
+            }
+        } else {
+            APP_FOLDER = new File(Environment.getExternalStorageDirectory() + File.separator + "Honarnama");
+            APP_FOLDER.mkdirs();
+        }
 
-
+        if (APP_FOLDER != null) {
+            APP_IMAGES_FOLDER = new File(APP_FOLDER, "images");
+            APP_IMAGES_FOLDER.mkdirs();
+        }
     }
 
     public static String getParseApplicationId() {

@@ -1,4 +1,4 @@
-package net.honarnama.sell.widget;
+package net.honarnama.sell.utils;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 

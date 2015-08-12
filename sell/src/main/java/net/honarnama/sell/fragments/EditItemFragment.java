@@ -10,7 +10,7 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
-import net.honarnama.sell.widget.ImageSelector;
+import net.honarnama.sell.utils.ImageSelector;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 

@@ -12,7 +12,7 @@ import com.parse.SignUpCallback;
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.sell.R;
-import net.honarnama.sell.widget.ImageSelector;
+import net.honarnama.sell.utils.ImageSelector;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;

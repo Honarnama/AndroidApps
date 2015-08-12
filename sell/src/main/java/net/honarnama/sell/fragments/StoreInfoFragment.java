@@ -1,8 +1,10 @@
 package net.honarnama.sell.fragments;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
@@ -10,7 +12,8 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
-import net.honarnama.sell.widget.ImageSelector;
+import net.honarnama.sell.utils.ImageSelector;
+import net.honarnama.utils.HonarNamaUser;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 
@@ -37,6 +40,11 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     private EditText mStorePlicyEditText;
     private Button mRegisterStoreButton;
     private ImageSelector mStoreLogoImageView;
+    private static String objectName = "store_info";
+    private static String ownerField = "owner";
+    private static String nameField = "name";
+    private static String policyField = "policy";
+    private static String logoField = "logo";
 
     public static StoreInfoFragment newInstance() {
         StoreInfoFragment fragment = new StoreInfoFragment();
@@ -82,7 +90,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         mStoreLogoImageView.setActivity(this.getActivity());
         mStoreLogoImageView.restore(savedInstanceState);
 
-        // TODO: load current store info
+        retrieveUserStore();
 
         return rootView;
     }
@@ -153,14 +161,25 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
+        final File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile("store_logo.jpeg",
+            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaBaseApp.STORE_LOGO_FILE_NAME,
                     storeLogoImageFile);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
                         registerStore(parseFile, sendingDataProgressDialog);
+                        try {
+                            ParseIO.copyFile(storeLogoImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaBaseApp.STORE_LOGO_FILE_NAME));
+                        } catch (IOException e1) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                        "Error copying store logo to sd card", e1);
+                            } else {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
+                                        + e1.getMessage());
+                            }
+                        }
                     } else {
                         Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
                         if (BuildConfig.DEBUG) {
@@ -202,17 +221,54 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     public void registerStore(ParseFile parseFile, ProgressDialog progressDialog) {
         ParseUser currentUser = ParseUser.getCurrentUser();
 
-        ParseObject storeInfo = new ParseObject("StoreInfo");
-        storeInfo.put("name", mStoreNameEditText.getText().toString().trim());
-        storeInfo.put("logo", parseFile);
-        storeInfo.put("policy", mStorePlicyEditText.getText().toString().trim());
-        storeInfo.put("owner", currentUser);
-
-        storeInfo.saveInBackground();
+        ParseObject storeInfo = new ParseObject(objectName);
+        storeInfo.put(nameField, mStoreNameEditText.getText().toString().trim());
+        storeInfo.put(logoField, parseFile);
+        storeInfo.put(policyField, mStorePlicyEditText.getText().toString().trim());
+        storeInfo.put(ownerField, currentUser);
+        storeInfo.pinInBackground();
 
         progressDialog.dismiss();
 
-        // TODO: user feedback
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            return;
+        }
+        storeInfo.saveInBackground();
+
+        Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
+
+    }
+
+    private void retrieveUserStore() {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.show();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(objectName);
+        query.whereEqualTo(ownerField, HonarNamaUser.getCurrentUser());
+        query.fromLocalDatastore();
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject storeInfo, ParseException e) {
+                if (e == null) {
+                    mStoreNameEditText.setText(storeInfo.getString(nameField));
+                    mStorePlicyEditText.setText(storeInfo.getString(policyField));
+                    File localStoreLogoFile = new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaBaseApp.STORE_LOGO_FILE_NAME);
+                    if (localStoreLogoFile.exists()) {
+                        mStoreLogoImageView.setImageURI(Uri.parse(localStoreLogoFile.getAbsolutePath()));
+                    }
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Error getting store info", e);
+                    } else {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error getting store info"
+                                + e.getMessage());
+                    }
+                }
+                progressDialog.dismiss();
+            }
+        });
     }
 
     //TODO remove temp file
