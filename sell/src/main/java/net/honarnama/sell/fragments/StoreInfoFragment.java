@@ -6,7 +6,6 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarNamaBaseApp;
@@ -90,7 +89,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         mStoreLogoImageView.setActivity(this.getActivity());
         mStoreLogoImageView.restore(savedInstanceState);
 
-        retrieveUserStore();
+        retrieveUserStoreInfo();
 
         return rootView;
     }
@@ -122,7 +121,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
     private boolean isFormInputsValid() {
         if (mStoreNameEditText.getText().toString().trim().length() == 0) {
             mStoreNameEditText.requestFocus();
-            mStoreNameEditText.setError(" نام فروشگاه نمیتواند خالی باشد. ");
+            mStoreNameEditText.setError(getActivity().getString(R.string.error_store_name_cant_be_empty));
             return false;
         }
         return true;
@@ -161,6 +160,10 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
+        if (mStoreLogoImageView.getFinalImageUri() == null) {
+            registerStore(null, sendingDataProgressDialog);
+            return;
+        }
         final File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
         try {
             final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaBaseApp.STORE_LOGO_FILE_NAME,
@@ -230,10 +233,9 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
             }
         });
 
-
     }
 
-    private void retrieveUserStore() {
+    private void retrieveUserStoreInfo() {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.please_wait));
@@ -249,7 +251,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     mStorePlicyEditText.setText(storeInfo.getString(policyField));
                     File localStoreLogoFile = new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaBaseApp.STORE_LOGO_FILE_NAME);
                     if (localStoreLogoFile.exists()) {
-                        mStoreLogoImageView.setImageURI(Uri.parse(localStoreLogoFile.getAbsolutePath()));
+                        mStoreLogoImageView.setFinalImageUri(Uri.parse(localStoreLogoFile.getAbsolutePath()));
                     }
                 } else {
                     if (BuildConfig.DEBUG) {
@@ -299,7 +301,10 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     }
 
                     storeInfo[0].put(nameField, mStoreNameEditText.getText().toString().trim());
-                    storeInfo[0].put(logoField, parseFile);
+                    if (parseFile != null) {
+                        storeInfo[0].put(logoField, parseFile);
+                    }
+
                     storeInfo[0].put(policyField, mStorePlicyEditText.getText().toString().trim());
 
                     if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
@@ -331,7 +336,9 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         ParseObject storeInfo = new ParseObject(objectName);
         storeInfo.put(ownerField, currentUser);
         storeInfo.put(nameField, mStoreNameEditText.getText().toString().trim());
-        storeInfo.put(logoField, parseFile);
+        if (parseFile != null) {
+            storeInfo.put(logoField, parseFile);
+        }
         storeInfo.put(policyField, mStorePlicyEditText.getText().toString().trim());
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {

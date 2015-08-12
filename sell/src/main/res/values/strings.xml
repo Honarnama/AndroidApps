@@ -8,5 +8,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="successfully_saved_store_info">" اطلاعات فروشگاه شما با موفقیت ذخیره شد. "
     </string>
+    <string name="error_store_name_cant_be_empty">" نام فروشگاه نمیتواند خالی باشد. "</string>
 
 </resources>

@@ -386,6 +386,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mFinalImageUri;
     }
 
+    public void setFinalImageUri(Uri imageUri)
+    {
+        super.setImageURI(imageUri);
+        mFinalImageUri = imageUri;
+    }
+
     public int getImageSelectorIndex() {
         return mImageSelectorIndex;
     }
