@@ -120,5 +120,7 @@
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
+    <string name="please_check_internet_connection">" لطفاًاینترنت دستگاه خود را بررسی کنید. "
+    </string>
 
 </resources>

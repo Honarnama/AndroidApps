@@ -174,7 +174,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                         } catch (IOException e1) {
                             if (BuildConfig.DEBUG) {
                                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                        "Error copying store logo to sd card", e1);
+                                        "Error copying store logo to sd card " + e1, e1);
                             } else {
                                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
                                         + e1.getMessage());
@@ -192,15 +192,6 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                         sendingDataProgressDialog.dismiss();
                     }
                 }
-            }, new ProgressCallback() {
-                public void done(Integer percentDone) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Image - percentDone= " + percentDone);
-                    } else {
-                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Image - percentDone= " + percentDone);
-                        // Update your progress spinner here. percentDone will be between 0 and 100.
-                    }
-                }
             });
         } catch (IOException ioe) {
             Toast.makeText(StoreInfoFragment.this.getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ",
@@ -208,7 +199,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
             if (BuildConfig.DEBUG) {
                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                        "Failed on preparing store logo image.", ioe);
+                        "Failed on preparing store logo image. " + ioe, ioe);
             } else {
                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing store logo image. ioe="
                         + ioe.getMessage());
@@ -218,24 +209,27 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void registerStore(ParseFile parseFile, ProgressDialog progressDialog) {
-        ParseUser currentUser = ParseUser.getCurrentUser();
+    private void registerStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
+        //check if user already have a registered store
+        final ParseFile parseFile = parseFileParam;
+        final ProgressDialog progressDialog = progressDialogParam;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(objectName);
+        query.whereEqualTo(ownerField, HonarNamaUser.getCurrentUser());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject storeInfo, ParseException e) {
+                if (e == null) {
+                    updateStoreInfo(storeInfo.getObjectId(), parseFile, progressDialog);
+                } else {
+                    addNewStore(parseFile, progressDialog);
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Error geeting current store id. Error :" + e.getCode() +
+                                        "//" + e.getMessage() + " // " + e, e);
+                    }
+                }
+            }
+        });
 
-        ParseObject storeInfo = new ParseObject(objectName);
-        storeInfo.put(nameField, mStoreNameEditText.getText().toString().trim());
-        storeInfo.put(logoField, parseFile);
-        storeInfo.put(policyField, mStorePlicyEditText.getText().toString().trim());
-        storeInfo.put(ownerField, currentUser);
-        storeInfo.pinInBackground();
-
-        progressDialog.dismiss();
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            return;
-        }
-        storeInfo.saveInBackground();
-
-        Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
 
     }
 
@@ -260,15 +254,96 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error getting store info", e);
+                                "Error getting store info.  Error Code: " + e.getCode() +
+                                        "//" + e.getMessage() + " // " + e, e);
                     } else {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error getting store info"
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error getting store info. "
                                 + e.getMessage());
                     }
                 }
                 progressDialog.dismiss();
             }
         });
+    }
+
+    private void updateStoreInfo(String currentObjectIdParam, ParseFile parseFileParam, ProgressDialog progressDialogParam) {
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        final ParseFile parseFile = parseFileParam;
+        final ParseObject[] storeInfo = new ParseObject[1];
+        final ProgressDialog progressDialog = progressDialogParam;
+        final String currentObjectId = currentObjectIdParam;
+        storeInfo[0] = null;
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            progressDialog.dismiss();
+            return;
+        }
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(objectName);
+        query.whereEqualTo("owner", currentUser);
+        query.getInBackground(currentObjectId, new GetCallback<ParseObject>() {
+            public void done(ParseObject storeObject, ParseException e) {
+                if (e == null) {
+                    storeInfo[0] = storeObject;
+                    if (storeInfo[0] == null) {
+                        if (currentObjectId != null) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                        "Error geeting current store info for updating existing one. Error code: " + e.getCode() +
+                                                "//" + e.getMessage() + " // " + e);
+                            }
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+
+                    storeInfo[0].put(nameField, mStoreNameEditText.getText().toString().trim());
+                    storeInfo[0].put(logoField, parseFile);
+                    storeInfo[0].put(policyField, mStorePlicyEditText.getText().toString().trim());
+
+                    if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                        progressDialog.dismiss();
+                        return;
+                    }
+
+                    storeInfo[0].pinInBackground();
+                    storeInfo[0].saveInBackground();
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+    }
+
+
+    private void addNewStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        final ParseFile parseFile = parseFileParam;
+        final ProgressDialog progressDialog = progressDialogParam;
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            progressDialog.dismiss();
+            return;
+        }
+
+        ParseObject storeInfo = new ParseObject(objectName);
+        storeInfo.put(ownerField, currentUser);
+        storeInfo.put(nameField, mStoreNameEditText.getText().toString().trim());
+        storeInfo.put(logoField, parseFile);
+        storeInfo.put(policyField, mStorePlicyEditText.getText().toString().trim());
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            progressDialog.dismiss();
+            return;
+        }
+
+        storeInfo.pinInBackground();
+        storeInfo.saveInBackground();
+        progressDialog.dismiss();
+        Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
+
     }
 
     //TODO remove temp file
