@@ -101,10 +101,10 @@ public class FragmentDrawer extends Fragment {
     }
 
 
-    public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, null, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -120,7 +120,7 @@ public class FragmentDrawer extends Fragment {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                toolbar.setAlpha(1 - slideOffset / 2);
+//                toolbar.setAlpha(1 - slideOffset / 2);
             }
 
             @Override
@@ -140,22 +140,29 @@ public class FragmentDrawer extends Fragment {
             }
         });
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                handleDrawerState();
-            }
-        });
-
-
-        ImageButton hamburgerIcon = (ImageButton) toolbar.findViewById(R.id.toolbar_hamburger_icon);
-        hamburgerIcon.setOnClickListener(new View.OnClickListener() {
+        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleDrawerState();
             }
         });
+
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                handleDrawerState();
+//            }
+//        });
+//
+//
+//        ImageButton hamburgerIcon = (ImageButton) toolbar.findViewById(R.id.toolbar_hamburger_icon);
+//        hamburgerIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                handleDrawerState();
+//            }
+//        });
 
     }
 

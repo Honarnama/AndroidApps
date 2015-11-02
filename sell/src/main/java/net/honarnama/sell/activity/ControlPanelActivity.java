@@ -28,7 +28,7 @@ import android.widget.Toast;
 public class ControlPanelActivity extends HonarNamaBaseActivity implements FragmentDrawer.FragmentDrawerListener {
     private Toolbar mToolbar;
     private FragmentDrawer mDrawerFragment;
-    private TextView mToolbarTitleTextView;
+//    private TextView mToolbarTitleTextView;
     private Fragment mFragment;
 
     @Override
@@ -37,13 +37,16 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
         setContentView(R.layout.activity_control_panel);
 
         mToolbar = (Toolbar) findViewById(R.id.control_panel_toolbar);
-        mToolbarTitleTextView = (TextView) findViewById(R.id.toolbar_title);
+//        mToolbarTitleTextView = (TextView) findViewById(R.id.toolbar_title);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.hamburger_icon);
         mDrawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        mDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+        mDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         mDrawerFragment.setDrawerListener(this);
 
     }
@@ -63,7 +66,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.toolbar_hamburger_icon) {
+        if (id == android.R.id.home) {
             mDrawerFragment.handleDrawerState();
         }
 
@@ -110,8 +113,9 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
             fragmentTransaction.replace(R.id.container_body, mFragment);
             fragmentTransaction.commit();
 
+            getSupportActionBar().setTitle(title);
             // set the toolbar title
-            mToolbarTitleTextView.setText(title);
+//            mToolbarTitleTextView.setText(title);
         }
     }
 
