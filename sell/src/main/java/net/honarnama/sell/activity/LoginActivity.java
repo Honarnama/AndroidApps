@@ -207,6 +207,14 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+    }
+
     private void gotoControlPanelOrRaiseError() {
         if (!HonarNamaUser.isVerified()) {
             logE("Login Failed. Account is not activated");

@@ -22,11 +22,16 @@ import net.honarnama.sell.activity.ControlPanelActivity;
  */
 public class ProfileFragment extends Fragment {
 
-    public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
-        return fragment;
-    }
+    public static ProfileFragment mProfileFragment;
 
+    public synchronized static ProfileFragment getInstance()
+    {
+        if (mProfileFragment == null)
+        {
+            mProfileFragment = new ProfileFragment();
+        }
+        return mProfileFragment;
+    }
     public ProfileFragment() {
         // Required empty public constructor
     }

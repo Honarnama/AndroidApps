@@ -88,11 +88,11 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                mFragment = ProfileFragment.newInstance();
+                mFragment = ProfileFragment.getInstance();
                 title = getString(R.string.seller_profile);
                 break;
             case 1:
-                mFragment = StoreInfoFragment.newInstance();
+                mFragment = StoreInfoFragment.getInstance();
                 title = getString(R.string.nav_title_store_info);
                 break;
 //            case 2:
@@ -100,7 +100,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
 //                title = getString(R.string.title_messages);
 //                break;
             case 3:
-                mFragment = EditItemFragment.newInstance();
+                mFragment = EditItemFragment.getInstance();
                 title = getString(R.string.nav_title_new_product);
                 break;
             default:

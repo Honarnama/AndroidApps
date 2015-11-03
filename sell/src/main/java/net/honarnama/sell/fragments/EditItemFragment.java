@@ -42,10 +42,16 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
 
     private ImageSelector[] itemImages;
 
-    public static EditItemFragment newInstance() {
-        return new EditItemFragment();
-    }
+    public static EditItemFragment mEditItemFragment;
 
+    public synchronized static EditItemFragment getInstance()
+    {
+        if (mEditItemFragment == null)
+        {
+            mEditItemFragment = new EditItemFragment();
+        }
+        return mEditItemFragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

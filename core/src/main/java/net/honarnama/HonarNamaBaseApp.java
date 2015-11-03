@@ -19,7 +19,7 @@ public class HonarNamaBaseApp extends Application {
 
     public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String DOMAIN = "honarnama.net";
-    public static final String PRODUCTION_TAG = "HonarNama";
+    public static final String PRODUCTION_TAG = "Honarnama";
     private static HonarNamaBaseApp singleton;
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
