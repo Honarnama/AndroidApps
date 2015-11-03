@@ -44,7 +44,7 @@ public class HonarNamaBaseApp extends Application {
 
         singleton = this;
 
-        Parse.enableLocalDatastore(this);
+//        Parse.enableLocalDatastore(this);
         Parse.initialize(this, HonarNamaBaseApp.getParseApplicationId(), HonarNamaBaseApp.getParseClientKey());
 
         ParseUser.enableAutomaticUser();

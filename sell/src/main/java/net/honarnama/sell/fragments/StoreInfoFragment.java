@@ -249,7 +249,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
         query.whereEqualTo(OWNER_FIELD, HonarNamaUser.getCurrentUser());
-        query.fromLocalDatastore();
+//        query.fromLocalDatastore();
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject storeInfo, ParseException e) {
                 if (e == null) {
@@ -294,6 +294,8 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
 
+        Toast.makeText(getActivity(), currentStoreObjectIdParam, Toast.LENGTH_LONG).show();
+
 // Retrieve the object by id
         query.getInBackground(currentStoreObjectIdParam, new GetCallback<ParseObject>() {
             public void done(ParseObject storeObject, ParseException e) {
@@ -308,14 +310,13 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
                     storeObject.put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
 
-                    storeObject.pinInBackground();
-                    try {
-                        storeObject.save();
-                    } catch (ParseException e1) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/"  ,
-                                        "Error updating store info."+ e1);
-                        e1.printStackTrace();
-                    }
+//                    storeObject.pinInBackground();
+                    storeObject.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Log.e("Elnaz", "Error"+ e);
+                        }
+                    });
                     progressDialog.dismiss();
                     Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
                 }
@@ -401,7 +402,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
             return;
         }
 
-        storeInfo.pinInBackground();
+//        storeInfo.pinInBackground();
         storeInfo.saveInBackground();
         progressDialog.dismiss();
         Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
