@@ -27,7 +27,6 @@ dependencies {
     debugCompile project(path: ':core', configuration: 'debug')
     releaseCompile project(path: ':core', configuration: 'release')
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'

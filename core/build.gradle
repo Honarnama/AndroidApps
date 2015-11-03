@@ -1,13 +1,13 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.1"
     publishNonDefault true
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.parse.bolts:bolts-android:1.+'
-    compile fileTree(dir: '../libs', include: 'Parse-1.*.jar')
+    compile 'com.parse:parse-android:1.10.3'
 }

@@ -4,6 +4,7 @@ import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.FragmentDrawer;
+import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.ProfileFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
@@ -95,10 +96,10 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
                 mFragment = StoreInfoFragment.getInstance();
                 title = getString(R.string.nav_title_store_info);
                 break;
-//            case 2:
-//                fragment = new MessagesFragment();
-//                title = getString(R.string.title_messages);
-//                break;
+            case 2:
+                mFragment = ItemsFragment.newInstance();
+                title = getString(R.string.nav_title_products);
+                break;
             case 3:
                 mFragment = EditItemFragment.getInstance();
                 title = getString(R.string.nav_title_new_product);
