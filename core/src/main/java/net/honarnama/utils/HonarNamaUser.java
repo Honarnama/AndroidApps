@@ -13,6 +13,14 @@ import java.util.HashMap;
  */
 public class HonarNamaUser extends ParseUser {
 
+    public static ParseUser getCurrentUser() {
+        ParseUser user = ParseUser.getCurrentUser();
+        if ((user != null) && user.isAuthenticated()) {
+            return user;
+        }
+        return null;
+    }
+
     public static boolean isLoggedIn() {
         if (getCurrentUser() != null) {
             return true;
@@ -44,7 +52,8 @@ public class HonarNamaUser extends ParseUser {
     }
 
     public static ActivationMethod getActivationMethod() {
-        String activationMethod = getCurrentUser().getString("activationMethod");
+        ParseUser user = getCurrentUser();
+        String activationMethod = user.getString("activationMethod");
         if ("email".equals(activationMethod)) {
             return ActivationMethod.EMAIL;
         } else if ("mobileNumber".equals(activationMethod)) {

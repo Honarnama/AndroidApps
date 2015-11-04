@@ -57,10 +57,11 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
-            if (HonarNamaUser.getCurrentUser() != null) {
-                logE("Parse user is not empty");
+            ParseUser user = HonarNamaUser.getCurrentUser();
+            if (user != null) {
+                logI("Parse user is not empty", "user= " + user.getEmail());
                 showLoadingDialog();
-                HonarNamaUser.getCurrentUser().fetchInBackground(new GetCallback<ParseObject>() {
+                user.fetchInBackground(new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject parseObject, ParseException e) {
                         gotoControlPanelOrRaiseError();
@@ -98,9 +99,13 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
         Uri data = intent.getData();
 
+        logI(null, "processIntent :: data= " + data);
+
         if (data != null) {
             final String token = data.getQueryParameter("token");
             final String register = data.getQueryParameter("register");
+
+            logI(null, "token= " + token + ", register= " + register);
 
             if (token != null && token.length() > 0) {
                 showLoadingDialog();

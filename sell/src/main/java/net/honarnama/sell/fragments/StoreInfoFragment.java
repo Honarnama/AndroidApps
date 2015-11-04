@@ -227,7 +227,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject storeInfo, ParseException e) {
                 if (e == null) {
-                    updateStoreInfo(storeInfo.getObjectId(), parseFile, progressDialog);
+                    updateStoreInfo(storeInfo, parseFile, progressDialog);
                 } else {
                     addNewStore(parseFile, progressDialog);
                     if (BuildConfig.DEBUG) {
@@ -274,108 +274,33 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         });
     }
 
-    private void updateStoreInfo(String currentStoreObjectIdParam, ParseFile parseFileParam, ProgressDialog progressDialogParam) {
-        final ParseUser currentUser = ParseUser.getCurrentUser();
-
+    private void updateStoreInfo(final ParseObject storeObject, ParseFile parseFileParam, ProgressDialog progressDialogParam) {
         final ParseFile parseFile = parseFileParam;
-//        final ParseObject[] storeInfo = new ParseObject[1];
         final ProgressDialog progressDialog = progressDialogParam;
-        final String currentObjectId = currentStoreObjectIdParam;
-//        storeInfo[0] = null;
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
             progressDialog.dismiss();
             return;
         }
 
-
-        // Create a pointer to an object of class Point with id dlkj83d
-//        ParseObject storeObject = ParseObject.createWithoutData(OBJECT_NAME, currentStoreObjectIdParam);
-
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-
-        Toast.makeText(getActivity(), currentStoreObjectIdParam, Toast.LENGTH_LONG).show();
-
-// Retrieve the object by id
-        query.getInBackground(currentStoreObjectIdParam, new GetCallback<ParseObject>() {
-            public void done(ParseObject storeObject, ParseException e) {
+        storeObject.put(NAME_FIELD, mStoreNameEditText.getText().toString().trim());
+        storeObject.put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
+        if (parseFile != null) {
+            storeObject.put(LOGO_FIELD, parseFile);
+        }
+        storeObject.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(getActivity(), "Found row", Toast.LENGTH_LONG).show();
-                    // Now let's update it with some new data. In this case, only cheatMode and score
-                    // will get sent to the Parse Cloud. playerName hasn't changed.
-                    storeObject.put(NAME_FIELD, mStoreNameEditText.getText().toString().trim());
-                    if (parseFile != null) {
-                        storeObject.put(LOGO_FIELD, parseFile);
-                    }
-
-                    storeObject.put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
-
-//                    storeObject.pinInBackground();
-                    storeObject.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            Log.e("Elnaz", "Error"+ e);
-                        }
-                    });
-                    progressDialog.dismiss();
                     Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                } else {
+                    // TODO: handle "Invalid: name"
+                    Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
                 }
+                progressDialog.dismiss();
             }
         });
-
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-//        query.whereEqualTo("owner", currentUser);
-//        query.getInBackground(currentObjectId, new GetCallback<ParseObject>() {
-//            public void done(ParseObject storeObject, ParseException e) {
-//                if (e == null) {
-//                    storeInfo[0] = storeObject;
-////                    if (storeInfo[0] == null) {
-////                        if (currentObjectId != null) {
-////                            if (BuildConfig.DEBUG) {
-////                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-////                                        "Error geeting current store info for updating existing one. Error code: " + e.getCode() +
-////                                                "//" + e.getMessage() + " // " + e);
-////                            }
-////                            progressDialog.dismiss();
-////                            Toast.makeText(getActivity(), getActivity().getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-////                            return;
-////                        }
-////                    }
-//
-////                    storeInfo[0].put(NAME_FIELD, mStoreNameEditText.getText().toString().trim());
-////                    if (parseFile != null) {
-////                        storeInfo[0].put(LOGO_FIELD, parseFile);
-////                    }
-////
-////                    storeInfo[0].put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
-////
-////                    if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-////                        progressDialog.dismiss();
-////                        return;
-////                    }
-////
-////                    storeInfo[0].pinInBackground();
-////                    storeInfo[0].saveInBackground(new SaveCallback() {
-////                        public void done(ParseException e) {
-////                            if (e == null) {
-////                                // Saved successfully.
-////                                Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
-////
-////                            } else {
-////                                // The save failed.
-////                                Toast.makeText(getActivity(), getActivity().getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
-////                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-////                                        "Error Updating Store Info: " + e.getCode() +
-////                                                "//" + e.getMessage() + " // " + e);
-////
-////                            }
-////                        }
-////                    });
-////                    progressDialog.dismiss();
-//
-//                }
-//            }
-//        });
     }
 
 
