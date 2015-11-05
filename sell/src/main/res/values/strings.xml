@@ -13,4 +13,17 @@
     <string name="saving_store_info_failed"> خطا در ذخیره اطلاعات فروشگاه  </string>
     <string name="error_store_name_cant_be_empty">" نام فروشگاه نمیتواند خالی باشد. "</string>
 
+    <string name="app_name"> Honarnama for Exhibitors </string>
+    <string name="sell_on_honarnama"> برنامه‌ی فروشندگان هنرنما </string>
+    <string name="slogan_for_sellers">هنر دست خود را در سراسر ایران بفروشید</string>
+    <string name="register_as_seller"> ثبت‌نام حساب فروشندگان </string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_title_profile</item>
+        <item>@string/nav_title_store_info</item>
+        <item>@string/nav_title_products</item>
+        <item>@string/nav_title_new_product</item>
+        <item>@string/nav_exit_app</item>
+    </string-array>
 </resources>

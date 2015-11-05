@@ -340,7 +340,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             }
         }
 
-        // TODO: remove final if created during the process
+        if (mTempImageUriCrop != null) {
+            File f = new File(mTempImageUriCrop.getPath());
+            if (f.canWrite()) {
+                f.delete();
+            }
+        }
     }
 
     public void onSaveInstanceState(Bundle outState) {

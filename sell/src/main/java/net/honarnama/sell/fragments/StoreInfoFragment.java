@@ -249,7 +249,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
         query.whereEqualTo(OWNER_FIELD, HonarNamaUser.getCurrentUser());
-//        query.fromLocalDatastore();
+        query.fromLocalDatastore();
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject storeInfo, ParseException e) {
                 if (e == null) {
@@ -259,6 +259,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     if (localStoreLogoFile.exists()) {
                         mStoreLogoImageView.setFinalImageUri(Uri.parse(localStoreLogoFile.getAbsolutePath()));
                     }
+                    //TODO: Upload the logo file if it doesn't exist on sd card
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -288,6 +289,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         if (parseFile != null) {
             storeObject.put(LOGO_FIELD, parseFile);
         }
+        storeObject.pinInBackground();
         storeObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -327,12 +329,11 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
             return;
         }
 
-//        storeInfo.pinInBackground();
+        storeInfo.pinInBackground();
         storeInfo.saveInBackground();
         progressDialog.dismiss();
         Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
 
     }
 
-    //TODO remove temp file
 }

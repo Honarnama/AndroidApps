@@ -1,14 +1,11 @@
 <resources>
-    <string name="app_name"> Honarnama for Exhibitors </string>
-    <string name="sell_on_honarnama"> برنامه‌ی غرفه‌داران هنرنما </string>
-    <string name="slogan_for_sellers">هنر دست خود را در سراسر ایران بفروشید</string>
+
     <string name="username_hint">آدرس ایمیل یا شماره‌ی تلفن همراه</string>
     <string name="password_hint"> رمز عبور </string>
     <string name="confirm_password_hint"> تکرار رمز عبور </string>
 
     <string name="enter_button"> ورود </string>
     <string name="forgot_password"> رمز عبور خود را فراموش کرده‌اید؟ </string>
-    <string name="register_as_seller"> ثبت‌نام حساب غرفه‌داری </string>
     <string name="login_dialog_text">لطفاً چند لحظه صبر کنید&#8230;</string>
 
     <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکردید. </string>
@@ -80,8 +77,7 @@
         تلاش کنید.
     </string>
     <string name="successful_signup">" ثبت‌نام با موفقیت انجام شد "</string>
-    <string name="error_login_you_are_not_shop_owner">" شما هنوز حساب غرفه‌داری باز نکردید. "
-    </string>
+    <string name="error_login_you_are_not_shop_owner"> شما هنوز حساب فروشندگان هنرنما ندارید. </string>
     <string name="error_login_invalid_user_or_password">نام کاربری یا رمز عبور اشتباه است.</string>
     <string name="seller_profile">" اطلاعات شما "</string>
 
@@ -91,14 +87,6 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <!-- navigation drawer item labels  -->
-    <string-array name="nav_drawer_labels">
-        <item>@string/nav_title_profile</item>
-        <item>@string/nav_title_store_info</item>
-        <item>@string/nav_title_products</item>
-        <item>@string/nav_title_new_product</item>
-        <item>@string/nav_exit_app</item>
-    </string-array>
 
     <string name="nav_title_profile"> اطلاعات شما </string>
     <string name="nav_title_store_info"> اطلاعات فروشگاه </string>
