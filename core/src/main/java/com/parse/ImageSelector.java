@@ -1,4 +1,4 @@
-package net.honarnama.sell.utils;
+package com.parse;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -16,6 +16,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import bolts.Continuation;
+import bolts.Task;
 
 
 public class ImageSelector extends RoundedImageView implements View.OnClickListener {
@@ -57,6 +61,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mTempImageUriCapture;
     private Uri mTempImageUriCrop;
     private Uri mFinalImageUri;
+
+    private ParseFile mParseFile;
+
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -104,7 +111,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     }
 
     @Override
-    public void setOnClickListener(OnClickListener l) {
+    public void setOnClickListener(View.OnClickListener l) {
         if (mActivity == null) {
             throw new RuntimeException("call setActivity instead");
         }
@@ -160,18 +167,22 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                         break;
 
                     case 2:
-                        mFinalImageUri = null;
-                        if (mOnImageSelectedListener != null) {
-                            mOnImageSelectedListener.onImageRemoved();
-                        }
-                        if (mDefaultDrawable != null) {
-                            setImageDrawable(mDefaultDrawable);
-                        }
+                        removeSelectedImage();
                 }
                 dialog.dismiss();
             }
         });
         nationalCardImageOptionDialog.show();
+    }
+
+    public void removeSelectedImage() {
+        mFinalImageUri = null;
+        if (mOnImageSelectedListener != null) {
+            mOnImageSelectedListener.onImageRemoved();
+        }
+        if (mDefaultDrawable != null) {
+            setImageDrawable(mDefaultDrawable);
+        }
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -332,7 +343,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return true;
     }
 
-    public void onDestroy() {
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
         if (mTempImageUriCapture != null) {
             File f = new File(mTempImageUriCapture.getPath());
             if (f.canWrite()) {
@@ -407,5 +420,55 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         boolean onImageRemoved();
 
         void onImageSelectionFailed();
+    }
+
+    /**
+     * Kick off downloading of remote image. When the download is finished, the image data will be
+     * displayed.
+     * @param parseFile The remote file on Parse's server.
+     *
+     * @return A Task that is resolved when the image data is fetched and this View displays the image.
+     */
+    public Task<byte[]> loadInBackground(final ParseFile parseFile) {
+        if (parseFile == null) {
+            return Task.forResult(null);
+        }
+
+        if (mParseFile != null) {
+            mParseFile.cancel();
+        }
+        mParseFile = parseFile;
+
+        return parseFile.getDataInBackground().onSuccessTask(new Continuation<byte[], Task<byte[]>>() {
+            @Override
+            public Task<byte[]> then(Task<byte[]> task) throws Exception {
+                byte[] data = task.getResult();
+                if (mParseFile != parseFile) {
+                    // This prevents the very slim chance of the file's download finishing and the callback
+                    // triggering just before this ImageView is reused for another ParseObject.
+                    return Task.cancelled();
+                }
+                if (data != null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    if (bitmap != null) {
+                        setImageBitmap(bitmap);
+                    }
+                }
+                return task;
+            }
+        }, Task.UI_THREAD_EXECUTOR);
+    }
+
+    /**
+     * Kick off downloading of remote image. When the download is finished, the image data will be
+     * displayed and the {@code completionCallback} will be triggered.
+     *
+     * @param parseFile The remote file on Parse's server.
+     * @param completionCallback
+     *          A custom {@code GetDataCallback} to be called after the image data is fetched and this
+     *          {@code ImageView} displays the image.
+     */
+    public void loadInBackground(final ParseFile parseFile, final GetDataCallback completionCallback) {
+        ParseTaskUtils.callbackOnMainThreadAsync(loadInBackground(parseFile), completionCallback, true);
     }
 }

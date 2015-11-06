@@ -1,5 +1,6 @@
 package net.honarnama.sell.fragments;
 
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -10,7 +11,7 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
-import net.honarnama.sell.utils.ImageSelector;
+import com.parse.ImageSelector;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 
 public class EditItemFragment extends Fragment implements View.OnClickListener {
 
+    public static EditItemFragment mEditItemFragment;
+
     private Button mSaveButton;
     private EditText mProductTitle;
     private EditText mProductDescription;
@@ -42,16 +45,25 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
 
     private ImageSelector[] itemImages;
 
-    public static EditItemFragment mEditItemFragment;
+    private ParseObject mItem;
+    private String mItemId;
 
-    public synchronized static EditItemFragment getInstance()
-    {
-        if (mEditItemFragment == null)
-        {
+    public synchronized static EditItemFragment getInstance() {
+        if (mEditItemFragment == null) {
             mEditItemFragment = new EditItemFragment();
         }
         return mEditItemFragment;
     }
+
+    public void setItem(ParseObject item) {
+        mItem = item;
+        if (mItem == null) {
+            mItemId = null;
+        } else {
+            mItemId = mItem.getObjectId();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +92,11 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                     }
                 };
 
+        String savedItemId = null;
+        if (savedInstanceState != null) {
+            savedItemId = savedInstanceState.getString("mItemId");
+        }
+
         itemImages = new ImageSelector[]{
                 (ImageSelector) rootView.findViewById(R.id.itemImage1),
                 (ImageSelector) rootView.findViewById(R.id.itemImage2),
@@ -88,8 +105,45 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
         };
         for (ImageSelector imageSelector : itemImages) {
             imageSelector.setActivity(this.getActivity());
-            imageSelector.restore(savedInstanceState);
+            if (mItemId == savedItemId) {
+                imageSelector.restore(savedInstanceState);
+            }
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
+        }
+
+        if (mItemId != savedItemId) {
+            if (mItem == null) {
+                mProductTitle.setText("");
+                mProductDescription.setText("");
+                for (ImageSelector imageSelector : itemImages) {
+                    imageSelector.removeSelectedImage();
+                }
+            } else {
+                mProductTitle.setText(mItem.getString("title"));
+                mProductDescription.setText(mItem.getString("description"));
+                for (int i=1; i<5; i++) {
+                    ParseFile imageFile = mItem.getParseFile("image_" + i);
+                    if (imageFile != null) {
+                        itemImages[i].loadInBackground(imageFile, new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+                                if (HonarNamaBaseApp.DEBUG) {
+                                    if (e == null) {
+                                        Log.i(HonarNamaBaseApp.PRODUCTION_TAG + "/EditItem",
+                                                "Fetched! Data length: " + data.length);
+                                    } else {
+                                        Log.w(HonarNamaBaseApp.PRODUCTION_TAG + "/EditItem",
+                                                "Exception while loading image", e);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        } else if (savedInstanceState != null) {
+            mProductTitle.setText(savedInstanceState.getString("title"));
+            mProductDescription.setText(savedInstanceState.getString("description"));
         }
 
         mSaveButton = (Button) rootView.findViewById(R.id.saveItemButton);
@@ -226,12 +280,12 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
 
     public void saveItemInfo(ArrayList<ParseFile> parseFileImages) {
 
-        String title = mProductTitle.getText().toString();
-        String description = mProductDescription.getText().toString();
+        String title = mProductTitle.getText().toString().trim();
+        String description = mProductDescription.getText().toString().trim();
 
         ParseObject itemInfo = new ParseObject("item");
-        itemInfo.put("title", title.trim());
-        itemInfo.put("description", description.trim());
+        itemInfo.put("title", title);
+        itemInfo.put("description", description);
         itemInfo.put("owner", ParseUser.getCurrentUser());
         int count = 0;
         for (ParseFile parseFile : parseFileImages) {
@@ -239,6 +293,7 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             itemInfo.put("image_" + count, parseFile);
         }
         itemInfo.saveInBackground();
+
 
         Toast.makeText(getActivity(), " محصول شما با موفقیت ذخیره شد. ", Toast.LENGTH_LONG).show();
     }
@@ -259,13 +314,8 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
         for (ImageSelector imageSelector : itemImages) {
             imageSelector.onSaveInstanceState(outState);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        for (ImageSelector imageSelector : itemImages) {
-            imageSelector.onDestroy();
-        }
-        super.onDestroy();
+        outState.putString("mItemId", mItemId);
+        outState.putString("title", mProductTitle.getText().toString().trim());
+        outState.putString("description", mProductDescription.getText().toString().trim());
     }
 }

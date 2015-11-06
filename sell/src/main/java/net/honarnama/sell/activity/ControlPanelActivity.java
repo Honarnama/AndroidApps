@@ -1,5 +1,7 @@
 package net.honarnama.sell.activity;
 
+import com.parse.ParseObject;
+
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
@@ -8,25 +10,25 @@ import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.ProfileFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class ControlPanelActivity extends HonarNamaBaseActivity implements FragmentDrawer.FragmentDrawerListener {
+
+    public static final int DRAWER_INDEX_PROFILE = 0;
+    public static final int DRAWER_INDEX_STORE_INFO = 1;
+    public static final int DRAWER_INDEX_ITEMS = 2;
+    public static final int DRAWER_INDEX_ITEM_EDIT = 3;
+
     private Toolbar mToolbar;
     private FragmentDrawer mDrawerFragment;
 //    private TextView mToolbarTitleTextView;
@@ -81,28 +83,35 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
 
     @Override
     public void onDrawerItemSelected(View view, int position) {
-        displayView(position);
+        displayView(position, null);
     }
 
-    private void displayView(int position) {
+    public void displayView(int position, ParseObject item) {
 
         String title = getString(R.string.app_name);
         switch (position) {
-            case 0:
+            case DRAWER_INDEX_PROFILE:
                 mFragment = ProfileFragment.getInstance();
                 title = getString(R.string.seller_profile);
                 break;
-            case 1:
+            case DRAWER_INDEX_STORE_INFO:
                 mFragment = StoreInfoFragment.getInstance();
                 title = getString(R.string.nav_title_store_info);
                 break;
-            case 2:
+            case DRAWER_INDEX_ITEMS:
                 mFragment = ItemsFragment.newInstance();
                 title = getString(R.string.nav_title_products);
                 break;
-            case 3:
-                mFragment = EditItemFragment.getInstance();
-                title = getString(R.string.nav_title_new_product);
+            case DRAWER_INDEX_ITEM_EDIT:
+                EditItemFragment editItemFragment = EditItemFragment.getInstance();
+                if (item != null) {
+                    title = getString(R.string.nav_title_edit_product);
+                    editItemFragment.setItem(item);
+                } else {
+                    title = getString(R.string.nav_title_new_product);
+                    editItemFragment.setItem(null);
+                }
+                mFragment = editItemFragment;
                 break;
             default:
                 break;

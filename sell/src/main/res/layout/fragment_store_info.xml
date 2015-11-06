@@ -20,7 +20,7 @@
                 />
 
 
-        <net.honarnama.sell.utils.ImageSelector
+        <com.parse.ImageSelector
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/store_logo_image_view"
                 android:src="@drawable/fairy_lights"

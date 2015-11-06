@@ -6,16 +6,21 @@ import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ControlPanelActivity;
+import net.honarnama.sell.adapter.ItemsAdapter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-public class ItemsFragment extends Fragment {
+public class ItemsFragment extends Fragment implements AdapterView.OnItemClickListener {
+
+    ItemsAdapter mAdapter;
 
     public static ItemsFragment newInstance() {
         return new ItemsFragment();
@@ -26,22 +31,18 @@ public class ItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
-        ParseQueryAdapter<ParseObject> adapter =
-                new ParseQueryAdapter<ParseObject>(this.getActivity(),
-                        new ParseQueryAdapter.QueryFactory<ParseObject>() {
-                            public ParseQuery<ParseObject> create() {
-                                ParseQuery query = new ParseQuery("item");
-                                query.whereEqualTo("owner", ParseUser.getCurrentUser());
-                                return query;
-                            }
-                        });
-        adapter.setTextKey("title");
-        adapter.setImageKey("image_1");
-
         ListView listView = (ListView) rootView.findViewById(R.id.items_listview);
-        listView.setAdapter(adapter);
+        mAdapter = new ItemsAdapter(getActivity());
+        listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(this);
 
         return rootView;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ParseObject item = mAdapter.getItem(i);
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        controlPanelActivity.displayView(ControlPanelActivity.DRAWER_INDEX_ITEM_EDIT, item);
+    }
 }

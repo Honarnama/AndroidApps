@@ -11,7 +11,7 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
-import net.honarnama.sell.utils.ImageSelector;
+import com.parse.ImageSelector;
 import net.honarnama.utils.HonarNamaUser;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
@@ -145,14 +145,6 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         if (mStoreLogoImageView != null) {
             mStoreLogoImageView.onSaveInstanceState(outState);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mStoreLogoImageView != null) {
-            mStoreLogoImageView.onDestroy();
-        }
-        super.onDestroy();
     }
 
     public void uploadStoreLogo() {
