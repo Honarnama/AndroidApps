@@ -87,11 +87,6 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-
-    <string name="nav_title_profile"> اطلاعات شما </string>
-    <string name="nav_title_store_info"> اطلاعات فروشگاه </string>
-    <string name="nav_title_products">  محصولات </string>
-    <string name="nav_title_new_product"> ثبت محصول جدید </string>
     <string name="nav_exit_app"> خروج </string>
     <string name="app_title">هنرنما</string>
 

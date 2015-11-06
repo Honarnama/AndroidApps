@@ -4,8 +4,14 @@
                 android:layout_height="wrap_content"
                 android:clickable="true">
 
+    <ImageView
+            android:id="@+id/drawer_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            />
     <TextView
-            android:id="@+id/title"
+            android:id="@+id/drawer_item_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingRight="25dp"
@@ -15,5 +21,6 @@
             android:textStyle="bold"
             android:textColor="@color/nokhodi_ghahvei"
             />
+
 
 </RelativeLayout>
