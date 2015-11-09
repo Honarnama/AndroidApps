@@ -27,8 +27,11 @@ dependencies {
     debugCompile project(path: ':core', configuration: 'debug')
     releaseCompile project(path: ':core', configuration: 'release')
 
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:23+'
+    compile 'com.android.support:recyclerview-v7:23+'
+
+    compile 'com.makeramen:roundedimageview:2.1.2'
+
+
 }
 

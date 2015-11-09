@@ -10,7 +10,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +22,15 @@ public class ItemsFragment extends Fragment implements AdapterView.OnItemClickLi
 
     ItemsAdapter mAdapter;
 
-    public static ItemsFragment newInstance() {
-        return new ItemsFragment();
+    public static ItemsFragment mItemsFragment;
+
+    public synchronized static ItemsFragment getInstance()
+    {
+        if (mItemsFragment == null)
+        {
+            mItemsFragment = new ItemsFragment();
+        }
+        return mItemsFragment;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class ItemsFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ParseObject item = mAdapter.getItem(i);
-        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayView(ControlPanelActivity.DRAWER_INDEX_ITEM_EDIT, item);
+//        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+//        controlPanelActivity.displayView(ControlPanelActivity.DRAWER_INDEX_ITEM_EDIT, item);
     }
 }

@@ -87,7 +87,7 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="nav_exit_app"> خروج </string>
+    <string name="nav_title_exit_app"> خروج </string>
     <string name="app_title">هنرنما</string>
 
     <string name="title_activity_edit_item">ویرایش محصول</string>

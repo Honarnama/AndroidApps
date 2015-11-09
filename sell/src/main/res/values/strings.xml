@@ -20,16 +20,17 @@
 
     <string name="nav_title_seller_account"> حساب کاربری </string>
     <string name="nav_title_store_info"> اطلاعات فروشگاه </string>
-    <string name="nav_title_products">  محصولات </string>
-    <string name="nav_title_new_product"> ثبت محصول جدید </string>
-    <string name="nav_title_edit_product">ویرایش محصول</string>
+
+    <string name="nav_title_items">  محصولات </string>
+    <string name="nav_title_new_item"> ثبت محصول جدید </string>
+    <string name="nav_title_edit_item"> ویرایش محصول </string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_title_seller_account</item>
         <item>@string/nav_title_store_info</item>
-        <item>@string/nav_title_products</item>
-        <item>@string/nav_title_new_product</item>
-        <item>@string/nav_exit_app</item>
+        <item>@string/nav_title_items</item>
+        <item>@string/nav_title_edit_item</item>
+        <item>@string/nav_title_exit_app</item>
     </string-array>
 </resources>

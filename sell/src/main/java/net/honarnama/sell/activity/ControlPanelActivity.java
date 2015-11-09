@@ -1,57 +1,95 @@
 package net.honarnama.sell.activity;
 
-import com.parse.ParseObject;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
-import net.honarnama.sell.fragments.FragmentDrawer;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.ProfileFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
-public class ControlPanelActivity extends HonarNamaBaseActivity implements FragmentDrawer.FragmentDrawerListener {
-
-    public static final int DRAWER_INDEX_PROFILE = 0;
-    public static final int DRAWER_INDEX_STORE_INFO = 1;
-    public static final int DRAWER_INDEX_ITEMS = 2;
-    public static final int DRAWER_INDEX_ITEM_EDIT = 3;
-
+public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawer.OnDrawerItemClickListener {
     private Toolbar mToolbar;
-    private FragmentDrawer mDrawerFragment;
-//    private TextView mToolbarTitleTextView;
+    //    private TextView mToolbarTitleTextView;
+    private ActionBarDrawerToggle mDrawerToggle;
+    Drawer mResult;
     private Fragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control_panel);
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        mToolbar = (Toolbar) findViewById(R.id.control_panel_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        mToolbarTitleTextView = (TextView) findViewById(R.id.toolbar_title);
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.hamburger_icon);
-        mDrawerFragment = (FragmentDrawer)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        mDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-        mDrawerFragment.setDrawerListener(this);
 
+        mResult = new DrawerBuilder().withActivity(this)
+                .withDrawerGravity(Gravity.RIGHT)
+                .withRootView(R.id.drawer_container)
+                .withToolbar(mToolbar)
+                .withActionBarDrawerToggleAnimated(true)
+                .withSelectedItem(-1)
+                .withTranslucentStatusBar(false)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).withIcon(GoogleMaterial.Icon.gmd_account).withIdentifier(1),
+                        new DividerDrawerItem().withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4),
+                        new DividerDrawerItem().withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5)
+                )
+                .withOnDrawerItemClickListener(this)
+                .build();
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
+        };
+
+        mResult.getDrawerLayout().post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
+        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if (mResult.isDrawerOpen()) {
+//                    mResult.closeDrawer();
+//                } else {
+//                    mResult.openDrawer();
+//                }
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mResult.setActionBarDrawerToggle(mDrawerToggle);
+
+        this.mDrawerToggle.syncState();
     }
 
     @Override
@@ -70,68 +108,54 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Fragm
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            mDrawerFragment.handleDrawerState();
+            if (mResult.isDrawerOpen()) {
+                mResult.closeDrawer();
+            } else {
+                mResult.openDrawer();
+            }
         }
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onDrawerItemSelected(View view, int position) {
-        displayView(position, null);
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (mFragment != null) {
+            mFragment.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 
-    public void displayView(int position, ParseObject item) {
-
-        String title = getString(R.string.app_name);
-        switch (position) {
-            case DRAWER_INDEX_PROFILE:
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        String title ="";
+        switch (drawerItem.getIdentifier()) {
+            case 1:
                 mFragment = ProfileFragment.getInstance();
-                title = getString(R.string.seller_profile);
+                title = getString(R.string.nav_title_seller_account);
                 break;
-            case DRAWER_INDEX_STORE_INFO:
+            case 2:
                 mFragment = StoreInfoFragment.getInstance();
                 title = getString(R.string.nav_title_store_info);
                 break;
-            case DRAWER_INDEX_ITEMS:
-                mFragment = ItemsFragment.newInstance();
-                title = getString(R.string.nav_title_products);
+            case 3:
+                mFragment = ItemsFragment.getInstance();
+                title = getString(R.string.nav_title_items);
                 break;
-            case DRAWER_INDEX_ITEM_EDIT:
-                EditItemFragment editItemFragment = EditItemFragment.getInstance();
-                if (item != null) {
-                    title = getString(R.string.nav_title_edit_product);
-                    editItemFragment.setItem(item);
-                } else {
-                    title = getString(R.string.nav_title_new_product);
-                    editItemFragment.setItem(null);
-                }
-                mFragment = editItemFragment;
+            case 4:
+                mFragment = EditItemFragment.getInstance();
+                title = getString(R.string.nav_title_edit_item);
                 break;
-            default:
-                break;
-        }
 
+        }
         if (mFragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, mFragment);
+            fragmentTransaction.replace(R.id.frame_container, mFragment);
             fragmentTransaction.commit();
 
             getSupportActionBar().setTitle(title);
-            // set the toolbar title
-//            mToolbarTitleTextView.setText(title);
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        mFragment.onActivityResult(requestCode, resultCode, intent);
+        return false;
     }
 }
