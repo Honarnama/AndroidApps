@@ -12,7 +12,7 @@ import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
-import net.honarnama.sell.fragments.ProfileFragment;
+import net.honarnama.sell.fragments.SellerAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
 import android.app.Fragment;
@@ -55,7 +55,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).withIcon(GoogleMaterial.Icon.gmd_account).withIdentifier(1),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2).withIcon(GoogleMaterial.Icon.gmd_local_store),
                         new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3),
                         new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4),
                         new DividerDrawerItem().withSelectable(false),
@@ -131,7 +131,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
         String title ="";
         switch (drawerItem.getIdentifier()) {
             case 1:
-                mFragment = ProfileFragment.getInstance();
+                mFragment = SellerAccountFragment.getInstance();
                 title = getString(R.string.nav_title_seller_account);
                 break;
             case 2:

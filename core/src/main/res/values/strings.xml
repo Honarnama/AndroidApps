@@ -1,14 +1,18 @@
 <resources>
 
     <string name="username_hint">آدرس ایمیل یا شماره‌ی تلفن همراه</string>
-    <string name="password_hint"> رمز عبور </string>
-    <string name="confirm_password_hint"> تکرار رمز عبور </string>
+    <string name="password_hint">رمز عبور</string>
+    <string name="current_password_hint">رمز عبور فعلی</string>
+    <string name="new_password_hint">رمز عبور جدید</string>
+    <string name="confirm_password_hint">تکرار رمز عبور</string>
+    <string name="alter_password">تغییر رمز عبور</string>
+    <string name="resend_verification_docs">ارسال مجدد مدارک</string>
 
-    <string name="enter_button"> ورود </string>
-    <string name="forgot_password"> رمز عبور خود را فراموش کرده‌اید؟ </string>
+    <string name="enter_button">ورود</string>
+    <string name="forgot_password">رمز عبور خود را فراموش کرده‌اید؟</string>
     <string name="login_dialog_text">لطفاً چند لحظه صبر کنید&#8230;</string>
 
-    <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکردید. </string>
+    <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکردید.</string>
     <string name="resend_telegram">ارسال کد از طریق تلگرام</string>
     <string name="login_using_telegram">ورود از طریق تلگرام</string>
 
@@ -18,12 +22,16 @@
     <string name="hello_world">Hello world!</string>
 
     <string name="name">نام</string>
-    <string name="register_form_subtitle"> *وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی است. </string>
-    <string name="register_form_name_alert"> نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند، اما اختیاری هستند. </string>
-    <string name="select_activation_method"> *‌نحوه‌ی فعال‌سازی حساب: </string>
-    <string name="email_address_hint"> آدرس ایمیل - مثال: your_name@yahoo.com </string>
-    <string name="mobile_number_hint"> شماره تلفن همراه - مثال: 09123456789 </string>
-    <string name="add_national_card_image_text">  * افزودن تصویر کارت ملی:  </string>
+    <string name="register_form_subtitle">*وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی
+        است.
+    </string>
+    <string name="register_form_name_alert">نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند، اما
+        اختیاری هستند.
+    </string>
+    <string name="select_activation_method">*‌نحوه‌ی فعال‌سازی حساب:</string>
+    <string name="email_address_hint">آدرس ایمیل - مثال: your_name@yahoo.com</string>
+    <string name="mobile_number_hint">شماره تلفن همراه - مثال: 09123456789</string>
+    <string name="add_national_card_image_text">* افزودن تصویر کارت ملی:</string>
     <string name="register_card_number_alert_text">نام صاحب شماره کارت باید با اطلاعات کارت ملی
         مطابقت داشته باشد.
     </string>
@@ -43,17 +51,22 @@
     <string name="telegram_activation_dialog_title">فعال‌سازی حساب با تلگرام</string>
     <string name="telegram_activation_option_text">ارسال پیغام از طریق تلگرام این دستگاه</string>
 
-    <string name="error_email_field_can_not_be_empty">"فیلد آدرس ایمیل نمی‌تواند خالی باشد. "</string>
+    <string name="error_email_field_can_not_be_empty">"فیلد آدرس ایمیل نمی‌تواند خالی باشد. "
+    </string>
     <string name="error_email_address_is_not_valid">" آدرس ایمیل معتبر نیست. "</string>
-    <string name="error_mobile_number_field_can_not_be_empty">" فیلد شماره تلفن همراه نمی‌تواند خالی باشد.
+    <string name="error_mobile_number_field_can_not_be_empty">" فیلد شماره تلفن همراه نمی‌تواند خالی
+        باشد.
         "
     </string>
     <string name="error_mobile_number_is_not_valid">" شماره تلفن همراه معتبر نیست. "</string>
-    <string name="error_password_field_can_not_be_empty">" فیلد رمز عبور نمی‌تواند خالی باشد. "</string>
-    <string name="error_confirm_password_field_cant_be_empty">" فیلد تکرار رمز عبور نمی‌تواند خالی باشد.
+    <string name="error_password_field_can_not_be_empty">" فیلد رمز عبور نمی‌تواند خالی باشد. "
+    </string>
+    <string name="error_confirm_password_field_cant_be_empty">" فیلد تکرار رمز عبور نمی‌تواند خالی
+        باشد.
         "
     </string>
-    <string name="error_password_and_confirmpassword_does_not_match">" مقدار فیلد رمز عبور و تکرار آن یکی
+    <string name="error_password_and_confirmpassword_does_not_match">" مقدار فیلد رمز عبور و تکرار
+        آن یکی
         نیست. "
     </string>
     <string name="error_national_card_image_is_not_set">" تصویر کارت ملی انتخاب نشده است. "</string>
@@ -65,9 +78,11 @@
     </string>
     <string name="error_register_password_is_empty">"فیلد رمز عبور خالی است. "</string>
     <string name="error_login_wrong_username">نام کاربری یا رمز عبور اشتباه است.</string>
-    
-    <string name="error_network_is_not_enabled">   دستگاه شما به اینترنت متصل نیست.  </string>
-    <string name="error_no_internet_connection">  مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را بررسی کنید.  </string>
+
+    <string name="error_network_is_not_enabled">دستگاه شما به اینترنت متصل نیست.</string>
+    <string name="error_no_internet_connection">مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را
+        بررسی کنید.
+    </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
     <string name="error_signup_duplicated_email">" ایمیل وارد شده پیشتر ثبت شده است. "</string>
     <string name="error_signup_duplicated_mobile_number">" شماره تلفن همراه وارد شده پیشتر ثبت شده
@@ -77,26 +92,30 @@
         تلاش کنید.
     </string>
     <string name="successful_signup">" ثبت‌نام با موفقیت انجام شد "</string>
-    <string name="error_login_you_are_not_shop_owner"> شما هنوز حساب فروشندگان هنرنما ندارید. </string>
+    <string name="error_login_you_are_not_shop_owner">شما هنوز حساب فروشندگان هنرنما ندارید.
+    </string>
     <string name="error_login_invalid_user_or_password">نام کاربری یا رمز عبور اشتباه است.</string>
     <string name="seller_profile">" اطلاعات شما "</string>
-
 
 
     <string name="action_search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="nav_title_exit_app"> خروج </string>
+    <string name="nav_title_exit_app">خروج</string>
     <string name="app_title">هنرنما</string>
 
     <string name="title_activity_edit_item">ویرایش محصول</string>
     <string name="edit_item_photos_title">تصاویر</string>
-    <string name="edit_item_photos_description"> خداقل یک عکس از محصول خود بگذارید. </string>
+    <string name="edit_item_photos_description">خداقل یک عکس از محصول خود بگذارید.</string>
     <string name="edit_item_details_title">مشخصات</string>
-    <string name="edit_item_details_description">به جهانیان محصولتان را معرفی کنید و بگویید که چرا قراره عاشقش شوند.</string>
+    <string name="edit_item_details_description">به جهانیان محصولتان را معرفی کنید و بگویید که چرا
+        قراره عاشقش شوند.
+    </string>
     <string name="edit_item_title_hint">عنوان محصول</string>
-    <string name="edit_item_title_sub_hint">از کلماتی استفاده کنید که مردم در سرچ استفاده خواهند کرد</string>
+    <string name="edit_item_title_sub_hint">از کلماتی استفاده کنید که مردم در سرچ استفاده خواهند
+        کرد
+    </string>
     <string name="edit_item_description_hint">توضیحات</string>
     <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
@@ -105,5 +124,6 @@
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
     <string name="please_check_internet_connection">" لطفاًاینترنت دستگاه خود را بررسی کنید. "
     </string>
+    <string name="alter_name">تغییر نام</string>
 
 </resources>
