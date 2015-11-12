@@ -125,5 +125,6 @@
     <string name="please_check_internet_connection">" لطفاًاینترنت دستگاه خود را بررسی کنید. "
     </string>
     <string name="alter_name">تغییر نام</string>
+    <string name="successfully_changed_user_name">نام شما با موفقیت تغییر یافت.</string>
 
 </resources>

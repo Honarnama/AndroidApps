@@ -53,13 +53,13 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
                 .withSelectedItem(-1)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).withIcon(GoogleMaterial.Icon.gmd_account).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).withIcon(GoogleMaterial.Icon.gmd_account_circle).withIdentifier(1),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2).withIcon(GoogleMaterial.Icon.gmd_local_store),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2).withIcon(GoogleMaterial.Icon.gmd_store),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3).withIcon(GoogleMaterial.Icon.gmd_view_list),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5)
+                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_eject)
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();

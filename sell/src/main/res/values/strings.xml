@@ -24,6 +24,7 @@
     <string name="nav_title_items">محصولات</string>
     <string name="nav_title_new_item">ثبت محصول جدید</string>
     <string name="nav_title_edit_item">ویرایش محصول</string>
+    <string name="changing_user_name_failed">بروز خطا در زمان تغییر نام</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
