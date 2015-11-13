@@ -1,6 +1,7 @@
 package net.honarnama.sell.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -59,7 +60,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3).withIcon(GoogleMaterial.Icon.gmd_view_list),
                         new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_eject)
+                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_power_off)
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();

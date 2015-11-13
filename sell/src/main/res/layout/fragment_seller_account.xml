@@ -33,36 +33,32 @@
                 android:layout_alignParentRight="true"
                 android:background="#ffffff"
                 android:gravity="right"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 >
             <EditText
                     android:id="@+id/seller_account_firstname_edit_text"
-                    android:layout_width="0dp" android:layout_height="45dp"
+                    android:layout_width="match_parent" android:layout_height="45dp"
                     android:inputType="textPersonName"
                     android:hint="@string/name"
                     android:singleLine="true"
-                    android:layout_weight="1"
                     android:textSize="16sp"
                     android:ellipsize="start"
                     android:gravity="right"
                     android:textColorHint="@color/android_default_hint_color"
-                    android:layout_marginLeft="5dp"
                     >
                 <requestFocus/>
             </EditText>
             <EditText
                     android:id="@+id/seller_account_lastname_edit_text"
-                    android:layout_width="0dp" android:layout_height="45dp"
+                    android:layout_width="match_parent" android:layout_height="45dp"
                     android:inputType="textPersonName"
                     android:hint="@string/family_name"
                     android:layout_alignParentTop="true"
                     android:singleLine="true"
-                    android:layout_weight="1"
                     android:textSize="16sp"
                     android:ellipsize="start"
                     android:gravity="right"
                     android:textColorHint="@color/android_default_hint_color"
-                    android:layout_marginRight="5dp"
                     />
         </LinearLayout>
         <Button
@@ -79,62 +75,35 @@
                 android:layout_marginBottom="15dp"
                 />
 
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:id="@+id/seller_account_password_layer"
-                      android:orientation="vertical"
-                      android:layout_below="@id/seller_account_alter_name_button"
+        <RelativeLayout
+                android:id="@+id/seller_account_password_layer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seller_account_alter_name_button"
                 >
-            <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                <TextView
-                        android:id="@+id/seller_account_current_password_star_marker"
-                        android:text="*"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:layout_gravity="center|top"
-                        android:textStyle="bold"
-                        android:layout_centerVertical="true"
-                        />
-                <EditText
-                        android:id="@+id/seller_account_current_password_edit_text"
-                        android:layout_width="fill_parent" android:layout_height="45dp"
-                        android:inputType="textWebPassword"
-                        android:hint="@string/current_password_hint"
-                        android:singleLine="true"
-                        android:textSize="16sp"
-                        android:ellipsize="start"
-                        android:textColorHint="@color/android_default_hint_color"
-                        android:gravity="right"
-                        android:layout_toLeftOf="@id/seller_account_current_password_star_marker"
-                        />
-            </RelativeLayout>
-            <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                <TextView
-                        android:id="@+id/seller_account_new_password_star_marker"
-                        android:text="*"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:layout_gravity="center|top"
-                        android:textStyle="bold"
-                        android:layout_centerVertical="true"
-                        />
-                <EditText
-                        android:id="@+id/seller_account_new_password_edit_text"
-                        android:layout_width="fill_parent" android:layout_height="45dp"
-                        android:inputType="textWebPassword"
-                        android:hint="@string/new_password_hint"
-                        android:singleLine="true"
-                        android:textSize="16sp"
-                        android:ellipsize="start"
-                        android:textColorHint="@color/android_default_hint_color"
-                        android:gravity="right"
-                        android:layout_toLeftOf="@id/seller_account_new_password_star_marker"
-                        />
-            </RelativeLayout>
-        </LinearLayout>
+            <TextView
+                    android:id="@+id/seller_account_new_password_star_marker"
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    />
+            <EditText
+                    android:id="@+id/seller_account_new_password_edit_text"
+                    android:layout_width="fill_parent" android:layout_height="45dp"
+                    android:inputType="textWebPassword"
+                    android:hint="@string/new_password_hint"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:ellipsize="start"
+                    android:textColorHint="@color/android_default_hint_color"
+                    android:gravity="right"
+                    android:layout_toLeftOf="@id/seller_account_new_password_star_marker"
+                    />
+        </RelativeLayout>
 
         <Button
                 android:id="@+id/seller_account_alter_password_button"
