@@ -27,6 +27,9 @@
     <string name="changing_user_name_failed">بروز خطا در زمان تغییر نام</string>
     <string name="successfully_changed_password">رمز عبور با موفقیت تغییر کرد.</string>
     <string name="changing_password_failed">خطایی در هنگام تغییر رمز عبور رخداد.</string>
+    <string name="uploading_image_failed">" خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. "</string>
+    <string name="successfully_sent_vereification_docs">مدارکتان با موفقیت ارسال شد.</string>
+    <string name="sending_verification_docs_failed">خطایی در هنگام ارسال مدارک رخ داد.</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

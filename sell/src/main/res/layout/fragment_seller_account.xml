@@ -122,6 +122,7 @@
                         android:id="@+id/seller_accouunt_verification_docs_layer"
                         android:layout_below="@id/seller_account_alter_password_button"
                         android:layout_marginTop="30dp"
+                        android:visibility="gone"
                 >
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
@@ -200,7 +201,7 @@
                     android:layout_below="@id/seller_account_national_card_layer"
                     />
             <Button
-                    android:id="@+id/seller_account_resend_verification_docs"
+                    android:id="@+id/seller_account_resend_verification_docs_button"
                     android:layout_width="match_parent" android:layout_height="45dp"
                     android:background="@color/nokhodi_botte_jeghe"
                     android:textColor="#ffffff"

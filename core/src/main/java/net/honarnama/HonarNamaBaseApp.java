@@ -30,9 +30,6 @@ public class HonarNamaBaseApp extends Application {
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
 
-    public static String STORE_LOGO_FILE_NAME = "store_logo.jpg";
-
-
     public static HonarNamaBaseApp getInstance() {
         return singleton;
     }

@@ -3,19 +3,21 @@ package net.honarnama.sell.fragments;
 
 import com.parse.ImageSelector;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.sell.HonarNamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
+import net.honarnama.utils.ParseIO;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,9 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,15 +39,18 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
 
     public static SellerAccountFragment mSellerAccountFragment;
 
-    private ImageSelector mNationalCardImageView;
-    private EditText mBankCardNumberEditText;
     private EditText mFirstnameEditText;
     private EditText mLastnameEditText;
     private Button mAlterNameButton;
-    private ParseUser mParseUser;
+    private ParseUser mCurrentUser;
+    private EditText mNewPasswordEditText;
 
-    private EditText mNewPassword;
     private Button mChangePasswordButton;
+    private RelativeLayout mVerificationDocsLayer;
+
+    private EditText mBankCardNumberEditText;
+    private ImageSelector mNationalCardImageView;
+    private Button mResendVerificationDocsButton;
 
     public synchronized static SellerAccountFragment getInstance() {
         if (mSellerAccountFragment == null) {
@@ -61,23 +68,56 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mParseUser = ParseUser.getCurrentUser();
+        mCurrentUser = ParseUser.getCurrentUser();
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_seller_account, container, false);
 
         mFirstnameEditText = (EditText) rootView.findViewById(R.id.seller_account_firstname_edit_text);
         mLastnameEditText = (EditText) rootView.findViewById(R.id.seller_account_lastname_edit_text);
-        mFirstnameEditText.setText(mParseUser.get("firstname").toString());
-        mLastnameEditText.setText(mParseUser.get("lastname").toString());
+        mFirstnameEditText.setText(mCurrentUser.get("firstname").toString());
+        mLastnameEditText.setText(mCurrentUser.get("lastname").toString());
         mAlterNameButton = (Button) rootView.findViewById(R.id.seller_account_alter_name_button);
         mAlterNameButton.setOnClickListener(this);
 
-        mNewPassword = (EditText) rootView.findViewById(R.id.seller_account_new_password_edit_text);
+        mNewPasswordEditText = (EditText) rootView.findViewById(R.id.seller_account_new_password_edit_text);
         mChangePasswordButton = (Button) rootView.findViewById(R.id.seller_account_alter_password_button);
         mChangePasswordButton.setOnClickListener(this);
 
-//        mNewPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mNewPasswordEditText));
-//        mBankCardNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mBankCardNumberEditText));
+        mNewPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mNewPasswordEditText));
+
+        mVerificationDocsLayer = (RelativeLayout) rootView.findViewById(R.id.seller_accouunt_verification_docs_layer);
+
+        if (mCurrentUser.has("isVerifiedShopOwner")) {
+            if (!Boolean.valueOf(mCurrentUser.get("isVerifiedShopOwner").toString())) {
+                mVerificationDocsLayer.setVisibility(View.VISIBLE);
+                mBankCardNumberEditText = (EditText) rootView.findViewById(R.id.seller_account_bank_card_number_edit_text);
+                mBankCardNumberEditText.setText(mCurrentUser.get("bankCardNumber").toString());
+                mBankCardNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mBankCardNumberEditText));
+                mResendVerificationDocsButton = (Button) rootView.findViewById(R.id.seller_account_resend_verification_docs_button);
+                mResendVerificationDocsButton.setOnClickListener(this);
+
+                mNationalCardImageView = (ImageSelector) rootView.findViewById(R.id.seller_account_national_card_image_view);
+                mNationalCardImageView.setActivity(getActivity());
+                mNationalCardImageView.restore(savedInstanceState);
+
+                mNationalCardImageView.loadInBackground(mCurrentUser.getParseFile("nationalCardImage"));
+                mNationalCardImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
+                    @Override
+                    public boolean onImageSelected(Uri selectedImage, boolean cropped) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onImageRemoved() {
+                        return false;
+                    }
+
+                    @Override
+                    public void onImageSelectionFailed() {
+                    }
+                });
+            }
+        }
 
 
         return rootView;
@@ -86,18 +126,33 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == mAlterNameButton.getId()) {
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-                return;
-            }
-            changeUserName();
+
+        switch (view.getId()) {
+            case R.id.seller_account_alter_name_button:
+                if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                    return;
+                }
+                changeUserName();
+                break;
+            case R.id.seller_account_alter_password_button:
+                if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                    return;
+                }
+                if (mNewPasswordEditText.toString().trim().length() > 0) {
+                    changePassword();
+                }
+                break;
+            case R.id.seller_account_resend_verification_docs_button:
+                if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                    return;
+                }
+                if (verificationDocsAreValid()) {
+                    uploadNationalCardImage();
+                }
+                break;
+
         }
-        if (view.getId() == mChangePasswordButton.getId()) {
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-                return;
-            }
-            changePassword();
-        }
+
     }
 
     private void changeUserName() {
@@ -107,11 +162,11 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
         sendingDataProgressDialog.show();
 
 
-        mParseUser.put("firstname", mFirstnameEditText.getText().toString().trim());
-        mParseUser.put("lastname", mLastnameEditText.getText().toString().trim());
+        mCurrentUser.put("firstname", mFirstnameEditText.getText().toString().trim());
+        mCurrentUser.put("lastname", mLastnameEditText.getText().toString().trim());
 
-        mParseUser.pinInBackground();
-        mParseUser.saveInBackground(new SaveCallback() {
+        mCurrentUser.pinInBackground();
+        mCurrentUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
@@ -138,8 +193,8 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        mParseUser.setPassword(mNewPassword.getText().toString());
-        mParseUser.saveInBackground(new SaveCallback() {
+        mCurrentUser.setPassword(mNewPasswordEditText.getText().toString());
+        mCurrentUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 sendingDataProgressDialog.dismiss();
@@ -159,5 +214,116 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
             }
         });
 
+    }
+
+    //TODO Load ImageView from DB
+    private boolean verificationDocsAreValid() {
+        //TODO Check form imputs
+        return true;
+    }
+
+    private void uploadNationalCardImage() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            return;
+        }
+
+        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
+        sendingDataProgressDialog.setCancelable(false);
+        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
+        sendingDataProgressDialog.show();
+
+        if (mNationalCardImageView.getFinalImageUri() == null) {
+            return;
+        }
+
+        final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
+        try {
+            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaSellApp.NATIONAL_CARD_FILE_NAME,
+                    nationalCardImageFile);
+            parseFile.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        try {
+                            ParseIO.copyFile(nationalCardImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.NATIONAL_CARD_FILE_NAME));
+                        } catch (IOException e1) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                        "Error copying national card image to sd card " + e1, e1);
+                            } else {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
+                                        + e1.getMessage());
+                            }
+                        }
+                        resendVerificationDocs(parseFile, sendingDataProgressDialog);
+                    } else {
+                        Toast.makeText(getActivity(), R.string.uploading_image_failed, Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading national card image Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        } else {
+                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading national card image Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        }
+                        sendingDataProgressDialog.dismiss();
+                    }
+                }
+            });
+        } catch (IOException ioe) {
+            Toast.makeText(getActivity(), R.string.uploading_image_failed,
+                    Toast.LENGTH_LONG).show();
+
+            if (BuildConfig.DEBUG) {
+                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        "Failed on preparing national card image. " + ioe, ioe);
+            } else {
+                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing national card image. ioe="
+                        + ioe.getMessage());
+            }
+
+            sendingDataProgressDialog.dismiss();
+        }
+    }
+
+    private void resendVerificationDocs(ParseFile parseFile, final ProgressDialog progressDialog) {
+
+        mCurrentUser.put("bankCardNumber", mBankCardNumberEditText.getText().toString().trim());
+        mCurrentUser.put("nationalCardImage", parseFile);
+
+        mCurrentUser.pinInBackground();
+        mCurrentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+
+                if (e == null) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_sent_vereification_docs), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.sending_verification_docs_failed), Toast.LENGTH_LONG).show();
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Failed on sending verification docs. " + e, e);
+                    } else {
+                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on sending verification docs. error msg="
+                                + e.getMessage());
+                    }
+                }
+                progressDialog.dismiss();
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        mNationalCardImageView.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mNationalCardImageView != null) {
+            mNationalCardImageView.onSaveInstanceState(outState);
+        }
     }
 }

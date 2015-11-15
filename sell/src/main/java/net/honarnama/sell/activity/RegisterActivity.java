@@ -11,8 +11,12 @@ import com.parse.SignUpCallback;
 
 import net.honarnama.HonarNamaBaseActivity;
 import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.sell.HonarNamaSellApp;
 import net.honarnama.sell.R;
+
 import com.parse.ImageSelector;
+
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
@@ -23,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -164,13 +169,24 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
 //        Bitmap bitmap = ((BitmapDrawable) mNationalCardImageView.getDrawable()).getBitmap();
 //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
+        final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
         try {
             final ParseFile parseFile = ParseIO.getParseFileFromFile("nationalCardImageFile.jpeg", nationalCardImageFile);
 
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
+                        try {
+                            ParseIO.copyFile(nationalCardImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.NATIONAL_CARD_FILE_NAME));
+                        } catch (IOException e1) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                        "Error copying national card image to sd card " + e1, e1);
+                            } else {
+                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
+                                        + e1.getMessage());
+                            }
+                        }
                         signUserUpInParse(parseFile, sendingDataProgressDialog);
                     } else {
                         Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();

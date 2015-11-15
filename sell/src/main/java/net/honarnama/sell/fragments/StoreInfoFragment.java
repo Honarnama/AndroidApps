@@ -10,6 +10,7 @@ import com.parse.SaveCallback;
 
 import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.sell.HonarNamaSellApp;
 import net.honarnama.sell.R;
 import com.parse.ImageSelector;
 import net.honarnama.utils.HonarNamaUser;
@@ -159,19 +160,19 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         sendingDataProgressDialog.show();
 
         if (mStoreLogoImageView.getFinalImageUri() == null) {
-            registerStore(null, sendingDataProgressDialog);
+            addOrUpdateStore(null, sendingDataProgressDialog);
             return;
         }
         final File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaBaseApp.STORE_LOGO_FILE_NAME,
+            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaSellApp.STORE_LOGO_FILE_NAME,
                     storeLogoImageFile);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        registerStore(parseFile, sendingDataProgressDialog);
+                        addOrUpdateStore(parseFile, sendingDataProgressDialog);
                         try {
-                            ParseIO.copyFile(storeLogoImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaBaseApp.STORE_LOGO_FILE_NAME));
+                            ParseIO.copyFile(storeLogoImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.STORE_LOGO_FILE_NAME));
                         } catch (IOException e1) {
                             if (BuildConfig.DEBUG) {
                                 Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -210,7 +211,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private void registerStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
+    private void addOrUpdateStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
         //check if user already have a registered store
         final ParseFile parseFile = parseFileParam;
         final ProgressDialog progressDialog = progressDialogParam;
@@ -247,7 +248,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 if (e == null) {
                     mStoreNameEditText.setText(storeInfo.getString(NAME_FIELD));
                     mStorePlicyEditText.setText(storeInfo.getString(POLICY_FIELD));
-                    File localStoreLogoFile = new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaBaseApp.STORE_LOGO_FILE_NAME);
+                    File localStoreLogoFile = new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.STORE_LOGO_FILE_NAME);
                     if (localStoreLogoFile.exists()) {
                         mStoreLogoImageView.setFinalImageUri(Uri.parse(localStoreLogoFile.getAbsolutePath()));
                     }
@@ -327,5 +328,5 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
 
     }
-
+//TODO: Load imageview from db
 }
