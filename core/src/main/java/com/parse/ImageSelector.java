@@ -64,6 +64,16 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     private ParseFile mParseFile;
 
+    private Boolean mImageIsLoaded = false;
+
+    public Boolean getImageIsLoaded() {
+        return mImageIsLoaded;
+    }
+
+    public void setImageIsLoaded(Boolean imageIsLoaded) {
+        mImageIsLoaded = imageIsLoaded;
+    }
+
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);

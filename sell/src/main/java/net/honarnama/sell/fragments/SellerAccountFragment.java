@@ -1,6 +1,7 @@
 package net.honarnama.sell.fragments;
 
 
+import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -104,7 +105,12 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 mNationalCardImageView.setActivity(getActivity());
                 mNationalCardImageView.restore(savedInstanceState);
 
-                mNationalCardImageView.loadInBackground(mCurrentUser.getParseFile("nationalCardImage"));
+                mNationalCardImageView.loadInBackground(mCurrentUser.getParseFile("nationalCardImage"), new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        mNationalCardImageView.setImageIsLoaded(true);
+                    }
+                });
                 mNationalCardImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
                     @Override
                     public boolean onImageSelected(Uri selectedImage, boolean cropped) {
@@ -143,11 +149,9 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                     return;
                 }
                 if (mNewPasswordEditText.getText().toString().trim().length() > 0) {
-                    Toast.makeText(getActivity(), mNewPasswordEditText.toString().trim().length()+"", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), mNewPasswordEditText.toString().trim().length() + "", Toast.LENGTH_LONG).show();
                     changePassword();
-                }
-                else
-                {
+                } else {
                     mNewPasswordEditText.requestFocus();
                     mNewPasswordEditText.setError(getString(R.string.error_password_field_can_not_be_empty));
                 }
@@ -228,7 +232,7 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
 
     //TODO Load ImageView from DB
     private boolean verificationDocsAreValid() {
-        if (mNationalCardImageView.getFinalImageUri() == null) {
+        if (!mNationalCardImageView.getImageIsLoaded() && mNationalCardImageView.getFinalImageUri() == null) {
             mNationalCardImageView.requestFocus();
             mNationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
             return false;
@@ -252,15 +256,19 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
             return;
         }
-        if (mNationalCardImageView.getFinalImageUri() == null) {
-            return;
-        }
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
+        if (mNationalCardImageView.getFinalImageUri() == null) {
+            if (mNationalCardImageView.getImageIsLoaded()) {
+                //No need to upload file
+                resendVerificationDocs(null, sendingDataProgressDialog);
+            }
+            return;
+        }
 
         final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
         try {
@@ -280,6 +288,7 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                                         + e1.getMessage());
                             }
                         }
+                        mNationalCardImageView.setImageIsLoaded(true);
                         resendVerificationDocs(parseFile, sendingDataProgressDialog);
                     } else {
                         Toast.makeText(getActivity(), R.string.uploading_image_failed, Toast.LENGTH_LONG).show();
@@ -313,7 +322,9 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
     private void resendVerificationDocs(ParseFile parseFile, final ProgressDialog progressDialog) {
 
         mCurrentUser.put("bankCardNumber", mBankCardNumberEditText.getText().toString().trim());
-        mCurrentUser.put("nationalCardImage", parseFile);
+        if (parseFile != null) {
+            mCurrentUser.put("nationalCardImage", parseFile);
+        }
 
         mCurrentUser.pinInBackground();
         mCurrentUser.saveInBackground(new SaveCallback() {
