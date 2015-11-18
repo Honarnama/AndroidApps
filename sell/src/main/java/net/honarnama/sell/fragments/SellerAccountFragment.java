@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -51,6 +52,8 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
     private EditText mBankCardNumberEditText;
     private ImageSelector mNationalCardImageView;
     private Button mResendVerificationDocsButton;
+
+    private TextView mNationalCardTitleTextView;
 
     public synchronized static SellerAccountFragment getInstance() {
         if (mSellerAccountFragment == null) {
@@ -95,6 +98,7 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 mBankCardNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mBankCardNumberEditText));
                 mResendVerificationDocsButton = (Button) rootView.findViewById(R.id.seller_account_resend_verification_docs_button);
                 mResendVerificationDocsButton.setOnClickListener(this);
+                mNationalCardTitleTextView = (TextView) rootView.findViewById(R.id.seller_account_national_card_title_text_view);
 
                 mNationalCardImageView = (ImageSelector) rootView.findViewById(R.id.seller_account_national_card_image_view);
                 mNationalCardImageView.setActivity(getActivity());
@@ -138,8 +142,14 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
                     return;
                 }
-                if (mNewPasswordEditText.toString().trim().length() > 0) {
+                if (mNewPasswordEditText.getText().toString().trim().length() > 0) {
+                    Toast.makeText(getActivity(), mNewPasswordEditText.toString().trim().length()+"", Toast.LENGTH_LONG).show();
                     changePassword();
+                }
+                else
+                {
+                    mNewPasswordEditText.requestFocus();
+                    mNewPasswordEditText.setError(getString(R.string.error_password_field_can_not_be_empty));
                 }
                 break;
             case R.id.seller_account_resend_verification_docs_button:
@@ -218,12 +228,31 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
 
     //TODO Load ImageView from DB
     private boolean verificationDocsAreValid() {
-        //TODO Check form imputs
+        if (mNationalCardImageView.getFinalImageUri() == null) {
+            mNationalCardImageView.requestFocus();
+            mNationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
+            return false;
+        }
+        if (mBankCardNumberEditText.getText().toString().trim().length() == 0) {
+            mBankCardNumberEditText.requestFocus();
+            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_cant_be_empty));
+            return false;
+        }
+
+        String bankCardNumberPattern = "^((\\d{4}-\\d{4}-\\d{4}-\\d{4})|(\\d{4}\\s{1}\\d{4}\\s{1}\\d{4}\\s{1}\\d{4})|(\\d{16}))$";
+        if (!mBankCardNumberEditText.getText().toString().matches(bankCardNumberPattern)) {
+            mBankCardNumberEditText.requestFocus();
+            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_is_not_valid));
+            return false;
+        }
         return true;
     }
 
     private void uploadNationalCardImage() {
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            return;
+        }
+        if (mNationalCardImageView.getFinalImageUri() == null) {
             return;
         }
 
@@ -232,9 +261,6 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        if (mNationalCardImageView.getFinalImageUri() == null) {
-            return;
-        }
 
         final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
         try {
