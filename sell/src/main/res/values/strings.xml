@@ -30,6 +30,7 @@
     <string name="uploading_image_failed">" خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. "</string>
     <string name="successfully_sent_vereification_docs">مدارکتان با موفقیت ارسال شد.</string>
     <string name="sending_verification_docs_failed">خطایی در هنگام ارسال مدارک رخ داد.</string>
+    <string name="nav_title_orders">سفارشات</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

@@ -62,8 +62,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2).withIcon(GoogleMaterial.Icon.gmd_store),
                         new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3).withIcon(GoogleMaterial.Icon.gmd_view_list),
                         new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4).withIcon(GoogleMaterial.Icon.gmd_edit),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_orders).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_collection_item),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_power_off)
+                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(6).withIcon(GoogleMaterial.Icon.gmd_power_off)
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();
@@ -150,7 +151,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mFragment = EditItemFragment.getInstance();
                 title = getString(R.string.nav_title_edit_item);
                 break;
-            case 5:
+            case 6:
                 //sign user out
                 HonarnamaUser.logOut();
                 Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
