@@ -248,11 +248,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 if (e == null) {
                     mStoreNameEditText.setText(storeInfo.getString(NAME_FIELD));
                     mStorePlicyEditText.setText(storeInfo.getString(POLICY_FIELD));
-                    File localStoreLogoFile = new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME);
-                    if (localStoreLogoFile.exists()) {
-                        mStoreLogoImageView.setFinalImageUri(Uri.parse(localStoreLogoFile.getAbsolutePath()));
-                    }
-                    //TODO: Upload the logo file if it doesn't exist on sd card
+                     mStoreLogoImageView.loadInBackground(storeInfo.getParseFile("logo"));
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -328,5 +324,4 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
 
     }
-//TODO: Load imageview from db
 }
