@@ -2,7 +2,7 @@ package com.parse;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 
@@ -41,7 +41,7 @@ import bolts.Task;
 
 public class ImageSelector extends RoundedImageView implements View.OnClickListener {
 
-    private static final String LOG_TAG = HonarNamaBaseApp.PRODUCTION_TAG + "/"
+    private static final String LOG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/"
             + ImageSelector.class.getName();
 
     final private Context mContext;
@@ -95,7 +95,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             try {
                 mIncludeRemoveImage = a.getBoolean(R.styleable.ImageSelector_removable, false);
                 mImageSelectorIndex = a.getInt(R.styleable.ImageSelector_imageSelectorIndex, 0);
-                mIntentCodeCapture = HonarNamaBaseApp.INTENT_IMAGE_SELECTOR_CODE_RANGE_START + (mImageSelectorIndex * 3);
+                mIntentCodeCapture = HonarnamaBaseApp.INTENT_IMAGE_SELECTOR_CODE_RANGE_START + (mImageSelectorIndex * 3);
                 mIntentCodeSelect = mIntentCodeCapture + 1;
                 mIntentCodeCrop = mIntentCodeCapture + 2;
                 mOutputX = a.getInt(R.styleable.ImageSelector_outputX, -1);

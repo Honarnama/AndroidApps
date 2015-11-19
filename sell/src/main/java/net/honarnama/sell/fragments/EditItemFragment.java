@@ -8,7 +8,7 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.R;
 import com.parse.ImageSelector;
@@ -127,12 +127,12 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                         itemImages[i].loadInBackground(imageFile, new GetDataCallback() {
                             @Override
                             public void done(byte[] data, ParseException e) {
-                                if (HonarNamaBaseApp.DEBUG) {
+                                if (HonarnamaBaseApp.DEBUG) {
                                     if (e == null) {
-                                        Log.i(HonarNamaBaseApp.PRODUCTION_TAG + "/EditItem",
+                                        Log.i(HonarnamaBaseApp.PRODUCTION_TAG + "/EditItem",
                                                 "Fetched! Data length: " + data.length);
                                     } else {
-                                        Log.w(HonarNamaBaseApp.PRODUCTION_TAG + "/EditItem",
+                                        Log.w(HonarnamaBaseApp.PRODUCTION_TAG + "/EditItem",
                                                 "Exception while loading image", e);
                                     }
                                 }
@@ -221,10 +221,10 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             }
         } catch (IOException e) {
             if (BuildConfig.DEBUG) {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                         "Failed on preparing item images.", e);
             } else {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing item images. e="
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Failed on preparing item images. e="
                         + e.getMessage());
             }
             sendingDataProgressDialog.dismiss();
@@ -250,10 +250,10 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
                             errorOccuredUploadingFiles[0] = true;
                         }
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         } else {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         }
                         sendingDataProgressDialog.dismiss();
@@ -263,9 +263,9 @@ public class EditItemFragment extends Fragment implements View.OnClickListener {
             }, new ProgressCallback() {
                 public void done(Integer percentDone) {
                     if (BuildConfig.DEBUG) {
-                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Image - percentDone= " + percentDone);
+                        Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Image - percentDone= " + percentDone);
                     } else {
-                        Log.d(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Image - percentDone= " + percentDone);
+                        Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Image - percentDone= " + percentDone);
                         // Update your progress spinner here. percentDone will be between 0 and 100.
                     }
                 }

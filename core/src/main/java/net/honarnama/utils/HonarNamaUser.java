@@ -11,18 +11,11 @@ import java.util.HashMap;
 /**
  * Created by elnaz on 7/26/15.
  */
-public class HonarNamaUser extends ParseUser {
+public class HonarnamaUser extends ParseUser {
 
-    public static ParseUser getCurrentUser() {
+    public static boolean isAuthenticatedUser() {
         ParseUser user = ParseUser.getCurrentUser();
         if ((user != null) && user.isAuthenticated()) {
-            return user;
-        }
-        return null;
-    }
-
-    public static boolean isLoggedIn() {
-        if (getCurrentUser() != null) {
             return true;
         }
         return false;
@@ -44,7 +37,7 @@ public class HonarNamaUser extends ParseUser {
     }
 
     public static boolean isShopOwner() {
-        if (getCurrentUser() == null) {
+        if (!isAuthenticatedUser()) {
             return false;
         }
         boolean isShopOwner = getCurrentUser().getBoolean("isShopOwner");

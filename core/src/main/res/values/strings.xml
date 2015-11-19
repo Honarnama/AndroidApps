@@ -17,9 +17,7 @@
     <string name="login_using_telegram">ورود از طریق تلگرام</string>
 
     <string name="action_settings">تنظیمات</string>
-    <string name="title_activity_register">RegisterActivity</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_register">ثبت‌نام</string>
 
     <string name="name">نام</string>
     <string name="register_form_subtitle">*وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی

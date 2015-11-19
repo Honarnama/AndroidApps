@@ -1,17 +1,11 @@
 package net.honarnama.utils;
 
-import net.honarnama.HonarNamaBaseApp;
 import net.honarnama.base.R;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by elnaz on 7/25/15.

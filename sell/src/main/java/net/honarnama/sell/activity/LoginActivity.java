@@ -6,10 +6,10 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import net.honarnama.HonarNamaBaseActivity;
+import net.honarnama.HonarnamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.utils.GenericGravityTextWatcher;
-import net.honarnama.utils.HonarNamaUser;
+import net.honarnama.utils.HonarnamaUser;
 import net.honarnama.utils.NetworkManager;
 
 import android.app.ProgressDialog;
@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginActivity extends HonarNamaBaseActivity implements View.OnClickListener {
+public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
     private Button mLoginButton;
     private EditText mUsernameEditText;
@@ -35,7 +35,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (HonarNamaUser.isShopOwner() && HonarNamaUser.isVerified()) {
+        if (HonarnamaUser.isShopOwner() && HonarnamaUser.isVerified()) {
             //Go to controlPanel Activity
             gotoControlPanel();
 
@@ -57,7 +57,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
             mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
-            ParseUser user = HonarNamaUser.getCurrentUser();
+            ParseUser user = HonarnamaUser.getCurrentUser();
             if (user != null) {
                 logI("Parse user is not empty", "user= " + user.getEmail());
                 showLoadingDialog();
@@ -109,7 +109,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
 
             if (token != null && token.length() > 0) {
                 showLoadingDialog();
-                HonarNamaUser.telegramLogInInBackground(token, new LogInCallback() {
+                HonarnamaUser.telegramLogInInBackground(token, new LogInCallback() {
                     @Override
                     public void done(ParseUser parseUser, ParseException e) {
                         hideLoadingDialog();
@@ -138,7 +138,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     protected void onResume() {
         super.onResume();
 
-        if (HonarNamaUser.isShopOwner() && HonarNamaUser.isVerified()) {
+        if (HonarnamaUser.isShopOwner() && HonarnamaUser.isVerified()) {
             gotoControlPanel();
         }
     }
@@ -162,7 +162,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
                     startActivity(telegramIntent);
                 }
             case R.id.login_error_btn:
-                Intent telegramIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + HonarNamaUser.getCurrentUser().getString("telegramCode")));
+                Intent telegramIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + HonarnamaUser.getCurrentUser().getString("telegramCode")));
                 if (telegramIntent2.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent2);
                 }
@@ -221,11 +221,11 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
     }
 
     private void gotoControlPanelOrRaiseError() {
-        if (!HonarNamaUser.isVerified()) {
+        if (!HonarnamaUser.isVerified()) {
             logE("Login Failed. Account is not activated");
             mErrorMessageContainer.setVisibility(View.VISIBLE);
             mErrorMessageTextView.setText(R.string.not_verified);
-            switch (HonarNamaUser.getActivationMethod()) {
+            switch (HonarnamaUser.getActivationMethod()) {
                 case MOBILE_NUMBER:
                     // TODO: onlt if telegram is installed
                     mErrorMessageButton.setVisibility(View.VISIBLE);
@@ -235,7 +235,7 @@ public class LoginActivity extends HonarNamaBaseActivity implements View.OnClick
                     mErrorMessageButton.setVisibility(View.GONE);
                     break;
             }
-        } else if (!HonarNamaUser.isShopOwner()) {
+        } else if (!HonarnamaUser.isShopOwner()) {
             logE("Login Failed. User is not a shop owner");
             mErrorMessageContainer.setVisibility(View.VISIBLE);
             mErrorMessageTextView.setText(getString(R.string.error_login_you_are_not_shop_owner));

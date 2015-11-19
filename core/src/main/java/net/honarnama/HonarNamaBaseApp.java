@@ -15,12 +15,12 @@ import java.io.File;
 /**
  * Created by elnaz on 7/22/15.
  */
-public class HonarNamaBaseApp extends Application {
+public class HonarnamaBaseApp extends Application {
 
     public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String DOMAIN = "honarnama.net";
     public static final String PRODUCTION_TAG = "Honarnama";
-    private static HonarNamaBaseApp singleton;
+    private static HonarnamaBaseApp singleton;
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
 
@@ -30,7 +30,7 @@ public class HonarNamaBaseApp extends Application {
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
 
-    public static HonarNamaBaseApp getInstance() {
+    public static HonarnamaBaseApp getInstance() {
         return singleton;
     }
 
@@ -42,9 +42,8 @@ public class HonarNamaBaseApp extends Application {
         singleton = this;
 
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, HonarNamaBaseApp.getParseApplicationId(), HonarNamaBaseApp.getParseClientKey());
+        Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 
-        ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
 // Optionally enable public read access while disabling public write access.
         defaultACL.setPublicReadAccess(true);
@@ -69,11 +68,11 @@ public class HonarNamaBaseApp extends Application {
     }
 
     public static String getParseApplicationId() {
-        return HonarNamaBaseApp.PARSE_APPLICATION_ID;
+        return HonarnamaBaseApp.PARSE_APPLICATION_ID;
     }
 
     public static String getParseClientKey() {
-        return HonarNamaBaseApp.PARSE_CLIENT_KEY;
+        return HonarnamaBaseApp.PARSE_CLIENT_KEY;
     }
 
 }

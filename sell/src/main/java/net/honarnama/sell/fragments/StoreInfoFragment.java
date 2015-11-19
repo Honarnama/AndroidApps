@@ -8,12 +8,12 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.sell.HonarNamaSellApp;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import com.parse.ImageSelector;
-import net.honarnama.utils.HonarNamaUser;
+import net.honarnama.utils.HonarnamaUser;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
 
@@ -165,30 +165,30 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         }
         final File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaSellApp.STORE_LOGO_FILE_NAME,
+            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_LOGO_FILE_NAME,
                     storeLogoImageFile);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
                         addOrUpdateStore(parseFile, sendingDataProgressDialog);
                         try {
-                            ParseIO.copyFile(storeLogoImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.STORE_LOGO_FILE_NAME));
+                            ParseIO.copyFile(storeLogoImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME));
                         } catch (IOException e1) {
                             if (BuildConfig.DEBUG) {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                         "Error copying store logo to sd card " + e1, e1);
                             } else {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
                                         + e1.getMessage());
                             }
                         }
                     } else {
                         Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         } else {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         }
                         sendingDataProgressDialog.dismiss();
@@ -200,10 +200,10 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     Toast.LENGTH_LONG).show();
 
             if (BuildConfig.DEBUG) {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                         "Failed on preparing store logo image. " + ioe, ioe);
             } else {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing store logo image. ioe="
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Failed on preparing store logo image. ioe="
                         + ioe.getMessage());
             }
 
@@ -216,7 +216,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         final ParseFile parseFile = parseFileParam;
         final ProgressDialog progressDialog = progressDialogParam;
         ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-        query.whereEqualTo(OWNER_FIELD, HonarNamaUser.getCurrentUser());
+        query.whereEqualTo(OWNER_FIELD, HonarnamaUser.getCurrentUser());
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject storeInfo, ParseException e) {
                 if (e == null) {
@@ -224,7 +224,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                 } else {
                     addNewStore(parseFile, progressDialog);
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error geeting current store id. Error :" + e.getCode() +
                                         "//" + e.getMessage() + " // " + e, e);
                     }
@@ -241,25 +241,25 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
         progressDialog.show();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-        query.whereEqualTo(OWNER_FIELD, HonarNamaUser.getCurrentUser());
+        query.whereEqualTo(OWNER_FIELD, HonarnamaUser.getCurrentUser());
         query.fromLocalDatastore();
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject storeInfo, ParseException e) {
                 if (e == null) {
                     mStoreNameEditText.setText(storeInfo.getString(NAME_FIELD));
                     mStorePlicyEditText.setText(storeInfo.getString(POLICY_FIELD));
-                    File localStoreLogoFile = new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.STORE_LOGO_FILE_NAME);
+                    File localStoreLogoFile = new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME);
                     if (localStoreLogoFile.exists()) {
                         mStoreLogoImageView.setFinalImageUri(Uri.parse(localStoreLogoFile.getAbsolutePath()));
                     }
                     //TODO: Upload the logo file if it doesn't exist on sd card
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error getting store info.  Error Code: " + e.getCode() +
                                         "//" + e.getMessage() + " // " + e, e);
                     } else {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error getting store info. "
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error getting store info. "
                                 + e.getMessage());
                     }
                 }
@@ -290,7 +290,7 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
                     Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
                 } else {
                     // TODO: handle "Invalid: name"
-                    Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
+                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
                     Toast.makeText(getActivity(), getActivity().getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
                 }
                 progressDialog.dismiss();

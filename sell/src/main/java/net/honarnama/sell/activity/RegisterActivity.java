@@ -9,10 +9,10 @@ import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
-import net.honarnama.HonarNamaBaseActivity;
-import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.sell.HonarNamaSellApp;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import com.parse.ImageSelector;
@@ -42,7 +42,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class RegisterActivity extends HonarNamaBaseActivity implements View.OnClickListener {
+public class RegisterActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mAddNationalCardTextView;
     private ImageSelector mNationalCardImageView;
 
@@ -177,13 +177,13 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                 public void done(ParseException e) {
                     if (e == null) {
                         try {
-                            ParseIO.copyFile(nationalCardImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.NATIONAL_CARD_FILE_NAME));
+                            ParseIO.copyFile(nationalCardImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.NATIONAL_CARD_FILE_NAME));
                         } catch (IOException e1) {
                             if (BuildConfig.DEBUG) {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                         "Error copying national card image to sd card " + e1, e1);
                             } else {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
                                         + e1.getMessage());
                             }
                         }
@@ -223,7 +223,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
         }
 
         if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
-            user.setEmail(mMobileNumberEditText.getText().toString().trim() + "@" + HonarNamaBaseApp.DOMAIN);
+            user.setEmail(mMobileNumberEditText.getText().toString().trim() + "@" + HonarnamaBaseApp.DOMAIN);
         } else {
             user.setEmail(mEmailAddressEditText.getText().toString().trim());
         }
@@ -280,7 +280,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
                         if (which == 0) {
                             Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
                             if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(telegramIntent, HonarNamaBaseApp.INTENT_TELEGRAM_CODE);
+                                startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
                             }
                         }
                         dialog.dismiss();
@@ -380,7 +380,7 @@ public class RegisterActivity extends HonarNamaBaseActivity implements View.OnCl
             return;
         }
         switch (requestCode) {
-            case HonarNamaBaseApp.INTENT_TELEGRAM_CODE:
+            case HonarnamaBaseApp.INTENT_TELEGRAM_CODE:
                 finish();
                 break;
             default:

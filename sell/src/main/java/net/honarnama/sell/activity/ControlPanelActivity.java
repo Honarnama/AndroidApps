@@ -1,7 +1,6 @@
 package net.honarnama.sell.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -9,12 +8,13 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import net.honarnama.HonarNamaBaseActivity;
+import net.honarnama.HonarnamaBaseActivity;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.SellerAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
+import net.honarnama.utils.HonarnamaUser;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -28,7 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawer.OnDrawerItemClickListener {
+public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
     private Toolbar mToolbar;
     //    private TextView mToolbarTitleTextView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -38,6 +38,9 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!HonarnamaUser.isAuthenticatedUser() || !HonarnamaUser.isShopOwner()) {
+            return;
+        }
         setContentView(R.layout.activity_control_panel);
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
@@ -129,7 +132,7 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
 
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        String title ="";
+        String title = "";
         switch (drawerItem.getIdentifier()) {
             case 1:
                 mFragment = SellerAccountFragment.getInstance();
@@ -147,6 +150,13 @@ public class ControlPanelActivity extends HonarNamaBaseActivity implements Drawe
                 mFragment = EditItemFragment.getInstance();
                 title = getString(R.string.nav_title_edit_item);
                 break;
+            case 5:
+                //sign user out
+                HonarnamaUser.logOut();
+                Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+
 
         }
         if (mFragment != null) {

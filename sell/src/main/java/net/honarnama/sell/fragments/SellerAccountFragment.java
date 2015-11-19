@@ -8,9 +8,9 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarNamaBaseApp;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.sell.HonarNamaSellApp;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.utils.GenericGravityTextWatcher;
 import net.honarnama.utils.NetworkManager;
@@ -149,7 +149,6 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                     return;
                 }
                 if (mNewPasswordEditText.getText().toString().trim().length() > 0) {
-                    Toast.makeText(getActivity(), mNewPasswordEditText.toString().trim().length() + "", Toast.LENGTH_LONG).show();
                     changePassword();
                 } else {
                     mNewPasswordEditText.requestFocus();
@@ -188,11 +187,11 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 } else {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.changing_user_name_failed), Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error changing user name.  Error Code: " + e.getCode() +
                                         "//" + e.getMessage() + " // " + e, e);
                     } else {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error changing user name. "
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error changing user name. "
                                 + e.getMessage());
                     }
                 }
@@ -217,11 +216,11 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 } else {
                     Toast.makeText(getActivity(), R.string.changing_password_failed, Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error changing password.  Error Code: " + e.getCode() +
                                         "//" + e.getMessage() + " // " + e, e);
                     } else {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error changing password. "
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error changing password. "
                                 + e.getMessage());
                     }
                 }
@@ -272,19 +271,19 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
 
         final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarNamaSellApp.NATIONAL_CARD_FILE_NAME,
+            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarnamaSellApp.NATIONAL_CARD_FILE_NAME,
                     nationalCardImageFile);
             parseFile.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
                         try {
-                            ParseIO.copyFile(nationalCardImageFile, new File(HonarNamaBaseApp.APP_IMAGES_FOLDER, HonarNamaSellApp.NATIONAL_CARD_FILE_NAME));
+                            ParseIO.copyFile(nationalCardImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.NATIONAL_CARD_FILE_NAME));
                         } catch (IOException e1) {
                             if (BuildConfig.DEBUG) {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                         "Error copying national card image to sd card " + e1, e1);
                             } else {
-                                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
                                         + e1.getMessage());
                             }
                         }
@@ -293,10 +292,10 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                     } else {
                         Toast.makeText(getActivity(), R.string.uploading_image_failed, Toast.LENGTH_LONG).show();
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading national card image Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading national card image Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         } else {
-                            Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Uploading national card image Failed. Code: " + e.getCode() +
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading national card image Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         }
                         sendingDataProgressDialog.dismiss();
@@ -308,10 +307,10 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                     Toast.LENGTH_LONG).show();
 
             if (BuildConfig.DEBUG) {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                         "Failed on preparing national card image. " + ioe, ioe);
             } else {
-                Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on preparing national card image. ioe="
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Failed on preparing national card image. ioe="
                         + ioe.getMessage());
             }
 
@@ -336,10 +335,10 @@ public class SellerAccountFragment extends Fragment implements View.OnClickListe
                 } else {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.sending_verification_docs_failed), Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Failed on sending verification docs. " + e, e);
                     } else {
-                        Log.e(HonarNamaBaseApp.PRODUCTION_TAG, "Failed on sending verification docs. error msg="
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Failed on sending verification docs. error msg="
                                 + e.getMessage());
                     }
                 }

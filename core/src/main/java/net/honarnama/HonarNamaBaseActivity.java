@@ -2,20 +2,19 @@ package net.honarnama;
 
 import net.honarnama.base.BuildConfig;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 /**
  * Created by reza on 7/23/15.
  */
-public class HonarNamaBaseActivity extends AppCompatActivity {
+public class HonarnamaBaseActivity extends AppCompatActivity {
 
     String getTag() {
         if (BuildConfig.DEBUG) {
-            return HonarNamaBaseApp.PRODUCTION_TAG + "/" + getLocalClassName();
+            return HonarnamaBaseApp.PRODUCTION_TAG + "/" + getLocalClassName();
         } else {
-            return HonarNamaBaseApp.PRODUCTION_TAG;
+            return HonarnamaBaseApp.PRODUCTION_TAG;
         }
     }
 
