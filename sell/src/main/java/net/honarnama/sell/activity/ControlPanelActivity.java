@@ -151,6 +151,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mFragment = EditItemFragment.getInstance();
                 title = getString(R.string.nav_title_edit_item);
                 break;
+            case 5:
+                //mFragment = EditItemFragment.getInstance();
+                title = getString(R.string.nav_title_orders);
+                break;
             case 6:
                 //sign user out
                 HonarnamaUser.logOut();
