@@ -55,6 +55,7 @@
         <activity
                 android:name=".activity.ControlPanelActivity"
                 android:label="@string/app_title"
+                android:launchMode="singleTask"
                 android:screenOrientation="portrait">
         </activity>
 

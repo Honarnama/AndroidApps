@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
@@ -102,22 +103,22 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         logI(null, "processIntent :: data= " + data);
 
         if (data != null) {
-            final String token = data.getQueryParameter("token");
+            final String telegramToken = data.getQueryParameter("telegramToken");
             final String register = data.getQueryParameter("register");
 
-            logI(null, "token= " + token + ", register= " + register);
+            logI(null, "telegramToken= " + telegramToken + ", register= " + register);
 
-            if (token != null && token.length() > 0) {
+            if (telegramToken != null && telegramToken.length() > 0) {
                 showLoadingDialog();
-                HonarnamaUser.telegramLogInInBackground(token, new LogInCallback() {
+                HonarnamaUser.telegramLogInInBackground(telegramToken, new LogInCallback() {
                     @Override
                     public void done(ParseUser parseUser, ParseException e) {
                         hideLoadingDialog();
                         if (e == null) {
                             gotoControlPanelOrRaiseError();
                         } else {
-                            // TODO: error message
-                            logE("Error while logging in using token", "token= " + token, e);
+                            logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
+                            Toast.makeText(LoginActivity.this, R.string.error_login_failed, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

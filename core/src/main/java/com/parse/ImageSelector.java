@@ -63,22 +63,28 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mFinalImageUri;
 
     private ParseFile mParseFile;
+    private boolean mDirty = false;
+    private boolean mImageIsLoaded = false;
 
-    private Boolean mImageIsLoaded = false;
+    private static boolean announced = false;
 
-    public Boolean getImageIsLoaded() {
+
+    public boolean getImageIsLoaded() {
         return mImageIsLoaded;
     }
 
-    public void setImageIsLoaded(Boolean imageIsLoaded) {
+    public void setImageIsLoaded(boolean imageIsLoaded) {
         mImageIsLoaded = imageIsLoaded;
     }
-
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         init(attrs);
+        if (BuildConfig.DEBUG && !announced) {
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "View Created, to view the logs: '" + LOG_TAG + ":V'");
+            announced = true;
+        }
     }
 
     public ImageSelector(Context context, AttributeSet attrs) {
@@ -134,9 +140,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     }
 
     public void selectPhoto() {
-        final AlertDialog.Builder nationalCardImageOptionDialog =
+        final AlertDialog.Builder changeImageOptionsDialog =
                 new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle));
-        nationalCardImageOptionDialog.setTitle(
+        changeImageOptionsDialog.setTitle(
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 
         String[] imageSourceProviders;
@@ -149,7 +155,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         imageSourceProviders[0] = mContext.getString(R.string.image_selector_option_text_capture);
         imageSourceProviders[1] = mContext.getString(R.string.image_selector_option_text_select);
 
-        nationalCardImageOptionDialog.setItems(imageSourceProviders, new DialogInterface.OnClickListener() {
+        changeImageOptionsDialog.setItems(imageSourceProviders, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -178,11 +184,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
                     case 2:
                         removeSelectedImage();
+                        mDirty = true;
                 }
                 dialog.dismiss();
             }
         });
-        nationalCardImageOptionDialog.show();
+        changeImageOptionsDialog.show();
     }
 
     public void removeSelectedImage() {
@@ -193,6 +200,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (mDefaultDrawable != null) {
             setImageDrawable(mDefaultDrawable);
         }
+        mDirty = false;
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -390,7 +398,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void restore(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String prefix = "ImageSelector_" + mImageSelectorIndex;
-
+            mDirty = true;
 
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
@@ -414,10 +422,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mFinalImageUri;
     }
 
-    public void setFinalImageUri(Uri imageUri)
-    {
+    public void setFinalImageUri(Uri imageUri) {
         super.setImageURI(imageUri);
         mFinalImageUri = imageUri;
+        mDirty = true;
     }
 
     public int getImageSelectorIndex() {
@@ -427,7 +435,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public interface OnImageSelectedListener {
         boolean onImageSelected(Uri selectedImage, boolean cropped);
 
-        boolean onImageRemoved();
+        void onImageRemoved();
 
         void onImageSelectionFailed();
     }
@@ -464,6 +472,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                         setImageBitmap(bitmap);
                     }
                 }
+                mDirty = false;
                 return task;
             }
         }, Task.UI_THREAD_EXECUTOR);
@@ -480,5 +489,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
      */
     public void loadInBackground(final ParseFile parseFile, final GetDataCallback completionCallback) {
         ParseTaskUtils.callbackOnMainThreadAsync(loadInBackground(parseFile), completionCallback, true);
+    }
+
+    public boolean isChanged() {
+        return mDirty;
+    }
+
+    public ParseFile getParseFile() {
+        return mParseFile;
     }
 }

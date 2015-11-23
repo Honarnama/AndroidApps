@@ -1,7 +1,10 @@
 package net.honarnama.sell;
 
 
+import com.parse.ParseObject;
+
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.sell.model.Item;
 
 import android.util.Log;
 
@@ -12,6 +15,7 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
 
     @Override
     public void onCreate() {
+        ParseObject.registerSubclass(Item.class);
         super.onCreate();
 
         if (BuildConfig.DEBUG) {

@@ -77,13 +77,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
 
             @Override
-            public boolean onImageRemoved() {
-                return false;
-            }
+            public void onImageRemoved() { }
 
             @Override
-            public void onImageSelectionFailed() {
-            }
+            public void onImageSelectionFailed() { }
         });
 
         mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);

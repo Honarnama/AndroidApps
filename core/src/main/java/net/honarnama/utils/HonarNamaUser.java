@@ -24,10 +24,10 @@ public class HonarnamaUser extends ParseUser {
     public static void telegramLogInInBackground(String token, final LogInCallback logInCallback) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("token", token);
-        ParseCloud.callFunctionInBackground("telegramLogInInBackground", params, new FunctionCallback<String>() {
+        ParseCloud.callFunctionInBackground("telegramLogin", params, new FunctionCallback<String>() {
             @Override
             public void done(String sessionToken, ParseException e) {
-                if (e == null) {
+                if (e == null && (sessionToken != null)) {
                     ParseUser.becomeInBackground(sessionToken, logInCallback);
                 } else {
                     logInCallback.done(null, e);

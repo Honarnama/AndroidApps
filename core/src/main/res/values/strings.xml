@@ -76,6 +76,7 @@
     </string>
     <string name="error_register_password_is_empty">"فیلد رمز عبور خالی است. "</string>
     <string name="error_login_wrong_username">نام کاربری یا رمز عبور اشتباه است.</string>
+    <string name="error_login_failed">خطا در ورود به حساب</string>
 
     <string name="error_network_is_not_enabled">دستگاه شما به اینترنت متصل نیست.</string>
     <string name="error_no_internet_connection">مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را
@@ -103,6 +104,10 @@
     <string name="nav_title_exit_app">خروج</string>
     <string name="app_title">هنرنما</string>
 
+    <string name="exit_from_editing_dialog_title">در حال ویرایش یک محصول</string>
+    <string name="exit_from_editing_option_dont_exit">باقی ماندن در صفحه</string>
+    <string name="exit_from_editing_option_exit">بی‌خیال تغییرات!</string>
+
     <string name="title_activity_edit_item">ویرایش محصول</string>
     <string name="edit_item_photos_title">تصاویر</string>
     <string name="edit_item_photos_description">خداقل یک عکس از محصول خود بگذارید.</string>
@@ -110,6 +115,7 @@
     <string name="edit_item_details_description">به جهانیان محصولتان را معرفی کنید و بگویید که چرا
         قراره عاشقش شوند.
     </string>
+
     <string name="edit_item_title_hint">عنوان محصول</string>
     <string name="edit_item_title_sub_hint">از کلماتی استفاده کنید که مردم در سرچ استفاده خواهند
         کرد
@@ -119,6 +125,11 @@
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
+    <string name="edit_item_done"> محصول شما با موفقیت ذخیره شد.</string>
+    <string name="error_saving_item">خطا در ذخیرهٔ محصول</string>
+    <string name="error_loading_item">خطا در خواندن اطلاعات محصول</string>
+    <string name="error_sending_images">خطا در ارسال تصاویر. لطفا دوباره تلاش کنید</string>
+
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
     <string name="please_check_internet_connection">" لطفاًاینترنت دستگاه خود را بررسی کنید. "
     </string>

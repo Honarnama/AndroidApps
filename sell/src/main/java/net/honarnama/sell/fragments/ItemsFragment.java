@@ -1,16 +1,14 @@
 package net.honarnama.sell.fragments;
 
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
-import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +16,19 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-public class ItemsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.OnItemClickListener {
 
     ItemsAdapter mAdapter;
 
     public static ItemsFragment mItemsFragment;
 
-    public synchronized static ItemsFragment getInstance()
-    {
-        if (mItemsFragment == null)
-        {
+    @Override
+    public String getTitle(Context context) {
+        return context.getString(R.string.nav_title_items);
+    }
+
+    public synchronized static ItemsFragment getInstance() {
+        if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();
         }
         return mItemsFragment;
@@ -49,7 +50,7 @@ public class ItemsFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ParseObject item = mAdapter.getItem(i);
-//        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-//        controlPanelActivity.displayView(ControlPanelActivity.DRAWER_INDEX_ITEM_EDIT, item);
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        controlPanelActivity.switchFragmentToEditItem(item.getObjectId());
     }
 }

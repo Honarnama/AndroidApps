@@ -9,6 +9,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -19,6 +20,7 @@ import net.honarnama.utils.ParseIO;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +36,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
-public class StoreInfoFragment extends Fragment implements View.OnClickListener {
+public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     private EditText mStoreNameEditText;
     private EditText mStorePlicyEditText;
@@ -49,16 +51,16 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
 
     public static StoreInfoFragment mStoreInfoFragment;
 
+    @Override
+    public String getTitle(Context context) {
+        return context.getString(R.string.nav_title_store_info);
+    }
+
     public synchronized static StoreInfoFragment getInstance() {
         if (mStoreInfoFragment == null) {
             mStoreInfoFragment = new StoreInfoFragment();
         }
         return mStoreInfoFragment;
-    }
-
-
-    public StoreInfoFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -84,13 +86,10 @@ public class StoreInfoFragment extends Fragment implements View.OnClickListener 
             }
 
             @Override
-            public boolean onImageRemoved() {
-                return false;
-            }
+            public void onImageRemoved() { }
 
             @Override
-            public void onImageSelectionFailed() {
-            }
+            public void onImageSelectionFailed() { }
         });
         mRegisterStoreButton.setOnClickListener(this);
         mStoreLogoImageView.setActivity(this.getActivity());

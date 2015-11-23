@@ -9,6 +9,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
@@ -16,24 +17,37 @@ import net.honarnama.sell.fragments.SellerAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 import net.honarnama.utils.HonarnamaUser;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
+
+    public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;
+    public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
+    public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
+    public static final int DRAWER_ITEM_IDENTIFIER_EDIT_ITEM = 4;
+    public static final int DRAWER_ITEM_IDENTIFIER_ORDERS = 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 6;
+
     private Toolbar mToolbar;
-    //    private TextView mToolbarTitleTextView;
     private ActionBarDrawerToggle mDrawerToggle;
-    Drawer mResult;
     private Fragment mFragment;
+    private EditItemFragment mEditItemFragment;
+
+    Drawer mResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +71,20 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 .withSelectedItem(-1)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).withIcon(GoogleMaterial.Icon.gmd_account_circle).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).
+                                withIcon(GoogleMaterial.Icon.gmd_account_circle).withIdentifier(DRAWER_ITEM_IDENTIFIER_ACCOUNT),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).withIdentifier(2).withIcon(GoogleMaterial.Icon.gmd_store),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_items).withIdentifier(3).withIcon(GoogleMaterial.Icon.gmd_view_list),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_edit_item).withIdentifier(4).withIcon(GoogleMaterial.Icon.gmd_edit),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_orders).withIdentifier(5).withIcon(GoogleMaterial.Icon.gmd_collection_item),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_store),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_items).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EDIT_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_orders).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ORDERS).withIcon(GoogleMaterial.Icon.gmd_collection_item),
                         new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).withIdentifier(6).withIcon(GoogleMaterial.Icon.gmd_power_off)
+                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();
@@ -95,6 +115,37 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         mResult.setActionBarDrawerToggle(mDrawerToggle);
 
         this.mDrawerToggle.syncState();
+
+        mEditItemFragment = EditItemFragment.getInstance();
+        processIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
+    }
+
+    private void processIntent(Intent intent) {
+        Uri data = intent.getData();
+
+        logI(null, "processIntent :: data= " + data);
+
+        if (data != null) {
+            final String itemId = data.getQueryParameter("itemId");
+            if (itemId != null) {
+                if (mEditItemFragment.isDirty()) {
+                    switchFragmentFromEdittingItem(new OnAcceptedListener() {
+                        @Override
+                        public void onAccepted() {
+                            switchFragmentToEditItem(itemId);
+                        }
+                    });
+                } else {
+                    switchFragmentToEditItem(itemId);
+                }
+            }
+        }
     }
 
     @Override
@@ -120,7 +171,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             }
         }
 
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -131,47 +181,87 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         }
     }
 
+    private interface OnAcceptedListener {
+        public void onAccepted();
+    }
+
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        String title = "";
+        HonarnamaBaseFragment fragment = null;
         switch (drawerItem.getIdentifier()) {
-            case 1:
-                mFragment = SellerAccountFragment.getInstance();
-                title = getString(R.string.nav_title_seller_account);
+            case DRAWER_ITEM_IDENTIFIER_ACCOUNT:
+                fragment = SellerAccountFragment.getInstance();
                 break;
-            case 2:
-                mFragment = StoreInfoFragment.getInstance();
-                title = getString(R.string.nav_title_store_info);
+            case DRAWER_ITEM_IDENTIFIER_STORE_INFO:
+                fragment = StoreInfoFragment.getInstance();
                 break;
-            case 3:
-                mFragment = ItemsFragment.getInstance();
-                title = getString(R.string.nav_title_items);
+            case DRAWER_ITEM_IDENTIFIER_ITEMS:
+                fragment = ItemsFragment.getInstance();
                 break;
-            case 4:
-                mFragment = EditItemFragment.getInstance();
-                title = getString(R.string.nav_title_edit_item);
+            case DRAWER_ITEM_IDENTIFIER_EDIT_ITEM:
+                fragment = mEditItemFragment;
                 break;
-            case 5:
+            case DRAWER_ITEM_IDENTIFIER_ORDERS:
                 //mFragment = EditItemFragment.getInstance();
-                title = getString(R.string.nav_title_orders);
                 break;
-            case 6:
+            case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
                 HonarnamaUser.logOut();
                 Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
-
-
         }
-        if (mFragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frame_container, mFragment);
-            fragmentTransaction.commit();
-
-            getSupportActionBar().setTitle(title);
+        // Not null && (Another section || Maybe editing but wants to create new item)
+        if ((fragment != null) && ((fragment != mFragment) || (fragment == mEditItemFragment))) {
+            if (mEditItemFragment.isDirty()) {
+                final HonarnamaBaseFragment finalFragment = fragment;
+                switchFragmentFromEdittingItem(new OnAcceptedListener() {
+                    @Override
+                    public void onAccepted() {
+                        mEditItemFragment.reset(true);
+                        switchFragment(finalFragment);
+                    }
+                });
+            } else {
+                if (fragment == mEditItemFragment) {
+                    mEditItemFragment.reset(true);
+                }
+                switchFragment(fragment);
+            }
         }
         return false;
     }
+
+    private void switchFragmentFromEdittingItem(final OnAcceptedListener onAcceptedListener) {
+        final AlertDialog.Builder exitEditingDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
+        exitEditingDialog.setTitle(getString(R.string.exit_from_editing_dialog_title));
+        exitEditingDialog.setItems(new String[]{getString(R.string.exit_from_editing_option_dont_exit), getString(R.string.exit_from_editing_option_exit)},
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 1) {
+                            onAcceptedListener.onAccepted();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        exitEditingDialog.show();
+    }
+
+    private void switchFragment(final HonarnamaBaseFragment fragment) {
+        mFragment = fragment;
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_container, fragment);
+        fragmentTransaction.commit();
+
+        getSupportActionBar().setTitle(fragment.getTitle(this));
+    }
+
+    public void switchFragmentToEditItem(String itemId) {
+        mEditItemFragment.setItemId(itemId);
+        switchFragment(mEditItemFragment);
+    }
+
 }

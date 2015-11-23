@@ -20,15 +20,16 @@ public class HonarnamaBaseApp extends Application {
     public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String DOMAIN = "honarnama.net";
     public static final String PRODUCTION_TAG = "Honarnama";
-    private static HonarnamaBaseApp singleton;
-    private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
-    private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
-
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 10000;
     public static final int INTENT_TELEGRAM_CODE = 1003;
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
+
+    private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
+    private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
+
+    private static HonarnamaBaseApp singleton;
 
     public static HonarnamaBaseApp getInstance() {
         return singleton;
@@ -40,6 +41,10 @@ public class HonarnamaBaseApp extends Application {
         super.onCreate();
 
         singleton = this;
+
+        if (BuildConfig.DEBUG) {
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "App Created: " + getPackageName());
+        }
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
