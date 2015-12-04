@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+<!--
     <color name="colorPrimary">#ffbf54</color>
     <color name="colorPrimaryDark">#F5AF3A</color>
     <color name="textColorPrimary">#503F21</color>
     <color name="windowBackground">#FF0000</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#E57373</color>
+-->
 
+    <color name="colorPrimary">@color/aabi_bote_jeghe</color>
+    <color name="colorPrimaryDark">#0696ae</color>
 
-    <color name="cyan_extra_light">#80DEEA</color>
-    <color name="cyan_light">#4DD0E1</color>
-    <color name="cyaish">#00ACC1</color>
-    <color name="cyanish_light">#00E5FF</color>
-    <color name="cyan_dark">#0097A7</color>
+    <color name="textColorPrimary">#503F21</color>
+    <color name="windowBackground">#ffffff</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#E57373</color>
+
+    <color name="happy_blue">#0061e6</color>
+    <color name="dark_blue">#0145a3</color>
+    <color name="aabi_bote_jeghe">#12adc7</color>
+
+    <color name="main_back">#ffffff</color>
+
 
     <!-- OVERWRITE THESE COLORS FOR A LIGHT THEME -->
     <!-- MaterialDrawer DEFAULT colors -->

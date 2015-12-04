@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/amber</color>
+    <color name="colorPrimaryDark">#F5AF3A</color>
+    <color name="textColorPrimary">#503F21</color>
+    <color name="windowBackground">#FF0000</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#E57373</color>
+
+    <color name="amber">#FFC107</color>
+</resources>

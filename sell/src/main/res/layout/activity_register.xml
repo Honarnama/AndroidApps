@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/nokhodi_botte_jeghe"
+                android:textColor="@color/dirty_pink_dark"
                 android:layout_below="@id/register_form_title"
                 android:layout_marginTop="10dp"
                 />
@@ -339,15 +339,11 @@
                 />
         <Button
                 android:id="@+id/register_button"
-                android:layout_width="fill_parent" android:layout_height="45dp"
-                android:background="@color/nokhodi_botte_jeghe"
-                android:textColor="#ffffff"
                 android:text="@string/register"
                 android:layout_below="@id/register_card_number_alert_text_view"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:nextFocusForward="@id/register_firstname_edit_text"
+                style="@style/buttol_full_width"
                 />
     </RelativeLayout>
 </ScrollView>

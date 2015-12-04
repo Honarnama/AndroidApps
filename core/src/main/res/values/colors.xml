@@ -14,4 +14,18 @@
     <color name="light_gray">#eeeeee</color>
     <color name="gray">#cccccc</color>
     <color name="dark_gray">#aaaaaa</color>
+
+    <color name="cyan_extra_light">#80DEEA</color>
+    <color name="cyan_light">#4DD0E1</color>
+    <color name="cyaish">#00ACC1</color>
+    <color name="cyanish_light">#00E5FF</color>
+    <color name="cyan_dark">#0097A7</color>
+
+    <color name="orange">#FFAB40</color>
+    <color name="deep_orange">#FF5722</color>
+
+    <color name="dirty_pink_light">#FFCDD2</color>
+    <color name="dirty_pink">#EF9A9A</color>
+    <color name="dirty_pink_dark">#E57373</color>
+
 </resources>

@@ -13,10 +13,10 @@
     <application
             android:name=".HonarnamaSellApp"
             android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@mipmap/logo_main"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/MaterialBaseBaseTheme.Light">
+            android:theme="@style/MyMaterialTheme">
         <activity
                 android:name=".activity.LoginActivity"
                 android:label="@string/app_name"

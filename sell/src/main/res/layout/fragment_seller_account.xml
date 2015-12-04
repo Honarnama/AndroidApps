@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/nokhodi_botte_jeghe"
+                android:textColor="@color/dirty_pink_dark"
                 android:layout_marginTop="10dp"
                 />
         <LinearLayout
@@ -63,16 +63,12 @@
         </LinearLayout>
         <Button
                 android:id="@+id/seller_account_alter_name_button"
-                android:layout_width="match_parent" android:layout_height="45dp"
-                android:background="@color/nokhodi_botte_jeghe"
-                android:textColor="#ffffff"
                 android:text="@string/alter_name"
                 android:layout_below="@id/seller_account_name_layout"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_marginBottom="15dp"
+                style="@style/buttol_full_width"
                 />
 
         <RelativeLayout
@@ -107,15 +103,11 @@
 
         <Button
                 android:id="@+id/seller_account_alter_password_button"
-                android:layout_width="match_parent" android:layout_height="45dp"
-                android:background="@color/nokhodi_botte_jeghe"
-                android:textColor="#ffffff"
                 android:text="@string/alter_password"
                 android:layout_below="@id/seller_account_password_layer"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/buttol_full_width"
                 />
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,16 +194,12 @@
                     />
             <Button
                     android:id="@+id/seller_account_resend_verification_docs_button"
-                    android:layout_width="match_parent" android:layout_height="45dp"
-                    android:background="@color/nokhodi_botte_jeghe"
-                    android:textColor="#ffffff"
                     android:text="@string/resend_verification_docs"
                     android:layout_below="@id/seller_account_alter_card_number_text_view"
                     android:gravity="center"
                     android:layout_marginTop="10dp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     android:layout_marginBottom="15dp"
+                    style="@style/buttol_full_width"
                     />
         </RelativeLayout>
     </RelativeLayout>
