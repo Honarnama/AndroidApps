@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
     publishNonDefault true
 }
 
@@ -11,7 +11,6 @@ dependencies {
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.10.3'
     compile 'com.makeramen:roundedimageview:2.1.2'
-
     compile('com.mikepenz:materialdrawer:4.4.6@aar') {
         transitive = true
     }

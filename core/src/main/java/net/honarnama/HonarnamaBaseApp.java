@@ -22,6 +22,7 @@ public class HonarnamaBaseApp extends Application {
     public static final String PRODUCTION_TAG = "Honarnama";
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 10000;
     public static final int INTENT_TELEGRAM_CODE = 1003;
+    public static final int INTENT_CHOOSE_CATEGORY_CODE = 1004;
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
@@ -43,7 +44,7 @@ public class HonarnamaBaseApp extends Application {
         singleton = this;
 
         if (BuildConfig.DEBUG) {
-            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "App Created: " + getPackageName());
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "App created: " + getPackageName());
         }
 
         Parse.enableLocalDatastore(this);

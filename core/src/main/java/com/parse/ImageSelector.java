@@ -82,7 +82,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         mContext = context;
         init(attrs);
         if (BuildConfig.DEBUG && !announced) {
-            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "View Created, to view the logs: '" + LOG_TAG + ":V'");
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "View created,\tadb catlog tag:   '" + LOG_TAG + ":V'");
             announced = true;
         }
     }

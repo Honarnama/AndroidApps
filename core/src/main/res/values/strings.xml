@@ -83,6 +83,9 @@
         بررسی کنید.
     </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
+
+    <string name="syncing_data"> در حال همگام‌سازی اطلاعات </string>
+
     <string name="error_signup_duplicated_email">" ایمیل وارد شده پیشتر ثبت شده است. "</string>
     <string name="error_signup_duplicated_mobile_number">" شماره تلفن همراه وارد شده پیشتر ثبت شده
         است. "
@@ -117,9 +120,7 @@
     </string>
 
     <string name="edit_item_title_hint">عنوان محصول</string>
-    <string name="edit_item_title_sub_hint">از کلماتی استفاده کنید که مردم در سرچ استفاده خواهند
-        کرد
-    </string>
+    <string name="edit_item_title_sub_hint">  از کلماتی استفاده کنید که کاربران در جستجوی خود به کار می‌برند. </string>
     <string name="edit_item_description_hint">توضیحات</string>
     <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
@@ -131,9 +132,12 @@
     <string name="error_sending_images">خطا در ارسال تصاویر. لطفا دوباره تلاش کنید</string>
 
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
-    <string name="please_check_internet_connection">" لطفاًاینترنت دستگاه خود را بررسی کنید. "
+    <string name="please_check_internet_connection"> لطفا اتصال اینترنت دستگاه خود را بررسی کنید.
     </string>
     <string name="alter_name">تغییر نام</string>
     <string name="successfully_changed_user_name">نام شما با موفقیت تغییر یافت.</string>
+    <string name="choose_category_dialog_title">انتخاب دسته‌ی آگهی</string>
+    <string name="syncing_data_failed"> خطا در به‌روزرسانی اطلاعات. لطفا اینترنت دستگاه خود را بررسی کنید.  </string>
+    <string name="receiving_data">در حال دریافت اطلاعت</string>
 
 </resources>

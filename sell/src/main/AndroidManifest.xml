@@ -15,9 +15,8 @@
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:theme="@style/MaterialBaseBaseTheme.Light"
             android:supportsRtl="true"
-             >
+            android:theme="@style/MaterialBaseBaseTheme.Light">
         <activity
                 android:name=".activity.LoginActivity"
                 android:label="@string/app_name"
@@ -51,14 +50,18 @@
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="stateHidden">
         </activity>
-
         <activity
                 android:name=".activity.ControlPanelActivity"
                 android:label="@string/app_title"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait">
         </activity>
-
+        <activity
+                android:name=".activity.ChooseCategoryActivity"
+                android:theme="@style/Theme.Holo.Dialog.NoActionBar"
+                android:label="@string/choose_category_dialog_title"
+                android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

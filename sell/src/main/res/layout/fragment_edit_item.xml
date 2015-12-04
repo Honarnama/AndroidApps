@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="fill_parent"
-            xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="fill_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="fill_parent" android:layout_width="fill_parent"
             android:background="#ffffff">
 
 
@@ -20,13 +20,13 @@
                 />
 
         <TextView android:id="@+id/itemImageHint"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/edit_item_photos_description"
-                android:gravity="right"
-                android:layout_gravity="center"
-                android:textColor="@color/hint_color_custom"
-                android:layout_margin="5dp"
-                android:textSize="12sp"
+                  android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:text="@string/edit_item_photos_description"
+                  android:gravity="right"
+                  android:layout_gravity="center"
+                  android:textColor="@color/hint_color_custom"
+                  android:layout_margin="5dp"
+                  android:textSize="12sp"
                 />
 
         <TableLayout
@@ -129,14 +129,14 @@
                       android:orientation="horizontal" android:layout_marginTop="5dp"
                       android:layout_marginRight="5dp" android:layout_marginLeft="5dp">
             <EditText android:id="@+id/editProductTitle"
-                    android:layout_width="0dp" android:layout_height="45dp"
-                    android:hint="@string/edit_item_title_hint"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:gravity="right"
+                      android:layout_width="0dp" android:layout_height="45dp"
+                      android:hint="@string/edit_item_title_hint"
+                      android:singleLine="true"
+                      android:textSize="16sp"
+                      android:layout_weight="2"
+                      android:ellipsize="start"
+                      android:textColorHint="@color/android_default_hint_color"
+                      android:gravity="right"
                     />
             <TextView
                     android:text="*"
@@ -158,19 +158,24 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
                 />
-
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="انتخاب دسته‌ی آگهی"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dp"
+                android:id="@+id/choose_category_button"
+                />
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
                       android:orientation="horizontal" android:layout_margin="5dp">
             <EditText android:id="@+id/editProductDescription"
-                    android:layout_width="0dp" android:layout_height="100dp"
-                    android:hint="@string/edit_item_description_hint"
-                    android:singleLine="true"
-                    android:textSize="14sp"
-                    android:layout_weight="2"
-                    android:lines="5"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:gravity="right"
+                      android:layout_width="0dp" android:layout_height="100dp"
+                      android:hint="@string/edit_item_description_hint"
+                      android:singleLine="true"
+                      android:textSize="14sp"
+                      android:layout_weight="2"
+                      android:lines="5"
+                      android:ellipsize="start"
+                      android:textColorHint="@color/android_default_hint_color"
+                      android:gravity="right"
                     />
             <TextView
                     android:text="*"

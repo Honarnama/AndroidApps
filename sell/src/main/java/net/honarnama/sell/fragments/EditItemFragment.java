@@ -11,7 +11,9 @@ import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseFragment;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ChooseCategoryActivity;
 import net.honarnama.sell.model.Item;
 import net.honarnama.utils.NetworkManager;
 import net.honarnama.utils.ParseIO;
@@ -26,6 +28,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private EditText mProductDescription;
     private TextView mItemImageHint;
     private ProgressDialog mLoadingDialog;
+    private Button mChooseCategoryButton;
 
     private ImageSelector[] itemImages;
 
@@ -56,6 +60,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private boolean mDirty = false;
     private boolean mCreateNew = false;
+
+    private String mSelectedCategoryObjectId;
+    private String mSelectedCategoryName;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -98,7 +105,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mProductTitle = (EditText) rootView.findViewById(R.id.editProductTitle);
         mProductDescription = (EditText) rootView.findViewById(R.id.editProductDescription);
         mItemImageHint = (TextView) rootView.findViewById(R.id.itemImageHint);
+        mChooseCategoryButton = (Button) rootView.findViewById(R.id.choose_category_button);
 
+        mChooseCategoryButton.setOnClickListener(this);
         TextWatcher textWatcherToMarkDirty = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -253,6 +262,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     saveItemImages();
                 }
                 break;
+            case R.id.choose_category_button:
+                Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
+                startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
+                break;
             default:
                 break;
         }
@@ -395,6 +408,17 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (imageSelector.onActivityResult(requestCode, resultCode, data)) {
                 return;
             }
+        }
+        switch (requestCode) {
+            case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
+
+                if (resultCode == getActivity().RESULT_OK) {
+                    mSelectedCategoryName = data.getStringExtra("selectedCategoryName");
+                    mSelectedCategoryObjectId = data.getStringExtra("selectedCategoryObjectId");
+                    Toast.makeText(getActivity(), mSelectedCategoryObjectId, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), mSelectedCategoryName, Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 

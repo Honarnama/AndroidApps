@@ -7,31 +7,49 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.HonarnamaBaseFragment;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.SellerAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 import net.honarnama.utils.HonarnamaUser;
+import net.honarnama.utils.NetworkManager;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
 
@@ -118,6 +136,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
         mEditItemFragment = EditItemFragment.getInstance();
         processIntent(getIntent());
+
+        //
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+            cacheArtCategories();
+        }
     }
 
     @Override
@@ -262,6 +286,51 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public void switchFragmentToEditItem(String itemId) {
         mEditItemFragment.setItemId(itemId);
         switchFragment(mEditItemFragment);
+    }
+
+    private void cacheArtCategories() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+            return;
+        }
+        final ProgressDialog syncingDataProgressDialog = new ProgressDialog(this);
+        syncingDataProgressDialog.setCancelable(false);
+        syncingDataProgressDialog.setMessage(getString(R.string.syncing_data));
+        syncingDataProgressDialog.show();
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("art_categories");
+        parseQuery.findInBackground(new FindCallback<ParseObject>() {
+            public void done(final List<ParseObject> artCategories, ParseException e) {
+
+                syncingDataProgressDialog.dismiss();
+                if (e == null) {
+                    ParseObject.unpinAllInBackground("artCategories", artCategories, new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            ParseObject.pinAllInBackground("artCategories", artCategories, new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
+                                            editor.commit();
+                                        }
+                                    }
+                            );
+                        }
+                    });
+
+
+                } else {
+                    Toast.makeText(ControlPanelActivity.this, getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving categories list failed. Code: " + e.getCode() +
+                                "//" + e.getMessage() + " // " + e);
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving categories list failed. Code: " + e.getCode() +
+                                "//" + e.getMessage() + " // " + e);
+                    }
+                }
+            }
+        });
     }
 
 }
