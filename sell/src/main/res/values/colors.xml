@@ -9,13 +9,13 @@
     <color name="colorAccent">#E57373</color>
 -->
 
-    <color name="colorPrimary">@color/aabi_bote_jeghe</color>
-    <color name="colorPrimaryDark">#0696ae</color>
+    <color name="colorPrimary">#800080</color>
+    <color name="colorPrimaryDark">#4e004e</color>
 
     <color name="textColorPrimary">#503F21</color>
     <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#E57373</color>
+    <color name="colorAccent">#7E57C2</color>
 
     <color name="happy_blue">#0061e6</color>
     <color name="dark_blue">#0145a3</color>
@@ -23,6 +23,19 @@
 
     <color name="main_back">#ffffff</color>
 
+    <color name="extra_light_purple">#E1BEE7</color>
+    <color name="light_purple">#CE93D8</color>
+    <color name="purple">#BA68C8</color>
+    <color name="dark_purple">#AB47BC</color>
+    <color name="extra_dark_purple">#AB47BC</color>
+
+
+
+
+    <color name="arghavani">#800060</color>
+
+    <color name="button_back">@color/gray</color>
+    <color name="text_color">#616161</color>
 
     <!-- OVERWRITE THESE COLORS FOR A LIGHT THEME -->
     <!-- MaterialDrawer DEFAULT colors -->

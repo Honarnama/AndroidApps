@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/dirty_pink_dark"
+                android:textColor="#7E57C2"
                 android:layout_marginTop="10dp"
                 />
         <LinearLayout
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
-                style="@style/buttol_full_width"
+                style="@style/button_full_width"
                 />
 
         <RelativeLayout
@@ -107,7 +107,7 @@
                 android:layout_below="@id/seller_account_password_layer"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                style="@style/buttol_full_width"
+                style="@style/button_full_width"
                 />
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
                     android:gravity="center"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="15dp"
-                    style="@style/buttol_full_width"
+                    style="@style/button_full_width"
                     />
         </RelativeLayout>
     </RelativeLayout>

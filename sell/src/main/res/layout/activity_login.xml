@@ -89,22 +89,17 @@
                     />
             <EditText
                     android:id="@+id/login_password_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textWebPassword"
                     android:hint="@string/password_hint"
                     android:layout_below="@id/login_username_edit_text"
-                    android:singleLine="true"
-                    android:gravity="right"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:textSize="16sp"
+                    style="@style/edit_text_default"
                     />
             <Button
                     android:id="@+id/login_button"
                     android:text="@string/enter_button"
                     android:layout_below="@id/login_password_edit_text"
                     android:layout_marginTop="10dp"
-                    style="@style/buttol_full_width"
+                    style="@style/button_full_width"
                     />
         </RelativeLayout>
         <TextView

@@ -194,13 +194,9 @@
 
         <Button
                 android:id="@+id/saveItemButton"
-                android:layout_width="fill_parent" android:layout_height="45dp"
-                android:background="@color/nokhodi_botte_jeghe"
-                android:textColor="#ffffff"
                 android:text="@string/edit_item_save"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_margin="10dp"
+                style="@style/button_full_width"
                 />
 
     </LinearLayout>
