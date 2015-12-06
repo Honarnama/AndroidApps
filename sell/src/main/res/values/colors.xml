@@ -9,17 +9,16 @@
     <color name="colorAccent">#E57373</color>
 -->
 
-    <color name="colorPrimary">#800080</color>
-    <color name="colorPrimaryDark">#4e004e</color>
+    <color name="colorPrimary">@color/dark_green</color>
+    <color name="colorPrimaryDark">@color/extra_dark_green</color>
 
     <color name="textColorPrimary">#503F21</color>
     <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#7E57C2</color>
+    <color name="colorAccent">@color/dark_blue</color>
 
     <color name="happy_blue">#0061e6</color>
-    <color name="dark_blue">#0145a3</color>
-    <color name="aabi_bote_jeghe">#12adc7</color>
+    <color name="nice_blue">#12adc7</color>
 
     <color name="main_back">#ffffff</color>
 
@@ -29,9 +28,14 @@
     <color name="dark_purple">#AB47BC</color>
     <color name="extra_dark_purple">#AB47BC</color>
 
+    <color name="extra_light_green">#DCEDC8</color>
+    <color name="light_green">#AED581</color>
+    <color name="green">#8BC34A</color>
+    <color name="dark_green">#689F38</color>
+    <color name="extra_dark_green">#33691E</color>
+    <color name="super_extra_dark_green">#1e3e12</color>
 
-
-
+    <color name="notification_text_color">#C0CA33</color>
     <color name="arghavani">#800060</color>
 
     <color name="button_back">@color/gray</color>

@@ -14,7 +14,7 @@
                 android:text="@string/edit_item_photos_title"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:textColor="@color/aabi_logo"
+                android:textColor="@color/dark_blue"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 />
@@ -110,7 +110,7 @@
                 android:text="@string/edit_item_details_title"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:textColor="@color/aabi_logo"
+                android:textColor="@color/dark_blue"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 />

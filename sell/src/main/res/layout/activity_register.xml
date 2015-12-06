@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/dirty_pink_dark"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_below="@id/register_form_title"
                 android:layout_marginTop="10dp"
                 />
@@ -129,7 +129,7 @@
                         android:drawableRight="@drawable/radio_button_image"
                         android:checked="false"
                         android:layout_marginBottom="15dp"
-                        android:textColor="@color/aabi_logo"/>
+                        android:textColor="@color/dark_blue"/>
                 <RadioButton
                         android:id="@+id/register_activate_with_telegram"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                         android:textSize="14sp"
                         android:button="@null"
                         android:drawableRight="@drawable/radio_button_image"
-                        android:textColor="@color/aabi_logo"
+                        android:textColor="@color/dark_blue"
                         android:checked="true"
                         />
             </RadioGroup>
@@ -274,7 +274,7 @@
                       android:text="@string/add_national_card_image_text"
                       android:gravity="center"
                       android:layout_gravity="center"
-                      android:textColor="@color/aabi_logo"
+                      android:textColor="@color/dark_blue"
                       android:layout_marginTop="10dp"
                       android:textSize="16sp"
                       android:clickable="true"
