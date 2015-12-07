@@ -17,6 +17,7 @@
             android:layout_gravity="right"
             android:gravity="right"
             android:layoutDirection="rtl"
+            android:title="@string/toolbar_title"
             android:elevation="4dp"/>
 
 

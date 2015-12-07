@@ -77,8 +77,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        mToolbarTitleTextView = (TextView) findViewById(R.id.toolbar_title);
-
+        mToolbar.setTitle(R.string.toolbar_title);
         setSupportActionBar(mToolbar);
 
         mResult = new DrawerBuilder().withActivity(this)

@@ -1,13 +1,89 @@
 package net.honarnama.browse;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-public class MainActivity extends Activity {
+import net.honarnama.HonarnamaBaseActivity;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
+
+public class MainActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
+
+
+    public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;
+    public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
+    public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
+    public static final int DRAWER_ITEM_IDENTIFIER_EDIT_ITEM = 4;
+    public static final int DRAWER_ITEM_IDENTIFIER_ORDERS = 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 6;
+
+    private Toolbar mToolbar;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Fragment mFragment;
+
+    private Drawer mResult;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        mToolbar = (Toolbar) findViewById(R.id.browse_toolbar);
+        mToolbar.setTitle(R.string.toolbar_title);
+        setSupportActionBar(mToolbar);
+
+        mResult = new DrawerBuilder().withActivity(this)
+                .withDrawerGravity(Gravity.RIGHT)
+                .withRootView(R.id.browse_drawer_container)
+                .withToolbar(mToolbar)
+                .withActionBarDrawerToggleAnimated(true)
+                .withSelectedItem(-1)
+                .withTranslucentStatusBar(false)
+                .addDrawerItems(
+                        new SecondaryDrawerItem().withName(R.string.nav_title_main_page).
+                                withIcon(GoogleMaterial.Icon.gmd_home).withIdentifier(DRAWER_ITEM_IDENTIFIER_ACCOUNT),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_sign_in).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_sign_in),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_sign_up).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_account),
+
+                        new DividerDrawerItem().withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.nav_title_switch_to_exhibitors_app).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_search_in_page)
+                )
+                .withOnDrawerItemClickListener(this)
+                .build();
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
+        };
+
+        mResult.getDrawerLayout().post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mResult.setActionBarDrawerToggle(mDrawerToggle);
+    }
+
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        return false;
     }
 }

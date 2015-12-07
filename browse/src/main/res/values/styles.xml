@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/extra_dark_gray</item>
+        <item name="android:actionMenuTextColor">@color/extra_dark_gray</item>
+
+    </style>
+
+
+    <style name="ActionBarThemeOverlayPopup" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/dark_blue</item>
+        <item name="android:actionMenuTextColor">@color/dark_blue</item>
+    </style>
+
+
+</resources>

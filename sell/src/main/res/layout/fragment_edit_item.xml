@@ -196,7 +196,7 @@
                 android:id="@+id/saveItemButton"
                 android:text="@string/edit_item_save"
                 android:layout_margin="10dp"
-                style="@style/button_full_width"
+                style="@style/sell_full_width_button"
                 />
 
     </LinearLayout>

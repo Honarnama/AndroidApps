@@ -105,7 +105,6 @@
     <string name="drawer_close">Close</string>
 
     <string name="nav_title_exit_app">خروج</string>
-    <string name="app_title">هنرنما</string>
 
     <string name="exit_from_editing_dialog_title">در حال ویرایش یک محصول</string>
     <string name="exit_from_editing_option_dont_exit">باقی ماندن در صفحه</string>

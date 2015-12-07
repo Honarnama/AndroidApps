@@ -343,7 +343,7 @@
                 android:layout_below="@id/register_card_number_alert_text_view"
                 android:layout_marginTop="10dp"
                 android:nextFocusForward="@id/register_firstname_edit_text"
-                style="@style/button_full_width"
+                style="@style/sell_full_width_button"
                 />
     </RelativeLayout>
 </ScrollView>

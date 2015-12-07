@@ -19,13 +19,20 @@
     <color name="cyan_light">#4DD0E1</color>
     <color name="cyaish">#00ACC1</color>
     <color name="cyanish_light">#00E5FF</color>
-    <color name="cyan_dark">#0097A7</color>
+    <color name="dark_cyan">#0097A7</color>
 
     <color name="orange">#FFAB40</color>
     <color name="deep_orange">#FF5722</color>
+    <color name="dark_orange">#EF6C00</color>
+    <color name="extra_dark_orange">#E65100</color>
 
     <color name="dirty_pink_light">#FFCDD2</color>
     <color name="dirty_pink">#EF9A9A</color>
     <color name="dirty_pink_dark">#E57373</color>
+
+
+
+    <color name="happy_blue">#0061e6</color>
+    <color name="nice_blue">#12adc7</color>
 
 </resources>

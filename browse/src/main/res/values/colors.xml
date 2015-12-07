@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/amber</color>
-    <color name="colorPrimaryDark">#F5AF3A</color>
+    <color name="colorPrimaryDark">@color/launcher_color_dark</color>
     <color name="textColorPrimary">#503F21</color>
-    <color name="windowBackground">#FF0000</color>
+    <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#E57373</color>
+    <color name="colorAccent">@color/cyan_light</color>
+
+    <color name="launcher_color_dark">#edb200</color>
 
     <color name="amber">#FFC107</color>
+    <color name="extra_dark_gray">#424242</color>
+    <color name="super_extra_dark_gray">#212121</color>
 </resources>
