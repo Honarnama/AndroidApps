@@ -15,10 +15,13 @@
     <color name="textColorPrimary">#503F21</color>
     <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">@color/dark_blue</color>
+    <color name="colorAccent">#616161</color>
 
     <color name="happy_blue">#0061e6</color>
     <color name="nice_blue">#12adc7</color>
+
+    <color name="lime">#CDDC39</color>
+    <color name="light_orange">#F9A825</color>
 
     <color name="main_back">#ffffff</color>
 
