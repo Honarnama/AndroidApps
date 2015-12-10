@@ -23,6 +23,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     debugCompile project(path: ':core', configuration: 'debug')
     releaseCompile project(path: ':core', configuration: 'release')
-    compile 'com.android.support:design:23.0.1'
-
+    compile 'com.android.support:design:23.0.+'
 }

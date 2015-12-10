@@ -8,4 +8,9 @@
 
     <string name="toolbar_title"> هنرنما </string>
     <string name="nav_title_sign_up">ساخت حساب کاربری</string>
+    <string name="recommended_items">محصولات پیشنهادی</string>
+    <string name="recent_activity">" فعالیت شما "</string>
+    <string name="recommended_items_default_message">برای اینکه بتوانید محصولات مورد علاقه‌تان را
+        ذخیره کنید و پیشنهادهای مارا ببینید، ابتدا بایستی وارد سایت شوید.
+    </string>
 </resources>

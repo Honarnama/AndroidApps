@@ -4,14 +4,15 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.browse.fragments.HomeFragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -78,12 +79,23 @@ public class MainActivity extends HonarnamaBaseActivity implements Drawer.OnDraw
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setElevation(0);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mResult.setActionBarDrawerToggle(mDrawerToggle);
     }
 
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+        HomeFragment fragment = HomeFragment.getInstance();
+
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.browse_frame_container, fragment);
+        fragmentTransaction.commit();
+
+        getSupportActionBar().setTitle(fragment.getTitle(this));
+
         return false;
     }
 }
