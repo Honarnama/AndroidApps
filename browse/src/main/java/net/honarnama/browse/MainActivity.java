@@ -7,7 +7,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.browse.fragments.HomeFragment;
 
 import android.app.Fragment;

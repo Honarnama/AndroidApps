@@ -6,11 +6,11 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.sell.R;
-import net.honarnama.utils.GenericGravityTextWatcher;
-import net.honarnama.utils.HonarnamaUser;
-import net.honarnama.utils.NetworkManager;
+import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

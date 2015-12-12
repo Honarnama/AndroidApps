@@ -1,26 +1,40 @@
-package net.honarnama;
+package net.honarnama.core.fragment;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 /**
- * Created by reza on 7/23/15.
+ * Created by reza on 11/23/15.
  */
-public abstract class HonarnamaBaseActivity extends AppCompatActivity {
+public abstract class HonarnamaBaseFragment extends Fragment {
 
     private static boolean announced = false;
 
+    abstract public String getTitle(Context context);
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (BuildConfig.DEBUG && !announced) {
-            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Activity created,\tadb catlog tag:   'Honarnama/" + getLocalClassName() + ":V'");
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Fragment created,\tadb catlog tag: 'Honarnama/" + getLocalClassName() + ":V'");
             announced = true;
         }
+    }
+
+    public String getLocalClassName() {
+        final String pkg = getActivity().getPackageName();
+        final String cls = getClass().getCanonicalName();
+        int packageLen = pkg.length();
+        if (!cls.startsWith(pkg) || cls.length() <= packageLen
+                || cls.charAt(packageLen) != '.') {
+            return cls;
+        }
+        return cls.substring(packageLen + 1);
     }
 
     String getDebugTag() {

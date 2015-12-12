@@ -1,6 +1,5 @@
 package net.honarnama.browse.fragments;
 
-import net.honarnama.HonarnamaBaseFragment;
 import net.honarnama.browse.R;
 
 import android.content.Context;

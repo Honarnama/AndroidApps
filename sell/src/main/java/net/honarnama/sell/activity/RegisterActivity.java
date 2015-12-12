@@ -9,7 +9,7 @@ import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
-import net.honarnama.HonarnamaBaseActivity;
+import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -17,9 +17,9 @@ import net.honarnama.sell.R;
 
 import com.parse.ImageSelector;
 
-import net.honarnama.utils.GenericGravityTextWatcher;
-import net.honarnama.utils.NetworkManager;
-import net.honarnama.utils.ParseIO;
+import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.ParseIO;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

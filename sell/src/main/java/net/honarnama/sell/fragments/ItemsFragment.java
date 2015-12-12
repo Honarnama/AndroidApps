@@ -2,7 +2,7 @@ package net.honarnama.sell.fragments;
 
 import com.parse.ParseObject;
 
-import net.honarnama.HonarnamaBaseFragment;
+import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;

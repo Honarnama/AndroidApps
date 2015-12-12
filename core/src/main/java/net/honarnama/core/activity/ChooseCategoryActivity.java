@@ -1,4 +1,4 @@
-package net.honarnama.sell.activity;
+package net.honarnama.core.activity;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -7,11 +7,10 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarnamaBaseActivity;
-import net.honarnama.sell.HonarnamaSellApp;
-import net.honarnama.sell.R;
-import net.honarnama.sell.adapter.CategoriesAdapter;
-import net.honarnama.utils.NetworkManager;
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.R;
+import net.honarnama.core.adapter.CategoriesAdapter;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -70,7 +69,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
 
-        if (sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             logD(null, "fromLocalDatastore in buildCategoriesHashMap");
             parseQuery.fromLocalDatastore();
         } else {
@@ -82,11 +81,11 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         }
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             public void done(final List<ParseObject> artCategories, ParseException e) {
-                if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+                if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
                     receivingDataProgressDialog.dismiss();
                 }
                 if (e == null) {
-                    if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
                         ParseObject.unpinAllInBackground("artCategories", artCategories, new DeleteCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -96,7 +95,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
                                                 Toast.makeText(ChooseCategoryActivity.this, "Got data", Toast.LENGTH_SHORT).show();
                                                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
                                                 SharedPreferences.Editor editor = sharedPref.edit();
-                                                editor.putBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
+                                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
                                                 editor.commit();
                                             }
                                         }

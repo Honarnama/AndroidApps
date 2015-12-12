@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        >
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:src="@drawable/login_face"
-               android:layout_centerHorizontal="true"
-               android:layout_alignParentTop="true"
-               android:layout_marginTop="20dp"
-               android:id="@+id/recommended_items_login_face_image_view"
-            />
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:src="@drawable/login_face"
+                   android:layout_alignParentTop="true"
+                   android:layout_margin="20dp"
+                   android:layout_marginBottom="0dp"
+                   android:layout_centerInParent="true"
+                   android:id="@+id/recommended_items_login_face_image_view"
+                />
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-              android:text="@string/recommended_items_default_message"
-              android:textStyle="bold"
-              android:textSize="18sp"
-              android:textColor="@color/extra_dark_gray"
-              android:id="@+id/recommended_items_login_message"
-              android:layout_centerHorizontal="true"
-              android:layout_margin="20dp"
-              android:layout_marginTop="35dp"
-              android:textDirection="rtl"
-              android:gravity="center"
-              android:layout_below="@id/recommended_items_login_face_image_view"
-            />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:text="@string/recommended_items_default_message"
+                  android:textStyle="bold"
+                  android:textSize="18sp"
+                  android:textColor="@color/extra_dark_gray"
+                  android:id="@+id/recommended_items_login_message"
+                  android:layout_centerHorizontal="true"
+                  android:layout_margin="20dp"
+                  android:layout_marginBottom="10dp"
+                  android:layout_marginTop="0dp"
+                  android:textDirection="rtl"
+                  android:gravity="center"
+                  android:layout_below="@id/recommended_items_login_face_image_view"
+                />
 
-    <Button style="@style/default_button_Style"
-            android:text="@string/nav_title_sign_in"
-            android:layout_below="@+id/recommended_items_login_message"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/button_border"
-            />
+        <Button style="@style/default_button_Style"
+                android:text="@string/nav_title_sign_in"
+                android:layout_below="@+id/recommended_items_login_message"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/button_border"
 
-
-</RelativeLayout>
+                />
+    </RelativeLayout>
+</ScrollView>

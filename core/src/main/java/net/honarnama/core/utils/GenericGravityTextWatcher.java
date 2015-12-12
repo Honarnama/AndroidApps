@@ -1,4 +1,4 @@
-package net.honarnama.utils;
+package net.honarnama.core.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;

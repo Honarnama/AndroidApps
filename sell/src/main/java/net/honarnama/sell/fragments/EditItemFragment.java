@@ -10,13 +10,13 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarnamaBaseFragment;
+import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
-import net.honarnama.sell.activity.ChooseCategoryActivity;
+import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.sell.model.Item;
-import net.honarnama.utils.NetworkManager;
-import net.honarnama.utils.ParseIO;
+import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.ParseIO;
 
 import android.app.ProgressDialog;
 import android.content.Context;

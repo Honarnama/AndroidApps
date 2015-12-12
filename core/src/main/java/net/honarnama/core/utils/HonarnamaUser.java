@@ -1,4 +1,4 @@
-package net.honarnama.utils;
+package net.honarnama.core.utils;
 
 import com.parse.FunctionCallback;
 import com.parse.LogInCallback;

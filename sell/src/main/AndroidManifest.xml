@@ -57,7 +57,7 @@
                 android:screenOrientation="portrait">
         </activity>
         <activity
-                android:name=".activity.ChooseCategoryActivity"
+                android:name="net.honarnama.core.activity.ChooseCategoryActivity"
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 android:label="@string/choose_category_dialog_title"
                 android:screenOrientation="portrait">

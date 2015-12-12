@@ -1,9 +1,10 @@
-package net.honarnama.sell.adapter;
+package net.honarnama.core.adapter;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
-import net.honarnama.sell.R;
+
+import net.honarnama.base.R;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -24,13 +25,13 @@ import java.util.HashMap;
  */
 public class CategoriesAdapter extends BaseAdapter {
     private final Context mContext;
-    private HashMap<Number, String>  mArtCategoriesName;
-    private HashMap<Number, String>  mArtCategoriesObjectIds;
+    private HashMap<Number, String> mArtCategoriesName;
+    private HashMap<Number, String> mArtCategoriesObjectIds;
 
     private int mSelectedPosition;
     public ArrayList<String> mNodeCategories = new ArrayList<String>();
 
-    public CategoriesAdapter(Context context, HashMap<Number, String>  artCategoriesObjectIds,HashMap<Number, String>  artCategoriesName, ArrayList<String> nodeCategories) {
+    public CategoriesAdapter(Context context, HashMap<Number, String> artCategoriesObjectIds, HashMap<Number, String> artCategoriesName, ArrayList<String> nodeCategories) {
         super();
         mContext = context;
         mArtCategoriesObjectIds = artCategoriesObjectIds;

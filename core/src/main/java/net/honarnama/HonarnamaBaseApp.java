@@ -30,6 +30,9 @@ public class HonarnamaBaseApp extends Application {
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
 
+    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
+
+
     private static HonarnamaBaseApp singleton;
 
     public static HonarnamaBaseApp getInstance() {
