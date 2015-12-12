@@ -29,16 +29,18 @@ public class Item extends ParseObject {
         super();
     }
 
-    public Item(ParseUser owner, String title, String description) {
+    public Item(ParseUser owner, String title, String description, String categoryId) {
         super();
         put("title", title);
         put("description", description);
         put("owner", owner);
+        // TODO: categoryId
     }
 
-    private void update(String title, String description) {
+    private void update(String title, String description, String categoryId) {
         put("title", title);
         put("description", description);
+        // TODO: categoryId
     }
 
     public String getTitle() {
@@ -58,7 +60,7 @@ public class Item extends ParseObject {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final ImageSelector[] itemImages) throws IOException {
+    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final String categoryId,final ImageSelector[] itemImages) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
 
@@ -89,9 +91,9 @@ public class Item extends ParseObject {
         final Item item;
         if (originalItem != null) {
             item = originalItem;
-            item.update(title, description);
+            item.update(title, description, categoryId);
         } else {
-            item = new Item(ParseUser.getCurrentUser(), title, description);
+            item = new Item(ParseUser.getCurrentUser(), title, description, categoryId);
         }
 
         Task<Void> t = Task.whenAll(tasks).continueWithTask(new Continuation<Void, Task<Void>>() {

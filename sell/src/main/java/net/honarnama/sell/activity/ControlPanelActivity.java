@@ -10,7 +10,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.utils.CategoriesUtils;
+import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -283,7 +283,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         syncingDataProgressDialog.setCancelable(false);
         syncingDataProgressDialog.setMessage(getString(R.string.syncing_data));
         syncingDataProgressDialog.show();
-        CategoriesUtils.cacheArtCategories(this, syncingDataProgressDialog);
+        Category.cacheArtCategories(this, syncingDataProgressDialog);
     }
 
 }

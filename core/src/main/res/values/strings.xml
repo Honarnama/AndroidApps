@@ -123,6 +123,7 @@
     <string name="edit_item_description_hint">توضیحات</string>
     <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
+    <string name="error_edit_item_category_unchosen">دسته‌ی محصول اسنتخاب نشده است.</string>
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
     <string name="edit_item_done"> محصول شما با موفقیت ذخیره شد.</string>

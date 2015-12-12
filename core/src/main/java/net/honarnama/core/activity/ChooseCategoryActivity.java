@@ -10,6 +10,7 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 import net.honarnama.core.adapter.CategoriesAdapter;
+import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.ProgressDialog;
@@ -65,7 +66,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         receivingDataProgressDialog.setCancelable(false);
         receivingDataProgressDialog.setMessage(getString(R.string.receiving_data));
 
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("art_categories");
+        ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
 
@@ -79,8 +80,8 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
             }
             receivingDataProgressDialog.show();
         }
-        parseQuery.findInBackground(new FindCallback<ParseObject>() {
-            public void done(final List<ParseObject> artCategories, ParseException e) {
+        parseQuery.findInBackground(new FindCallback<Category>() {
+            public void done(final List<Category> artCategories, ParseException e) {
                 if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
                     receivingDataProgressDialog.dismiss();
                 }
@@ -106,7 +107,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
                     for (int i = 0; i < artCategories.size(); i++) {
 
-                        ParseObject artCategory = artCategories.get(i);
+                        Category artCategory = artCategories.get(i);
 
                         if (artCategory.getString("parentId") == null) {//first level category
                             if (!mCategoriesHierarchyHashMap.containsKey(artCategory.getObjectId())) {

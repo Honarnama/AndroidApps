@@ -298,6 +298,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
+        if (mSelectedCategoryObjectId != null) {
+            mChooseCategoryButton.requestFocus();
+            mChooseCategoryButton.setError(getString(R.string.error_edit_item_category_unchosen));
+            return false;
+        }
+
         if (! mDirty) {
             Toast.makeText(getActivity(), R.string.item_not_changed, Toast.LENGTH_LONG).show();
             return false;
@@ -320,7 +326,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Item.saveWithImages(mItem, title, description, itemImages).continueWith(new Continuation<Item, Void>() {
+            Item.saveWithImages(mItem, title, description, mSelectedCategoryObjectId, itemImages).continueWith(new Continuation<Item, Void>() {
                 @Override
                 public Void then(Task<Item> task) throws Exception {
                     logD(null, "saveItem, Back to then");

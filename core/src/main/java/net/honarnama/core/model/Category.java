@@ -1,7 +1,8 @@
-package net.honarnama.core.utils;
+package net.honarnama.core.model;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -20,15 +21,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
-/**
- * Created by reza on 12/12/15.
- */
-public class CategoriesUtils {
+@ParseClassName("art_category")
+public class Category extends ParseObject {
 
     public static void cacheArtCategories(final Context context, final ProgressDialog syncingDataProgressDialog) {
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("art_categories");
-        parseQuery.findInBackground(new FindCallback<ParseObject>() {
-            public void done(final List<ParseObject> artCategories, ParseException e) {
+        ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
+        parseQuery.findInBackground(new FindCallback<Category>() {
+            public void done(final List<Category> artCategories, ParseException e) {
 
                 if (syncingDataProgressDialog != null) {
                     syncingDataProgressDialog.dismiss();
