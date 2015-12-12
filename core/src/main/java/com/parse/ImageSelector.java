@@ -63,7 +63,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mFinalImageUri;
 
     private ParseFile mParseFile;
-    private boolean mDirty = false;
+    private boolean mChanged = false;
     private boolean mImageIsLoaded = false;
 
     private static boolean announced = false;
@@ -184,7 +184,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
                     case 2:
                         removeSelectedImage();
-                        mDirty = true;
+                        mChanged = true;
+                        if (BuildConfig.DEBUG) {
+                            Log.d(LOG_TAG, "Image is removed");
+                        }
                 }
                 dialog.dismiss();
             }
@@ -200,7 +203,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (mDefaultDrawable != null) {
             setImageDrawable(mDefaultDrawable);
         }
-        mDirty = false;
+        mChanged = false;
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -224,6 +227,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if ((mOnImageSelectedListener == null) ||
                 (mOnImageSelectedListener.onImageSelected(selectedImage, cropped))) {
             mFinalImageUri = selectedImage;
+            mChanged = true;
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "Image is set (through imageSelected)");
+            }
             setImageURI(selectedImage);
         }
     }
@@ -398,7 +405,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void restore(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String prefix = "ImageSelector_" + mImageSelectorIndex;
-            mDirty = true;
+            mChanged = true;
 
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
@@ -425,7 +432,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void setFinalImageUri(Uri imageUri) {
         super.setImageURI(imageUri);
         mFinalImageUri = imageUri;
-        mDirty = true;
+        mChanged = true;
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "Image is set (through setFinalImageUri)");
+        }
     }
 
     public int getImageSelectorIndex() {
@@ -472,7 +482,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                         setImageBitmap(bitmap);
                     }
                 }
-                mDirty = false;
+                mChanged = false;
+                if (BuildConfig.DEBUG) {
+                    Log.d(LOG_TAG, "Image is loaded");
+                }
                 return task;
             }
         }, Task.UI_THREAD_EXECUTOR);
@@ -492,7 +505,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     }
 
     public boolean isChanged() {
-        return mDirty;
+        return mChanged;
     }
 
     public ParseFile getParseFile() {

@@ -6,17 +6,14 @@ import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.ProgressCallback;
-import com.parse.SaveCallback;
 
+import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
-import net.honarnama.core.activity.ChooseCategoryActivity;
+import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.Item;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.ParseIO;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,9 +30,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
+import bolts.Continuation;
+import bolts.Task;
 
 
 public class EditItemFragment extends HonarnamaBaseFragment implements View.OnClickListener {
@@ -108,20 +106,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mChooseCategoryButton = (Button) rootView.findViewById(R.id.choose_category_button);
 
         mChooseCategoryButton.setOnClickListener(this);
-        TextWatcher textWatcherToMarkDirty = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mDirty = true;
-            }
-        };
 
         ImageSelector.OnImageSelectedListener onImageSelectedListener =
                 new ImageSelector.OnImageSelectedListener() {
@@ -233,6 +217,20 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
         }
 
+        TextWatcher textWatcherToMarkDirty = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mDirty = true;
+            }
+        };
         mProductTitle.addTextChangedListener(textWatcherToMarkDirty);
         mProductDescription.addTextChangedListener(textWatcherToMarkDirty);
 
@@ -259,7 +257,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         switch (view.getId()) {
             case R.id.saveItemButton:
                 if (isFormInputsValid()) {
-                    saveItemImages();
+                    saveItem();
                 }
                 break;
             case R.id.choose_category_button:
@@ -300,105 +298,59 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
+        if (! mDirty) {
+            Toast.makeText(getActivity(), R.string.item_not_changed, Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            Toast.makeText(getActivity(), R.string.error_network_is_not_enabled, Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
     }
 
-    private void saveItemImages() {
-
-        if (mItemId != null) {
-            // TODO
-            Toast.makeText(getActivity(), "Not implemented yet!", Toast.LENGTH_LONG).show();
-            return;
-        }
+    private void saveItem() {
+        String title = mProductTitle.getText().toString().trim();
+        String description = mProductDescription.getText().toString().trim();
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
-
         try {
-            for (ImageSelector imageSelector : itemImages) {
-                if (imageSelector.getFinalImageUri() != null) {
-                    ParseFile parseFile = ParseIO.getParseFileFromFile(
-                            "image_" + imageSelector.getImageSelectorIndex() + ".jpeg",
-                            new File(imageSelector.getFinalImageUri().getPath())
-                    );
-                    parseFileImages.add(parseFile);
-                }
-            }
-        } catch (IOException e) {
-            logE("Failed on preparing item images", "", e);
-            sendingDataProgressDialog.dismiss();
-            Toast.makeText(getActivity(), R.string.error_sending_images, Toast.LENGTH_LONG).show();
-        }
-
-        final boolean[] errorOccuredUploadingFiles = {false};
-        for (int count = 0; count < parseFileImages.size(); count++) {
-            final int fileNumber = count + 1;
-            final ParseFile parseFile = parseFileImages.get(count);
-            parseFile.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        if (fileNumber == parseFileImages.size()) {
-                            saveItemInfo(parseFileImages, sendingDataProgressDialog);
-                        }
+            Item.saveWithImages(mItem, title, description, itemImages).continueWith(new Continuation<Item, Void>() {
+                @Override
+                public Void then(Task<Item> task) throws Exception {
+                    logD(null, "saveItem, Back to then");
+                    if (task.isCompleted()) {
+                        logD(null, "saveItem, task.isCompleted()");
+                        Toast.makeText(getActivity(), R.string.edit_item_save, Toast.LENGTH_LONG).show();
+                        mDirty = false;
+                        mItem = task.getResult();
+                        mItemId = mItem.getObjectId();
+                        logD(null, "saveItem, mItem= "  + mItem + ", mItemId= " + mItemId);
                     } else {
-
-                        if (errorOccuredUploadingFiles[0] == false) {
-                            Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
-                            errorOccuredUploadingFiles[0] = true;
+                        if (task.isFaulted()) {
+                            logE("Fault while saveItem", "", task.getError());
+                        } else {
+                            logD("Canceled while saveItem", "");
                         }
-                        logE("Uploading image failed.", "Code: " + e.getCode(), e);
-                        sendingDataProgressDialog.dismiss();
-                        return;
+                        Toast.makeText(getActivity(), R.string.error_saving_item, Toast.LENGTH_LONG).show();
                     }
+                    sendingDataProgressDialog.dismiss();
+                    return null;
                 }
-            }, new ProgressCallback() {
-                public void done(Integer percentDone) {
-                    if (percentDone % 10 == 0) {
-                        logD(null, "Uploading Store Logo Image - percentDone= " + percentDone);
-                    }
-                }
-            });
+            }, Task.UI_THREAD_EXECUTOR);
+        } catch (IOException ioe) {
+            logE("Exception while saveItem", "", ioe);
+            Toast.makeText(getActivity(), R.string.error_saving_item, Toast.LENGTH_LONG).show();
+            sendingDataProgressDialog.dismiss();
         }
 
-        if (errorOccuredUploadingFiles[0]) {
-            return;
-        }
-
-    }
-
-    private void saveItemInfo(ArrayList<ParseFile> parseFileImages, final ProgressDialog sendingDataProgressDialog) {
-
-        String title = mProductTitle.getText().toString().trim();
-        String description = mProductDescription.getText().toString().trim();
-
-        final Item itemInfo = new Item(ParseUser.getCurrentUser(), title, description);
-        int count = 0;
-        for (ParseFile parseFile : parseFileImages) {
-            count++;
-            itemInfo.put("image_" + count, parseFile);
-        }
-        itemInfo.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(getActivity(), R.string.edit_item_save, Toast.LENGTH_LONG).show();
-                    mDirty = false;
-                    mItem = itemInfo;
-                    mItemId = itemInfo.getObjectId();
-                } else {
-                    logE("Exception while saveItemInfo", "", e);
-                    Toast.makeText(getActivity(), R.string.error_saving_item, Toast.LENGTH_LONG).show();
-                }
-                sendingDataProgressDialog.dismiss();
-            }
-        });
+        ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+        activity.switchFragment(ItemsFragment.getInstance());
     }
 
     @Override

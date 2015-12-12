@@ -270,7 +270,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         exitEditingDialog.show();
     }
 
-    private void switchFragment(final HonarnamaBaseFragment fragment) {
+    public void switchFragment(final HonarnamaBaseFragment fragment) {
         mFragment = fragment;
 
         FragmentManager fragmentManager = getFragmentManager();
