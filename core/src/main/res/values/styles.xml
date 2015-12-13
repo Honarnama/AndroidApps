@@ -34,7 +34,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="edit_text_default">
+    <style name="edit_text_default" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:singleLine">true</item>
@@ -42,6 +42,9 @@
         <item name="android:gravity">right</item>
         <item name="android:ellipsize">start</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/default_edit_text_text_color</item>
+        <item name="colorControlNormal">#c5c5c5</item>
+
     </style>
 
     <style name="button_wrap_content_width" parent="full_width_button">
@@ -66,6 +69,23 @@
     <style name="ErrorButtonStyle" >
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="HorizontalSeparatorLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#c0c0c0</item>
+    </style>
+
+    <style name="DialogActivityTitle">
+        <!--
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/teal</item>
+        -->
+        <item name="android:textColor">@color/extra_dark_gray</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">15dp</item>
     </style>
 
 </resources>

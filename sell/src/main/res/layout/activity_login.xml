@@ -5,7 +5,6 @@
             android:background="@color/main_back"
         >
     <RelativeLayout
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity"
@@ -77,15 +76,10 @@
 
             <EditText
                     android:id="@+id/login_username_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textWebEmailAddress"
                     android:hint="@string/username_hint"
-                    android:singleLine="true"
-                    android:gravity="right"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
                     android:layout_alignParentTop="true"
-                    android:textSize="16sp"
+                    style="@style/edit_text_default"
                     />
             <EditText
                     android:id="@+id/login_password_edit_text"

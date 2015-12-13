@@ -140,5 +140,6 @@
     <string name="choose_category_dialog_title">انتخاب دسته‌ی آگهی</string>
     <string name="syncing_data_failed"> خطا در به‌روزرسانی اطلاعات. لطفا اینترنت دستگاه خود را بررسی کنید.  </string>
     <string name="receiving_data">در حال دریافت اطلاعت</string>
+    <string name="still_no_account">هنوز حساب کاربری ندارید؟</string>
 
 </resources>

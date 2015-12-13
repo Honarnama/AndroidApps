@@ -1,4 +1,4 @@
-package net.honarnama.browse;
+package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
@@ -7,6 +7,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import net.honarnama.browse.R;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.browse.fragments.HomeFragment;
 
@@ -55,7 +56,7 @@ public class MainActivity extends HonarnamaBaseActivity implements Drawer.OnDraw
                 .addDrawerItems(
                         new SecondaryDrawerItem().withName(R.string.nav_title_main_page).
                                 withIcon(GoogleMaterial.Icon.gmd_home).withIdentifier(DRAWER_ITEM_IDENTIFIER_ACCOUNT),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_sign_in).
+                        new SecondaryDrawerItem().withName(R.string.nav_title_login).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_sign_in),
                         new SecondaryDrawerItem().withName(R.string.nav_title_sign_up).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_account),

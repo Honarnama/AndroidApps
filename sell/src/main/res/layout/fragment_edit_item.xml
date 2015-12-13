@@ -100,10 +100,7 @@
             </TableRow>
         </TableLayout>
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:background="@color/android_default_hint_color"/>
+        <View style="@style/HorizontalSeparatorLine"/>
 
         <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -187,10 +184,6 @@
                     />
         </LinearLayout>
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:background="@color/android_default_hint_color"/>
 
         <Button
                 android:id="@+id/saveItemButton"

@@ -33,10 +33,11 @@
                 />
 
         <Button style="@style/default_button_Style"
-                android:text="@string/nav_title_sign_in"
+                android:text="@string/nav_title_login"
                 android:layout_below="@+id/recommended_items_login_message"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/button_border"
+                android:id="@+id/customer_login_button"
 
                 />
     </RelativeLayout>
