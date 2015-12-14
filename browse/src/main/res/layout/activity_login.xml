@@ -81,7 +81,7 @@
                     android:backgroundTint="@color/extra_dark_gray"
                     />
 
-            <Button style="@style/default_full_width_button_Style"
+            <Button style="@style/full_width_button_Style_browse"
                     android:text="@string/enter_button"
                     android:id="@+id/login_button"
                     android:layout_below="@id/login_password_edit_text"
@@ -106,7 +106,6 @@
         <View style="@style/HorizontalSeparatorLine"
               android:layout_below="@+id/login_form_layout"
               android:id="@+id/separator_line_2"
-
                 />
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"

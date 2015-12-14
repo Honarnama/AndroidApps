@@ -23,6 +23,11 @@
 
         <activity android:name=".activity.LoginActivity"
                   android:theme="@style/Theme.Holo.Dialog.NoActionBar"
+                  android:screenOrientation="portrait"
+                />
+
+        <activity android:name=".activity.RegisterActivity"
+                  android:screenOrientation="portrait"
                 />
     </application>
 

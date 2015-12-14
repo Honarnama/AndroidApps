@@ -88,4 +88,12 @@
         <item name="android:padding">15dp</item>
     </style>
 
+
+    <style name="tiny_text_view">
+        <item name="android:gravity">right</item>
+        <item name="android:ellipsize">start</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
 </resources>
