@@ -61,7 +61,7 @@
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/customer_register_last_name_edit_text"
                     android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:layout_marginLeft="5dp"
                     >
                 <requestFocus/>
@@ -78,7 +78,7 @@
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_activate_with_email"
                     android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:layout_marginRight="5dp"
                     />
         </LinearLayout>
@@ -95,7 +95,7 @@
                 style="@style/tiny_text_view"
                 />
 
-        <RadioGroup android:id="@+id/customer_register_gender_radio_group"
+        <RadioGroup android:id="@+id/register_gender_radio_group"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -103,7 +103,7 @@
                     android:layout_below="@id/register_name_alert"
                 >
 
-            <ToggleButton android:id="@+id/customer_register_gender_woman"
+            <ToggleButton android:id="@+id/register_gender_woman"
                           android:layout_height="wrap_content"
                           android:layout_width="0dp"
                           android:layout_weight="1"
@@ -114,7 +114,7 @@
                           android:background="@drawable/toggle_button_right"
                           android:textColor="@color/toggle_button_states_text_colors"
                     />
-            <ToggleButton android:id="@+id/customer_register_gender_man"
+            <ToggleButton android:id="@+id/register_gender_man"
                           android:layout_height="wrap_content"
                           android:layout_width="0dp"
                           android:layout_weight="1"
@@ -126,7 +126,7 @@
                           android:textColor="@color/toggle_button_states_text_colors"
                     />
 
-            <ToggleButton android:id="@+id/customer_register_gender_not_said"
+            <ToggleButton android:id="@+id/register_gender_not_said"
                           android:layout_height="wrap_content"
                           android:layout_width="0dp"
                           android:layout_weight="1"
@@ -153,7 +153,7 @@
                 android:gravity="right"
                 android:layout_alignParentRight="true"
                 android:textStyle="bold"
-                android:layout_below="@id/customer_register_gender_radio_group"
+                android:layout_below="@id/register_gender_radio_group"
                 android:layout_marginTop="15dp"
                 />
         <RelativeLayout android:layout_width="fill_parent"
@@ -225,7 +225,7 @@
                     android:textSize="16sp"
                     android:layout_weight="2"
                     android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     />
 
@@ -256,7 +256,7 @@
                     android:layout_weight="2"
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_password_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     />
 
@@ -288,7 +288,7 @@
                     android:layout_weight="2"
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_confirm_password_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     android:layout_marginLeft="5dp"
                     />
@@ -313,7 +313,7 @@
                     android:layout_weight="2"
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_bank_card_number_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     />
         </LinearLayout>

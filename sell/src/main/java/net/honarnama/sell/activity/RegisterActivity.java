@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +57,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
     private RadioButton mActivateWithEmail;
     private RadioButton mActivateWithMobileNumber;
+
+    private ToggleButton mGenderWoman;
+    private ToggleButton mGenderMan;
+    private ToggleButton mGenderNotSaid;
 
     private Button mRegisterButton;
 
@@ -77,10 +82,12 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
 
             @Override
-            public void onImageRemoved() { }
+            public void onImageRemoved() {
+            }
 
             @Override
-            public void onImageSelectionFailed() { }
+            public void onImageSelectionFailed() {
+            }
         });
 
         mFirstnameEditText = (EditText) findViewById(R.id.register_firstname_edit_text);
@@ -103,6 +110,36 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         mRegisterButton.setOnClickListener(this);
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithMobileNumber.setOnClickListener(this);
+
+        mGenderWoman = (ToggleButton) findViewById(R.id.register_gender_woman);
+        mGenderMan = (ToggleButton) findViewById(R.id.register_gender_man);
+        mGenderNotSaid = (ToggleButton) findViewById(R.id.register_gender_not_said);
+        mGenderWoman.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGenderWoman.setChecked(true);
+                mGenderMan.setChecked(false);
+                mGenderNotSaid.setChecked(false);
+            }
+        });
+        mGenderMan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGenderMan.setChecked(true);
+                mGenderWoman.setChecked(false);
+                mGenderNotSaid.setChecked(false);
+            }
+        });
+
+        mGenderNotSaid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGenderNotSaid.setChecked(true);
+                mGenderWoman.setChecked(false);
+                mGenderMan.setChecked(false);
+            }
+        });
+
     }
 
     @Override

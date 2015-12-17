@@ -1,8 +1,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:background="#ffffff">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="fill_parent" android:layout_width="fill_parent"
+            android:background="#ffffff"
+            android:fadeScrollbars="false"
+            android:layoutDirection="rtl"
+        >
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -44,7 +47,24 @@
                 android:gravity="right"
                 >
             <EditText
-                    android:id="@+id/register_lastname_edit_text"
+                    android:id="@+id/register_firstname_edit_text"
+                    android:layout_width="fill_parent" android:layout_height="45dp"
+                    android:inputType="textPersonName"
+                    android:hint="@string/name"
+                    android:layout_alignParentTop="true"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:ellipsize="start"
+                    android:nextFocusForward="@+id/register_lastname_edit_text"
+                    android:gravity="right"
+                    android:textColorHint="@color/default_hint_color_for_android"
+                    android:layout_marginLeft="5dp"
+                    >
+                <requestFocus/>
+            </EditText>
+            <EditText
+                    android:id="@id/register_lastname_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textPersonName"
                     android:hint="@string/family_name"
@@ -55,39 +75,72 @@
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_activate_with_email"
                     android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:layout_marginRight="5dp"
                     />
-            <EditText
-                    android:id="@+id/register_firstname_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="textPersonName"
-                    android:hint="@string/name"
-                    android:layout_alignParentTop="true"
-                    android:singleLine="true"
-                    android:layout_weight="1"
-                    android:textSize="16sp"
-                    android:ellipsize="start"
-                    android:nextFocusForward="@id/register_lastname_edit_text"
-                    android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:layout_marginLeft="5dp"
-                    >
-                <requestFocus/>
-            </EditText>
+
         </LinearLayout>
         <TextView
                 android:id="@+id/register_name_alert"
                 android:text="@string/register_form_name_alert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_below="@id/register_name_layout"
                 android:layout_alignParentRight="true"
+                style="@style/tiny_text_view"
                 />
+
+
+        <RadioGroup android:id="@+id/register_gender_radio_group"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/register_name_alert"
+                >
+
+            <ToggleButton android:id="@+id/register_gender_woman"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:textSize="14sp"
+                          android:textOn="زن"
+                          android:textOff="زن"
+                          style="@style/default_button_Style"
+                          android:background="@drawable/toggle_button_right"
+                          android:textColor="@color/toggle_button_states_text_colors"
+                    />
+            <ToggleButton android:id="@+id/register_gender_man"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:textSize="14sp"
+                          android:textOn="مرد"
+                          android:textOff="مرد"
+                          style="@style/default_button_Style"
+                          android:background="@drawable/toggle_button_middle"
+                          android:textColor="@color/toggle_button_states_text_colors"
+                    />
+
+            <ToggleButton android:id="@+id/register_gender_not_said"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:textSize="14sp"
+                          android:textOn="مشخص نمی‌کنم"
+                          android:textOff="مشخص نمی‌کنم"
+                          android:layout_margin="0dp"
+                          style="@style/default_button_Style"
+                          android:background="@drawable/toggle_button_left"
+                          android:textColor="@color/toggle_button_states_text_colors"
+                          android:padding="0dp"
+                          android:checked="true"
+                    />
+
+        </RadioGroup>
 
         <TextView
                 android:id="@+id/register_activation_method_text_view"
@@ -99,7 +152,7 @@
                 android:gravity="right"
                 android:layout_alignParentRight="true"
                 android:textStyle="bold"
-                android:layout_below="@id/register_name_alert"
+                android:layout_below="@id/register_gender_radio_group"
                 android:layout_marginTop="10dp"
                 />
         <RelativeLayout android:layout_width="fill_parent"
@@ -151,18 +204,6 @@
                       android:gravity="right"
                 >
 
-            <EditText
-                    android:id="@+id/register_email_address_edit_text"
-                    android:layout_width="wrap_content" android:layout_height="45dp"
-                    android:inputType="textWebEmailAddress"
-                    android:hint="@string/email_address_hint"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:gravity="right"
-                    />
             <TextView
                     android:id="@+id/register_email_star_marker"
                     android:text="*"
@@ -173,6 +214,18 @@
                     android:textStyle="bold"
                     android:visibility="gone"
                     />
+            <EditText
+                    android:id="@+id/register_email_address_edit_text"
+                    android:layout_width="wrap_content" android:layout_height="45dp"
+                    android:inputType="textWebEmailAddress"
+                    android:hint="@string/email_address_hint"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:layout_weight="2"
+                    android:ellipsize="start"
+                    android:textColorHint="@color/default_hint_color_for_android"
+                    android:gravity="right"
+                    />
         </LinearLayout>
 
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -181,6 +234,15 @@
                       android:layout_marginTop="5dp"
                       android:id="@+id/register_mobile_number_layer"
                 >
+            <TextView
+                    android:id="@+id/register_mobile_number_star_marker"
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+                    />
             <EditText
                     android:id="@+id/register_mobile_number_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
@@ -191,17 +253,8 @@
                     android:layout_weight="2"
                     android:ellipsize="start"
                     android:nextFocusForward="@+id/register_password_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    />
-            <TextView
-                    android:id="@+id/register_mobile_number_star_marker"
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
                     />
 
         </LinearLayout>
@@ -213,19 +266,6 @@
                       android:id="@+id/register_password_layer"
                 >
 
-            <EditText
-                    android:id="@+id/register_confirm_password_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="textWebPassword"
-                    android:hint="@string/confirm_password_hint"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:nextFocusForward="@+id/register_bank_card_number_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:gravity="right"
-                    />
             <TextView
                     android:id="@+id/register_confirm_password_star_marker"
                     android:text="*"
@@ -236,20 +276,18 @@
                     android:textStyle="bold"
                     android:layout_marginRight="5dp"
                     />
-
             <EditText
-                    android:id="@id/register_password_edit_text"
+                    android:id="@+id/register_confirm_password_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textWebPassword"
-                    android:hint="@string/password_hint"
+                    android:hint="@string/confirm_password_hint"
                     android:singleLine="true"
                     android:textSize="16sp"
                     android:layout_weight="2"
                     android:ellipsize="start"
-                    android:nextFocusForward="@id/register_confirm_password_edit_text"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:nextFocusForward="@+id/register_bank_card_number_edit_text"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    android:layout_marginLeft="5dp"
                     />
 
             <TextView
@@ -260,6 +298,20 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
+                    />
+            <EditText
+                    android:id="@id/register_password_edit_text"
+                    android:layout_width="fill_parent" android:layout_height="45dp"
+                    android:inputType="textWebPassword"
+                    android:hint="@string/password_hint"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:layout_weight="2"
+                    android:ellipsize="start"
+                    android:nextFocusForward="@id/register_confirm_password_edit_text"
+                    android:textColorHint="@color/default_hint_color_for_android"
+                    android:gravity="right"
+                    android:layout_marginLeft="5dp"
                     />
 
         </LinearLayout>
@@ -301,18 +353,6 @@
                       android:layout_marginTop="10dp"
                       android:id="@+id/register_card_number_layer"
                 >
-            <EditText
-                    android:id="@id/register_bank_card_number_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="text"
-                    android:hint="@string/shetab_catd_number_hint_text"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
-                    android:gravity="right"
-                    />
             <TextView
                     android:id="@+id/register_card_number_star_marker"
                     android:text="*"
@@ -322,6 +362,18 @@
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
                     />
+            <EditText
+                    android:id="@id/register_bank_card_number_edit_text"
+                    android:layout_width="fill_parent" android:layout_height="45dp"
+                    android:inputType="text"
+                    android:hint="@string/shetab_catd_number_hint_text"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:layout_weight="2"
+                    android:ellipsize="start"
+                    android:textColorHint="@color/default_hint_color_for_android"
+                    android:gravity="right"
+                    />
 
         </LinearLayout>
 
@@ -330,12 +382,12 @@
                 android:text="@string/register_card_number_alert_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_below="@id/register_card_number_layer"
                 android:layout_alignParentRight="true"
+                style="@style/tiny_text_view"
                 />
         <Button
                 android:id="@+id/register_button"

@@ -44,7 +44,7 @@
                     android:textSize="16sp"
                     android:ellipsize="start"
                     android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     >
                 <requestFocus/>
             </EditText>
@@ -58,7 +58,7 @@
                     android:textSize="16sp"
                     android:ellipsize="start"
                     android:gravity="right"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     />
         </LinearLayout>
         <Button
@@ -95,7 +95,7 @@
                     android:singleLine="true"
                     android:textSize="16sp"
                     android:ellipsize="start"
-                    android:textColorHint="@color/android_default_hint_color"
+                    android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     android:layout_toLeftOf="@id/seller_account_new_password_star_marker"
                     />
@@ -175,7 +175,7 @@
                         android:singleLine="true"
                         android:textSize="16sp"
                         android:ellipsize="start"
-                        android:textColorHint="@color/android_default_hint_color"
+                        android:textColorHint="@color/default_hint_color_for_android"
                         android:gravity="right"
                         android:layout_toLeftOf="@id/seller_account_card_number_star_marker"
                         />

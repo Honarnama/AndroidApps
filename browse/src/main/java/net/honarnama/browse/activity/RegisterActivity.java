@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -56,6 +57,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mFirstnameEditText = (EditText) findViewById(R.id.customer_register_first_name_edit_text);
         mLastnameEditText = (EditText) findViewById(R.id.customer_register_last_name_edit_text);
         mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);
@@ -75,9 +78,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithMobileNumber.setOnClickListener(this);
 
-        mGenderWoman = (ToggleButton) findViewById(R.id.customer_register_gender_woman);
-        mGenderMan = (ToggleButton) findViewById(R.id.customer_register_gender_man);
-        mGenderNotSaid = (ToggleButton) findViewById(R.id.customer_register_gender_not_said);
+        mGenderWoman = (ToggleButton) findViewById(R.id.register_gender_woman);
+        mGenderMan = (ToggleButton) findViewById(R.id.register_gender_man);
+        mGenderNotSaid = (ToggleButton) findViewById(R.id.register_gender_not_said);
         mGenderWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
