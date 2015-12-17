@@ -170,7 +170,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         user.put("firstname", mFirstnameEditText.getText().toString().trim());
         user.put("lastname", mLastnameEditText.getText().toString().trim());
         user.put("activationMethod", activationMethod);
-        user.put("isShopOwner", true);
+        user.put("isShopOwner", false);
+
+        int genderCode = mGenderWoman.isChecked() ? 0 : (mGenderMan.isChecked() ? 1 : 2);
+        user.put("gender", genderCode);
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);
         sendingDataProgressDialog.setCancelable(false);
@@ -189,7 +192,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                                 showTelegramActivationDialog(parseObject.getString("telegramCode"));
                                 Toast.makeText(RegisterActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
                             }
-
                         }
                     });
                 } else {
