@@ -271,6 +271,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         user.put("bankCardNumber", mBankCardNumberEditText.getText().toString().trim());
         user.put("isShopOwner", true);
         user.put("nationalCardImage", parseFile);
+
+        int genderCode = mGenderWoman.isChecked() ? 0 : (mGenderMan.isChecked() ? 1 : 2);
+        user.put("gender", genderCode);
+
         final ProgressDialog progressDialog = sendingDataProgressDialog;
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {

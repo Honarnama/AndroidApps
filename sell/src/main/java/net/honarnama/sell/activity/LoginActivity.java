@@ -31,6 +31,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private TextView mErrorMessageTextView;
     private View mErrorMessageButton;
     private ProgressDialog mLoadingDialog;
+    private TextView mForgotPasswordTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
             mErrorMessageButton = findViewById(R.id.login_error_btn);
             mErrorMessageButton.setOnClickListener(this);
+
+            mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_text_view);
+            mForgotPasswordTextView.setOnClickListener(this);
 
             mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
             mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
@@ -162,6 +166,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent);
                 }
+                break;
             case R.id.login_error_btn:
                 Intent telegramIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + HonarnamaUser.getCurrentUser().getString("telegramCode")));
                 if (telegramIntent2.resolveActivity(getPackageManager()) != null) {
