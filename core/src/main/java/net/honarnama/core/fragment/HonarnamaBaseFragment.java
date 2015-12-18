@@ -13,7 +13,7 @@ import android.util.Log;
  */
 public abstract class HonarnamaBaseFragment extends Fragment {
 
-    private static boolean announced = false;
+    private boolean announced = false;
 
     abstract public String getTitle(Context context);
 

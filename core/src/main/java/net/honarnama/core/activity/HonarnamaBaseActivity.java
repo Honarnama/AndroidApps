@@ -13,7 +13,7 @@ import android.util.Log;
  */
 public abstract class HonarnamaBaseActivity extends AppCompatActivity {
 
-    private static boolean announced = false;
+    private boolean announced = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

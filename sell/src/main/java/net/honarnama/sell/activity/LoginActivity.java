@@ -209,7 +209,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                     gotoControlPanelOrRaiseError();
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
-                    logE("Sign-up Failed. Code: ", e.getMessage(), e);
+                    logE("logInInBackground Failed. ", e.getMessage(), e);
                     mErrorMessageContainer.setVisibility(View.VISIBLE);
                     mErrorMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
                     mErrorMessageButton.setVisibility(View.GONE);
