@@ -25,6 +25,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -125,9 +126,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         processIntent(getIntent());
 
         //
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
-            cacheArtCategories();
+            if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+                return;
+            }
+            Category.cacheArtCategories(this,sharedPref);
         }
     }
 
@@ -273,17 +278,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public void switchFragmentToEditItem(String itemId) {
         mEditItemFragment.setItemId(itemId);
         switchFragment(mEditItemFragment);
-    }
-
-    private void cacheArtCategories() {
-        if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
-            return;
-        }
-        final ProgressDialog syncingDataProgressDialog = new ProgressDialog(this);
-        syncingDataProgressDialog.setCancelable(false);
-        syncingDataProgressDialog.setMessage(getString(R.string.syncing_data));
-        syncingDataProgressDialog.show();
-        Category.cacheArtCategories(this, syncingDataProgressDialog);
     }
 
 }

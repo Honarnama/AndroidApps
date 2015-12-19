@@ -21,25 +21,37 @@ import android.widget.Toast;
 
 import java.util.List;
 
-@ParseClassName("art_category")
+@ParseClassName("art_categories")
 public class Category extends ParseObject {
 
-    public static void cacheArtCategories(final Context context, final ProgressDialog syncingDataProgressDialog) {
+    public static String OBJECT_NAME = "art_categories";
+
+    public Category() {
+    }
+
+    public static void cacheArtCategories(final Context context, final SharedPreferences sharedPref) {
+
+        Toast.makeText(context, "cacheArtCategories", Toast.LENGTH_SHORT).show();
+
+        final ProgressDialog syncingDataProgressDialog = new ProgressDialog(context);
+        syncingDataProgressDialog.setCancelable(false);
+        syncingDataProgressDialog.setMessage(context.getResources().getString(R.string.syncing_data));
+        syncingDataProgressDialog.show();
+
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
         parseQuery.findInBackground(new FindCallback<Category>() {
-            public void done(final List<Category> artCategories, ParseException e) {
+            public void done(final List<Category> artCategoriesList, ParseException e) {
 
                 if (syncingDataProgressDialog != null) {
                     syncingDataProgressDialog.dismiss();
                 }
                 if (e == null) {
-                    ParseObject.unpinAllInBackground("artCategories", artCategories, new DeleteCallback() {
+                    ParseObject.unpinAllInBackground(OBJECT_NAME, new DeleteCallback() {
                         @Override
                         public void done(ParseException e) {
-                            ParseObject.pinAllInBackground("artCategories", artCategories, new SaveCallback() {
+                            ParseObject.pinAllInBackground(OBJECT_NAME, artCategoriesList, new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
-                                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
                                             editor.commit();

@@ -2,9 +2,11 @@ package net.honarnama;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.model.Category;
 
 import android.app.Application;
 import android.os.Environment;
@@ -51,6 +53,7 @@ public class HonarnamaBaseApp extends Application {
         }
 
         Parse.enableLocalDatastore(this);
+        ParseObject.registerSubclass(Category.class);
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 
         ParseACL defaultACL = new ParseACL();

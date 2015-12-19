@@ -21,7 +21,7 @@
                   android:text="@string/recommended_items_default_message"
                   android:textStyle="bold"
                   android:textSize="18sp"
-                  android:textColor="@color/extra_dark_gray"
+                  android:textColor="@color/dark_gray"
                   android:id="@+id/recommended_items_login_message"
                   android:layout_centerHorizontal="true"
                   android:layout_margin="20dp"

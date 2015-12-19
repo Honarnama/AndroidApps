@@ -104,7 +104,7 @@
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/browse_app_launcher_color_dark_amber</item>
+        <item name="android:textColor">@color/extra_dark_gray</item>
         <item name="android:shadowColor">@color/transparent_white</item>
     </style>
 
