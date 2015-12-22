@@ -26,7 +26,7 @@
         <item name="android:actionMenuTextColor">@color/dark_blue</item>
     </style>
 
-    <style name="full_width_button_Style_browse">
+    <style name="full_width_button_style_browse">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:textSize">16sp</item>

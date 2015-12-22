@@ -19,7 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 
-public class MainActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
+public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
 
 
     public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;

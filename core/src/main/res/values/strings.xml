@@ -19,12 +19,12 @@
     <string name="action_settings">تنظیمات</string>
     <string name="title_activity_register">ثبت‌نام</string>
 
-    <string name="name">نام</string>
+    <string name="name_hint">نامی برای خود انتخاب کنید.</string>
     <string name="register_form_subtitle">*وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی
         است.
     </string>
-    <string name="register_form_name_alert">نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند، اما
-        اختیاری هستند.
+    <string name="register_form_name_alert">
+        نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند.
     </string>
     <string name="select_activation_method">*‌نحوه‌ی فعال‌سازی حساب:</string>
     <string name="email_address_hint">آدرس ایمیل - مثال: your_name@yahoo.com</string>
@@ -141,5 +141,8 @@
     <string name="syncing_data_failed"> خطا در به‌روزرسانی اطلاعات. لطفا اینترنت دستگاه خود را بررسی کنید.  </string>
     <string name="receiving_data"> در حال دریافت اطلاعات </string>
     <string name="still_no_account">هنوز حساب کاربری ندارید؟</string>
+    <string name="register_account"> ساخت حساب کاربری </string>
+    <string name="send">ارسال</string>
+    <string name="error_name_not_set">فیلد نام نمی‌تواند خالی باشد.</string>
 
 </resources>

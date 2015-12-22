@@ -109,7 +109,7 @@
                 android:id="@+id/register_as_seller_text_view"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_below="@id/forgot_password_text_view"
-                android:text="@string/register_as_seller"
+                android:text="@string/register_account"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:layout_marginTop="15dp"

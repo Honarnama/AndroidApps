@@ -26,6 +26,10 @@ public class HonarnamaBaseApp extends Application {
     public static final int INTENT_TELEGRAM_CODE = 1003;
     public static final int INTENT_CHOOSE_CATEGORY_CODE = 1004;
 
+    public static final int INTENT_REGISTER_CODE = 3000;
+    public static final String DISPLAY_SUCCESSFUL_REGISTER_SNACK = "DISPLAY_SUCCESSFUL_REGISTER_SNACK";
+
+
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
 

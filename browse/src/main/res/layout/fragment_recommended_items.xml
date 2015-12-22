@@ -32,7 +32,7 @@
                   android:layout_below="@id/recommended_items_login_face_image_view"
                 />
 
-        <Button style="@style/default_button_Style"
+        <Button style="@style/core_wrap_button"
                 android:text="@string/nav_title_login"
                 android:layout_below="@+id/recommended_items_login_message"
                 android:layout_centerHorizontal="true"

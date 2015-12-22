@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".activity.RegisterActivity"
+                android:name="net.honarnama.core.activity.RegisterActivity"
                 android:label="@string/title_activity_register"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"

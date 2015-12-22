@@ -81,7 +81,7 @@
                     android:backgroundTint="@color/extra_dark_gray"
                     />
 
-            <Button style="@style/full_width_button_Style_browse"
+            <Button style="@style/full_width_button_style_browse"
                     android:text="@string/enter_button"
                     android:id="@+id/login_button"
                     android:layout_below="@id/login_password_edit_text"

@@ -6,8 +6,10 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.R;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
+import net.honarnama.core.activity.RegisterActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -103,6 +105,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void processIntent(Intent intent) {
+
         Uri data = intent.getData();
 
         logI(null, "processIntent :: data= " + data);
@@ -129,7 +132,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 });
             } else if ("true".equals(register)) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(registerIntent);
+                startActivityForResult(registerIntent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
             }
         }
     }
@@ -209,7 +212,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.register_as_customer_text_view:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
             case R.id.login_button:
                 mErrorMessageContainer.setVisibility(View.GONE);
@@ -238,5 +241,16 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode == HonarnamaBaseApp.INTENT_REGISTER_CODE)
+            if (intent.hasExtra("HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK")) {
+                if (intent.getBooleanExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, false)) {
+                    Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
+                }
+            }
     }
 }

@@ -39,7 +39,7 @@
                     android:id="@+id/seller_account_firstname_edit_text"
                     android:layout_width="match_parent" android:layout_height="45dp"
                     android:inputType="textPersonName"
-                    android:hint="@string/name"
+                    android:hint="@string/name_hint"
                     android:singleLine="true"
                     android:textSize="16sp"
                     android:ellipsize="start"

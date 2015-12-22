@@ -11,14 +11,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="16dp"
-                    tools:context="net.honarnama.sell.activity.RegisterActivity"
+                    tools:context="net.honarnama.core.activity.RegisterActivity"
                     android:layout_gravity="right"
                     android:layoutDirection="rtl"
                     android:gravity="right">
 
         <TextView
                 android:id="@+id/register_form_title"
-                android:text="@string/register_as_seller"
+                android:text="@string/register_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -46,39 +46,34 @@
                 android:background="#ffffff"
                 android:gravity="right"
                 >
+
+            <TextView
+                    android:id="@+id/register_name_star_marker"
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+                    />
+
             <EditText
-                    android:id="@+id/register_firstname_edit_text"
+                    android:id="@+id/register_name_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
                     android:inputType="textPersonName"
-                    android:hint="@string/name"
+                    android:hint="@string/name_hint"
                     android:layout_alignParentTop="true"
                     android:singleLine="true"
-                    android:layout_weight="1"
                     android:textSize="16sp"
                     android:ellipsize="start"
-                    android:nextFocusForward="@+id/register_lastname_edit_text"
+                    android:nextFocusForward="@+id/register_gender_radio_group"
                     android:gravity="right"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:layout_marginLeft="5dp"
+                    android:layout_weight="2"
                     >
                 <requestFocus/>
             </EditText>
-            <EditText
-                    android:id="@id/register_lastname_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="textPersonName"
-                    android:hint="@string/family_name"
-                    android:layout_alignParentTop="true"
-                    android:singleLine="true"
-                    android:layout_weight="1"
-                    android:textSize="16sp"
-                    android:ellipsize="start"
-                    android:nextFocusForward="@+id/register_activate_with_email"
-                    android:gravity="right"
-                    android:textColorHint="@color/default_hint_color_for_android"
-                    android:layout_marginRight="5dp"
-                    />
-
         </LinearLayout>
         <TextView
                 android:id="@+id/register_name_alert"
@@ -109,7 +104,7 @@
                           android:textSize="14sp"
                           android:textOn="زن"
                           android:textOff="زن"
-                          style="@style/default_button_Style"
+                          style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_right"
                           android:textColor="@color/toggle_button_states_text_colors"
                     />
@@ -120,7 +115,7 @@
                           android:textSize="14sp"
                           android:textOn="مرد"
                           android:textOff="مرد"
-                          style="@style/default_button_Style"
+                          style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_middle"
                           android:textColor="@color/toggle_button_states_text_colors"
                     />
@@ -133,7 +128,7 @@
                           android:textOn="مشخص نمی‌کنم"
                           android:textOff="مشخص نمی‌کنم"
                           android:layout_margin="0dp"
-                          style="@style/default_button_Style"
+                          style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_left"
                           android:textColor="@color/toggle_button_states_text_colors"
                           android:padding="0dp"
@@ -173,7 +168,7 @@
                     >
 
                 <RadioButton
-                        android:id="@id/register_activate_with_email"
+                        android:id="@+id/register_activate_with_email"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/send_register_activation_link_to_email"
                         android:layout_marginRight="5dp"
@@ -264,6 +259,7 @@
                       android:orientation="horizontal"
                       android:layout_below="@id/register_mobile_number_layer"
                       android:id="@+id/register_password_layer"
+                      android:visibility="gone"
                 >
 
             <TextView
@@ -315,86 +311,23 @@
                     />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_below="@id/register_password_layer"
-                      android:orientation="vertical"
-                      android:id="@+id/register_add_national_card_iamge_layer"
-                >
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/add_national_card_image_text"
-                      android:gravity="center"
-                      android:layout_gravity="center"
-                      android:textColor="@color/dark_blue"
-                      android:layout_marginTop="10dp"
-                      android:textSize="16sp"
-                      android:clickable="true"
-                      android:id="@+id/register_national_card_title_text_view"
-                    />
-            <com.parse.ImageSelector
-                    android:id="@+id/register_national_card_image_view"
-                    android:layout_width="200dp"
-                    android:layout_height="140dp"
-                    android:src="@drawable/default_national_card"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerCrop"
-                    app:riv_corner_radius="10dip"
-                    app:removable="false"
-                    app:outputX="600"
-                    app:outputY="420"
-                    />
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@id/register_add_national_card_iamge_layer"
-                      android:layout_marginTop="10dp"
-                      android:id="@+id/register_card_number_layer"
-                >
-            <TextView
-                    android:id="@+id/register_card_number_star_marker"
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
-                    />
-            <EditText
-                    android:id="@id/register_bank_card_number_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="text"
-                    android:hint="@string/shetab_catd_number_hint_text"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:textColorHint="@color/default_hint_color_for_android"
-                    android:gravity="right"
-                    />
-
-        </LinearLayout>
-
-        <TextView
-                android:id="@+id/register_card_number_alert_text_view"
-                android:text="@string/register_card_number_alert_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:layout_below="@id/register_card_number_layer"
-                android:layout_alignParentRight="true"
-                style="@style/tiny_text_view"
-                />
         <Button
                 android:id="@+id/register_button"
-                android:text="@string/register"
-                android:layout_below="@id/register_card_number_alert_text_view"
+                android:text="@string/send"
+                android:layout_below="@id/register_password_layer"
                 android:layout_marginTop="10dp"
-                android:nextFocusForward="@id/register_firstname_edit_text"
-                style="@style/sell_full_width_button"
+                android:nextFocusForward="@id/register_name_edit_text"
+                style="@style/core_full_width_button"
                 />
+
+        <TextView
+                android:id="@+id/honarnama_rules_and_policy"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/register_button"
+                style="@style/tiny_text_view"
+                android:text="استفاده از هنرنما و ساخت حساب کاربری در آن به معنای موافقت شما با شرایط استفاده از خدمات و سیاست‌های حریم خصوصی است."
+                />
+
     </RelativeLayout>
 </ScrollView>
