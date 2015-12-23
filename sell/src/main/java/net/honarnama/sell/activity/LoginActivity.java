@@ -39,45 +39,39 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (HonarnamaUser.isShopOwner() && HonarnamaUser.isVerified()) {
-            //Go to controlPanel Activity
-            gotoControlPanel();
+        setContentView(R.layout.activity_login);
+        mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
+        mRegisterAsSellerTextView.setOnClickListener(this);
 
+        mLoginButton = (Button) findViewById(R.id.login_button);
+        mLoginButton.setOnClickListener(this);
+
+        mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
+        mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
+        mErrorMessageContainer = findViewById(R.id.login_error_container);
+        mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
+        mErrorMessageButton = findViewById(R.id.login_error_btn);
+        mErrorMessageButton.setOnClickListener(this);
+
+        mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_text_view);
+        mForgotPasswordTextView.setOnClickListener(this);
+
+        mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
+        mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
+
+        ParseUser user = HonarnamaUser.getCurrentUser();
+        if (user != null) {
+            logI("Parse user is not empty", "user= " + user.getEmail());
+            showLoadingDialog();
+            user.fetchInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    gotoControlPanelOrRaiseError();
+                    hideLoadingDialog();
+                }
+            });
         } else {
-            setContentView(R.layout.activity_login);
-            mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
-            mRegisterAsSellerTextView.setOnClickListener(this);
-
-            mLoginButton = (Button) findViewById(R.id.login_button);
-            mLoginButton.setOnClickListener(this);
-
-            mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
-            mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
-            mErrorMessageContainer = findViewById(R.id.login_error_container);
-            mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
-            mErrorMessageButton = findViewById(R.id.login_error_btn);
-            mErrorMessageButton.setOnClickListener(this);
-
-            mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_text_view);
-            mForgotPasswordTextView.setOnClickListener(this);
-
-            mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
-            mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
-
-            ParseUser user = HonarnamaUser.getCurrentUser();
-            if (user != null) {
-                logI("Parse user is not empty", "user= " + user.getEmail());
-                showLoadingDialog();
-                user.fetchInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject parseObject, ParseException e) {
-                        gotoControlPanelOrRaiseError();
-                        hideLoadingDialog();
-                    }
-                });
-            } else {
-                processIntent(getIntent());
-            }
+            processIntent(getIntent());
         }
 
         logI(null, "created!");
@@ -150,12 +144,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (HonarnamaUser.isShopOwner() && HonarnamaUser.isVerified()) {
+        if (HonarnamaUser.isVerified()) {
             gotoControlPanel();
         }
     }
-
 
     @Override
     public void onClick(View view) {
@@ -249,11 +241,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                     mErrorMessageButton.setVisibility(View.GONE);
                     break;
             }
-        } else if (!HonarnamaUser.isShopOwner()) {
-            logE("Login Failed. User is not a shop owner");
-            mErrorMessageContainer.setVisibility(View.VISIBLE);
-            mErrorMessageTextView.setText(getString(R.string.error_login_you_are_not_shop_owner));
-            mErrorMessageButton.setVisibility(View.GONE);
         } else {
             gotoControlPanel();
         }

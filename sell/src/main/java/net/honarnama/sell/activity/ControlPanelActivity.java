@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
@@ -53,15 +52,18 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     private ActionBarDrawerToggle mDrawerToggle;
     private Fragment mFragment;
     private EditItemFragment mEditItemFragment;
+    private ProgressDialog mWaitingProgressDialog;
 
     Drawer mResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!HonarnamaUser.isAuthenticatedUser() || !HonarnamaUser.isShopOwner()) {
+        if (!HonarnamaUser.isAuthenticatedUser()) {
             return;
         }
+
+        mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
@@ -222,6 +224,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
+
+                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
+                mWaitingProgressDialog.setCancelable(false);
+                mWaitingProgressDialog.show();
                 HonarnamaUser.logOut();
                 Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -280,4 +286,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         switchFragment(mEditItemFragment);
     }
 
+    @Override
+    protected void onStop() {
+        if(mWaitingProgressDialog != null){
+            if(mWaitingProgressDialog.isShowing())
+            {
+                mWaitingProgressDialog.dismiss();
+            }
+        }
+        super.onStop();
+    }
 }

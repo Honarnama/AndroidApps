@@ -233,14 +233,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         public void done(ParseObject parseObject, ParseException e) {
                             if ("mobileNumber".equals(activationMethod)) {
                                 showTelegramActivationDialog(parseObject.getString("telegramCode"));
-
-                                Intent intent = new Intent();
-                                intent.putExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, true);
-                                setResult(Activity.RESULT_OK, intent);
-                                finish();
-
                             }
-
+                            else {
+                                sendUserToCallingActivity();
+                            }
                         }
                     });
                 } else {
@@ -386,6 +382,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         */
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_TELEGRAM_CODE:
+                sendUserToCallingActivity();
                 finish();
                 break;
             default:
@@ -401,5 +398,13 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             mNationalCardImageView.onSaveInstanceState(outState);
         }
         */
+    }
+
+    private void sendUserToCallingActivity()
+    {
+        Intent intent = new Intent();
+        intent.putExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, true);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

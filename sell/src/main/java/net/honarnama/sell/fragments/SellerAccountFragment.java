@@ -80,8 +80,7 @@ public class SellerAccountFragment extends HonarnamaBaseFragment implements View
 
         mFirstnameEditText = (EditText) rootView.findViewById(R.id.seller_account_firstname_edit_text);
         mLastnameEditText = (EditText) rootView.findViewById(R.id.seller_account_lastname_edit_text);
-        mFirstnameEditText.setText(mCurrentUser.get("firstname").toString());
-        mLastnameEditText.setText(mCurrentUser.get("lastname").toString());
+        mFirstnameEditText.setText(mCurrentUser.get("name").toString());
         mAlterNameButton = (Button) rootView.findViewById(R.id.seller_account_alter_name_button);
         mAlterNameButton.setOnClickListener(this);
 

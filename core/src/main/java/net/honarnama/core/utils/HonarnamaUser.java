@@ -36,14 +36,6 @@ public class HonarnamaUser extends ParseUser {
         });
     }
 
-    public static boolean isShopOwner() {
-        if (!isAuthenticatedUser()) {
-            return false;
-        }
-        boolean isShopOwner = getCurrentUser().getBoolean("isShopOwner");
-        return isShopOwner;
-    }
-
     public static ActivationMethod getActivationMethod() {
         ParseUser user = getCurrentUser();
         String activationMethod = user.getString("activationMethod");
@@ -57,6 +49,10 @@ public class HonarnamaUser extends ParseUser {
     }
 
     public static boolean isVerified() {
+        if(getCurrentUser() == null)
+        {
+            return false;
+        }
         return getActivationMethod().isUserVerified(getCurrentUser());
     }
 
