@@ -10,13 +10,12 @@ import net.honarnama.HonarnamaBaseApp;
 
 import net.honarnama.base.R;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -233,9 +232,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         public void done(ParseObject parseObject, ParseException e) {
                             if ("mobileNumber".equals(activationMethod)) {
                                 showTelegramActivationDialog(parseObject.getString("telegramCode"));
-                            }
-                            else {
-                                sendUserToCallingActivity();
+                            } else {
+                                sendUserBackToCallingActivity();
                             }
                         }
                     });
@@ -382,7 +380,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         */
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_TELEGRAM_CODE:
-                sendUserToCallingActivity();
+                sendUserBackToCallingActivity();
                 finish();
                 break;
             default:
@@ -400,10 +398,20 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         */
     }
 
-    private void sendUserToCallingActivity()
-    {
+    private void sendUserBackToCallingActivity() {
         Intent intent = new Intent();
-        intent.putExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, true);
+
+        switch (HonarnamaUser.getActivationMethod()) {
+            case EMAIL:
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
+                break;
+
+            case MOBILE_NUMBER:
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
+                break;
+
+        }
+
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

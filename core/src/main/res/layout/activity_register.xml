@@ -220,6 +220,7 @@
                     android:ellipsize="start"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
+                    android:text="mojahedi.elnaz@gmail.com"
                     />
         </LinearLayout>
 
@@ -250,6 +251,7 @@
                     android:nextFocusForward="@+id/register_password_edit_text"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
+                    android:text="09357942585"
                     />
 
         </LinearLayout>

@@ -14,11 +14,15 @@ import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,8 +33,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private Button mLoginButton;
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
-    private View mErrorMessageContainer;
-    private TextView mErrorMessageTextView;
+    private View mMessageContainer;
+    private TextView mLoginMessageTextView;
     private View mErrorMessageButton;
     private ProgressDialog mLoadingDialog;
     private TextView mForgotPasswordTextView;
@@ -48,8 +52,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
         mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
-        mErrorMessageContainer = findViewById(R.id.login_error_container);
-        mErrorMessageTextView = (TextView) findViewById(R.id.login_error_msg);
+        mMessageContainer = findViewById(R.id.login_message_container);
+        mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
         mErrorMessageButton = findViewById(R.id.login_error_btn);
         mErrorMessageButton.setOnClickListener(this);
 
@@ -59,13 +63,13 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
         mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
-        ParseUser user = HonarnamaUser.getCurrentUser();
+        ParseUser user = HonarnamaUser.getCurrentHonarnamaUser();
         if (user != null) {
             logI("Parse user is not empty", "user= " + user.getEmail());
             showLoadingDialog();
             user.fetchInBackground(new GetCallback<ParseObject>() {
                 @Override
-                public void done(ParseObject parseObject, ParseException e) {
+                public void done(ParseObject parseObject, ParseException parseException) {
                     gotoControlPanelOrRaiseError();
                     hideLoadingDialog();
                 }
@@ -98,11 +102,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void processIntent(Intent intent) {
-        if (intent.hasExtra("HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK")) {
-            if (intent.getBooleanExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, false)) {
-                Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
-            }
-        }
 
         Uri data = intent.getData();
 
@@ -157,7 +156,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
             case R.id.login_button:
-                mErrorMessageContainer.setVisibility(View.GONE);
+                mMessageContainer.setVisibility(View.GONE);
                 signUserIn();
                 break;
             case R.id.forgot_password_text_view:
@@ -210,8 +209,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("logInInBackground Failed. ", e.getMessage(), e);
-                    mErrorMessageContainer.setVisibility(View.VISIBLE);
-                    mErrorMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
+                    mMessageContainer.setVisibility(View.VISIBLE);
+                    mLoginMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
                     mErrorMessageButton.setVisibility(View.GONE);
                 }
             }
@@ -224,13 +223,14 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
+
     }
 
     private void gotoControlPanelOrRaiseError() {
         if (!HonarnamaUser.isVerified()) {
             logE("Login Failed. Account is not activated");
-            mErrorMessageContainer.setVisibility(View.VISIBLE);
-            mErrorMessageTextView.setText(R.string.not_verified);
+            mMessageContainer.setVisibility(View.VISIBLE);
+            mLoginMessageTextView.setText(R.string.not_verified);
             switch (HonarnamaUser.getActivationMethod()) {
                 case MOBILE_NUMBER:
                     // TODO: onlt if telegram is installed
@@ -245,4 +245,30 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             gotoControlPanel();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == HonarnamaBaseApp.INTENT_REGISTER_CODE) {
+                if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
+                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
+                        mMessageContainer.setVisibility(View.VISIBLE);
+                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد.");
+                        mErrorMessageButton.setVisibility(View.GONE);
+                    }
+                } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
+                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
+                        mMessageContainer.setVisibility(View.VISIBLE);
+                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
+                        mErrorMessageButton.setVisibility(View.GONE);
+                    }
+                }
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+
 }

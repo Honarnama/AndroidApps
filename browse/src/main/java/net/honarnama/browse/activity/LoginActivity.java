@@ -14,6 +14,7 @@ import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -246,11 +247,15 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == HonarnamaBaseApp.INTENT_REGISTER_CODE)
-            if (intent.hasExtra("HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK")) {
-                if (intent.getBooleanExtra(HonarnamaBaseApp.DISPLAY_SUCCESSFUL_REGISTER_SNACK, false)) {
-                    Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == HonarnamaBaseApp.INTENT_REGISTER_CODE) {
+                Toast.makeText(LoginActivity.this, "here", Toast.LENGTH_LONG).show();
+                if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK)) {
+                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK, false)) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
+        }
     }
 }

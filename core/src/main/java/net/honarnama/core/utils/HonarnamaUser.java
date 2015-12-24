@@ -1,9 +1,12 @@
 package net.honarnama.core.utils;
 
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.HashMap;
@@ -14,7 +17,7 @@ import java.util.HashMap;
 public class HonarnamaUser extends ParseUser {
 
     public static boolean isAuthenticatedUser() {
-        ParseUser user = ParseUser.getCurrentUser();
+        ParseUser user = HonarnamaUser.getCurrentUser();
         if ((user != null) && user.isAuthenticated()) {
             return true;
         }
@@ -49,8 +52,7 @@ public class HonarnamaUser extends ParseUser {
     }
 
     public static boolean isVerified() {
-        if(getCurrentUser() == null)
-        {
+        if (getCurrentHonarnamaUser() == null) {
             return false;
         }
         return getActivationMethod().isUserVerified(getCurrentUser());
@@ -72,6 +74,30 @@ public class HonarnamaUser extends ParseUser {
                 return user.getBoolean(verificationFieldName);
             }
             return false;
+        }
+    }
+
+    private static void checkIfUserStillExistOnParse() {
+        if (getCurrentUser() != null) {
+            ParseQuery<ParseUser> query = getQuery();
+            query.whereEqualTo("username", getCurrentUser().getUsername());
+            query.getFirstInBackground(new GetCallback<ParseUser>() {
+                @Override
+                public void done(ParseUser object, ParseException e) {
+                    if (e != null) {
+                        logOut();
+                    }
+                }
+            });
+        }
+    }
+
+    public static ParseUser getCurrentHonarnamaUser() {
+        checkIfUserStillExistOnParse();
+        if (getCurrentUser() == null) {
+            return null;
+        } else {
+            return getCurrentUser();
         }
     }
 }

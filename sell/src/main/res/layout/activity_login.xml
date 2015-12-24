@@ -1,121 +1,132 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:background="@color/main_back"
-        >
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity"
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.LoginActivity">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:background="@color/main_back"
             >
-        <ImageView
-                android:id="@+id/login_main_logo_image_view"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:src="@drawable/logo_main"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                />
-        <TextView
-                android:id="@+id/login_sell_on_honarnama_text_view"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_below="@id/login_main_logo_image_view"
-                android:textSize="30sp"
-                android:text="@string/sell_on_honarnama"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-        <TextView
-                android:id="@+id/login_slogan_for_sellers_text_view"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_below="@id/login_sell_on_honarnama_text_view"
-                android:textSize="16sp"
-                android:text="@string/slogan_for_sellers"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-
-
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/login_error_container"
-                      android:layout_below="@id/login_slogan_for_sellers_text_view"
-                      android:layout_marginTop="10dp"
-                      style="@style/ErrorStyle"
-                      android:gravity="right"
-                      android:visibility="gone"
-                      android:padding="5dp">
-
-            <Button android:id="@+id/login_error_btn"
-                    style="@style/ErrorButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/resend_telegram"/>
-
-            <TextView android:id="@+id/login_error_msg"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text=""
-                      style="@style/ErrorStyle"
-                      android:padding="5dp"/>
-
-        </LinearLayout>
 
         <RelativeLayout
-                android:id="@+id/login_form_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"
-                android:layout_margin="15dp"
-                android:layout_below="@id/login_error_container"
-                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity"
                 >
+            <ImageView
+                    android:id="@+id/login_main_logo_image_view"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:src="@drawable/logo_main"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    />
+            <TextView
+                    android:id="@+id/login_sell_on_honarnama_text_view"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_below="@id/login_main_logo_image_view"
+                    android:textSize="30sp"
+                    android:text="@string/sell_on_honarnama"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    />
+            <TextView
+                    android:id="@+id/login_slogan_for_sellers_text_view"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_below="@id/login_sell_on_honarnama_text_view"
+                    android:textSize="16sp"
+                    android:text="@string/slogan_for_sellers"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    />
 
-            <EditText
-                    android:id="@+id/login_username_edit_text"
-                    android:inputType="textWebEmailAddress"
-                    android:hint="@string/username_hint"
-                    android:layout_alignParentTop="true"
-                    style="@style/edit_text_default"
+
+            <LinearLayout android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/login_message_container"
+                          android:layout_below="@id/login_slogan_for_sellers_text_view"
+                          android:layout_marginTop="10dp"
+                          style="@style/ErrorStyle"
+                          android:gravity="right"
+                          android:visibility="gone"
+                          android:padding="5dp">
+
+                <Button android:id="@+id/login_error_btn"
+                        style="@style/ErrorButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/resend_telegram"/>
+
+                <TextView android:id="@+id/login_message_text_view"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text=""
+                          style="@style/ErrorStyle"
+                          android:padding="5dp"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                    android:id="@+id/login_form_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffff"
+                    android:layout_margin="15dp"
+                    android:layout_below="@id/login_message_container"
+                    android:layout_marginTop="15dp"
+                    >
+
+                <EditText
+                        android:id="@+id/login_username_edit_text"
+                        android:inputType="textWebEmailAddress"
+                        android:hint="@string/username_hint"
+                        android:layout_alignParentTop="true"
+                        style="@style/edit_text_default"
+                        />
+                <EditText
+                        android:id="@+id/login_password_edit_text"
+                        android:inputType="textWebPassword"
+                        android:hint="@string/password_hint"
+                        android:layout_below="@id/login_username_edit_text"
+                        style="@style/edit_text_default"
+                        />
+                <Button
+                        android:id="@+id/login_button"
+                        android:text="@string/enter_button"
+                        android:layout_below="@id/login_password_edit_text"
+                        android:layout_marginTop="10dp"
+                        style="@style/sell_full_width_button"
+                        />
+            </RelativeLayout>
+            <TextView
+                    android:id="@+id/forgot_password_text_view"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/forgot_password"
+                    android:layout_below="@id/login_form_layout"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
                     />
-            <EditText
-                    android:id="@+id/login_password_edit_text"
-                    android:inputType="textWebPassword"
-                    android:hint="@string/password_hint"
-                    android:layout_below="@id/login_username_edit_text"
-                    style="@style/edit_text_default"
-                    />
-            <Button
-                    android:id="@+id/login_button"
-                    android:text="@string/enter_button"
-                    android:layout_below="@id/login_password_edit_text"
-                    android:layout_marginTop="10dp"
-                    style="@style/sell_full_width_button"
+            <TextView
+                    android:id="@+id/register_as_seller_text_view"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_below="@id/forgot_password_text_view"
+                    android:text="@string/register_account"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/dark_blue"
+                    android:clickable="true"
                     />
         </RelativeLayout>
-        <TextView
-                android:id="@+id/forgot_password_text_view"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/forgot_password"
-                android:layout_below="@id/login_form_layout"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_centerHorizontal="true"
-                />
-        <TextView
-                android:id="@+id/register_as_seller_text_view"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_below="@id/forgot_password_text_view"
-                android:text="@string/register_account"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:layout_marginTop="15dp"
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue"
-                android:clickable="true"
-                />
-    </RelativeLayout>
-</ScrollView>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>

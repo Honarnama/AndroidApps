@@ -296,4 +296,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         }
         super.onStop();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }
