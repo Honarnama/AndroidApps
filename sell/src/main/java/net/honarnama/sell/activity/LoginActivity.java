@@ -1,9 +1,11 @@
 package net.honarnama.sell.activity;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -21,12 +23,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
@@ -63,15 +68,29 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
         mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
-        ParseUser user = HonarnamaUser.getCurrentHonarnamaUser();
+        HonarnamaUser.checkIfUserStillExistOnParse();
+        final ParseUser user = HonarnamaUser.getCurrentUser();
         if (user != null) {
-            logI("Parse user is not empty", "user= " + user.getEmail());
             showLoadingDialog();
+            logI("Parse user is not empty", "user= " + user.getEmail());
             user.fetchInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException parseException) {
-                    gotoControlPanelOrRaiseError();
-                    hideLoadingDialog();
+                    //checkIfUserStillExistOnParse
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                    query.whereEqualTo("username", user.getUsername());
+                    query.findInBackground(new FindCallback<ParseUser>() {
+                        public void done(List<ParseUser> objects, ParseException e) {
+                            if (e == null) {
+                                // User Exist On Parse
+                                gotoControlPanelOrRaiseError();
+                            } else {
+                                Log.e("Elnaz", e.getCode() + "");
+                                user.logOut();
+                            }
+                            hideLoadingDialog();
+                        }
+                    });
                 }
             });
         } else {

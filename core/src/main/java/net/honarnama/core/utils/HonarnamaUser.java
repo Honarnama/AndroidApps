@@ -1,5 +1,6 @@
 package net.honarnama.core.utils;
 
+import com.parse.FindCallback;
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -9,7 +10,10 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import android.util.Log;
+
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by elnaz on 7/26/15.
@@ -52,7 +56,7 @@ public class HonarnamaUser extends ParseUser {
     }
 
     public static boolean isVerified() {
-        if (getCurrentHonarnamaUser() == null) {
+        if (getCurrentUser() == null) {
             return false;
         }
         return getActivationMethod().isUserVerified(getCurrentUser());
@@ -74,30 +78,6 @@ public class HonarnamaUser extends ParseUser {
                 return user.getBoolean(verificationFieldName);
             }
             return false;
-        }
-    }
-
-    private static void checkIfUserStillExistOnParse() {
-        if (getCurrentUser() != null) {
-            ParseQuery<ParseUser> query = getQuery();
-            query.whereEqualTo("username", getCurrentUser().getUsername());
-            query.getFirstInBackground(new GetCallback<ParseUser>() {
-                @Override
-                public void done(ParseUser object, ParseException e) {
-                    if (e != null) {
-                        logOut();
-                    }
-                }
-            });
-        }
-    }
-
-    public static ParseUser getCurrentHonarnamaUser() {
-        checkIfUserStillExistOnParse();
-        if (getCurrentUser() == null) {
-            return null;
-        } else {
-            return getCurrentUser();
         }
     }
 }
