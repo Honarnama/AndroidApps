@@ -12,6 +12,7 @@
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:background="@color/main_back"
+                android:fadeScrollbars="false"
             >
 
         <RelativeLayout
@@ -31,7 +32,7 @@
                     android:id="@+id/login_sell_on_honarnama_text_view"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:layout_below="@id/login_main_logo_image_view"
-                    android:textSize="30sp"
+                    android:textSize="26sp"
                     android:text="@string/sell_on_honarnama"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
@@ -79,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/green"
-                    android:layout_margin="25dp"
+                    android:layout_margin="30dp"
                     android:layout_below="@id/login_message_container"
                     >
 
@@ -129,10 +130,21 @@
                     android:text="@string/register_account"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:textSize="16sp"
                     android:textColor="@color/dark_blue"
                     android:clickable="true"
+                    />
+
+            <Button style="@style/core_wrap_button"
+                    android:text="ورود با حساب تلگرام"
+                    android:layout_below="@+id/register_as_seller_text_view"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_border"
+                    android:id="@+id/telegram_login_button"
+                    android:layout_marginTop="15dp"
+                    android:textColor="#00b4ff"
+
                     />
         </RelativeLayout>
     </ScrollView>
