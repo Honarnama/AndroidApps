@@ -13,4 +13,10 @@
         <item name="android:background">@color/button_back</item>
         <item name="android:textColor">@color/text_color</item>
     </style>
+
+    <style name="greenEditTextTheme">
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/white</item>
+        <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
+    </style>
 </resources>

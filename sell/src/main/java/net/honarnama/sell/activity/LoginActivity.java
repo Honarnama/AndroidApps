@@ -17,13 +17,16 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -68,7 +71,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
         mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
-        HonarnamaUser.checkIfUserStillExistOnParse();
         final ParseUser user = HonarnamaUser.getCurrentUser();
         if (user != null) {
             showLoadingDialog();
@@ -265,6 +267,25 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         }
     }
 
+    private void showTelegramActivationDialog(final String activationCode) {
+        final AlertDialog.Builder telegramActivationDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, net.honarnama.base.R.style.DialogStyle));
+        telegramActivationDialog.setTitle(getString(net.honarnama.base.R.string.telegram_activation_dialog_title));
+        telegramActivationDialog.setItems(new String[]{getString(net.honarnama.base.R.string.telegram_activation_option_text)},
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
+                            if (telegramIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        telegramActivationDialog.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -277,12 +298,20 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         mErrorMessageButton.setVisibility(View.GONE);
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
-                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
-                        mMessageContainer.setVisibility(View.VISIBLE);
-                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
-                        mErrorMessageButton.setVisibility(View.GONE);
+//                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
+//                        mMessageContainer.setVisibility(View.VISIBLE);
+//                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
+//                        mErrorMessageButton.setVisibility(View.GONE);
+//                    }
+                    if(HonarnamaUser.getCurrentUser() != null) {
+                        showTelegramActivationDialog(HonarnamaUser.getCurrentUser().getString("telegramCode"));
                     }
                 }
+            }
+
+            if(requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
+                //finish();
+                gotoControlPanelOrRaiseError();
             }
         }
 

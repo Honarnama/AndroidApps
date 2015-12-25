@@ -78,10 +78,9 @@
                     android:id="@+id/login_form_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
-                    android:layout_margin="15dp"
+                    android:background="@color/green"
+                    android:layout_margin="25dp"
                     android:layout_below="@id/login_message_container"
-                    android:layout_marginTop="15dp"
                     >
 
                 <EditText
@@ -90,6 +89,10 @@
                         android:hint="@string/username_hint"
                         android:layout_alignParentTop="true"
                         style="@style/edit_text_default"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:padding="10dp"
+                        android:theme="@style/greenEditTextTheme"
                         />
                 <EditText
                         android:id="@+id/login_password_edit_text"
@@ -97,6 +100,10 @@
                         android:hint="@string/password_hint"
                         android:layout_below="@id/login_username_edit_text"
                         style="@style/edit_text_default"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:padding="10dp"
+                        android:theme="@style/greenEditTextTheme"
                         />
                 <Button
                         android:id="@+id/login_button"

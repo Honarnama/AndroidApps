@@ -203,7 +203,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             user.setUsername(mMobileNumberEditText.getText().toString().trim());
         }
 
-        if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
+        if (mEmailAddressEditText.getText().toString().trim().length() == 0 || "mobileNumber".equals(activationMethod)) {
             user.setEmail(mMobileNumberEditText.getText().toString().trim() + "@" + HonarnamaBaseApp.DOMAIN);
         } else {
             user.setEmail(mEmailAddressEditText.getText().toString().trim());
@@ -215,13 +215,13 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             user.setPassword(mMobileNumberEditText.getText().toString().trim());
         }
 
+        user.put("userEnteredEmailAddress", mEmailAddressEditText.getText().toString().trim());
         user.put("mobileNumber", mMobileNumberEditText.getText().toString().trim());
         user.put("name", mNameEditText.getText().toString().trim());
         user.put("activationMethod", activationMethod);
 
         int genderCode = mGenderWoman.isChecked() ? 0 : (mGenderMan.isChecked() ? 1 : 2);
         user.put("gender", genderCode);
-
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
@@ -230,11 +230,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                     user.fetchInBackground(new GetCallback<ParseObject>() {
                         @Override
                         public void done(ParseObject parseObject, ParseException e) {
-                            if ("mobileNumber".equals(activationMethod)) {
-                                showTelegramActivationDialog(parseObject.getString("telegramCode"));
-                            } else {
-                                sendUserBackToCallingActivity();
-                            }
+                            sendUserBackToCallingActivity();
                         }
                     });
                 } else {
@@ -252,25 +248,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                 }
             }
         });
-    }
-
-    private void showTelegramActivationDialog(final String activationCode) {
-        final AlertDialog.Builder telegramActivationDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
-        telegramActivationDialog.setTitle(getString(R.string.telegram_activation_dialog_title));
-        telegramActivationDialog.setItems(new String[]{getString(R.string.telegram_activation_option_text)},
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
-                            if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
-                            }
-                        }
-                        dialog.dismiss();
-                    }
-                });
-        telegramActivationDialog.show();
     }
 
     private void changeMandatoryFieldsStarMarker() {
@@ -379,10 +356,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         }
         */
         switch (requestCode) {
-            case HonarnamaBaseApp.INTENT_TELEGRAM_CODE:
-                sendUserBackToCallingActivity();
-                finish();
-                break;
             default:
                 logD(null, "Unexpected requestCode= " + requestCode);
         }

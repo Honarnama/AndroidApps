@@ -15,7 +15,7 @@
     <color name="textColorPrimary">#503F21</color>
     <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#616161</color>
+    <color name="colorAccent">@color/extra_dark_green</color>
 
     <color name="lime">#CDDC39</color>
     <color name="light_orange">#F9A825</color>
