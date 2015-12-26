@@ -178,8 +178,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         }
     */
     private void signUserUpInParse() {
-
-
         if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
             return;
         }

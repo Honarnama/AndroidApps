@@ -58,9 +58,13 @@
         </activity>
         <activity
                 android:name="net.honarnama.core.activity.ChooseCategoryActivity"
-                android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 android:label="@string/choose_category_dialog_title"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Holo.Dialog.NoActionBar">
+        </activity>
+        <activity android:name=".activity.ForgotPasswordActivity"
+                  android:theme="@style/Theme.Holo.Dialog.NoActionBar"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

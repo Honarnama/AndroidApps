@@ -149,7 +149,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         if (username.trim().length() == 0) {
             mUsernameEditText.requestFocus();
-            mUsernameEditText.setError(getString(R.string.error_register_username_is_empty));
+            mUsernameEditText.setError(getString(R.string.error_login_username_is_empty));
             return;
         }
 

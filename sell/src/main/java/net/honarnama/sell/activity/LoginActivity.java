@@ -23,19 +23,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-
+//TODO ersale mojadad link faal sazi baraye email
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
     private Button mLoginButton;
@@ -46,6 +44,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private View mErrorMessageButton;
     private ProgressDialog mLoadingDialog;
     private TextView mForgotPasswordTextView;
+    private LinearLayout mTelegramLoginContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
         mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
+
+        mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
+        mTelegramLoginContainer.setOnClickListener(this);
 
         final ParseUser user = HonarnamaUser.getCurrentUser();
         if (user != null) {
@@ -125,7 +127,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
 
         Uri data = intent.getData();
-
         logI(null, "processIntent :: data= " + data);
 
         if (data != null) {
@@ -180,8 +181,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 mMessageContainer.setVisibility(View.GONE);
                 signUserIn();
                 break;
-            case R.id.forgot_password_text_view:
-                // TODO: what about email?
+            case R.id.telegram_login_container:
                 Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
                 if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent);
@@ -192,6 +192,11 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (telegramIntent2.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent2);
                 }
+            case R.id.forgot_password_text_view:
+                Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(forgotPasswordIntent);
+                break;
+
             default:
                 break;
         }
@@ -207,7 +212,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         if (username.trim().length() == 0) {
             mUsernameEditText.requestFocus();
-            mUsernameEditText.setError(getString(R.string.error_register_username_is_empty));
+            mUsernameEditText.setError(getString(R.string.error_login_username_is_empty));
             return;
         }
 
@@ -303,13 +308,13 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 //                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
 //                        mErrorMessageButton.setVisibility(View.GONE);
 //                    }
-                    if(HonarnamaUser.getCurrentUser() != null) {
+                    if (HonarnamaUser.getCurrentUser() != null) {
                         showTelegramActivationDialog(HonarnamaUser.getCurrentUser().getString("telegramCode"));
                     }
                 }
             }
 
-            if(requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
+            if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
                 //finish();
                 gotoControlPanelOrRaiseError();
             }

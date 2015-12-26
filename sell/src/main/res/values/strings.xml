@@ -17,7 +17,7 @@
     <string name="sell_on_honarnama">برنامه‌ی فروشندگان هنرنما</string>
     <string name="slogan_for_sellers">هنر دست خود را در سراسر ایران بفروشید</string>
     <string name="register_as_seller">ثبت‌نام حساب فروشندگان</string>
-    <string name="toolbar_title"> هنرنما برای فروشندگان </string>
+    <string name="toolbar_title">هنرنما برای فروشندگان</string>
 
     <string name="nav_title_seller_account">حساب کاربری</string>
     <string name="nav_title_store_info">اطلاعات فروشگاه</string>
@@ -32,6 +32,9 @@
     <string name="successfully_sent_vereification_docs">مدارکتان با موفقیت ارسال شد.</string>
     <string name="sending_verification_docs_failed">خطایی در هنگام ارسال مدارک رخ داد.</string>
     <string name="nav_title_orders">سفارشات</string>
+    <string name="forgot_password_desc">
+        آدرس ایمیلی که با آن ثبت‌نام کردید را وارد کنید تا لینک بازنشانی رمز عبور را برایتان به آن آدرس بفرستیم.
+    </string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

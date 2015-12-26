@@ -13,6 +13,7 @@
                 android:layout_width="fill_parent"
                 android:background="@color/main_back"
                 android:fadeScrollbars="false"
+                android:layoutDirection="rtl"
             >
 
         <RelativeLayout
@@ -79,7 +80,7 @@
                     android:id="@+id/login_form_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/green"
+                    android:background="@color/light_gray"
                     android:layout_margin="30dp"
                     android:layout_below="@id/login_message_container"
                     >
@@ -90,10 +91,7 @@
                         android:hint="@string/username_hint"
                         android:layout_alignParentTop="true"
                         style="@style/edit_text_default"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/white"
                         android:padding="10dp"
-                        android:theme="@style/greenEditTextTheme"
                         />
                 <EditText
                         android:id="@+id/login_password_edit_text"
@@ -101,10 +99,7 @@
                         android:hint="@string/password_hint"
                         android:layout_below="@id/login_username_edit_text"
                         style="@style/edit_text_default"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/white"
                         android:padding="10dp"
-                        android:theme="@style/greenEditTextTheme"
                         />
                 <Button
                         android:id="@+id/login_button"
@@ -136,16 +131,34 @@
                     android:clickable="true"
                     />
 
-            <Button style="@style/core_wrap_button"
-                    android:text="ورود با حساب تلگرام"
-                    android:layout_below="@+id/register_as_seller_text_view"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/button_border"
-                    android:id="@+id/telegram_login_button"
-                    android:layout_marginTop="15dp"
-                    android:textColor="#00b4ff"
-
-                    />
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@+id/register_as_seller_text_view"
+                          android:layout_centerHorizontal="true"
+                          android:background="@color/telegram_blue"
+                          android:id="@+id/telegram_login_container"
+                          android:layout_marginTop="15dp"
+                          android:orientation="horizontal"
+                          android:padding="10dp"
+                          android:clickable="true"
+                    >
+                <ImageView android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:src="@drawable/telegram_icon"
+                           android:layout_gravity="center_vertical"
+                        />
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ورود با حساب تلگرام"
+                        android:textColor="#ffffff"
+                        android:id="@+id/telegram_login_text_view"
+                        android:background="@color/telegram_blue"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="5dp"
+                        android:textStyle="bold"
+                        />
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
