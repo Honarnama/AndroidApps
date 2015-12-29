@@ -35,6 +35,8 @@
     <string name="forgot_password_desc">
         آدرس ایمیلی که با آن ثبت‌نام کردید را وارد کنید تا لینک بازنشانی رمز عبور را برایتان به آن آدرس بفرستیم.
     </string>
+    <string name="please_install_telegram">لطفا برنامه‌ی تلگرام را بر روی دستگاه خود نصب کنید.
+    </string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

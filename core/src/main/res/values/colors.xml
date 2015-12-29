@@ -38,6 +38,7 @@
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="default_edit_text_text_color">@color/extra_dark_gray</color>
+    <color name="text_color">#616161</color>
 
     <color name="happy_blue">#0061e6</color>
     <color name="nice_blue">#12adc7</color>

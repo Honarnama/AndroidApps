@@ -60,15 +60,22 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="ErrorStyle" >
-        <item name="android:textSize">14sp</item>
+    <style name="ErrorStyle">
+        <item name="android:textSize">13sp</item>
         <item name="android:background">@color/narenji</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="ErrorButtonStyle" >
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
     </style>
 
     <style name="HorizontalSeparatorLine">
@@ -96,7 +103,7 @@
         <item name="android:textColor">@color/dark_gray</item>
     </style>
 
-    <style name="core_wrap_button" >
+    <style name="core_wrap_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingRight">15dp</item>
@@ -116,7 +123,6 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/amber</item>
     </style>
-
 
 
 </resources>

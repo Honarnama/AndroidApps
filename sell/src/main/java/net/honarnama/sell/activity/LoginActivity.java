@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+
 //TODO ersale mojadad link faal sazi baraye email
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
@@ -41,7 +42,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private EditText mPasswordEditText;
     private View mMessageContainer;
     private TextView mLoginMessageTextView;
-    private View mErrorMessageButton;
+//    private View mResendActivationLinkButton;
     private ProgressDialog mLoadingDialog;
     private TextView mForgotPasswordTextView;
     private LinearLayout mTelegramLoginContainer;
@@ -61,8 +62,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
         mMessageContainer = findViewById(R.id.login_message_container);
         mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
-        mErrorMessageButton = findViewById(R.id.login_error_btn);
-        mErrorMessageButton.setOnClickListener(this);
+//        mResendActivationLinkButton = findViewById(R.id.resend_activation_link);
+//        mResendActivationLinkButton.setOnClickListener(this);
 
         mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_text_view);
         mForgotPasswordTextView.setOnClickListener(this);
@@ -75,6 +76,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         final ParseUser user = HonarnamaUser.getCurrentUser();
         if (user != null) {
+            if (!(NetworkManager.getInstance().isNetworkEnabled(this, true))) {
+                return;
+            }
             showLoadingDialog();
             logI("Parse user is not empty", "user= " + user.getEmail());
             user.fetchInBackground(new GetCallback<ParseObject>() {
@@ -140,10 +144,17 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 HonarnamaUser.telegramLogInInBackground(telegramToken, new LogInCallback() {
                     @Override
                     public void done(ParseUser parseUser, ParseException e) {
-                        hideLoadingDialog();
                         if (e == null) {
-                            gotoControlPanelOrRaiseError();
+                            parseUser.fetchInBackground(new GetCallback<ParseObject>() {
+                                @Override
+                                public void done(ParseObject object, ParseException e) {
+                                    hideLoadingDialog();
+                                    gotoControlPanelOrRaiseError();
+                                }
+                            });
+
                         } else {
+                            hideLoadingDialog();
                             logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
                             Toast.makeText(LoginActivity.this, R.string.error_login_failed, Toast.LENGTH_LONG).show();
                         }
@@ -182,16 +193,26 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 signUserIn();
                 break;
             case R.id.telegram_login_container:
-                Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
+                Intent telegramIntent;
+                if (HonarnamaUser.getCurrentUser() != null) {
+                    String telegramCode = HonarnamaUser.getCurrentUser().getString("telegramCode");
+
+                    if (HonarnamaUser.getActivationMethod() != HonarnamaUser.ActivationMethod.MOBILE_NUMBER || telegramCode == null) {
+                        telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
+                    } else {
+                        telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + telegramCode));
+                    }
+                } else {
+                    telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
+                }
+
                 if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent);
+                } else {
+                    Toast.makeText(LoginActivity.this, R.string.please_install_telegram, Toast.LENGTH_LONG).show();
                 }
                 break;
-            case R.id.login_error_btn:
-                Intent telegramIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + HonarnamaUser.getCurrentUser().getString("telegramCode")));
-                if (telegramIntent2.resolveActivity(getPackageManager()) != null) {
-                    startActivity(telegramIntent2);
-                }
+
             case R.id.forgot_password_text_view:
                 Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(forgotPasswordIntent);
@@ -229,15 +250,22 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
-                progressDialog.dismiss();
                 if (user != null) {
-                    gotoControlPanelOrRaiseError();
+                    user.fetchInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            progressDialog.dismiss();
+                            gotoControlPanelOrRaiseError();
+                        }
+                    });
+
                 } else {
+                    progressDialog.dismiss();
                     // Signup failed. Look at the ParseException to see what happened.
                     logE("logInInBackground Failed. ", e.getMessage(), e);
                     mMessageContainer.setVisibility(View.VISIBLE);
                     mLoginMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
-                    mErrorMessageButton.setVisibility(View.GONE);
+//                    mResendActivationLinkButton.setVisibility(View.GONE);
                 }
             }
         });
@@ -255,16 +283,14 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void gotoControlPanelOrRaiseError() {
         if (!HonarnamaUser.isVerified()) {
             logE("Login Failed. Account is not activated");
-            mMessageContainer.setVisibility(View.VISIBLE);
-            mLoginMessageTextView.setText(R.string.not_verified);
             switch (HonarnamaUser.getActivationMethod()) {
-                case MOBILE_NUMBER:
-                    // TODO: onlt if telegram is installed
-                    mErrorMessageButton.setVisibility(View.VISIBLE);
+                case EMAIL:
+                    mMessageContainer.setVisibility(View.VISIBLE);
+                    mLoginMessageTextView.setText(R.string.not_verified);
+//                    mResendActivationLinkButton.setVisibility(View.VISIBLE);
                     break;
-
                 default:
-                    mErrorMessageButton.setVisibility(View.GONE);
+//                    mResendActivationLinkButton.setVisibility(View.GONE);
                     break;
             }
         } else {
@@ -283,6 +309,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                             Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
                             if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                                 startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
+                            } else {
+                                Toast.makeText(LoginActivity.this, R.string.please_install_telegram, Toast.LENGTH_LONG).show();
                             }
                         }
                         dialog.dismiss();
@@ -299,18 +327,20 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
                     if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
                         mMessageContainer.setVisibility(View.VISIBLE);
-                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد.");
-                        mErrorMessageButton.setVisibility(View.GONE);
+                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد. این لینک برای ۲۴ ساعت معتبر است.");
+//                        mResendActivationLinkButton.setVisibility(View.GONE);
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
 //                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
 //                        mMessageContainer.setVisibility(View.VISIBLE);
 //                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
-//                        mErrorMessageButton.setVisibility(View.GONE);
+//                        mResendActivationLinkButton.setVisibility(View.GONE);
 //                    }
+                    String telegramToken = "";
                     if (HonarnamaUser.getCurrentUser() != null) {
-                        showTelegramActivationDialog(HonarnamaUser.getCurrentUser().getString("telegramCode"));
+                        telegramToken = HonarnamaUser.getCurrentUser().getString("telegramCode");
                     }
+                    showTelegramActivationDialog(telegramToken);
                 }
             }
 

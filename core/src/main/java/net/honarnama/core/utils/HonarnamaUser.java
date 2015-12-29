@@ -22,7 +22,7 @@ public class HonarnamaUser extends ParseUser {
 
     public static boolean isAuthenticatedUser() {
         ParseUser user = HonarnamaUser.getCurrentUser();
-        if ((user != null) && user.isAuthenticated()) {
+        if ((isVerified()) && user.isAuthenticated()) {
             return true;
         }
         return false;

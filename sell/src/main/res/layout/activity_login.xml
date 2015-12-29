@@ -60,20 +60,18 @@
                           android:gravity="right"
                           android:visibility="gone"
                           android:padding="5dp">
-
-                <Button android:id="@+id/login_error_btn"
-                        style="@style/ErrorButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/resend_telegram"/>
-
                 <TextView android:id="@+id/login_message_text_view"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text=""
                           style="@style/ErrorStyle"
                           android:padding="5dp"/>
-
+                <!--
+                <Button android:id="@+id/resend_activation_link"
+                        style="@style/ErrorButtonStyle"
+                        android:text="ارسال مجدد لینک فعال‌سازی"
+                        />
+                        -->
             </LinearLayout>
 
             <RelativeLayout
@@ -81,7 +79,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/light_gray"
-                    android:layout_margin="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_below="@id/login_message_container"
                     >
 
@@ -92,6 +93,7 @@
                         android:layout_alignParentTop="true"
                         style="@style/edit_text_default"
                         android:padding="10dp"
+                        android:text="mojahedi.elnaz@gmail.com"
                         />
                 <EditText
                         android:id="@+id/login_password_edit_text"
@@ -100,6 +102,7 @@
                         android:layout_below="@id/login_username_edit_text"
                         style="@style/edit_text_default"
                         android:padding="10dp"
+                        android:text="1"
                         />
                 <Button
                         android:id="@+id/login_button"

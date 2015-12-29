@@ -38,6 +38,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
 
@@ -62,6 +63,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         if (!HonarnamaUser.isAuthenticatedUser()) {
             return;
         }
+
+        Toast.makeText(ControlPanelActivity.this, HonarnamaUser.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
 
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
@@ -224,13 +227,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
-
                 mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
                 mWaitingProgressDialog.setCancelable(false);
                 mWaitingProgressDialog.show();
                 HonarnamaUser.logOut();
                 Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
                 break;
         }
         // Not null && (Another section || Maybe editing but wants to create new item)

@@ -12,7 +12,7 @@
     <string name="forgot_password">رمز عبور خود را فراموش کرده‌اید؟</string>
     <string name="login_dialog_text">لطفاً چند لحظه صبر کنید&#8230;</string>
 
-    <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکردید.</string>
+    <string name="not_verified"> شما هنوز حساب کاربری خود را فعال نکرده‌اید. در صورتی که ایمیلی دریافت نکردید، پوشه‌ی spam یا هرزنامه را نیز بررسی کنید.</string>
     <string name="resend_telegram">ارسال کد از طریق تلگرام</string>
     <string name="login_using_telegram">ورود از طریق تلگرام</string>
 
@@ -26,7 +26,7 @@
     <string name="register_form_name_alert">
         نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند.
     </string>
-    <string name="select_activation_method">*‌نحوه‌ی فعال‌سازی حساب:</string>
+    <string name="select_activation_method"> *ساخت حساب توسط: </string>
     <string name="email_address_hint">آدرس ایمیل - مثال: your_name@yahoo.com</string>
     <string name="mobile_number_hint">شماره تلفن همراه - مثال: 09123456789</string>
     <string name="add_national_card_image_text">* افزودن تصویر کارت ملی:</string>
@@ -35,9 +35,10 @@
     </string>
     <string name="register">ثبت‌نام</string>
     <string name="shetab_catd_number_hint_text">شماره کارت عضو شتاب</string>
-    <string name="send_register_activation_link_to_email">ارسال لینک فعال‌سازی به آدرس ایمیل
-    </string>
-    <string name="send_register_activation_link_to_telegram">ارسال لینک فعال‌سازی به تلگرام</string>
+    <string name="send_register_activation_link_to_email">
+        آدرس ایمیل
+     </string>
+    <string name="send_register_activation_link_to_telegram"> حساب تلگرام </string>
     <string name="select_national_card_image_dialog_title">انتخاب تصویر</string>
     <string name="family_name">نام خانوادگی</string>
 
@@ -144,5 +145,6 @@
     <string name="register_account"> ساخت حساب کاربری </string>
     <string name="send">ارسال</string>
     <string name="error_name_not_set">فیلد نام نمی‌تواند خالی باشد.</string>
+    <string name="activation_link_sent">لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد.</string>
 
 </resources>
