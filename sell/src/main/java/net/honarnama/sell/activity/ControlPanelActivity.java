@@ -17,7 +17,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
-import net.honarnama.sell.fragments.SellerAccountFragment;
+import net.honarnama.sell.fragments.UserAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
 import android.app.AlertDialog;
@@ -211,7 +211,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         HonarnamaBaseFragment fragment = null;
         switch (drawerItem.getIdentifier()) {
             case DRAWER_ITEM_IDENTIFIER_ACCOUNT:
-                fragment = SellerAccountFragment.getInstance();
+                fragment = UserAccountFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_STORE_INFO:
                 fragment = StoreInfoFragment.getInstance();

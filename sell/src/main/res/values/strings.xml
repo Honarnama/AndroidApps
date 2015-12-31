@@ -37,6 +37,8 @@
     </string>
     <string name="please_install_telegram">لطفا برنامه‌ی تلگرام را بر روی دستگاه خود نصب کنید.
     </string>
+    <string name="message_profile_changed_successfully">اطلاعات شما با موفقیت تغییر پیدا کرد.
+    </string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

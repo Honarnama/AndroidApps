@@ -159,5 +159,7 @@
     <string name="telegram_activation_timeout_message">هنرمند یا هنردوست عزیز، در صورتی که حساب خود
         را در طول ۲۴ ساعت آتی فعال نکنید، حساب شما به صورت خودکار خذف خواهد شد.
     </string>
+    <string name="alter_info">تغییر اطلاعات</string>
+    <string name="message_altering_profile_Failed">خطایی در زمان تغییر اطلاعات رخ داد.</string>
 
 </resources>

@@ -7,20 +7,15 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import net.honarnama.HonarnamaBaseApp;
-
 import net.honarnama.base.R;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -224,7 +219,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         user.put("name", mNameEditText.getText().toString().trim());
         user.put("activationMethod", activationMethod);
 
-        int genderCode = mGenderWoman.isChecked() ? 0 : (mGenderMan.isChecked() ? 1 : 2);
+        int genderCode = mGenderWoman.isChecked() ? HonarnamaBaseApp.GENDER_CODE_WOMAN : (mGenderMan.isChecked() ? HonarnamaBaseApp.GENDER_CODE_MAN : HonarnamaBaseApp.GENDER_CODE_NOT_SAID);
         user.put("gender", genderCode);
 
         user.signUpInBackground(new SignUpCallback() {
