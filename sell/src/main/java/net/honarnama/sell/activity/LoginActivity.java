@@ -129,7 +129,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void processIntent(Intent intent) {
-
+        mLoginMessageTextView.setText("");
         Uri data = intent.getData();
         logI(null, "processIntent :: data= " + data);
 
@@ -327,8 +327,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
                     if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
                         mMessageContainer.setVisibility(View.VISIBLE);
-                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد. این لینک برای ۲۴ ساعت معتبر است.");
-//                        mResendActivationLinkButton.setVisibility(View.GONE);
+                        mLoginMessageTextView.setText(R.string.verification_email_sent);
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
 //                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
@@ -336,6 +335,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 //                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
 //                        mResendActivationLinkButton.setVisibility(View.GONE);
 //                    }
+                    mMessageContainer.setVisibility(View.VISIBLE);
+                    mLoginMessageTextView.setText(R.string.telegram_activation_timeout_message);
                     String telegramToken = "";
                     if (HonarnamaUser.getCurrentUser() != null) {
                         telegramToken = HonarnamaUser.getCurrentUser().getString("telegramCode");
