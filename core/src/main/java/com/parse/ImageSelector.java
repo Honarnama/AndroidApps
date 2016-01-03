@@ -453,9 +453,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     /**
      * Kick off downloading of remote image. When the download is finished, the image data will be
      * displayed.
-     * @param parseFile The remote file on Parse's server.
      *
-     * @return A Task that is resolved when the image data is fetched and this View displays the image.
+     * @param parseFile The remote file on Parse's server.
+     * @return A Task that is resolved when the image data is fetched and this View displays the
+     * image.
      */
     public Task<byte[]> loadInBackground(final ParseFile parseFile) {
         if (parseFile == null) {
@@ -495,10 +496,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
      * Kick off downloading of remote image. When the download is finished, the image data will be
      * displayed and the {@code completionCallback} will be triggered.
      *
-     * @param parseFile The remote file on Parse's server.
-     * @param completionCallback
-     *          A custom {@code GetDataCallback} to be called after the image data is fetched and this
-     *          {@code ImageView} displays the image.
+     * @param parseFile          The remote file on Parse's server.
+     * @param completionCallback A custom {@code GetDataCallback} to be called after the image data
+     *                           is fetched and this
+     *                           {@code ImageView} displays the image.
      */
     public void loadInBackground(final ParseFile parseFile, final GetDataCallback completionCallback) {
         ParseTaskUtils.callbackOnMainThreadAsync(loadInBackground(parseFile), completionCallback, true);
@@ -511,4 +512,22 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public ParseFile getParseFile() {
         return mParseFile;
     }
+
+    //for Square Imageview
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec,
+//                             int heightMeasureSpec) {
+//        Drawable d = getDrawable();
+//
+//        if (d != null) {
+//            // ceil not round - avoid thin vertical gaps along the left/right edges
+//            int width = MeasureSpec.getSize(widthMeasureSpec);
+//            int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
+//            setMeasuredDimension(width, height);
+//        } else {
+//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        }
+////        int width = MeasureSpec.getSize(widthMeasureSpec);
+////        setMeasuredDimension(width, width);
+//    }
 }
