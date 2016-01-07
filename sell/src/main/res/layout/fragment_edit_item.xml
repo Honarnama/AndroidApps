@@ -10,13 +10,9 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/edit_item_photos_title"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textColor="@color/dark_blue"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                style="@style/section_title"
                 />
 
         <TextView android:id="@+id/itemImageHint"
@@ -103,13 +99,9 @@
         <View style="@style/HorizontalSeparatorLine"/>
 
         <TextView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/edit_item_details_title"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textColor="@color/dark_blue"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                style="@style/section_title"
                 />
 
         <TextView

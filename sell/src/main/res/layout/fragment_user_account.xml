@@ -59,7 +59,6 @@
                     android:nextFocusForward="@+id/account_gender_radio_group"
                     android:gravity="right"
                     android:textColorHint="@color/default_hint_color_for_android"
-                    android:layout_marginLeft="5dp"
                     android:layout_weight="2"
                     >
                 <requestFocus/>
@@ -164,7 +163,6 @@
                     android:ellipsize="start"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    android:layout_marginLeft="5dp"
                     android:layout_toLeftOf="@id/register_password_star_marker"
                     />
 

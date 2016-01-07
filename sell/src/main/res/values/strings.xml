@@ -20,7 +20,7 @@
     <string name="toolbar_title">هنرنما برای فروشندگان</string>
 
     <string name="nav_title_seller_account">حساب کاربری</string>
-    <string name="nav_title_store_info">اطلاعات فروشگاه</string>
+    <string name="nav_title_store_info"> مشخصات فروشگاه </string>
 
     <string name="nav_title_items">محصولات</string>
     <string name="nav_title_new_item">ثبت محصول جدید</string>

@@ -96,7 +96,7 @@ public class Item extends ParseObject {
             item = new Item(ParseUser.getCurrentUser(), title, description, categoryId);
         }
 
-        Task<Void> t = Task.whenAll(tasks).continueWithTask(new Continuation<Void, Task<Void>>() {
+        Task<Void> task = Task.whenAll(tasks).continueWithTask(new Continuation<Void, Task<Void>>() {
 
             @Override
             public Task<Void> then(Task<Void> task) throws Exception {
@@ -115,7 +115,7 @@ public class Item extends ParseObject {
             }
         });
 
-        return t.continueWithTask(new Continuation<Void, Task<Item>>() {
+        return task.continueWithTask(new Continuation<Void, Task<Item>>() {
 
             @Override
             public Task<Item> then(Task<Void> task) throws Exception {

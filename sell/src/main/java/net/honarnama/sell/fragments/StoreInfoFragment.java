@@ -1,19 +1,21 @@
 package net.honarnama.sell.fragments;
 
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.model.Store;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+
 import com.parse.ImageSelector;
+
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
@@ -37,16 +39,16 @@ import java.io.IOException;
 
 public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
-    private EditText mStoreNameEditText;
-    private EditText mStorePlicyEditText;
+    private EditText mNameEditText;
+    private EditText mDescriptionEditText;
+    private EditText mPhoneNumberEditText;
+    private EditText mCellNumberEditText;
     private Button mRegisterStoreButton;
-    private ImageSelector mStoreLogoImageView;
-    private static String OBJECT_NAME = "store_info";
-    private static String OWNER_FIELD = "owner";
-    private static String NAME_FIELD = "name";
-    private static String POLICY_FIELD = "policy";
-    private static String LOGO_FIELD = "logo";
-
+    private ImageSelector mLogoImageView;
+    private ImageSelector mBannerImageView;
+    ProgressDialog mSendingDataProgressDialog;
+    ParseFile mParseFileLogo;
+    ParseFile mParseFileBanner;
 
     public static StoreInfoFragment mStoreInfoFragment;
 
@@ -73,29 +75,53 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         View rootView = inflater.inflate(R.layout.fragment_store_info, container, false);
         // Inflate the layout for this fragment
 
-        mStoreNameEditText = (EditText) rootView.findViewById(R.id.store_name_edit_text);
-        mStorePlicyEditText = (EditText) rootView.findViewById(R.id.store_policy_edit_text);
-        mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
-        mStoreLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
+        mSendingDataProgressDialog = new ProgressDialog(getActivity());
 
-        mStoreLogoImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
+        mNameEditText = (EditText) rootView.findViewById(R.id.store_name_edit_text);
+        mDescriptionEditText = (EditText) rootView.findViewById(R.id.store_description_edit_text);
+        mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.store_phone_number);
+        mCellNumberEditText = (EditText) rootView.findViewById(R.id.store_cell_number);
+
+        mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
+        mLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
+        mBannerImageView = (ImageSelector) rootView.findViewById(R.id.store_banner_image_view);
+        mRegisterStoreButton.setOnClickListener(this);
+
+        mLogoImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
             @Override
             public boolean onImageSelected(Uri selectedImage, boolean cropped) {
                 return true;
             }
 
             @Override
-            public void onImageRemoved() { }
+            public void onImageRemoved() {
+            }
 
             @Override
-            public void onImageSelectionFailed() { }
+            public void onImageSelectionFailed() {
+            }
         });
-        mRegisterStoreButton.setOnClickListener(this);
-        mStoreLogoImageView.setActivity(this.getActivity());
-        mStoreLogoImageView.restore(savedInstanceState);
+        mLogoImageView.setActivity(this.getActivity());
+        mLogoImageView.restore(savedInstanceState);
+
+        mBannerImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
+            @Override
+            public boolean onImageSelected(Uri selectedImage, boolean cropped) {
+                return true;
+            }
+
+            @Override
+            public void onImageRemoved() {
+            }
+
+            @Override
+            public void onImageSelectionFailed() {
+            }
+        });
+        mBannerImageView.setActivity(this.getActivity());
+        mBannerImageView.restore(savedInstanceState);
 
         setStoredStoreInfo();
-
         return rootView;
     }
 
@@ -116,17 +142,20 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_store_button:
-                if (isFormInputsValid()) {
+                if (AreFormInputsValid()) {
+                    mSendingDataProgressDialog.setCancelable(false);
+                    mSendingDataProgressDialog.setMessage(getString(R.string.sending_data));
+                    mSendingDataProgressDialog.show();
                     uploadStoreLogo();
                 }
                 break;
         }
     }
 
-    private boolean isFormInputsValid() {
-        if (mStoreNameEditText.getText().toString().trim().length() == 0) {
-            mStoreNameEditText.requestFocus();
-            mStoreNameEditText.setError(getActivity().getString(R.string.error_store_name_cant_be_empty));
+    private boolean AreFormInputsValid() {
+        if (mNameEditText.getText().toString().trim().length() == 0) {
+            mNameEditText.requestFocus();
+            mNameEditText.setError(getActivity().getString(R.string.error_store_name_cant_be_empty));
             return false;
         }
         return true;
@@ -135,14 +164,19 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        mStoreLogoImageView.onActivityResult(requestCode, resultCode, intent);
+        mLogoImageView.onActivityResult(requestCode, resultCode, intent);
+        mBannerImageView.onActivityResult(requestCode, resultCode, intent);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mStoreLogoImageView != null) {
-            mStoreLogoImageView.onSaveInstanceState(outState);
+        if (mLogoImageView != null) {
+            mLogoImageView.onSaveInstanceState(outState);
+        }
+
+        if (mBannerImageView != null) {
+            mBannerImageView.onSaveInstanceState(outState);
         }
     }
 
@@ -152,23 +186,22 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             return;
         }
 
-        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
-        sendingDataProgressDialog.setCancelable(false);
-        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
-        sendingDataProgressDialog.show();
-
-        if (mStoreLogoImageView.getFinalImageUri() == null) {
-            addOrUpdateStore(null, sendingDataProgressDialog);
+        if (!mLogoImageView.isChanged() || mLogoImageView.getFinalImageUri() == null) {
+//            saveStore(null);
+            uploadStoreBanner();
             return;
         }
-        final File storeLogoImageFile = new File(mStoreLogoImageView.getFinalImageUri().getPath());
+
+        Toast.makeText(getActivity(), "Uploading logo", Toast.LENGTH_SHORT).show();
+        final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
         try {
-            final ParseFile parseFile = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_LOGO_FILE_NAME,
+            mParseFileLogo = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_LOGO_FILE_NAME,
                     storeLogoImageFile);
-            parseFile.saveInBackground(new SaveCallback() {
+            mParseFileLogo.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        addOrUpdateStore(parseFile, sendingDataProgressDialog);
+//                        saveStore(parseFile);
+                        uploadStoreBanner();
                         try {
                             ParseIO.copyFile(storeLogoImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME));
                         } catch (IOException e1) {
@@ -181,7 +214,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.", Toast.LENGTH_LONG).show();
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
@@ -189,12 +222,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
                         }
-                        sendingDataProgressDialog.dismiss();
+                        mSendingDataProgressDialog.dismiss();
                     }
                 }
             });
         } catch (IOException ioe) {
-            Toast.makeText(StoreInfoFragment.this.getActivity(), " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ",
+            Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.",
                     Toast.LENGTH_LONG).show();
 
             if (BuildConfig.DEBUG) {
@@ -205,28 +238,135 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         + ioe.getMessage());
             }
 
-            sendingDataProgressDialog.dismiss();
+            mSendingDataProgressDialog.dismiss();
         }
     }
 
-    private void addOrUpdateStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
-        //check if user already have a registered store
-        final ParseFile parseFile = parseFileParam;
-        final ProgressDialog progressDialog = progressDialogParam;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-        query.whereEqualTo(OWNER_FIELD, HonarnamaUser.getCurrentUser());
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            public void done(ParseObject storeInfo, ParseException e) {
-                if (e == null) {
-                    updateStoreInfo(storeInfo, parseFile, progressDialog);
-                } else {
-                    addNewStore(parseFile, progressDialog);
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error geeting current store id. Error :" + e.getCode() +
-                                        "//" + e.getMessage() + " // " + e, e);
+    public void uploadStoreBanner() {
+
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            mSendingDataProgressDialog.dismiss();
+            return;
+        }
+
+        if (!mBannerImageView.isChanged() || mBannerImageView.getFinalImageUri() == null) {
+            saveStore();
+            return;
+        }
+        Toast.makeText(getActivity(), "Uploading banner", Toast.LENGTH_SHORT).show();
+        final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
+        try {
+            mParseFileBanner = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_BANNER_FILE_NAME,
+                    storeBannerImageFile);
+            mParseFileBanner.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        saveStore();
+                        try {
+                            ParseIO.copyFile(storeBannerImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_BANNER_FILE_NAME));
+                        } catch (IOException e1) {
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                        "Error copying store banner to sd card " + e1, e1);
+                            } else {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store banner to sd card"
+                                        + e1.getMessage());
+                            }
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Banner Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Uploading Store Banner Failed. Code: " + e.getCode() +
+                                    "//" + e.getMessage() + " // " + e);
+                        }
+                        mSendingDataProgressDialog.dismiss();
                     }
                 }
+            });
+        } catch (IOException ioe) {
+            Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ",
+                    Toast.LENGTH_LONG).show();
+
+            if (BuildConfig.DEBUG) {
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                        "Failed on preparing store banner image. " + ioe, ioe);
+            } else {
+                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Failed on preparing store banner image. ioe="
+                        + ioe.getMessage());
+            }
+
+            mSendingDataProgressDialog.dismiss();
+        }
+    }
+
+
+    private void saveStore() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            mSendingDataProgressDialog.dismiss();
+            return;
+        }
+        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+        query.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(final Store store, ParseException e) {
+                final Store storeObject;
+                if (e == null) {
+                    storeObject = store;
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        storeObject = new Store();
+                        storeObject.setOwner(HonarnamaUser.getCurrentUser());
+                    } else {
+                        Toast.makeText(getActivity(), "خطا در زمان به‌روزرسانی اطلاعات فروشگاه.", Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "Error changing Store Info.  Error Code: " + e.getCode() +
+                                            "//" + e.getMessage() + " // " + e, e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Changing Store Info. "
+                                    + e.getMessage());
+                        }
+                        return;
+                    }
+                }
+
+                storeObject.setName(mNameEditText.getText().toString().trim());
+                storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
+                storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
+                storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
+
+                if (mLogoImageView.isDeleted()) {
+                    storeObject.remove(Store.LOGO);
+                } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
+                    storeObject.setLogo(mParseFileLogo);
+                }
+
+                if (mBannerImageView.isDeleted()) {
+                    storeObject.remove(Store.BANNER);
+                } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
+                    storeObject.setBanner(mParseFileBanner);
+                }
+
+                storeObject.pinInBackground();
+                storeObject.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                        } else {
+                            // TODO: handle "Invalid: name"
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
+                        }
+                        mSendingDataProgressDialog.dismiss();
+                    }
+                });
+
             }
         });
 
@@ -238,88 +378,48 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(OBJECT_NAME);
-        query.whereEqualTo(OWNER_FIELD, HonarnamaUser.getCurrentUser());
+        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
         query.fromLocalDatastore();
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            public void done(ParseObject storeInfo, ParseException e) {
+        query.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(Store store, ParseException e) {
+                progressDialog.dismiss();
                 if (e == null) {
-                    mStoreNameEditText.setText(storeInfo.getString(NAME_FIELD));
-                    mStorePlicyEditText.setText(storeInfo.getString(POLICY_FIELD));
-                     mStoreLogoImageView.loadInBackground(storeInfo.getParseFile("logo"));
+
+                    mNameEditText.setText(store.getName());
+                    mDescriptionEditText.setText(store.getDescription());
+                    mPhoneNumberEditText.setText(store.getPhoneNumber());
+                    mCellNumberEditText.setText(store.getCellNumber());
+
+                    mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+
+                        }
+                    });
+
+
+                    mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+
+                        }
+                    });
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error getting store info.  Error Code: " + e.getCode() +
+                                "Error Getting Store Info.  Error Code: " + e.getCode() +
                                         "//" + e.getMessage() + " // " + e, e);
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error getting store info. "
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. "
                                 + e.getMessage());
                     }
                 }
-                progressDialog.dismiss();
-            }
-        });
-    }
 
-    private void updateStoreInfo(final ParseObject storeObject, ParseFile parseFileParam, ProgressDialog progressDialogParam) {
-        final ParseFile parseFile = parseFileParam;
-        final ProgressDialog progressDialog = progressDialogParam;
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            progressDialog.dismiss();
-            return;
-        }
-
-        storeObject.put(NAME_FIELD, mStoreNameEditText.getText().toString().trim());
-        storeObject.put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
-        if (parseFile != null) {
-            storeObject.put(LOGO_FIELD, parseFile);
-        }
-        storeObject.pinInBackground();
-        storeObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
-                } else {
-                    // TODO: handle "Invalid: name"
-                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
-                }
-                progressDialog.dismiss();
             }
         });
     }
 
 
-    private void addNewStore(ParseFile parseFileParam, ProgressDialog progressDialogParam) {
-        final ParseUser currentUser = ParseUser.getCurrentUser();
-        final ParseFile parseFile = parseFileParam;
-        final ProgressDialog progressDialog = progressDialogParam;
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            progressDialog.dismiss();
-            return;
-        }
-
-        ParseObject storeInfo = new ParseObject(OBJECT_NAME);
-        storeInfo.put(OWNER_FIELD, currentUser);
-        storeInfo.put(NAME_FIELD, mStoreNameEditText.getText().toString().trim());
-        if (parseFile != null) {
-            storeInfo.put(LOGO_FIELD, parseFile);
-        }
-        storeInfo.put(POLICY_FIELD, mStorePlicyEditText.getText().toString().trim());
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            progressDialog.dismiss();
-            return;
-        }
-
-        storeInfo.pinInBackground();
-        storeInfo.saveInBackground();
-        progressDialog.dismiss();
-        Toast.makeText(getActivity(), getActivity().getString(R.string.successfully_saved_store_info), Toast.LENGTH_LONG).show();
-
-    }
 }

@@ -10,8 +10,9 @@
 
     <style name="sell_full_width_button" parent="full_width_button">
 
-        <item name="android:background">@color/button_back</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:background">@color/amber</item>
+        <item name="android:textColor">@color/white</item>
+
     </style>
 
     <style name="greenEditTextTheme">

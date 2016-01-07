@@ -44,7 +44,13 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/default_edit_text_text_color</item>
         <item name="colorControlNormal">#c5c5c5</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
 
+    <style name="bordered_edit_text" parent="edit_text_default">
+        <item name="android:background">@drawable/button_border</item>
+        <item name="android:gravity">right|center</item>
     </style>
 
     <style name="button_wrap_content_width" parent="full_width_button">
@@ -122,6 +128,23 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/amber</item>
+    </style>
+
+    <style name="section_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/super_extra_dark_gray</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="default_text_view">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 

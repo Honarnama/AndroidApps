@@ -5,6 +5,7 @@
             android:background="#ffffff"
             android:fadeScrollbars="false"
             android:scrollbarThumbVertical="@drawable/custom_scrollbar"
+            android:layoutDirection="rtl"
         >
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -12,73 +13,86 @@
                     android:background="@color/white"
             >
 
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/store_banner_container"
+                >
+            <com.parse.ImageSelector
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/store_banner_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/party_flags"
+                    app:riv_corner_radius="0dp"
+                    app:riv_border_width="0dp"
+                    app:riv_oval="false"
+                    app:outputX="640"
+                    app:outputY="640"
+                    app:riv_border_color="@color/light_gray"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    app:removable="true"
+                    app:imageSelectorIndex="1"
+                    />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:paddingRight="10dp"
+                      android:paddingLeft="10dp"
+                      android:paddingBottom="5dp"
+                      android:paddingTop="5dp"
+                      android:background="@drawable/label"
+                      android:textColor="@color/white"
+                      android:text="تغییر بنر فروشگاه"
+                      android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
 
-        <!--
-
-                <com.parse.ImageSelector
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/store_banner_image_view"
-                        android:src="@drawable/camera"
-                        android:layout_width="@dimen/banner_size"
-                        android:layout_height="@dimen/banner_size"
-                        android:layout_centerHorizontal="true"
-                        android:scaleType="centerCrop"
-                        app:riv_corner_radius="0dip"
-                        app:riv_border_width="0dip"
-                        app:riv_border_color="@color/dark_gray"
-                        app:riv_oval="true"
-                        app:removable="false"
-                        app:outputX="640"
-                        app:outputY="640"
-                        android:layout_alignParentTop="true"
-                        />
-                        -->
-
-        <com.parse.ImageSelector
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/store_banner_image_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/party_flags"
-                app:riv_corner_radius="0dp"
-                app:riv_border_width="0dp"
-                app:riv_oval="false"
-                app:removable="false"
-                app:outputX="640"
-                app:outputY="640"
-                app:riv_border_color="@color/light_gray"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                />
-
-
-        <com.parse.ImageSelector
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/store_logo_image_view"
-                android:src="@drawable/default_logo_hand"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_below="@id/store_banner_image_view"
-                android:layout_centerHorizontal="true"
-                android:scaleType="fitCenter"
-                app:riv_corner_radius="20dip"
-                app:riv_border_width="4dip"
-                app:riv_border_color="@color/white"
-                app:riv_oval="true"
-                app:removable="false"
-                app:outputX="480"
-                app:outputY="480"
-                android:layout_marginTop="-40dp"
-                />
-        <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:hint=" نام فروشگاه "
-                  android:layout_below="@id/store_logo_image_view"
-                  android:layout_marginTop="10dp"
-                  android:id="@+id/store_name_edit_text"
-                  android:gravity="right"
-                  android:textSize="16sp"
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/store_logo_container"
+                        android:layout_below="@id/store_banner_container"
+                        android:layout_marginTop="-50dp"
+                >
+            <com.parse.ImageSelector
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/store_logo_image_view"
+                    android:src="@drawable/default_logo_hand"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="fitCenter"
+                    app:riv_corner_radius="20dip"
+                    app:riv_border_width="4dip"
+                    app:riv_border_color="@color/white"
+                    app:riv_oval="true"
+                    app:outputX="480"
+                    app:outputY="480"
+                    android:scaleX="1"
+                    android:scaleY="1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    app:removable="true"
+                    app:imageSelectorIndex="2"
+                    />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:paddingRight="10dp"
+                      android:paddingLeft="10dp"
+                      android:paddingBottom="5dp"
+                      android:paddingTop="5dp"
+                      android:background="@drawable/label"
+                      android:textColor="@color/white"
+                      android:text="تغییر لوگو"
+                      android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
+        <EditText
+                android:hint="نام فروشگاه"
+                android:layout_below="@id/store_logo_container"
+                android:layout_marginTop="10dp"
+                android:id="@+id/store_name_edit_text"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
                 />
 
         <EditText
@@ -87,21 +101,61 @@
                 android:minLines="6"
                 android:gravity="top|right"
                 android:maxLines="10"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_width="fill_parent"
                 android:scrollbars="vertical"
                 android:layout_below="@id/store_name_edit_text"
-                android:id="@+id/store_policy_edit_text"
-                android:hint=" قوانین فروشگاه شما "
+                android:id="@+id/store_description_edit_text"
+                android:hint="توضیحات "
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/button_border"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
                 />
+
+        <TextView style="@style/section_title"
+                  android:text="اطلاعات تماس"
+                  android:layout_below="@id/store_description_edit_text"
+                  android:layout_marginTop="20dp"
+                  android:id="@+id/store_contact_title"
+                />
+
+        <EditText
+                android:hint="تلفن ثابت"
+                android:layout_below="@id/store_contact_title"
+                android:layout_marginTop="10dp"
+                android:id="@+id/store_phone_number"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                />
+
+        <EditText
+                android:hint="@string/mobile_number_hint"
+                android:layout_below="@id/store_phone_number"
+                android:layout_marginTop="10dp"
+                android:id="@+id/store_cell_number"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                />
+
+
         <Button
                 android:id="@+id/register_store_button"
-                android:text=" ثبت "
-                android:layout_below="@id/store_policy_edit_text"
+                android:text="اعمال تغییرات"
+                android:layout_below="@id/store_cell_number"
                 android:layout_marginTop="10dp"
                 style="@style/sell_full_width_button"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
                 />
+
+
     </RelativeLayout>
 </ScrollView>

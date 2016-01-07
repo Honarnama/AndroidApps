@@ -68,6 +68,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     private static boolean announced = false;
 
+    public boolean mIsDeleted;
+
 
     public boolean getImageIsLoaded() {
         return mImageIsLoaded;
@@ -146,7 +148,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 
         String[] imageSourceProviders;
-        if (mIncludeRemoveImage && (mFinalImageUri != null)) {
+        if (mIncludeRemoveImage && (mFinalImageUri != null || !isDeleted())) {
             imageSourceProviders = new String[3];
             imageSourceProviders[2] = mContext.getString(R.string.image_selector_option_text_remove);
         } else {
@@ -204,6 +206,11 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             setImageDrawable(mDefaultDrawable);
         }
         mChanged = false;
+        mIsDeleted = true;
+    }
+
+    public boolean isDeleted() {
+        return mIsDeleted;
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -228,6 +235,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 (mOnImageSelectedListener.onImageSelected(selectedImage, cropped))) {
             mFinalImageUri = selectedImage;
             mChanged = true;
+            mIsDeleted = false;
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Image is set (through imageSelected)");
             }
@@ -484,6 +492,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     }
                 }
                 mChanged = false;
+                mIsDeleted = false;
+
                 if (BuildConfig.DEBUG) {
                     Log.d(LOG_TAG, "Image is loaded");
                 }
@@ -491,6 +501,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             }
         }, Task.UI_THREAD_EXECUTOR);
     }
+
 
     /**
      * Kick off downloading of remote image. When the download is finished, the image data will be
@@ -504,6 +515,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void loadInBackground(final ParseFile parseFile, final GetDataCallback completionCallback) {
         ParseTaskUtils.callbackOnMainThreadAsync(loadInBackground(parseFile), completionCallback, true);
     }
+
 
     public boolean isChanged() {
         return mChanged;
