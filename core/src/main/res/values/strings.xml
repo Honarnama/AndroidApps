@@ -154,12 +154,17 @@
     <string name="error_name_not_set">فیلد نام نمی‌تواند خالی باشد.</string>
     <string name="activation_link_sent">لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد.</string>
     <string name="verification_email_sent">
-        هنرمند یا هنردوست عزیز، لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد. در صورت عدم فعال‌سازی حساب در طول ۲۴ ساعت آتی، حساب شما به صورت خودکار حذف خواهد شد.
+        هنرمند یا هنردوست عزیز، لینک فعال‌سازی حساب به آدرس ایمیلتان ارسال شد. در صورت عدم فعال‌سازی
+        حساب در طول ۲۴ ساعت آتی، حساب شما به صورت خودکار حذف خواهد شد.
     </string>
     <string name="telegram_activation_timeout_message">هنرمند یا هنردوست عزیز، در صورتی که حساب خود
         را در طول ۲۴ ساعت آتی فعال نکنید، حساب شما به صورت خودکار خذف خواهد شد.
     </string>
     <string name="alter_info">تغییر اطلاعات</string>
     <string name="message_altering_profile_Failed">خطایی در زمان تغییر اطلاعات رخ داد.</string>
+
+
+    <string name="select_province"> انتخاب استان </string>
+    <string name="select_city"> انتخاب شهر </string>
 
 </resources>

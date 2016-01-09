@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
-public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener {
+public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -422,4 +423,13 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

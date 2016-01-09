@@ -94,6 +94,27 @@
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
                 />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/provinces_container"
+                      android:orientation="horizontal"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_below="@id/store_name_edit_text"
+                >
+            <TextView style="@style/default_text_view"
+                      android:text="استان: "
+                      android:layout_centerVertical="true"
+                      android:id="@+id/provinces_text_view"
+
+                    />
+            <Spinner
+                    android:id="@+id/provinces_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/select_province"
+                    />
+        </LinearLayout>
 
         <EditText
                 android:inputType="textMultiLine"
@@ -104,7 +125,7 @@
                 android:layout_height="100dp"
                 android:layout_width="fill_parent"
                 android:scrollbars="vertical"
-                android:layout_below="@id/store_name_edit_text"
+                android:layout_below="@id/provinces_container"
                 android:id="@+id/store_description_edit_text"
                 android:hint="توضیحات "
                 android:layout_marginTop="10dp"
