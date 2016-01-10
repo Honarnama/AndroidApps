@@ -32,7 +32,7 @@ public class CacheData {
     SharedPreferences mSharedPreferences;
     Context mContext;
 
-    public Task<Void> startSyncing(Context context) {
+    public Task<Void> startSyncing(final Context context) {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -43,13 +43,15 @@ public class CacheData {
 
         final ProgressDialog receivingDataProgressDialog = new ProgressDialog(mContext);
         receivingDataProgressDialog.setCancelable(false);
-        receivingDataProgressDialog.setMessage(mContext.getResources().getString(R.string.receiving_data));
+        receivingDataProgressDialog.setMessage(mContext.getResources().getString(R.string.syncing_data));
         receivingDataProgressDialog.show();
+
 
         cacheCategories().continueWithTask(new Continuation<Void, Task<Void>>() {
             @Override
             public Task<Void> then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
+                    Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for categories failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
@@ -57,8 +59,26 @@ public class CacheData {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for categories failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
                     }
+                    throw new RuntimeException("Syncing data failed");
+                } else {
+                    return cacheProvinces().continueWith(new Continuation<Void, Void>() {
+                        @Override
+                        public Void then(Task<Void> task) throws Exception {
+                            if (task.isFaulted()) {
+                                Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
+                                if (BuildConfig.DEBUG) {
+                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for provinces failed. Code: " + task.getError() +
+                                            "//" + task.getError().getMessage());
+                                } else {
+                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for provinces failed. Code: " + task.getError() +
+                                            "//" + task.getError().getMessage());
+                                }
+                                throw new RuntimeException("Syncing data failed");
+                            }
+                            return null;
+                        }
+                    });
                 }
-                return cacheProvinces();
             }
         }).continueWith(new Continuation<Void, Object>() {
             @Override
@@ -67,6 +87,7 @@ public class CacheData {
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 if (task.isFaulted()) {
                     editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
+                    Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
                 } else {
                     editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, true);
                 }
@@ -100,9 +121,9 @@ public class CacheData {
                     tcs.setResult(objects);
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding remote data for "+parseQuery.getClassName()+" failed. Code: "+e.getCode() +" // "+ e.getMessage());
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding remote data for " + parseQuery.getClassName() + " failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding remote data for "+parseQuery.getClassName()+" failed.");
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding remote data for " + parseQuery.getClassName() + " failed.");
                     }
                     tcs.setError(e);
                 }
@@ -123,7 +144,7 @@ public class CacheData {
                                 public void done(ParseException e) {
                                     if (e != null) {
                                         if (BuildConfig.DEBUG) {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCategoryAsync failed. Code: "+e.getCode() +" // "+ e.getMessage());
+                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCategoryAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching category failed.");
                                         }
@@ -167,7 +188,7 @@ public class CacheData {
                                         tcs.setResult(null);
                                     } else {
                                         if (BuildConfig.DEBUG) {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheProvincesAsync failed. Code: "+e.getCode() +" // "+ e.getMessage());
+                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheProvincesAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching provinces failed.");
                                         }
