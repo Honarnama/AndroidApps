@@ -43,7 +43,9 @@ public class HonarnamaBaseApp extends Application {
     public static final int GENDER_CODE_MAN = 1;
     public static final int GENDER_CODE_NOT_SAID = 2;
 
-    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
+//    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
+//    public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
+    public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
 
     private static HonarnamaBaseApp singleton;

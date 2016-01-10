@@ -10,6 +10,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.model.CacheData;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -31,6 +32,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
@@ -131,13 +133,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         processIntent(getIntent());
 
         //
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+//        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+
             if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
                 return;
             }
-            Category.cacheArtCategories(this,sharedPref);
+            new CacheData().startSyncing(ControlPanelActivity.this);
         }
     }
 

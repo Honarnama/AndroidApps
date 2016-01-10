@@ -70,9 +70,9 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
 
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
             logD(null, "get categories list from LocalDatastore in buildCategoriesHierarchyHashMap");
             parseQuery.fromLocalDatastore();
         } else {
@@ -84,28 +84,28 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         }
         parseQuery.findInBackground(new FindCallback<Category>() {
             public void done(final List<Category> artCategories, ParseException e) {
-                if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+                if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
                     receivingDataProgressDialog.dismiss();
                 }
                 if (e == null) {
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
-                        ParseObject.unpinAllInBackground(Category.OBJECT_NAME, artCategories, new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                ParseObject.pinAllInBackground(Category.OBJECT_NAME, artCategories, new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                SharedPreferences.Editor editor = sharedPref.edit();
-                                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
-                                                editor.commit();
-                                            }
-                                        }
-                                );
-                            }
-                        });
+                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+//                        ParseObject.unpinAllInBackground(Category.OBJECT_NAME, artCategories, new DeleteCallback() {
+//                            @Override
+//                            public void done(ParseException e) {
+//                                ParseObject.pinAllInBackground(Category.OBJECT_NAME, artCategories, new SaveCallback() {
+//                                            @Override
+//                                            public void done(ParseException e) {
+//                                                SharedPreferences.Editor editor = sharedPref.edit();
+//                                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
+//                                                editor.commit();
+//                                            }
+//                                        }
+//                                );
+//                            }
+//                        });
                     }
 
-                    Toast.makeText(ChooseCategoryActivity.this, artCategories.size()+"", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChooseCategoryActivity.this, artCategories.size() + "", Toast.LENGTH_SHORT).show();
 
                     for (int i = 0; i < artCategories.size(); i++) {
 
