@@ -3,11 +3,10 @@ package net.honarnama;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.Category;
-import net.honarnama.core.model.Province;
+import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 
 import android.app.Application;
@@ -43,8 +42,8 @@ public class HonarnamaBaseApp extends Application {
     public static final int GENDER_CODE_MAN = 1;
     public static final int GENDER_CODE_NOT_SAID = 2;
 
-//    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
-//    public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
+    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
+    public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
     public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
 
@@ -68,7 +67,7 @@ public class HonarnamaBaseApp extends Application {
         Parse.enableLocalDatastore(this);
         ParseObject.registerSubclass(Category.class);
         ParseObject.registerSubclass(Store.class);
-        ParseObject.registerSubclass(Province.class);
+        ParseObject.registerSubclass(Provinces.class);
 
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 

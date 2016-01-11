@@ -46,11 +46,15 @@ public class CacheData {
         receivingDataProgressDialog.setMessage(mContext.getResources().getString(R.string.syncing_data));
         receivingDataProgressDialog.show();
 
+        final SharedPreferences.Editor editor = mSharedPreferences.edit();
 
         cacheCategories().continueWithTask(new Continuation<Void, Task<Void>>() {
             @Override
             public Task<Void> then(Task<Void> task) throws Exception {
+
                 if (task.isFaulted()) {
+                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false);
+//                    editor.commit();
                     Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for categories failed. Code: " + task.getError() +
@@ -61,10 +65,16 @@ public class CacheData {
                     }
                     throw new RuntimeException("Syncing data failed");
                 } else {
+
+                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
+//                    editor.commit();
+
                     return cacheProvinces().continueWith(new Continuation<Void, Void>() {
                         @Override
                         public Void then(Task<Void> task) throws Exception {
+
                             if (task.isFaulted()) {
+                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
                                 Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
                                 if (BuildConfig.DEBUG) {
                                     Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for provinces failed. Code: " + task.getError() +
@@ -75,6 +85,10 @@ public class CacheData {
                                 }
                                 throw new RuntimeException("Syncing data failed");
                             }
+                            else {
+                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
+                            }
+//                            editor.commit();
                             return null;
                         }
                     });
@@ -84,7 +98,6 @@ public class CacheData {
             @Override
             public Object then(Task<Void> task) throws Exception {
                 receivingDataProgressDialog.dismiss();
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
                 if (task.isFaulted()) {
                     editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
                     Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
@@ -164,7 +177,7 @@ public class CacheData {
     }
 
     public Task<Void> cacheProvinces() {
-        ParseQuery<Province> parseQuery = ParseQuery.getQuery(Province.class);
+        ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
         return findAsync(parseQuery).onSuccessTask(new Continuation<List<ParseObject>, Task<Void>>() {
             @Override
             public Task<Void> then(Task<List<ParseObject>> task) throws Exception {
@@ -177,11 +190,11 @@ public class CacheData {
     public Task<Void> recacheProvincesAsync(final List<ParseObject> categories) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
-        ParseObject.unpinAllInBackground(Province.OBJECT_NAME, new DeleteCallback() {
+        ParseObject.unpinAllInBackground(Provinces.OBJECT_NAME, new DeleteCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    ParseObject.pinAllInBackground(Province.OBJECT_NAME, categories, new SaveCallback() {
+                    ParseObject.pinAllInBackground(Provinces.OBJECT_NAME, categories, new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {

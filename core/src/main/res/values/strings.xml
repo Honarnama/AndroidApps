@@ -166,5 +166,8 @@
 
     <string name="select_province"> انتخاب استان </string>
     <string name="select_city"> انتخاب شهر </string>
+    <string name="getting_store_info_failed">خطا در دریافت اطلاعات فروشگاه. لطفا اتصال اینترنت خود
+        را بررسی کنید.
+    </string>
 
 </resources>

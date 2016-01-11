@@ -4,12 +4,14 @@ import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -33,10 +35,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
+import bolts.Continuation;
+import bolts.Task;
+import bolts.TaskCompletionSource;
 
 public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -47,9 +56,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private Button mRegisterStoreButton;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
+    private Spinner mProvincesSpinner;
+
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileLogo;
     ParseFile mParseFileBanner;
+
 
     public static StoreInfoFragment mStoreInfoFragment;
 
@@ -82,6 +94,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.store_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.store_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.store_cell_number);
+        mProvincesSpinner = (Spinner) rootView.findViewById(R.id.provinces_spinner);
+        mProvincesSpinner.setOnItemSelectedListener(this);
+
 
         mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
         mLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
@@ -374,20 +389,48 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     private void setStoredStoreInfo() {
+
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
-        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
-        query.fromLocalDatastore();
-        query.getFirstInBackground(new GetCallback<Store>() {
-            @Override
-            public void done(Store store, ParseException e) {
-                progressDialog.dismiss();
-                if (e == null) {
+        Provinces provinces = new Provinces();
 
+        provinces.getProvinces(getActivity()).continueWithTask(new Continuation<HashMap<String, String>, Task<Store>>() {
+            @Override
+            public Task<Store> then(Task<HashMap<String, String>> task) throws Exception {
+                if (task.isFaulted()) {
+                    Toast.makeText(getActivity(), "Something went wrong while getting provinces list!", Toast.LENGTH_LONG).show();
+//                    throw task.getError();
+
+                } else {
+                    Toast.makeText(getActivity(), task.getResult() + "", Toast.LENGTH_LONG).show();
+
+                }
+                return getUserStoreAsync();
+            }
+        }).continueWith(new Continuation<Store, Object>() {
+            @Override
+            public Object then(Task<Store> task) throws Exception {
+                progressDialog.dismiss();
+
+                if (task.isFaulted()) {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Error Getting Store Info." +
+                                        "//" + task.getError().getMessage(), task.getError());
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. // " + task.getError().getMessage());
+                    }
+                    Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed), Toast.LENGTH_LONG).show();
+
+                } else {
+                    Store store = task.getResult();
+                    if(store == null)
+                    {
+                        return null;
+                    }
                     mNameEditText.setText(store.getName());
                     mDescriptionEditText.setText(store.getDescription());
                     mPhoneNumberEditText.setText(store.getPhoneNumber());
@@ -399,15 +442,40 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                         }
                     });
-
-
                     mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
                         @Override
                         public void done(byte[] data, ParseException e) {
 
                         }
                     });
+
+                }
+                return null;
+            }
+        });
+
+
+    }
+
+    public Task<Store> getUserStoreAsync() {
+        final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
+        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+        query.fromLocalDatastore();
+        query.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(Store store, ParseException e) {
+                if (e == null) {
+                    tcs.setResult(store);
+
                 } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                       tcs.setResult(null);
+                    }
+                    else
+                    {
+                        tcs.setError(e);
+                    }
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error Getting Store Info.  Error Code: " + e.getCode() +
@@ -420,6 +488,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
             }
         });
+        return tcs.getTask();
     }
 
 
