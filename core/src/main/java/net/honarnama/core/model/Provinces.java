@@ -10,11 +10,9 @@ import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.base.R;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -22,6 +20,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -35,8 +34,9 @@ public class Provinces extends ParseObject {
 
     public static String OBJECT_NAME = "Provinces";
     public static String NAME = "name";
+    public static String ORDER = "order";
 
-    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    public TreeMap<Number, HashMap<String, String>> mProvincesHashMap = new TreeMap<Number, HashMap<String, String>>();
     public Context mContext;
 //    ProgressDialog mReceivingDataProgressDialog;
 
@@ -48,7 +48,11 @@ public class Provinces extends ParseObject {
         return getString(NAME);
     }
 
-    public Task<HashMap<String, String>> getProvinces(Context context) {
+    public Number getOrder() {
+        return getNumber(ORDER);
+    }
+
+    public Task<TreeMap<Number, HashMap<String, String>>> getProvinces(Context context) {
 
         mContext = context;
 //
@@ -56,7 +60,7 @@ public class Provinces extends ParseObject {
 //        mReceivingDataProgressDialog.setCancelable(false);
 //        mReceivingDataProgressDialog.setMessage(mContext.getString(R.string.receiving_data));
 
-        final TaskCompletionSource<HashMap<String, String>> tcs = new TaskCompletionSource<>();
+        final TaskCompletionSource<TreeMap<Number, HashMap<String, String>>> tcs = new TaskCompletionSource<>();
 
         findProvincesAsync().continueWith(new Continuation<List<Provinces>, Object>() {
             @Override
@@ -69,7 +73,9 @@ public class Provinces extends ParseObject {
                     for (int i = 0; i < provinces.size(); i++) {
 
                         Provinces province = provinces.get(i);
-                        mProvincesHashMap.put(province.getObjectId(), province.getName());
+                        HashMap<String, String> tempMap = new HashMap<String, String>();
+                        tempMap.put(province.getObjectId(), province.getName());
+                        mProvincesHashMap.put(province.getOrder(), tempMap);
                     }
                     tcs.setResult(mProvincesHashMap);
                 }
@@ -86,7 +92,7 @@ public class Provinces extends ParseObject {
         final TaskCompletionSource<List<Provinces>> tcs = new TaskCompletionSource<>();
 
         ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
-        parseQuery.orderByAscending(Provinces.NAME);
+        parseQuery.orderByAscending(Provinces.ORDER);
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {

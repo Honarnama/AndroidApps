@@ -4,15 +4,16 @@ import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.MapUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
@@ -23,6 +24,7 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -35,19 +37,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.TreeMap;
 
 import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener  {
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -56,12 +59,18 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private Button mRegisterStoreButton;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
-    private Spinner mProvincesSpinner;
+
+    private EditText mProvinceEditEext;
+    private ListView mProvincesListView;
+    private ProvincesAdapter mProvincesAdapter;
+    public TreeMap<Number, HashMap<String, String>> mProvincesHashMap = new TreeMap<Number, HashMap<String, String>>();
 
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileLogo;
     ParseFile mParseFileBanner;
 
+    public String mSelectedProvinceId;
+    public String mSelectedProvinceName;
 
     public static StoreInfoFragment mStoreInfoFragment;
 
@@ -94,9 +103,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.store_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.store_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.store_cell_number);
-        mProvincesSpinner = (Spinner) rootView.findViewById(R.id.provinces_spinner);
-        mProvincesSpinner.setOnItemSelectedListener(this);
-
+        mProvinceEditEext = (EditText) rootView.findViewById(R.id.store_province_edit_text);
+        mProvinceEditEext.setOnClickListener(this);
+        mProvinceEditEext.setKeyListener(null);
 
         mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
         mLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
@@ -165,6 +174,34 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     uploadStoreLogo();
                 }
                 break;
+            case R.id.store_province_edit_text:
+
+                final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
+                provinceDialog.setContentView(R.layout.activity_choose_province);
+                mProvincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
+                mProvincesAdapter = new ProvincesAdapter(getActivity(), mProvincesHashMap);
+                mProvincesListView.setAdapter(mProvincesAdapter);
+                mProvincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        HashMap<String, String> selectedProvince = mProvincesHashMap.get(position + 1);
+                        for (String key : selectedProvince.keySet()) {
+                            mSelectedProvinceId = key;
+                        }
+                        for (String value : selectedProvince.values()) {
+                            mSelectedProvinceName = value;
+                            mProvinceEditEext.setText(mSelectedProvinceName);
+                        }
+                        Toast.makeText(getActivity(), mSelectedProvinceName, Toast.LENGTH_LONG).show();
+                        provinceDialog.dismiss();
+                    }
+                });
+
+                provinceDialog.setCancelable(true);
+                provinceDialog.setTitle("انتخاب استان");
+                provinceDialog.show();
+                break;
+
         }
     }
 
@@ -397,16 +434,15 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         Provinces provinces = new Provinces();
 
-        provinces.getProvinces(getActivity()).continueWithTask(new Continuation<HashMap<String, String>, Task<Store>>() {
+        provinces.getProvinces(getActivity()).continueWithTask(new Continuation<TreeMap<Number, HashMap<String, String>>, Task<Store>>() {
             @Override
-            public Task<Store> then(Task<HashMap<String, String>> task) throws Exception {
+            public Task<Store> then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     Toast.makeText(getActivity(), "Something went wrong while getting provinces list!", Toast.LENGTH_LONG).show();
 //                    throw task.getError();
 
                 } else {
-                    Toast.makeText(getActivity(), task.getResult() + "", Toast.LENGTH_LONG).show();
-
+                    mProvincesHashMap = task.getResult();
                 }
                 return getUserStoreAsync();
             }
@@ -427,8 +463,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 } else {
                     Store store = task.getResult();
-                    if(store == null)
-                    {
+                    if (store == null) {
                         return null;
                     }
                     mNameEditText.setText(store.getName());
@@ -470,10 +505,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                       tcs.setResult(null);
-                    }
-                    else
-                    {
+                        tcs.setResult(null);
+                    } else {
                         tcs.setError(e);
                     }
                     if (BuildConfig.DEBUG) {
@@ -492,13 +525,4 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }

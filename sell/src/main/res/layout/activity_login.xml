@@ -78,7 +78,7 @@
                     android:id="@+id/login_form_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_gray"
+                    android:background="@color/gray_super_extra_light"
                     android:layout_marginRight="30dp"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="15dp"
@@ -110,6 +110,7 @@
                         android:layout_below="@id/login_password_edit_text"
                         android:layout_marginTop="10dp"
                         style="@style/sell_full_width_button"
+                        android:background="@color/gray_button_back"
                         />
             </RelativeLayout>
             <TextView

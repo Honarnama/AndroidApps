@@ -16,8 +16,8 @@
     </style>
 
     <style name="ActionBarThemeOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/extra_dark_gray</item>
-        <item name="android:actionMenuTextColor">@color/extra_dark_gray</item>
+        <item name="android:textColorPrimary">@color/gray_extra_dark</item>
+        <item name="android:actionMenuTextColor">@color/gray_extra_dark</item>
 
     </style>
 

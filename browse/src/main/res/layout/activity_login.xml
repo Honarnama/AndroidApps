@@ -20,7 +20,7 @@
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_gravity="center"
                       android:text="@string/nav_title_login"
-                      style="@style/DialogActivityTitle"
+                      style="@style/DialogTitle"
                     />
         </FrameLayout>
 
@@ -70,7 +70,7 @@
                     android:hint="@string/username_hint"
                     android:layout_alignParentTop="true"
                     style="@style/edit_text_default"
-                    android:backgroundTint="@color/extra_dark_gray"
+                    android:backgroundTint="@color/gray_extra_dark"
                     />
             <EditText
                     android:id="@+id/login_password_edit_text"
@@ -78,7 +78,7 @@
                     android:hint="@string/password_hint"
                     android:layout_below="@id/login_username_edit_text"
                     style="@style/edit_text_default"
-                    android:backgroundTint="@color/extra_dark_gray"
+                    android:backgroundTint="@color/gray_extra_dark"
                     />
 
             <Button style="@style/full_width_button_style_browse"
@@ -118,7 +118,7 @@
                       android:gravity="right"
                       android:layout_alignParentRight="true"
                       android:id="@+id/still_no_account"
-                      android:textColor="@color/super_extra_dark_gray"
+                      android:textColor="@color/gray_super_extra_dark"
                       android:textSize="14sp"
                     />
             <TextView

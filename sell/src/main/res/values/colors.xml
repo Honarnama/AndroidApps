@@ -38,7 +38,7 @@
     <color name="notification_text_color">#C0CA33</color>
     <color name="arghavani">#800060</color>
 
-    <color name="button_back">@color/gray</color>
+    <color name="gray_button_back">@color/gray</color>
     <color name="text_color">#616161</color>
 
     <!-- OVERWRITE THESE COLORS FOR A LIGHT THEME -->
