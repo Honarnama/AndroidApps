@@ -16,6 +16,8 @@ public class Store extends ParseObject {
         super();
     }
 
+    public static String OBJECT_NAME = "Store";
+
     public static String NAME = "name";
     public static String DESCRIPTION = "description";
     public static String PHONE_NUMBER = "phoneNumber";

@@ -40,10 +40,11 @@ public class City extends ParseObject {
 
     public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
 
+    public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
+
 
     public TreeMap<Number, HashMap<String, String>> mCityOrderedTreehMap = new TreeMap<Number, HashMap<String, String>>();
     public Context mContext;
-    public String mParentId;
 
     public City() {
         super();
@@ -92,7 +93,9 @@ public class City extends ParseObject {
         final TaskCompletionSource<List<City>> tcs = new TaskCompletionSource<>();
 
         ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
+        parseQuery.whereEqualTo(PARENT_ID, parentId);
         parseQuery.orderByAscending(ORDER);
+
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
@@ -109,7 +112,7 @@ public class City extends ParseObject {
 //            mReceivingDataProgressDialog.show();
         }
 
-        parseQuery.whereEqualTo(PARENT_ID, parentId);
+
 
         parseQuery.findInBackground(new FindCallback<City>() {
             @Override
@@ -118,27 +121,6 @@ public class City extends ParseObject {
 //                    if (mReceivingDataProgressDialog.isShowing()) {
 //                        mReceivingDataProgressDialog.dismiss();
 //                    }
-
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
-                        ParseObject.unpinAllInBackground(City.OBJECT_NAME, cityList, new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    ParseObject.pinAllInBackground(City.OBJECT_NAME, cityList, new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
-                                                        editor.commit();
-                                                    }
-                                                }
-                                            }
-                                    );
-                                }
-                            }
-                        });
-                    }
                     tcs.setResult(cityList);
                 } else {
                     if (BuildConfig.DEBUG) {

@@ -27,6 +27,7 @@ import bolts.TaskCompletionSource;
 /**
  * Created by elnaz on 1/9/16.
  */
+
 public class CacheData {
 
     SharedPreferences mSharedPreferences;
@@ -63,7 +64,7 @@ public class CacheData {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for categories failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
                     }
-                    throw new RuntimeException("Syncing data failed");
+                    throw new RuntimeException("Syncing data for categories failed");
                 } else {
 
                     editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
@@ -83,9 +84,8 @@ public class CacheData {
                                     Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for provinces failed. Code: " + task.getError() +
                                             "//" + task.getError().getMessage());
                                 }
-                                throw new RuntimeException("Syncing data failed");
-                            }
-                            else {
+                                throw new RuntimeException("Syncing data for provinces failed");
+                            } else {
                                 editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
                             }
 //                            editor.commit();
@@ -93,6 +93,30 @@ public class CacheData {
                         }
                     });
                 }
+            }
+        }).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Void> task) throws Exception {
+                return cacheCity().continueWith(new Continuation<Void, Void>() {
+                    @Override
+                    public Void then(Task<Void> task) throws Exception {
+                        if (task.isFaulted()) {
+                            editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
+                            Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for cities failed. Code: " + task.getError() +
+                                        "//" + task.getError().getMessage());
+                            } else {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for cities failed. Code: " + task.getError() +
+                                        "//" + task.getError().getMessage());
+                            }
+                            throw new RuntimeException("Syncing data for cities failed");
+                        } else {
+                            editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
+                        }
+                        return null;
+                    }
+                });
             }
         }).continueWith(new Continuation<Void, Object>() {
             @Override
@@ -204,6 +228,50 @@ public class CacheData {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheProvincesAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching provinces failed.");
+                                        }
+                                        tcs.setError(e);
+                                    }
+                                }
+                            }
+                    );
+                } else {
+                    tcs.setError(e);
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public Task<Void> cacheCity() {
+        ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
+        parseQuery.setLimit(10000);
+        return findAsync(parseQuery).onSuccessTask(new Continuation<List<ParseObject>, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<List<ParseObject>> task) throws Exception {
+                List<ParseObject> cityList = task.getResult();
+                return recacheCityAsync(cityList);
+            }
+        });
+    }
+
+
+    public Task<Void> recacheCityAsync(final List<ParseObject> cityList) {
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+
+        ParseObject.unpinAllInBackground(City.OBJECT_NAME, new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    ParseObject.pinAllInBackground(City.OBJECT_NAME, cityList, new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        tcs.setResult(null);
+                                    } else {
+                                        if (BuildConfig.DEBUG) {
+                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCityAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
+                                        } else {
+                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching cities failed.");
                                         }
                                         tcs.setError(e);
                                     }

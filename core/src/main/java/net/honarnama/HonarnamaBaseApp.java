@@ -46,6 +46,8 @@ public class HonarnamaBaseApp extends Application {
     public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED = "local_data_store_for_city_synced";
+    public static String PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED = "local_data_store_for_store_synced";
+
 
     public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
