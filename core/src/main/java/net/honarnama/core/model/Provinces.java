@@ -2,6 +2,7 @@ package net.honarnama.core.model;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -35,6 +36,7 @@ public class Provinces extends ParseObject {
     public static String OBJECT_NAME = "Provinces";
     public static String NAME = "name";
     public static String ORDER = "order";
+    public static String OBJECT_ID = "objectId";
 
     public TreeMap<Number, HashMap<String, String>> mProvincesHashMap = new TreeMap<Number, HashMap<String, String>>();
     public Context mContext;

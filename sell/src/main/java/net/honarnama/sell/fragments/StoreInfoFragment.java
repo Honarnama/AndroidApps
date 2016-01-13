@@ -13,7 +13,6 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.MapUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
@@ -38,12 +37,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import bolts.Continuation;
@@ -63,7 +62,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private EditText mProvinceEditEext;
     private ListView mProvincesListView;
     private ProvincesAdapter mProvincesAdapter;
-    public TreeMap<Number, HashMap<String, String>> mProvincesHashMap = new TreeMap<Number, HashMap<String, String>>();
+    public TreeMap<Number, HashMap<String, String>> mProvincesOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
+    public HashMap<String, String> mProvincesHashMap= new HashMap<String, String>();
 
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileLogo;
@@ -179,12 +179,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
                 provinceDialog.setContentView(R.layout.activity_choose_province);
                 mProvincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-                mProvincesAdapter = new ProvincesAdapter(getActivity(), mProvincesHashMap);
+                mProvincesAdapter = new ProvincesAdapter(getActivity(), mProvincesOrderedTreeMap);
                 mProvincesListView.setAdapter(mProvincesAdapter);
                 mProvincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        HashMap<String, String> selectedProvince = mProvincesHashMap.get(position + 1);
+                        HashMap<String, String> selectedProvince = mProvincesOrderedTreeMap.get(position + 1);
                         for (String key : selectedProvince.keySet()) {
                             mSelectedProvinceId = key;
                         }
@@ -392,6 +392,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
                 storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
                 storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
+                storeObject.setProvinceId(mSelectedProvinceId);
 
                 if (mLogoImageView.isDeleted()) {
                     storeObject.remove(Store.LOGO);
@@ -432,7 +433,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        Provinces provinces = new Provinces();
+        final Provinces provinces = new Provinces();
 
         provinces.getProvinces(getActivity()).continueWithTask(new Continuation<TreeMap<Number, HashMap<String, String>>, Task<Store>>() {
             @Override
@@ -442,7 +443,13 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 //                    throw task.getError();
 
                 } else {
-                    mProvincesHashMap = task.getResult();
+                    mProvincesOrderedTreeMap = task.getResult();
+                    for(HashMap<String, String> provinceMap : mProvincesOrderedTreeMap.values())
+                    {
+                        for(Map.Entry<String,String> provinceSet : provinceMap.entrySet()){
+                            mProvincesHashMap.put(provinceSet.getKey(), provinceSet.getValue());
+                        }
+                    }
                 }
                 return getUserStoreAsync();
             }
@@ -470,6 +477,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     mDescriptionEditText.setText(store.getDescription());
                     mPhoneNumberEditText.setText(store.getPhoneNumber());
                     mCellNumberEditText.setText(store.getCellNumber());
+
+                    mProvinceEditEext.setText(mProvincesHashMap.get(store.getProvinceId()));
 
                     mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
                         @Override

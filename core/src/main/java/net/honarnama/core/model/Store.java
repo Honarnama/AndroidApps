@@ -23,6 +23,8 @@ public class Store extends ParseObject {
     public static String LOGO = "logo";
     public static String BANNER = "banner";
     public static String OWNER = "owner";
+    public static String PROVINCE_ID = "provinceId";
+    public static String CITY_ID = "cityId";
 
 
     public String getName() {
@@ -76,14 +78,25 @@ public class Store extends ParseObject {
         put(BANNER, parseFile);
     }
 
-    public ParseUser getOwner()
-    {
+    public ParseUser getOwner() {
         return getParseUser(OWNER);
     }
 
-    public void setOwner(ParseUser parseUser)
-    {
+    public void setOwner(ParseUser parseUser) {
         put(OWNER, parseUser);
     }
 
+    public String getProvinceId()
+    {
+        return getString(PROVINCE_ID);
+    }
+    public void setProvinceId(String provinceId)
+    {
+        put(PROVINCE_ID, provinceId);
+    }
+
+    public String getCityId()
+    {
+        return getString(CITY_ID);
+    }
 }
