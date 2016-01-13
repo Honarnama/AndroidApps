@@ -99,4 +99,9 @@ public class Store extends ParseObject {
     {
         return getString(CITY_ID);
     }
+
+    public void setCityId(String cityId)
+    {
+        put(CITY_ID, cityId);
+    }
 }

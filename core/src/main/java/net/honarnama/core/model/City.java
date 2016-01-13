@@ -29,20 +29,23 @@ import bolts.TaskCompletionSource;
 /**
  * Created by elnaz on 1/9/16.
  */
-@ParseClassName("Provinces")
-public class Provinces extends ParseObject {
+@ParseClassName("City")
+public class City extends ParseObject {
 
-    public static String OBJECT_NAME = "Provinces";
+    public static String OBJECT_NAME = "City";
     public static String NAME = "name";
     public static String ORDER = "order";
     public static String OBJECT_ID = "objectId";
-    public static String DEFAULT_PROVINCE_ID = "4ADtQvS2KR";
+    public static String PARENT_ID = "parentId";
 
-    public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap = new TreeMap<Number, HashMap<String, String>>();
+    public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
+
+
+    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreehMap = new TreeMap<Number, HashMap<String, String>>();
     public Context mContext;
-//    ProgressDialog mReceivingDataProgressDialog;
+    public String mParentId;
 
-    public Provinces() {
+    public City() {
         super();
     }
 
@@ -54,32 +57,27 @@ public class Provinces extends ParseObject {
         return getNumber(ORDER);
     }
 
-    public Task<TreeMap<Number, HashMap<String, String>>> getOrderedProvinces(Context context) {
+    public Task<TreeMap<Number, HashMap<String, String>>> getOrderedCities(Context context, String parentId) {
 
         mContext = context;
-//
-//        mReceivingDataProgressDialog = new ProgressDialog(mContext);
-//        mReceivingDataProgressDialog.setCancelable(false);
-//        mReceivingDataProgressDialog.setMessage(mContext.getString(R.string.receiving_data));
 
         final TaskCompletionSource<TreeMap<Number, HashMap<String, String>>> tcs = new TaskCompletionSource<>();
 
-        findProvincesAsync().continueWith(new Continuation<List<Provinces>, Object>() {
+        findCitiesAsync(parentId).continueWith(new Continuation<List<City>, Object>() {
             @Override
-            public Object then(Task<List<Provinces>> task) throws Exception {
+            public Object then(Task<List<City>> task) throws Exception {
                 if (task.isFaulted()) {
                     tcs.setError(task.getError());
                 } else {
 
-                    List<Provinces> provinces = task.getResult();
-                    for (int i = 0; i < provinces.size(); i++) {
-
-                        Provinces province = provinces.get(i);
+                    List<City> cities = task.getResult();
+                    for (int i = 0; i < cities.size(); i++) {
+                        City city = cities.get(i);
                         HashMap<String, String> tempMap = new HashMap<String, String>();
-                        tempMap.put(province.getObjectId(), province.getName());
-                        mProvincesTreeMap.put(province.getOrder(), tempMap);
+                        tempMap.put(city.getObjectId(), city.getName());
+                        mCityOrderedTreehMap.put(city.getOrder(), tempMap);
                     }
-                    tcs.setResult(mProvincesTreeMap);
+                    tcs.setResult(mCityOrderedTreehMap);
                 }
 
                 return null;
@@ -90,16 +88,16 @@ public class Provinces extends ParseObject {
     }
 
 
-    public Task<List<Provinces>> findProvincesAsync() {
-        final TaskCompletionSource<List<Provinces>> tcs = new TaskCompletionSource<>();
+    public Task<List<City>> findCitiesAsync(String parentId) {
+        final TaskCompletionSource<List<City>> tcs = new TaskCompletionSource<>();
 
-        ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
-        parseQuery.orderByAscending(Provinces.ORDER);
+        ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
+        parseQuery.orderByAscending(ORDER);
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get provinces list from LocalDatastore");
+                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get city list from LocalDatastore");
             }
             parseQuery.fromLocalDatastore();
         } else {
@@ -111,26 +109,27 @@ public class Provinces extends ParseObject {
 //            mReceivingDataProgressDialog.show();
         }
 
+        parseQuery.whereEqualTo(PARENT_ID, parentId);
 
-        parseQuery.findInBackground(new FindCallback<Provinces>() {
+        parseQuery.findInBackground(new FindCallback<City>() {
             @Override
-            public void done(final List<Provinces> provincesList, ParseException e) {
+            public void done(final List<City> cityList, ParseException e) {
                 if (e == null) {
 //                    if (mReceivingDataProgressDialog.isShowing()) {
 //                        mReceivingDataProgressDialog.dismiss();
 //                    }
 
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
-                        ParseObject.unpinAllInBackground(Provinces.OBJECT_NAME, provincesList, new DeleteCallback() {
+                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
+                        ParseObject.unpinAllInBackground(City.OBJECT_NAME, cityList, new DeleteCallback() {
                             @Override
                             public void done(ParseException e) {
                                 if (e == null) {
-                                    ParseObject.pinAllInBackground(Provinces.OBJECT_NAME, provincesList, new SaveCallback() {
+                                    ParseObject.pinAllInBackground(City.OBJECT_NAME, cityList, new SaveCallback() {
                                                 @Override
                                                 public void done(ParseException e) {
                                                     if (e == null) {
                                                         SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
+                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
                                                         editor.commit();
                                                     }
                                                 }
@@ -140,12 +139,12 @@ public class Provinces extends ParseObject {
                             }
                         });
                     }
-                    tcs.setResult(provincesList);
+                    tcs.setResult(cityList);
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage());
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding provinces failed.");
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding cities failed.");
                     }
                     tcs.setError(e);
                 }

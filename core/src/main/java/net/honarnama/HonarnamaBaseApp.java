@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 
@@ -44,6 +45,8 @@ public class HonarnamaBaseApp extends Application {
 
     public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
+    public static String PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED = "local_data_store_for_city_synced";
+
     public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
 
@@ -68,6 +71,7 @@ public class HonarnamaBaseApp extends Application {
         ParseObject.registerSubclass(Category.class);
         ParseObject.registerSubclass(Store.class);
         ParseObject.registerSubclass(Provinces.class);
+        ParseObject.registerSubclass(City.class);
 
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 

@@ -18,22 +18,22 @@ import java.util.TreeMap;
 /**
  * Created by elnaz on 11/29/15.
  */
-public class ProvincesAdapter extends BaseAdapter {
+public class CityAdapter extends BaseAdapter {
     private final Context mContext;
-    public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap;
-    public List<String> mProvincesNameList = new ArrayList<String>();
-    public List<String> mProvincesIdsList = new ArrayList<String>();
+    public TreeMap<Number, HashMap<String, String>> mCityTreeMap;
+    public List<String> mCityNameList = new ArrayList<String>();
+    public List<String> mCityIdsList = new ArrayList<String>();
     ;
 
-    public ProvincesAdapter(Context context, TreeMap<Number, HashMap<String, String>> provincesTreeMap) {
+    public CityAdapter(Context context, TreeMap<Number, HashMap<String, String>> cityTreeMap) {
         super();
         mContext = context;
-        mProvincesTreeMap = provincesTreeMap;
+        mCityTreeMap = cityTreeMap;
 
-        for (HashMap<String, String> provinceHashMap : mProvincesTreeMap.values()) {
-            for (HashMap.Entry<String, String> province : provinceHashMap.entrySet()) {
-                mProvincesNameList.add(province.getValue());
-                mProvincesIdsList.add(province.getKey());
+        for (HashMap<String, String> cityHashMap : mCityTreeMap.values()) {
+            for (HashMap.Entry<String, String> city : cityHashMap.entrySet()) {
+                mCityNameList.add(city.getValue());
+                mCityIdsList.add(city.getKey());
             }
         }
 
@@ -41,7 +41,7 @@ public class ProvincesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mProvincesTreeMap.size();
+        return mCityTreeMap.size();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ProvincesAdapter extends BaseAdapter {
 
         TextView provinceNameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
 
-        provinceNameTextView.setText(mProvincesNameList.get(position));
+        provinceNameTextView.setText(mCityNameList.get(position));
         return rowView;
     }
 }
