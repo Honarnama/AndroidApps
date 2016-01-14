@@ -107,7 +107,6 @@ public class City extends ParseObject {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(mContext, true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
-                return null;
             }
 //            mReceivingDataProgressDialog.show();
         }

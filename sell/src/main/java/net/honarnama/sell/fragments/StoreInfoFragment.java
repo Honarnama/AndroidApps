@@ -3,6 +3,7 @@ package net.honarnama.sell.fragments;
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
+import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -10,21 +11,18 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
-import net.honarnama.sell.HonarnamaSellApp;
-import net.honarnama.sell.R;
-
-import com.parse.ImageSelector;
-
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
+import net.honarnama.sell.HonarnamaSellApp;
+import net.honarnama.sell.R;
 
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
@@ -52,7 +50,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -190,6 +187,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         switch (view.getId()) {
             case R.id.register_store_button:
                 if (AreFormInputsValid()) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                        return;
+                    }
                     mSendingDataProgressDialog.setCancelable(false);
                     mSendingDataProgressDialog.setMessage(getString(R.string.sending_data));
                     mSendingDataProgressDialog.show();
@@ -238,11 +238,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getOrderedCities(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number,HashMap<String,String>>, Object>() {
+        city.getOrderedCities(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    Toast.makeText(getActivity(), "Something went wrong while getting city list!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.error_getting_city_list + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
@@ -253,7 +253,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     }
 
                     Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                    for(String key : tempSet) {
+                    for (String key : tempSet) {
                         mSelectedCityId = mCityHashMap.get(key);
                         mCityEditEext.setText(mSelectedCityId);
                     }
@@ -284,7 +284,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     mSelectedCityName = value;
                     mCityEditEext.setText(mSelectedCityName);
                 }
-                Toast.makeText(getActivity(), mSelectedCityName, Toast.LENGTH_LONG).show();
                 cityDialog.dismiss();
             }
         });
@@ -324,6 +323,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public void uploadStoreLogo() {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            mSendingDataProgressDialog.dismiss();
             return;
         }
 
@@ -333,7 +333,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             return;
         }
 
-        Toast.makeText(getActivity(), "Uploading logo", Toast.LENGTH_SHORT).show();
         final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
         try {
             mParseFileLogo = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_LOGO_FILE_NAME,
@@ -395,7 +394,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             saveStore();
             return;
         }
-        Toast.makeText(getActivity(), "Uploading banner", Toast.LENGTH_SHORT).show();
         final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
         try {
             mParseFileBanner = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_BANNER_FILE_NAME,
@@ -463,7 +461,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         storeObject = new Store();
                         storeObject.setOwner(HonarnamaUser.getCurrentUser());
                     } else {
-                        Toast.makeText(getActivity(), "خطا در زمان به‌روزرسانی اطلاعات فروشگاه.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.error_updating_store_info + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                     "Error changing Store Info.  Error Code: " + e.getCode() +
@@ -526,60 +524,73 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         final City city = new City();
 
 
-        getUserStoreAsync().continueWithTask(new Continuation<Store, Task<TreeMap<Number, HashMap<String, String>>>>() {
+        getUserStoreAsync().continueWith(new Continuation<Store, Void>() {
             @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Store> task) throws Exception {
+            public Void then(Task<Store> task) throws Exception {
                 if (task.isFaulted()) {
                     if (BuildConfig.DEBUG) {
+                        Log.e("Elnaz", "Injaa");
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error Getting Store Info." +
+                                "Getting Store Task Failed." +
                                         "//" + task.getError().getMessage(), task.getError());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. // " + task.getError().getMessage());
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Store Task Failed. // " + task.getError().getMessage());
                     }
-                    Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.getting_store_info_failed + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
 
                 } else {
                     Store store = task.getResult();
-                    if (store == null) {
-                        return null;
+                    if (store != null) {
+                        mNameEditText.setText(store.getName());
+                        mDescriptionEditText.setText(store.getDescription());
+                        mPhoneNumberEditText.setText(store.getPhoneNumber());
+                        mCellNumberEditText.setText(store.getCellNumber());
+
+                        mSelectedProvinceId = store.getProvinceId();
+                        mSelectedCityId = store.getCityId();
+
+
+                        mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+
+                            }
+                        });
+                        mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+
+                            }
+                        });
                     }
-                    mNameEditText.setText(store.getName());
-                    mDescriptionEditText.setText(store.getDescription());
-                    mPhoneNumberEditText.setText(store.getPhoneNumber());
-                    mCellNumberEditText.setText(store.getCellNumber());
-
-                    mSelectedProvinceId = store.getProvinceId();
-                    mSelectedCityId = store.getCityId();
-
-
-                    mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-
-                        }
-                    });
-                    mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-
-                        }
-                    });
                 }
+
                 if (mSelectedProvinceId == null) {
                     mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
                 }
                 if (mSelectedCityId == null) {
                     mSelectedCityId = City.DEFAULT_CITY_ID;
                 }
+                return null;
+
+            }
+        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, HashMap<String, String>>>>() {
+            @Override
+            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Void> task) throws Exception {
                 return provinces.getOrderedProvinces(getActivity());
             }
-        }).continueWithTask(new Continuation<TreeMap<Number, HashMap<String, String>>, Task<TreeMap<Number, HashMap<String, String>>>>() {
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    Toast.makeText(getActivity(), "Something went wrong while getting provinces list!", Toast.LENGTH_LONG).show();
-//                    throw task.getError();
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Getting Province Task Failed" +
+                                        "//" + task.getError().getMessage(), task.getError());
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Province Task Failed. // " + task.getError().getMessage());
+                    }
+                    Toast.makeText(getActivity(), R.string.error_getting_province_list + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
 
                 } else {
                     mProvincesOrderedTreeMap = task.getResult();
@@ -590,7 +601,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     }
                     mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
                 }
-
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
+            @Override
+            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
                 return city.getOrderedCities(getActivity(), mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
@@ -598,10 +613,16 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 progressDialog.dismiss();
                 if (task.isFaulted()) {
-                    Toast.makeText(getActivity(), "Something went wrong while getting city list!", Toast.LENGTH_LONG).show();
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Getting City List Task Failed." +
+                                        "//" + task.getError().getMessage(), task.getError());
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting City List Task Failed. // " + task.getError().getMessage());
+                    }
+                    Toast.makeText(getActivity(), R.string.error_getting_city_list + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    Toast.makeText(getActivity(), mSelectedProvinceId + "", Toast.LENGTH_LONG).show();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
@@ -613,102 +634,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             }
         });
 
-
-//
-//        //
-//        provinces.getOrderedProvinces(getActivity()).continueWithTask(new Continuation<TreeMap<Number, HashMap<String, String>>, Task<TreeMap<Number, HashMap<String, String>>>>() {
-//            @Override
-//            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-//                if (task.isFaulted()) {
-//                    Toast.makeText(getActivity(), "Something went wrong while getting provinces list!", Toast.LENGTH_LONG).show();
-////                    throw task.getError();
-//
-//                } else {
-//                    mProvincesOrderedTreeMap = task.getResult();
-//                    for (HashMap<String, String> provinceMap : mProvincesOrderedTreeMap.values()) {
-//                        for (Map.Entry<String, String> provinceSet : provinceMap.entrySet()) {
-//                            mProvincesHashMap.put(provinceSet.getKey(), provinceSet.getValue());
-//                        }
-//                    }
-//                }
-//
-//                return city.getOrderedCities(getActivity(), mSelectedProvinceId);
-//            }
-//        }).continueWithTask(new Continuation<TreeMap<Number, HashMap<String, String>>, Task<Store>>() {
-//            @Override
-//            public Task<Store> then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-//                if (task.isFaulted()) {
-//                    Toast.makeText(getActivity(), "Something went wrong while getting city list!", Toast.LENGTH_LONG).show();
-//                } else {
-//                    mCityOrderedTreeMap = task.getResult();
-//                    Toast.makeText(getActivity(), mSelectedProvinceId+"", Toast.LENGTH_LONG).show();
-//                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-//                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-//                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
-//                        }
-//                    }
-//                }
-//                return getUserStoreAsync();
-//            }
-//        }).continueWith(new Continuation<Store, Object>() {
-//            @Override
-//            public Object then(Task<Store> task) throws Exception {
-//                progressDialog.dismiss();
-//
-//                if (task.isFaulted()) {
-//                    if (BuildConfig.DEBUG) {
-//                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-//                                "Error Getting Store Info." +
-//                                        "//" + task.getError().getMessage(), task.getError());
-//                    } else {
-//                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. // " + task.getError().getMessage());
-//                    }
-//                    Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed), Toast.LENGTH_LONG).show();
-//
-//                } else {
-//                    Store store = task.getResult();
-//                    if (store == null) {
-//                        return null;
-//                    }
-//                    mNameEditText.setText(store.getName());
-//                    mDescriptionEditText.setText(store.getDescription());
-//                    mPhoneNumberEditText.setText(store.getPhoneNumber());
-//                    mCellNumberEditText.setText(store.getCellNumber());
-//
-//                    String storeProvinceId = store.getProvinceId();
-//                    if(storeProvinceId == null){
-//                        storeProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-//                    }
-//                    mSelectedProvinceId = storeProvinceId;
-//
-//                    String cityId = store.getCityId();
-//                    if(cityId == null){
-//                        cityId = City.DEFAULT_CITY_ID;
-//                    }
-//                    mSelectedCityId = cityId;
-//
-//                    mProvinceEditEext.setText(mProvincesHashMap.get(storeProvinceId));
-//                    mCityEditEext.setText(mCityHashMap.get(cityId));
-//
-//                    mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//
-//                        }
-//                    });
-//                    mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//
-//                        }
-//                    });
-//
-//                }
-//                return null;
-//            }
-//        });
-//
-//    }
     }
 
     public Task<Store> getUserStoreAsync() {
@@ -727,10 +652,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
             if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
-                return null;
+                return tcs.getTask();
             }
         }
-
 
         query.getFirstInBackground(new GetCallback<Store>() {
             @Override
@@ -739,7 +663,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     tcs.setResult(store);
                     if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
-                        final List<Store> tempStoreList = new ArrayList<Store>(){{add(store);}};
+                        final List<Store> tempStoreList = new ArrayList<Store>() {{
+                            add(store);
+                        }};
 
                         ParseObject.unpinAllInBackground(Store.OBJECT_NAME, tempStoreList, new DeleteCallback() {
                             @Override

@@ -39,6 +39,12 @@
     </string>
     <string name="message_profile_changed_successfully">اطلاعات شما با موفقیت تغییر پیدا کرد.
     </string>
+    <string name="error_updating_store_info">خطا در به‌روزرسانی اطلاعات فروشگاه. لطفا اینترنت دستگاه
+        خود را بررسی کنید.
+    </string>
+    <string name="error_getting_city_list">خطا در نمایش فهرست شهرها. لطفا اینترنت دستگاه خود را
+        بررسی کنید.
+    </string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

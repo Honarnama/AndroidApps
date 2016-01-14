@@ -30,10 +30,12 @@ public class CityAdapter extends BaseAdapter {
         mContext = context;
         mCityTreeMap = cityTreeMap;
 
-        for (HashMap<String, String> cityHashMap : mCityTreeMap.values()) {
-            for (HashMap.Entry<String, String> city : cityHashMap.entrySet()) {
-                mCityNameList.add(city.getValue());
-                mCityIdsList.add(city.getKey());
+        if (mCityTreeMap != null) {
+            for (HashMap<String, String> cityHashMap : mCityTreeMap.values()) {
+                for (HashMap.Entry<String, String> city : cityHashMap.entrySet()) {
+                    mCityNameList.add(city.getValue());
+                    mCityIdsList.add(city.getKey());
+                }
             }
         }
 
@@ -41,7 +43,10 @@ public class CityAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mCityTreeMap.size();
+        if (mCityTreeMap != null) {
+            return mCityTreeMap.size();
+        }
+        return 0;
     }
 
     @Override

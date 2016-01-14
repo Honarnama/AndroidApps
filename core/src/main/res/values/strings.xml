@@ -85,6 +85,8 @@
     <string name="error_no_internet_connection">مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را
         بررسی کنید.
     </string>
+
+    <string name="please_check_internet_connection"> لطفا اینترنت دستگاه خود را بررسی کنید.</string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
 
     <string name="syncing_data">در حال همگام‌سازی اطلاعات</string>
@@ -139,8 +141,7 @@
     <string name="error_sending_images">خطا در ارسال تصاویر. لطفا دوباره تلاش کنید</string>
 
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
-    <string name="please_check_internet_connection">لطفا اتصال اینترنت دستگاه خود را بررسی کنید.
-    </string>
+
     <string name="alter_name">تغییر نام</string>
     <string name="successfully_changed_user_name">نام شما با موفقیت تغییر یافت.</string>
     <string name="choose_category_dialog_title">انتخاب دسته‌ی آگهی</string>
@@ -166,8 +167,14 @@
 
     <string name="select_province">انتخاب استان</string>
     <string name="select_city">انتخاب شهر</string>
-    <string name="getting_store_info_failed">خطا در دریافت اطلاعات فروشگاه. لطفا اتصال اینترنت خود
-        را بررسی کنید.
+    <string name="getting_store_info_failed">
+        خطا در دریافت اطلاعات فروشگاه.
+    </string>
+    <string name="getting_city_list_failed">
+        خطا در نمایش فهرست شهرها.
+    </string>
+    <string name="error_getting_province_list">
+        خطا در نمایش فهرست استان‌ها.
     </string>
 
 </resources>

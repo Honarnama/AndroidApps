@@ -30,10 +30,12 @@ public class ProvincesAdapter extends BaseAdapter {
         mContext = context;
         mProvincesTreeMap = provincesTreeMap;
 
-        for (HashMap<String, String> provinceHashMap : mProvincesTreeMap.values()) {
-            for (HashMap.Entry<String, String> province : provinceHashMap.entrySet()) {
-                mProvincesNameList.add(province.getValue());
-                mProvincesIdsList.add(province.getKey());
+        if (mProvincesTreeMap != null) {
+            for (HashMap<String, String> provinceHashMap : mProvincesTreeMap.values()) {
+                for (HashMap.Entry<String, String> province : provinceHashMap.entrySet()) {
+                    mProvincesNameList.add(province.getValue());
+                    mProvincesIdsList.add(province.getKey());
+                }
             }
         }
 
@@ -41,7 +43,10 @@ public class ProvincesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mProvincesTreeMap.size();
+        if (mProvincesTreeMap != null) {
+            return mProvincesTreeMap.size();
+        }
+        return 0;
     }
 
     @Override
