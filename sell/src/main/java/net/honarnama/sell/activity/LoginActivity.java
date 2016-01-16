@@ -249,11 +249,12 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         progressDialog.show();
 
         ParseUser.logInInBackground(username, password, new LogInCallback() {
-            public void done(ParseUser user, ParseException e) {
+            public void done(final ParseUser user, ParseException e) {
                 if (user != null) {
                     user.fetchInBackground(new GetCallback<ParseObject>() {
                         @Override
                         public void done(ParseObject object, ParseException e) {
+//                            user.pinInBackground();
                             progressDialog.dismiss();
                             gotoControlPanelOrRaiseError();
                         }

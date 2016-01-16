@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:layoutDirection="rtl"
+        >
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:orientation="horizontal"
+                  android:id="@+id/no_network_fragment_title_container"
+                  android:gravity="center"
+                  android:layout_marginTop="50dp"
+            >
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:src="@drawable/error"
+                   android:id="@+id/no_network_fragment_error_icon"
+                />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  style="@style/section_title"
+                  android:text="خطا در برقراری ارتباط"
+                  android:id="@+id/no_network_fragment_title"
+                  android:textSize="24dp"
+                  android:layout_toLeftOf="@id/no_network_fragment_error_icon"
+                />
+    </LinearLayout>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              style="@style/section_title"
+              android:text="@string/please_check_internet_connection"
+              android:layout_below="@id/no_network_fragment_title_container"
+              android:gravity="center"
+              android:layout_marginTop="10dp"
+              android:id="@+id/no_network_fragment_sub_title"
+              android:textStyle="bold"
+            />
+
+    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+               android:src="@drawable/refresh"
+               android:layout_below="@id/no_network_fragment_sub_title"
+               android:layout_centerHorizontal="true"
+               android:layout_marginTop="40dp"
+               android:id="@+id/no_network_fragment_retry_icon"
+            />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              style="@style/default_text_view"
+              android:text="تلاش مجدد"
+              android:id="@+id/no_network_fragment_retry"
+              android:layout_below="@id/no_network_fragment_retry_icon"
+              android:layout_centerHorizontal="true"
+            />
+
+</RelativeLayout>

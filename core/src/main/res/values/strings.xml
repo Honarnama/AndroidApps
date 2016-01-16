@@ -1,5 +1,6 @@
 <resources>
 
+    <string name="default_app_title">هنرنما</string>
     <string name="username_hint">آدرس ایمیل</string>
     <string name="password_hint">رمز عبور</string>
     <string name="current_password_hint">رمز عبور فعلی</string>

@@ -15,6 +15,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.model.CacheData;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
@@ -23,6 +24,7 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ControlPanelActivity;
 
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
@@ -107,6 +109,23 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+
+            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
+                editor.commit();
+
+                Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+                getActivity().finish();
+                startActivity(intent);
+            }
+
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_store_info, container, false);
         // Inflate the layout for this fragment
 
@@ -254,8 +273,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                     Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
                     for (String key : tempSet) {
-                        mSelectedCityId = mCityHashMap.get(key);
-                        mCityEditEext.setText(mSelectedCityId);
+                        mSelectedCityId = key;
+                        mCityEditEext.setText(mCityHashMap.get(key));
                     }
                 }
                 return null;
@@ -383,7 +402,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     public void uploadStoreBanner() {
-
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
             mSendingDataProgressDialog.dismiss();
@@ -529,7 +547,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             public Void then(Task<Store> task) throws Exception {
                 if (task.isFaulted()) {
                     if (BuildConfig.DEBUG) {
-                        Log.e("Elnaz", "Injaa");
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Getting Store Task Failed." +
                                         "//" + task.getError().getMessage(), task.getError());
@@ -537,6 +554,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Store Task Failed. // " + task.getError().getMessage());
                     }
                     Toast.makeText(getActivity(), R.string.getting_store_info_failed + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+                    getActivity().finish();
+                    startActivity(intent);
+
 
                 } else {
                     Store store = task.getResult();
@@ -564,25 +586,28 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         });
                     }
                 }
-
-                if (mSelectedProvinceId == null) {
-                    mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-                }
-                if (mSelectedCityId == null) {
-                    mSelectedCityId = City.DEFAULT_CITY_ID;
-                }
                 return null;
 
             }
         }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Void> task) throws Exception {
+                Log.e("Elnaz", "mSelectedProvinceId = " + mSelectedProvinceId);
+                if (mSelectedProvinceId == null) {
+                    mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
+
+                }
+                if (mSelectedCityId == null) {
+                    mSelectedCityId = City.DEFAULT_CITY_ID;
+                }
+                Log.e("Elnaz", "mSelectedProvinceId = " + mSelectedProvinceId);
                 return provinces.getOrderedProvinces(getActivity());
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
+                    mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Getting Province Task Failed" +
@@ -613,6 +638,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 progressDialog.dismiss();
                 if (task.isFaulted()) {
+                    mCityEditEext.setText(City.DEFAULT_CITY_NAME);
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Getting City List Task Failed." +
@@ -629,6 +655,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         }
                     }
                     mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
+
                 }
                 return null;
             }
@@ -660,7 +687,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public void done(final Store store, ParseException e) {
                 if (e == null) {
-                    tcs.setResult(store);
+                    tcs.trySetResult(store);
                     if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
                         final List<Store> tempStoreList = new ArrayList<Store>() {{
@@ -688,12 +715,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         });
                     }
 
-
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        tcs.setResult(null);
+                        tcs.trySetResult(null);
                     } else {
-                        tcs.setError(e);
+                        tcs.trySetError(e);
                     }
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),

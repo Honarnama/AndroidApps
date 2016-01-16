@@ -39,6 +39,7 @@ public class City extends ParseObject {
     public static String PARENT_ID = "parentId";
 
     public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
+    public static String DEFAULT_CITY_NAME = "آذرشهر";
 
     public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
 
@@ -68,7 +69,7 @@ public class City extends ParseObject {
             @Override
             public Object then(Task<List<City>> task) throws Exception {
                 if (task.isFaulted()) {
-                    tcs.setError(task.getError());
+                    tcs.trySetError(task.getError());
                 } else {
 
                     List<City> cities = task.getResult();
@@ -78,7 +79,7 @@ public class City extends ParseObject {
                         tempMap.put(city.getObjectId(), city.getName());
                         mCityOrderedTreehMap.put(city.getOrder(), tempMap);
                     }
-                    tcs.setResult(mCityOrderedTreehMap);
+                    tcs.trySetResult(mCityOrderedTreehMap);
                 }
 
                 return null;
@@ -107,6 +108,7 @@ public class City extends ParseObject {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(mContext, true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
             }
 //            mReceivingDataProgressDialog.show();
         }
@@ -120,14 +122,14 @@ public class City extends ParseObject {
 //                    if (mReceivingDataProgressDialog.isShowing()) {
 //                        mReceivingDataProgressDialog.dismiss();
 //                    }
-                    tcs.setResult(cityList);
+                    tcs.trySetResult(cityList);
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding cities failed.");
                     }
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
             }
         });

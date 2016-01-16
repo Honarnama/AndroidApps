@@ -2,6 +2,7 @@ package net.honarnama.core.model;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -10,7 +11,10 @@ import com.parse.SaveCallback;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.NetworkManager;
 
+import android.accounts.NetworkErrorException;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bolts.Continuation;
@@ -28,18 +33,23 @@ import bolts.TaskCompletionSource;
  * Created by elnaz on 1/9/16.
  */
 
+//TODO cache sstore
+
 public class CacheData {
 
     SharedPreferences mSharedPreferences;
     Context mContext;
+    final SharedPreferences.Editor mPrefEditor;
 
-    public Task<Void> startSyncing(final Context context) {
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
+    public CacheData(Context context) {
         mContext = context;
-        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefEditor = mSharedPreferences.edit();
+    }
 
+    public Task<Void> startSyncing() {
+
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
         Toast.makeText(mContext, "startSyncing", Toast.LENGTH_SHORT).show();
 
         final ProgressDialog receivingDataProgressDialog = new ProgressDialog(mContext);
@@ -47,89 +57,105 @@ public class CacheData {
         receivingDataProgressDialog.setMessage(mContext.getResources().getString(R.string.syncing_data));
         receivingDataProgressDialog.show();
 
-        final SharedPreferences.Editor editor = mSharedPreferences.edit();
-
-        cacheCategories().continueWithTask(new Continuation<Void, Task<Void>>() {
+        cacheCategories().continueWith(new Continuation<Void, Object>() {
             @Override
-            public Task<Void> then(Task<Void> task) throws Exception {
-
+            public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
-                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false);
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false);
 //                    editor.commit();
-                    Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for categories failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for categories failed. Code: " + task.getError() +
-                                "//" + task.getError().getMessage());
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for categories failed");
                     }
-                    throw new RuntimeException("Syncing data for categories failed");
                 } else {
-
-                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
-//                    editor.commit();
-
-                    return cacheProvinces().continueWith(new Continuation<Void, Void>() {
-                        @Override
-                        public Void then(Task<Void> task) throws Exception {
-
-                            if (task.isFaulted()) {
-                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
-                                Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
-                                if (BuildConfig.DEBUG) {
-                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for provinces failed. Code: " + task.getError() +
-                                            "//" + task.getError().getMessage());
-                                } else {
-                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for provinces failed. Code: " + task.getError() +
-                                            "//" + task.getError().getMessage());
-                                }
-                                throw new RuntimeException("Syncing data for provinces failed");
-                            } else {
-                                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
-                            }
-//                            editor.commit();
-                            return null;
-                        }
-                    });
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
                 }
+                return null;
             }
-        }).continueWithTask(new Continuation<Void, Task<Void>>() {
+        }).continueWithTask(new Continuation<Object, Task<Void>>() {
             @Override
-            public Task<Void> then(Task<Void> task) throws Exception {
-                return cacheCity().continueWith(new Continuation<Void, Void>() {
-                    @Override
-                    public Void then(Task<Void> task) throws Exception {
-                        if (task.isFaulted()) {
-                            editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
-                            Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
-                            if (BuildConfig.DEBUG) {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for cities failed. Code: " + task.getError() +
-                                        "//" + task.getError().getMessage());
-                            } else {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for cities failed. Code: " + task.getError() +
-                                        "//" + task.getError().getMessage());
-                            }
-                            throw new RuntimeException("Syncing data for cities failed");
-                        } else {
-                            editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
-                        }
-                        return null;
-                    }
-                });
+            public Task<Void> then(Task<Object> task) throws Exception {
+                return cacheProvinces();
             }
         }).continueWith(new Continuation<Void, Object>() {
             @Override
             public Object then(Task<Void> task) throws Exception {
-                receivingDataProgressDialog.dismiss();
                 if (task.isFaulted()) {
-                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
-                    Toast.makeText(context, context.getResources().getString(R.string.syncing_data_failed), Toast.LENGTH_LONG).show();
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for provinces failed. Code: " + task.getError() +
+                                "//" + task.getError().getMessage());
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for provinces failed.");
+                    }
                 } else {
-                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, true);
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
                 }
-                editor.commit();
-                tcs.setResult(null);
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Object> task) throws Exception {
+                return cacheCity();
+            }
+        }).continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                if (task.isFaulted()) {
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for cities failed. Code: " + task.getError() +
+                                "//" + task.getError().getMessage());
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for cities failed.");
+                    }
+                } else {
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
+                }
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Object> task) throws Exception {
+                cacheUserStore().continueWith(new Continuation<Store, Object>() {
+                    @Override
+                    public Object then(Task<Store> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false);
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching Store Task Failed. Code: " + task.getError() +
+                                        "//" + task.getError().getMessage());
+                            } else {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching Store Task Failed.");
+                            }
+                        } else {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+                        }
+                        return null;
+                    }
+                });
+                return null;
+            }
+        }).continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                mPrefEditor.commit();
+                receivingDataProgressDialog.dismiss();
+                if (mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, true);
+                    mPrefEditor.commit();
+                    tcs.trySetResult(null);
+                } else {
+                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "caching data task failed.");
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
+                    mPrefEditor.commit();
+                    tcs.trySetError(new RuntimeException("Syncing data failed."));
+                }
                 return null;
             }
         });
@@ -155,14 +181,14 @@ public class CacheData {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
-                    tcs.setResult(objects);
+                    tcs.trySetResult(objects);
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding remote data for " + parseQuery.getClassName() + " failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding remote data for " + parseQuery.getClassName() + " failed.");
                     }
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
             }
         });
@@ -185,15 +211,15 @@ public class CacheData {
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching category failed.");
                                         }
-                                        tcs.setError(e);
+                                        tcs.trySetError(e);
                                     } else {
-                                        tcs.setResult(null);
+                                        tcs.trySetResult(null);
                                     }
                                 }
                             }
                     );
                 } else {
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
             }
         });
@@ -222,20 +248,20 @@ public class CacheData {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        tcs.setResult(null);
+                                        tcs.trySetResult(null);
                                     } else {
                                         if (BuildConfig.DEBUG) {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheProvincesAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching provinces failed.");
                                         }
-                                        tcs.setError(e);
+                                        tcs.trySetError(e);
                                     }
                                 }
                             }
                     );
                 } else {
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
             }
         });
@@ -266,21 +292,84 @@ public class CacheData {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        tcs.setResult(null);
+                                        tcs.trySetResult(null);
                                     } else {
                                         if (BuildConfig.DEBUG) {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCityAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
                                         } else {
                                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching cities failed.");
                                         }
-                                        tcs.setError(e);
+                                        tcs.trySetError(e);
                                     }
                                 }
                             }
                     );
                 } else {
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public Task<Store> cacheUserStore() {
+        final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
+        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+
+
+        query.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(final Store store, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(store);
+
+                    final List<Store> tempStoreList = new ArrayList<Store>() {{
+                        add(store);
+                    }};
+
+                    ParseObject.unpinAllInBackground(Store.OBJECT_NAME, tempStoreList, new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                ParseObject.pinAllInBackground(Store.OBJECT_NAME, tempStoreList, new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+                                                    editor.commit();
+                                                } else {
+                                                    tcs.trySetError(e);
+                                                }
+                                            }
+                                        }
+                                );
+                            } else {
+                                tcs.trySetError(e);
+                            }
+                        }
+                    });
+
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+                        editor.commit();
+                        tcs.trySetResult(null);
+                    } else {
+                        tcs.trySetError(e);
+                    }
+                    if (BuildConfig.DEBUG) {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                "Error Getting Store Info.  Error Code: " + e.getCode() +
+                                        "//" + e.getMessage() + " // " + e, e);
+                    } else {
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. "
+                                + e.getMessage());
+                    }
+                }
+
             }
         });
         return tcs.getTask();

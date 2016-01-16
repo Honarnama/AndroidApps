@@ -8,6 +8,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
@@ -18,6 +20,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
+import net.honarnama.sell.fragments.NoNetworkFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
@@ -35,12 +38,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
 
@@ -65,8 +72,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         if (!HonarnamaUser.isAuthenticatedUser()) {
             return;
         }
-
-        Toast.makeText(ControlPanelActivity.this, HonarnamaUser.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
 
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
@@ -138,9 +143,22 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+                HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
+                switchFragment(fragment);
                 return;
             }
-            new CacheData().startSyncing(ControlPanelActivity.this);
+            new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
+                @Override
+                public Object then(Task<Void> task) throws Exception {
+                    if(task.isFaulted())
+                    {
+                        HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
+                        switchFragment(fragment);
+                        Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
+                    }
+                    return null;
+                }
+            });
         }
     }
 

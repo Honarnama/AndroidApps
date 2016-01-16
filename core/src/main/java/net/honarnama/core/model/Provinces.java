@@ -37,6 +37,7 @@ public class Provinces extends ParseObject {
     public static String ORDER = "order";
     public static String OBJECT_ID = "objectId";
     public static String DEFAULT_PROVINCE_ID = "4ADtQvS2KR";
+    public static String DEFAULT_PROVINCE_NAME = "آذربایجان شرقی";
 
     public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public Context mContext;
@@ -68,7 +69,7 @@ public class Provinces extends ParseObject {
             @Override
             public Object then(Task<List<Provinces>> task) throws Exception {
                 if (task.isFaulted()) {
-                    tcs.setError(task.getError());
+                    tcs.trySetError(task.getError());
                 } else {
 
                     List<Provinces> provinces = task.getResult();
@@ -79,7 +80,7 @@ public class Provinces extends ParseObject {
                         tempMap.put(province.getObjectId(), province.getName());
                         mProvincesTreeMap.put(province.getOrder(), tempMap);
                     }
-                    tcs.setResult(mProvincesTreeMap);
+                    tcs.trySetResult(mProvincesTreeMap);
                 }
 
                 return null;
@@ -106,6 +107,7 @@ public class Provinces extends ParseObject {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(mContext, true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
             }
 //            mReceivingDataProgressDialog.show();
         }
@@ -132,21 +134,23 @@ public class Provinces extends ParseObject {
                                                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
                                                         editor.commit();
                                                     }
+
                                                 }
                                             }
                                     );
                                 }
+
                             }
                         });
                     }
-                    tcs.setResult(provincesList);
+                    tcs.trySetResult(provincesList);
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding provinces failed.");
                     }
-                    tcs.setError(e);
+                    tcs.trySetError(e);
                 }
             }
         });
