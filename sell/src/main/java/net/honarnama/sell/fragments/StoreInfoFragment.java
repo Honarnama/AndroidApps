@@ -113,7 +113,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
@@ -717,18 +717,27 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "User does not have any store yet.");
+                        }
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+                        editor.commit();
                         tcs.trySetResult(null);
-                    } else {
+                    }
+                    else {
                         tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "Error Getting Store Info.  Error Code: " + e.getCode() +
+                                            "//" + e.getMessage() + " // " + e, e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. "
+                                    + e.getMessage());
+                        }
                     }
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error Getting Store Info.  Error Code: " + e.getCode() +
-                                        "//" + e.getMessage() + " // " + e, e);
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. "
-                                + e.getMessage());
-                    }
+
                 }
 
             }

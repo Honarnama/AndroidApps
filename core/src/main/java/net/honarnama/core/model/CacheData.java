@@ -85,10 +85,10 @@ public class CacheData {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for provinces failed. Code: " + task.getError() +
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching provinces task failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for provinces failed.");
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching provinces task failed.");
                     }
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
@@ -106,20 +106,20 @@ public class CacheData {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for cities failed. Code: " + task.getError() +
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching cities task failed. Code: " + task.getError() +
                                 "//" + task.getError().getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for cities failed.");
+                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching cities task failed.");
                     }
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
                 }
                 return null;
             }
-        }).continueWithTask(new Continuation<Object, Task<Void>>() {
+        }).continueWithTask(new Continuation<Object, Task<Object>>() {
             @Override
-            public Task<Void> then(Task<Object> task) throws Exception {
-                cacheUserStore().continueWith(new Continuation<Store, Object>() {
+            public Task<Object> then(Task<Object> task) throws Exception {
+                return cacheUserStore().continueWith(new Continuation<Store, Object>() {
                     @Override
                     public Object then(Task<Store> task) throws Exception {
                         if (task.isFaulted()) {
@@ -136,11 +136,10 @@ public class CacheData {
                         return null;
                     }
                 });
-                return null;
             }
-        }).continueWith(new Continuation<Void, Object>() {
+        }).continueWith(new Continuation<Object, Object>() {
             @Override
-            public Object then(Task<Void> task) throws Exception {
+            public Object then(Task<Object> task) throws Exception {
                 mPrefEditor.commit();
                 receivingDataProgressDialog.dismiss();
                 if (mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false) &&
@@ -177,6 +176,10 @@ public class CacheData {
 
     public Task<List<ParseObject>> findAsync(final ParseQuery parseQuery) {
         final TaskCompletionSource<List<ParseObject>> tcs = new TaskCompletionSource<>();
+        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+            tcs.trySetError(new NetworkErrorException("No Network connection"));
+            return tcs.getTask();
+        }
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -317,6 +320,10 @@ public class CacheData {
         ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
+        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+            tcs.trySetError(new NetworkErrorException("No Network connection"));
+            return tcs.getTask();
+        }
 
         query.getFirstInBackground(new GetCallback<Store>() {
             @Override
@@ -353,21 +360,27 @@ public class CacheData {
 
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "User does not have any store yet.");
+                        }
+
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
                         editor.commit();
-                        tcs.trySetResult(null);
+                        tcs.setResult(null);
                     } else {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "Caching store task failed.  Error Code: " + e.getCode() +
+                                            "//" + e.getMessage() + " // " + e, e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching store task failed. "
+                                    + e.getMessage());
+                        }
                         tcs.trySetError(e);
                     }
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error Getting Store Info.  Error Code: " + e.getCode() +
-                                        "//" + e.getMessage() + " // " + e, e);
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Store Info. "
-                                + e.getMessage());
-                    }
+
                 }
 
             }
