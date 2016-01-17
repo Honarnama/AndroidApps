@@ -11,7 +11,7 @@
     <color name="nokhodi_tire">#F5AF3A</color>
     <color name="nokhodi_khardeli">#875C15</color>
     <color name="hint_color_custom">#9F907C</color>
-    <color name="default_hint_color_for_android">#808080</color>
+    <color name="default_hint_color_for_android">@color/gray</color>
     <color name="red">#ff0000</color>
 
 
@@ -49,7 +49,7 @@
 
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
-    <color name="default_edit_text_text_color">@color/gray_extra_dark</color>
+    <color name="default_edit_text_text_color">@color/gray_super_extra_dark</color>
     <color name="text_color">#616161</color>
 
     <color name="happy_blue">#0061e6</color>

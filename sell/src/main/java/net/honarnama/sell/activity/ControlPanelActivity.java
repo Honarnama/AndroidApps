@@ -55,8 +55,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
     public static final int DRAWER_ITEM_IDENTIFIER_EDIT_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_ORDERS = 5;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 6;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 5;
 
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -98,8 +97,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
                         new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EDIT_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_orders).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ORDERS).withIcon(GoogleMaterial.Icon.gmd_collection_item),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
@@ -243,9 +240,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             case DRAWER_ITEM_IDENTIFIER_EDIT_ITEM:
                 fragment = mEditItemFragment;
                 break;
-            case DRAWER_ITEM_IDENTIFIER_ORDERS:
-                //mFragment = EditItemFragment.getInstance();
-                break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
                 mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
@@ -253,8 +247,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mWaitingProgressDialog.show();
                 HonarnamaUser.logOut();
                 Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-                startActivity(intent);
                 finish();
+                startActivity(intent);
                 break;
         }
         // Not null && (Another section || Maybe editing but wants to create new item)
