@@ -325,6 +325,41 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             mNameEditText.setError(getActivity().getString(R.string.error_store_name_cant_be_empty));
             return false;
         }
+        if(mSelectedProvinceId == null){
+            mProvinceEditEext.requestFocus();
+            mProvinceEditEext.setError(getActivity().getString(R.string.error_store_province_not_set));
+        }
+
+        if(mSelectedCityId == null){
+            mCityEditEext.requestFocus();
+            mCityEditEext.setError(getActivity().getString(R.string.error_store_city_not_set));
+        }
+
+        if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
+            mCellNumberEditText.requestFocus();
+            mCellNumberEditText.setError("حداقل یکی از گزینه ‌های تماس را پر کنید.");
+            return false;
+        }
+
+
+        if (mCellNumberEditText.getText().toString().trim().length() > 0) {
+            String mobileNumberPattern = "^09\\d{9}$";
+            if (!mCellNumberEditText.getText().toString().trim().matches(mobileNumberPattern)) {
+                mCellNumberEditText.requestFocus();
+                mCellNumberEditText.setError(getString(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
+                return false;
+            }
+        }
+
+        if (mPhoneNumberEditText.getText().toString().trim().length() > 0) {
+            String phoneNumberPattern = "^(0[0-9]{2,3}-?)?[0-9]{6,14}$";
+            if (!mPhoneNumberEditText.getText().toString().trim().matches(phoneNumberPattern)) {
+                mPhoneNumberEditText.requestFocus();
+                mPhoneNumberEditText.setError(getActivity().getString(R.string.error_phone_number_is_not_valid));
+                return false;
+            }
+        }
+
         return true;
     }
 

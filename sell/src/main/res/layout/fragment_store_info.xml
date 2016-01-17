@@ -166,13 +166,14 @@
                 />
 
         <EditText
-                android:hint="تلفن ثابت"
+                android:hint="شماره تلفن ثابت - مثال 34567890-021"
                 android:layout_below="@id/store_contact_title"
                 android:layout_marginTop="10dp"
                 android:id="@+id/store_phone_number"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
+                android:inputType="phone"
                 />
 
         <EditText
@@ -183,6 +184,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
+                android:inputType="phone"
                 />
 
 
