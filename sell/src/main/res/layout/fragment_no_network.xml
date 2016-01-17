@@ -17,22 +17,21 @@
                    android:id="@+id/no_network_fragment_error_icon"
                 />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  style="@style/section_title"
+                  style="@style/default_text_view"
                   android:text="خطا در برقراری ارتباط"
                   android:id="@+id/no_network_fragment_title"
-                  android:textSize="24dp"
                   android:layout_toLeftOf="@id/no_network_fragment_error_icon"
+                  android:textStyle="bold"
                 />
     </LinearLayout>
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-              style="@style/section_title"
+              style="@style/default_text_view"
               android:text="@string/please_check_internet_connection"
               android:layout_below="@id/no_network_fragment_title_container"
               android:gravity="center"
               android:layout_marginTop="10dp"
               android:id="@+id/no_network_fragment_sub_title"
-              android:textStyle="bold"
             />
 
     <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -44,7 +43,7 @@
             />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              style="@style/default_text_view"
+              style="@style/tiny_text_view"
               android:text="تلاش مجدد"
               android:id="@+id/no_network_fragment_retry"
               android:layout_below="@id/no_network_fragment_retry_icon"

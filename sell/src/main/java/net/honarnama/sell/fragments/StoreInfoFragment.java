@@ -227,11 +227,19 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     private void displayProvinceDialog() {
+
+        if(mProvincesOrderedTreeMap == null)
+        {
+
+        }
+
         ListView provincesListView;
         ProvincesAdapter provincesAdapter;
 
         final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
+
         provinceDialog.setContentView(R.layout.choose_province);
+
         provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
         provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesOrderedTreeMap);
         provincesListView.setAdapter(provincesAdapter);
@@ -592,7 +600,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Void> task) throws Exception {
-                Log.e("Elnaz", "mSelectedProvinceId = " + mSelectedProvinceId);
                 if (mSelectedProvinceId == null) {
                     mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
 
@@ -600,7 +607,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 if (mSelectedCityId == null) {
                     mSelectedCityId = City.DEFAULT_CITY_ID;
                 }
-                Log.e("Elnaz", "mSelectedProvinceId = " + mSelectedProvinceId);
                 return provinces.getOrderedProvinces(getActivity());
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
