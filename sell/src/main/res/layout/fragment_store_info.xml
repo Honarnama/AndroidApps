@@ -1,10 +1,12 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:fadeScrollbars="false"
-            android:scrollbarThumbVertical="@drawable/custom_scrollbar"
-            android:layoutDirection="rtl"
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
+        android:layoutDirection="rtl"
+        android:id="@+id/store_fragment_scroll_view"
         >
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -16,25 +18,30 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/store_banner_container"
                 >
-            <com.parse.ImageSelector
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/store_banner_image_view"
+            <FrameLayout
+                    android:id="@+id/store_banner_frame_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/party_flags"
-                    app:riv_corner_radius="0dp"
-                    app:riv_border_width="0dp"
-                    app:riv_oval="false"
-                    app:outputX="640"
-                    app:outputY="640"
-                    app:riv_border_color="@color/gray_super_extra_light"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    app:removable="true"
-                    app:imageSelectorIndex="1"
-                    />
+                    android:layout_height="wrap_content">
+                <com.parse.ImageSelector
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/store_banner_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentTop="true"
+                        android:src="@drawable/party_flags"
+                        app:riv_corner_radius="0dp"
+                        app:riv_border_width="0dp"
+                        app:riv_oval="false"
+                        app:outputX="640"
+                        app:outputY="640"
+                        app:riv_border_color="@color/gray_super_extra_light"
+                        android:scaleType="centerCrop"
+                        android:adjustViewBounds="true"
+                        app:removable="true"
+                        app:imageSelectorIndex="1"
+                        />
+            </FrameLayout>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:paddingRight="10dp"
                       android:paddingLeft="10dp"
@@ -199,4 +206,4 @@
 
 
     </RelativeLayout>
-</ScrollView>
+</net.honarnama.core.utils.ObservableScrollView>

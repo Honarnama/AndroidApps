@@ -15,12 +15,12 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.model.CacheData;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.ParseIO;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -59,7 +59,7 @@ import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener {
+public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -68,6 +68,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private Button mRegisterStoreButton;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
+
+    private ObservableScrollView mScrollView;
+
+    private View mBannerFrameLayout;
 
     private EditText mProvinceEditEext;
     public TreeMap<Number, HashMap<String, String>> mProvincesOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
@@ -135,6 +139,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.store_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.store_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.store_cell_number);
+
+        mBannerFrameLayout = rootView.findViewById(R.id.store_banner_frame_layout);
+        mScrollView = (ObservableScrollView)rootView.findViewById(R.id.store_fragment_scroll_view);
+        mScrollView.setOnScrollChangedListener(this);
 
         mProvinceEditEext = (EditText) rootView.findViewById(R.id.store_province_edit_text);
         mProvinceEditEext.setOnClickListener(this);
@@ -787,4 +795,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
 
+    @Override
+    public void onScrollChanged(int deltaX, int deltaY) {
+        int scrollY = mScrollView.getScrollY();
+        // Add parallax effect
+        mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
+
+    }
 }
