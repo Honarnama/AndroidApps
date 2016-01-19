@@ -33,6 +33,10 @@
         <item name="android:layout_height">45dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
     </style>
 
     <style name="edit_text_default" parent="Widget.AppCompat.EditText">
@@ -125,6 +129,10 @@
         <item name="android:ellipsize">start</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">right|center</item>
+        <item name="android:layout_marginTop">0dp</item>
     </style>
 
     <style name="core_wrap_button">
@@ -149,7 +157,7 @@
     </style>
 
     <style name="section_title">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>

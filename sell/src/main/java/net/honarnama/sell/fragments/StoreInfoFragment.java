@@ -236,11 +236,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private void displayProvinceDialog() {
 
-        if(mProvincesOrderedTreeMap == null)
-        {
-
-        }
-
         ListView provincesListView;
         ProvincesAdapter provincesAdapter;
 

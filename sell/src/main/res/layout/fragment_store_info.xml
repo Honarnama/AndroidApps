@@ -199,9 +199,7 @@
                 android:id="@+id/register_store_button"
                 android:text="اعمال تغییرات"
                 android:layout_below="@id/store_cell_number"
-                android:layout_marginTop="10dp"
                 style="@style/sell_full_width_button"
-                android:layout_margin="16dp"
                 />
 
 

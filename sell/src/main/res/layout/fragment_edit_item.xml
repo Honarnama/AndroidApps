@@ -1,178 +1,224 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_height="fill_parent" android:layout_width="fill_parent"
-            android:background="#ffffff">
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
+        android:layoutDirection="rtl"
+        android:id="@+id/edit_item_scroll_view"
+        >
 
 
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/gray_extra_light"
+            >
 
         <TextView
+
                 android:text="@string/edit_item_photos_title"
                 android:layout_marginTop="10dp"
                 style="@style/section_title"
+                android:id="@+id/edit_item_images_title_text_view"
                 />
 
-        <TextView android:id="@+id/itemImageHint"
-                  android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:text="@string/edit_item_photos_description"
-                  android:gravity="right"
-                  android:layout_gravity="center"
-                  android:textColor="@color/hint_color_custom"
-                  android:layout_margin="5dp"
-                  android:textSize="12sp"
-                />
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:background="@drawable/important_bar_background"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginTop="10dp"
+                >
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/important"
+                    />
+            <TextView android:id="@+id/itemImageHint"
+                      style="@style/tiny_text_view"
+                      android:text="@string/edit_item_photos_description"
+                      android:textColor="@color/orange"
+                      android:paddingRight="5dp"
+                      android:paddingLeft="10dp"
+                    />
+        </LinearLayout>
 
         <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="0dip">
+                android:padding="0dip"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                >
 
             <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    android:layout_margin="0dp"
+                    >
                 <com.parse.ImageSelector
                         android:id="@+id/itemImage1"
-                        android:src="@drawable/camera"
+                        android:src="@drawable/camera_insta"
                         android:layout_gravity="center"
-                        android:layout_margin="5dp"
                         android:scaleType="centerInside"
                         android:layout_weight="1"
                         app:removable="true"
                         app:imageSelectorIndex="1"
                         app:outputX="600"
-                        app:outputY="462"
+                        app:outputY="600"
                         android:layout_width="200dp"
-                        android:layout_height="154dp"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:riv_border_color="@color/gray_dark"
+                        android:background="@color/red"
                         />
                 <com.parse.ImageSelector
                         android:id="@+id/itemImage2"
-                        android:src="@drawable/camera"
+                        android:src="@drawable/camera_insta"
                         android:layout_gravity="center"
-                        android:layout_margin="5dp"
                         android:scaleType="centerInside"
                         android:layout_weight="1"
                         app:removable="true"
                         app:imageSelectorIndex="2"
                         app:outputX="600"
-                        app:outputY="462"
+                        app:outputY="600"
                         android:layout_width="200dp"
-                        android:layout_height="154dp"
+                        android:layout_height="200dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:riv_border_color="@color/gray_dark"
+                        android:background="@color/white"
                         />
             </TableRow>
             <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
                 <com.parse.ImageSelector
                         android:id="@+id/itemImage3"
-                        android:src="@drawable/camera"
+                        android:src="@drawable/camera_insta"
                         android:layout_gravity="center"
-                        android:layout_margin="5dp"
                         android:scaleType="centerInside"
                         android:layout_weight="1"
                         app:removable="true"
                         app:imageSelectorIndex="3"
                         app:outputX="600"
-                        app:outputY="462"
+                        app:outputY="600"
                         android:layout_width="200dp"
-                        android:layout_height="154dp"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        app:riv_border_color="@color/gray_dark"
+                        android:background="@color/white"
                         />
                 <com.parse.ImageSelector
                         android:id="@+id/itemImage4"
-                        android:src="@drawable/camera"
+                        android:src="@drawable/camera_insta"
                         android:layout_gravity="center"
-                        android:layout_margin="5dp"
                         android:scaleType="centerInside"
                         android:layout_weight="1"
                         app:removable="true"
                         app:imageSelectorIndex="4"
                         app:outputX="600"
-                        app:outputY="462"
+                        app:outputY="600"
                         android:layout_width="200dp"
-                        android:layout_height="154dp"
+                        android:layout_height="200dp"
+                        app:riv_border_color="@color/gray_dark"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"
                         />
             </TableRow>
         </TableLayout>
 
-        <View style="@style/HorizontalSeparatorLine"/>
-
         <TextView
                 android:text="@string/edit_item_details_title"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 style="@style/section_title"
                 />
 
-        <TextView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/edit_item_details_description"
-                android:gravity="right"
-                android:layout_gravity="center"
-                android:textColor="@color/hint_color_custom"
-                android:layout_margin="5dp"
-                android:textSize="12sp"
+
+        <EditText android:id="@+id/editProductTitle"
+                  android:hint="@string/edit_item_title_hint"
+                  style="@style/bordered_edit_text"
+                  android:layout_marginLeft="16dp"
+                  android:layout_marginRight="16dp"
+                  android:layout_marginTop="10dp"
                 />
 
+        <TextView android:text="@string/edit_item_title_sub_hint"
+                  style="@style/tiny_text_view"
+                  android:layout_marginRight="16dp"
+                  android:gravity="right"
+                />
+
+
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:orientation="horizontal" android:layout_marginTop="5dp"
-                      android:layout_marginRight="5dp" android:layout_marginLeft="5dp">
-            <EditText android:id="@+id/editProductTitle"
-                      android:layout_width="0dp" android:layout_height="45dp"
-                      android:hint="@string/edit_item_title_hint"
-                      android:singleLine="true"
-                      android:textSize="16sp"
+                      android:orientation="horizontal" android:layout_marginTop="10dp"
+                      android:layout_marginRight="16dp" android:layout_marginLeft="16dp">
+
+            <EditText android:id="@+id/editItemPrice"
+                      android:layout_width="0dp"
+                      android:hint="قیمت محصول"
                       android:layout_weight="2"
-                      android:ellipsize="start"
-                      android:textColorHint="@color/default_hint_color_for_android"
-                      android:gravity="right"
+                      style="@style/bordered_edit_text"
+                      android:inputType="number"
                     />
-            <TextView
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      style="@style/default_text_view"
+                      android:text="تومان"
+                      android:layout_gravity="left|center"
+                      android:gravity="left|center"
+                    />
+
+        </LinearLayout>
+
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/edit_item_category_container"
+                      android:orientation="horizontal"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginTop="10dp"
+                      android:layout_gravity="center"
+                >
+            <TextView style="@style/default_text_view"
+                      android:text="دسته‌بندی آگهی:"
+                      android:layout_centerVertical="true"
+                      android:id="@+id/edit_item_category_text_view"
+                      android:editable="false"
+                      android:cursorVisible="false"
+                      android:focusable="false"
+                      android:clickable="true"
+                      android:textStyle="bold"
+                      android:layout_gravity="center"
+                    />
+            <Button android:layout_width="wrap_content" android:layout_height="35dp"
+                    android:text="انتخاب"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/edit_item_category_semi_button"
+                    android:background="@color/cyan"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
+                    android:padding="5dp"
                     />
         </LinearLayout>
-        <TextView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/edit_item_title_sub_hint"
-                android:gravity="right"
-                android:layout_gravity="center"
-                android:textColor="@color/hint_color_custom"
-                android:textSize="12sp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
-                />
-        <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="انتخاب دسته‌ی آگهی"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dp"
-                android:id="@+id/choose_category_button"
-                />
+
+
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:orientation="horizontal" android:layout_margin="5dp">
+                      android:orientation="horizontal" android:layout_marginTop="10dp"
+                      android:layout_marginRight="16dp" android:layout_marginLeft="16dp"
+                >
             <EditText android:id="@+id/editProductDescription"
-                      android:layout_width="0dp" android:layout_height="100dp"
                       android:hint="@string/edit_item_description_hint"
-                      android:singleLine="true"
-                      android:textSize="14sp"
-                      android:layout_weight="2"
-                      android:lines="5"
-                      android:ellipsize="start"
-                      android:textColorHint="@color/default_hint_color_for_android"
-                      android:gravity="right"
-                    />
-            <TextView
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
+                      style="@style/bordered_multiline_edit_text"
                     />
         </LinearLayout>
 
@@ -180,8 +226,8 @@
         <Button
                 android:id="@+id/saveItemButton"
                 android:text="@string/edit_item_save"
-                android:layout_margin="10dp"
                 style="@style/sell_full_width_button"
+                android:layout_marginTop="10dp"
                 />
 
     </LinearLayout>

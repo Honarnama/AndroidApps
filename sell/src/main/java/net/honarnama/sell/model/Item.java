@@ -29,26 +29,36 @@ public class Item extends ParseObject {
         super();
     }
 
-    public Item(ParseUser owner, String title, String description, String categoryId) {
+    public Item(ParseUser owner, String title, String description, String categoryId, Number price) {
         super();
         put("title", title);
         put("description", description);
         put("owner", owner);
-        // TODO: categoryId
+        put("categoryId", categoryId);
+        put("price", price);
     }
 
-    private void update(String title, String description, String categoryId) {
+    private void update(String title, String description, String categoryId, Number price) {
         put("title", title);
         put("description", description);
-        // TODO: categoryId
+        put("categoryId", categoryId);
+        put("price", price);
     }
 
     public String getTitle() {
         return getString("title");
     }
 
+    public Number getPrice() {
+        return getNumber("price");
+    }
+
     public String getDescription() {
         return getString("description");
+    }
+
+    public String getCategoryId() {
+        return getString("categoryId");
     }
 
     public ParseFile[] getImages() {
@@ -60,7 +70,7 @@ public class Item extends ParseObject {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final String categoryId,final ImageSelector[] itemImages) throws IOException {
+    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final String categoryId, final Number price, final ImageSelector[] itemImages) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
 
@@ -91,9 +101,9 @@ public class Item extends ParseObject {
         final Item item;
         if (originalItem != null) {
             item = originalItem;
-            item.update(title, description, categoryId);
+            item.update(title, description, categoryId, price);
         } else {
-            item = new Item(ParseUser.getCurrentUser(), title, description, categoryId);
+            item = new Item(ParseUser.getCurrentUser(), title, description, categoryId, price);
         }
 
         Task<Void> task = Task.whenAll(tasks).continueWithTask(new Continuation<Void, Task<Void>>() {

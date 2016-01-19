@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,14 +45,22 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private static final String SAVE_INSTANCE_STATE_KEY_ITEM_ID = "itemId";
     private static final String SAVE_INSTANCE_STATE_KEY_TITLE = "title";
     private static final String SAVE_INSTANCE_STATE_KEY_DESCRIPTION = "description";
+    private static final String SAVE_INSTANCE_STATE_KEY_PRICE = "price";
+    private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_ID = "categoryId";
 
-    private EditText mProductTitle;
-    private EditText mProductDescription;
-    private TextView mItemImageHint;
+
+    private EditText mTitleEditText;
+    private EditText mDescriptionEditText;
+    private TextView mImagesHintTextView;
+    private EditText mPriceEditText;
+    private TextView mImagesTitleTextView;
+    private ScrollView mScrollView;
+
     private ProgressDialog mLoadingDialog;
     private Button mChooseCategoryButton;
+    private TextView mCategoryTextView;
 
-    private ImageSelector[] itemImages;
+    private ImageSelector[] mItemImages;
 
     private Item mItem;
     private String mItemId;
@@ -59,8 +68,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private boolean mDirty = false;
     private boolean mCreateNew = false;
 
-    private String mSelectedCategoryObjectId;
-    private String mSelectedCategoryName;
+    private String mCategoryId;
+    private String mCategoryName;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -100,10 +109,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
-        mProductTitle = (EditText) rootView.findViewById(R.id.editProductTitle);
-        mProductDescription = (EditText) rootView.findViewById(R.id.editProductDescription);
-        mItemImageHint = (TextView) rootView.findViewById(R.id.itemImageHint);
-        mChooseCategoryButton = (Button) rootView.findViewById(R.id.choose_category_button);
+        mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
+        mDescriptionEditText = (EditText) rootView.findViewById(R.id.editProductDescription);
+        mImagesHintTextView = (TextView) rootView.findViewById(R.id.itemImageHint);
+        mPriceEditText = (EditText) rootView.findViewById(R.id.editItemPrice);
+        mImagesTitleTextView = (TextView) rootView.findViewById(R.id.edit_item_images_title_text_view);
+        mScrollView = (ScrollView) rootView.findViewById(R.id.edit_item_scroll_view);
+
+        mCategoryTextView = (TextView) rootView.findViewById(R.id.edit_item_category_text_view);
+        mChooseCategoryButton = (Button) rootView.findViewById(R.id.edit_item_category_semi_button);
 
         mChooseCategoryButton.setOnClickListener(this);
 
@@ -111,7 +125,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 new ImageSelector.OnImageSelectedListener() {
                     @Override
                     public boolean onImageSelected(Uri selectedImage, boolean cropped) {
-                        mItemImageHint.setError(null);
+                        mImagesHintTextView.setError(null);
                         mDirty = true;
                         return true;
                     }
@@ -126,13 +140,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     }
                 };
 
-        itemImages = new ImageSelector[]{
+        mItemImages = new ImageSelector[]{
                 (ImageSelector) rootView.findViewById(R.id.itemImage1),
                 (ImageSelector) rootView.findViewById(R.id.itemImage2),
                 (ImageSelector) rootView.findViewById(R.id.itemImage3),
                 (ImageSelector) rootView.findViewById(R.id.itemImage4)
         };
-        for (ImageSelector imageSelector : itemImages) {
+        for (ImageSelector imageSelector : mItemImages) {
             imageSelector.setActivity(this.getActivity());
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
         }
@@ -153,9 +167,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         logD(null, "onCreateView :: mCreateNew= " + mCreateNew);
 
         if (mCreateNew) {
-            mProductTitle.setText("");
-            mProductDescription.setText("");
-            for (ImageSelector imageSelector : itemImages) {
+            mTitleEditText.setText("");
+            mDescriptionEditText.setText("");
+            for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.removeSelectedImage();
             }
         } else {
@@ -170,12 +184,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             if (savedDirty) {
                 mDirty = true;
-                for (ImageSelector imageSelector : itemImages) {
+                for (ImageSelector imageSelector : mItemImages) {
                     imageSelector.restore(savedInstanceState);
                 }
                 mItemId = savedItemId;
-                mProductTitle.setText(savedInstanceState.getString("title"));
-                mProductDescription.setText(savedInstanceState.getString("description"));
+                mTitleEditText.setText(savedInstanceState.getString("title"));
+                mDescriptionEditText.setText(savedInstanceState.getString("description"));
             } else {
                 if (mItemId != null) {
                     showLoadingDialog();
@@ -189,12 +203,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             } else {
                                 // TODO: check if still we are need this
                                 mItem = item;
-                                mProductTitle.setText(mItem.getTitle());
-                                mProductDescription.setText(mItem.getDescription());
+                                mTitleEditText.setText(mItem.getTitle());
+                                mDescriptionEditText.setText(mItem.getDescription());
                                 ParseFile[] images = mItem.getImages();
                                 for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
                                     if (images[i] != null) {
-                                        itemImages[i].loadInBackground(images[i], new GetDataCallback() {
+                                        mItemImages[i].loadInBackground(images[i], new GetDataCallback() {
                                             @Override
                                             public void done(byte[] data, ParseException e) {
                                                 if (e == null) {
@@ -231,8 +245,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mDirty = true;
             }
         };
-        mProductTitle.addTextChangedListener(textWatcherToMarkDirty);
-        mProductDescription.addTextChangedListener(textWatcherToMarkDirty);
+        mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
+        mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
 
         rootView.findViewById(R.id.saveItemButton).setOnClickListener(this);
 
@@ -256,11 +270,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
+                mTitleEditText.setError(null);
                 if (isFormInputsValid()) {
                     saveItem();
+                } else {
+                    Toast.makeText(getActivity(), "لطفا خطاهای مشخص شده را اصلاح و دوباره تلاش کنید.", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.choose_category_button:
+            case R.id.edit_item_category_semi_button:
                 Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
@@ -270,41 +287,58 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     private boolean isFormInputsValid() {
-        final String title = mProductTitle.getText().toString();
-        final String description = mProductDescription.getText().toString();
+
+        final String title = mTitleEditText.getText().toString();
+        final String price = mPriceEditText.getText().toString();
+        final String description = mDescriptionEditText.getText().toString();
 
         boolean noImage = true;
-        for (ImageSelector imageSelector : itemImages) {
+        for (ImageSelector imageSelector : mItemImages) {
             if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getParseFile() != null)) {
                 noImage = false;
                 break;
             }
         }
         if (noImage) {
-            mItemImageHint.requestFocus();
-            mItemImageHint.setError(getString(R.string.error_edit_item_no_image));
+            mImagesTitleTextView.requestFocus();
+            mImagesTitleTextView.setError(getString(R.string.error_edit_item_no_image));
+            mScrollView.fullScroll(ScrollView.FOCUS_UP);
             return false;
         }
 
         if (title.trim().length() == 0) {
-            mProductTitle.requestFocus();
-            mProductTitle.setError(getString(R.string.error_edit_item_title_is_empty));
+            mTitleEditText.requestFocus();
+            mTitleEditText.setError(getString(R.string.error_edit_item_title_is_empty));
+            return false;
+        }
+
+        if(price.trim().length() == 0){
+            mPriceEditText.requestFocus();
+            mPriceEditText.setError("لطفا قیمت محصول را تعیین کنید.");
+            return false;
+        }
+
+        if(Integer.valueOf(price.trim()) <100){
+            mPriceEditText.requestFocus();
+            mPriceEditText.setError("حداقل قیمت محصول ۱۰۰ تومان است.");
+            return false;
+        }
+
+
+        if (mCategoryId == null) {
+            mCategoryTextView.requestFocus();
+            mCategoryTextView.setError(getString(R.string.error_category_is_not_selected));
             return false;
         }
 
         if (description.trim().length() == 0) {
-            mProductDescription.requestFocus();
-            mProductDescription.setError(getString(R.string.error_edit_item_description_is_empty));
+            mDescriptionEditText.requestFocus();
+            mDescriptionEditText.setError(getString(R.string.error_edit_item_description_is_empty));
             return false;
         }
 
-        if (mSelectedCategoryObjectId != null) {
-            mChooseCategoryButton.requestFocus();
-            mChooseCategoryButton.setError(getString(R.string.error_edit_item_category_unchosen));
-            return false;
-        }
 
-        if (! mDirty) {
+        if (!mDirty) {
             Toast.makeText(getActivity(), R.string.item_not_changed, Toast.LENGTH_LONG).show();
             return false;
         }
@@ -317,8 +351,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     private void saveItem() {
-        String title = mProductTitle.getText().toString().trim();
-        String description = mProductDescription.getText().toString().trim();
+        String title = mTitleEditText.getText().toString().trim();
+        String description = mDescriptionEditText.getText().toString().trim();
+        Number price = Integer.valueOf(mPriceEditText.getText().toString().trim());
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
@@ -326,7 +361,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Item.saveWithImages(mItem, title, description, mSelectedCategoryObjectId, itemImages).continueWith(new Continuation<Item, Void>() {
+            Item.saveWithImages(mItem, title, description, mCategoryId, price, mItemImages).continueWith(new Continuation<Item, Void>() {
                 @Override
                 public Void then(Task<Item> task) throws Exception {
                     logD(null, "saveItem, Back to then");
@@ -336,7 +371,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         mDirty = false;
                         mItem = task.getResult();
                         mItemId = mItem.getObjectId();
-                        logD(null, "saveItem, mItem= "  + mItem + ", mItemId= " + mItemId);
+                        logD(null, "saveItem, mItem= " + mItem + ", mItemId= " + mItemId);
                     } else {
                         if (task.isFaulted()) {
                             logE("Fault while saveItem", "", task.getError());
@@ -362,7 +397,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for (ImageSelector imageSelector : itemImages) {
+        for (ImageSelector imageSelector : mItemImages) {
             if (imageSelector.onActivityResult(requestCode, resultCode, data)) {
                 return;
             }
@@ -371,10 +406,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
 
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedCategoryName = data.getStringExtra("selectedCategoryName");
-                    mSelectedCategoryObjectId = data.getStringExtra("selectedCategoryObjectId");
-                    Toast.makeText(getActivity(), mSelectedCategoryObjectId, Toast.LENGTH_LONG).show();
-                    Toast.makeText(getActivity(), mSelectedCategoryName, Toast.LENGTH_LONG).show();
+                    mCategoryTextView.setError(null);
+                    mCategoryName = data.getStringExtra("selectedCategoryName");
+                    mCategoryId = data.getStringExtra("selectedCategoryObjectId");
+                    mChooseCategoryButton.setText(mCategoryName);
                 }
                 break;
         }
@@ -384,13 +419,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mDirty) {
-            for (ImageSelector imageSelector : itemImages) {
+            for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.onSaveInstanceState(outState);
             }
             outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
             outState.putString(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
-            outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, mProductTitle.getText().toString().trim());
-            outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, mProductDescription.getText().toString().trim());
+            outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, mTitleEditText.getText().toString().trim());
+            outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, mDescriptionEditText.getText().toString().trim());
         }
     }
 }

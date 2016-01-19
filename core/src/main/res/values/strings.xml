@@ -23,8 +23,8 @@
     <string name="title_activity_register">ثبت‌نام</string>
 
     <string name="name_hint">نامی برای خود انتخاب کنید.</string>
-    <string name="register_form_subtitle">*وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی
-        است.
+    <string name="register_form_subtitle">
+        وارد کردن اطلاعات مربوط به فیلدهای ستاره‌دار الزامی است.
     </string>
     <string name="register_form_name_alert">
         نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند.
@@ -87,7 +87,7 @@
         بررسی کنید.
     </string>
 
-    <string name="please_check_internet_connection"> لطفا اینترنت دستگاه خود را بررسی کنید.</string>
+    <string name="please_check_internet_connection">لطفا اینترنت دستگاه خود را بررسی کنید.</string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
 
     <string name="syncing_data">در حال همگام‌سازی اطلاعات</string>
@@ -131,7 +131,7 @@
     <string name="edit_item_description_hint">توضیحات</string>
     <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
-    <string name="error_edit_item_category_unchosen">دسته‌ی محصول اسنتخاب نشده است.</string>
+    <string name="error_category_is_not_selected"> دسته‌بندی آگهی انتخاب نشده است. </string>
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
     <string name="edit_item_done">محصول شما با موفقیت ذخیره شد.</string>
