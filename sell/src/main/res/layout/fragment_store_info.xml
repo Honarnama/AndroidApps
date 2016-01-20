@@ -170,6 +170,7 @@
                   android:layout_below="@id/store_description_edit_text"
                   android:layout_marginTop="20dp"
                   android:id="@+id/store_contact_title"
+                  android:layout_width="match_parent"
                 />
 
         <EditText

@@ -273,7 +273,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     }
 
     private void switchFragmentFromEdittingItem(final OnAcceptedListener onAcceptedListener) {
-        final AlertDialog.Builder exitEditingDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle));
+        final AlertDialog.Builder exitEditingDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
         exitEditingDialog.setTitle(getString(R.string.exit_from_editing_dialog_title));
         exitEditingDialog.setItems(new String[]{getString(R.string.exit_from_editing_option_dont_exit), getString(R.string.exit_from_editing_option_exit)},
                 new DialogInterface.OnClickListener() {

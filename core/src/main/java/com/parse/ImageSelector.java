@@ -8,6 +8,7 @@ import net.honarnama.base.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -142,8 +143,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     }
 
     public void selectPhoto() {
+
         final AlertDialog.Builder changeImageOptionsDialog =
-                new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle));
+                new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.AlertDialogCustom));
         changeImageOptionsDialog.setTitle(
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 

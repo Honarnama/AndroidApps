@@ -44,97 +44,181 @@
                     />
         </LinearLayout>
 
-        <TableLayout
-                android:layout_width="match_parent"
+
+        <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="0dip"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
+                android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 >
+            <com.parse.ImageSelector
+                    android:id="@+id/itemImage1"
+                    android:src="@drawable/camera_insta"
+                    android:layout_gravity="left"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1"
+                    app:removable="true"
+                    app:imageSelectorIndex="1"
+                    app:outputX="600"
+                    app:outputY="600"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="5dp"
+                    app:riv_border_color="@color/gray_dark"
+                    android:background="@color/white"
+                    />
+            <com.parse.ImageSelector
+                    android:id="@+id/itemImage2"
+                    android:src="@drawable/camera_insta"
+                    android:layout_gravity="right"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1"
+                    app:removable="true"
+                    app:imageSelectorIndex="2"
+                    app:outputX="600"
+                    app:outputY="600"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginRight="5dp"
+                    app:riv_border_color="@color/gray_dark"
+                    android:background="@color/white"
+                    />
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:orientation="horizontal"
+                >
+            <com.parse.ImageSelector
+                    android:id="@+id/itemImage3"
+                    android:src="@drawable/camera_insta"
+                    android:layout_gravity="left"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1"
+                    app:removable="true"
+                    app:imageSelectorIndex="3"
+                    app:outputX="600"
+                    app:outputY="600"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="5dp"
+                    app:riv_border_color="@color/gray_dark"
+                    android:background="@color/white"
+                    />
+            <com.parse.ImageSelector
+                    android:id="@+id/itemImage4"
+                    android:src="@drawable/camera_insta"
+                    android:layout_gravity="right"
+                    android:scaleType="centerInside"
+                    android:layout_weight="1"
+                    app:removable="true"
+                    app:imageSelectorIndex="4"
+                    app:outputX="600"
+                    app:outputY="600"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginRight="5dp"
+                    app:riv_border_color="@color/gray_dark"
+                    android:background="@color/white"
+                    />
+        </LinearLayout>
+        <!--       <TableLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:padding="0dip"
+                       android:layout_marginTop="10dp"
+                       >
 
-            <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="0dp"
-                    android:layout_margin="0dp"
-                    >
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage1"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="1"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginBottom="5dp"
-                        app:riv_border_color="@color/gray_dark"
-                        android:background="@color/red"
-                        />
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage2"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="2"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginBottom="5dp"
-                        app:riv_border_color="@color/gray_dark"
-                        android:background="@color/white"
-                        />
-            </TableRow>
-            <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage3"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="3"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        app:riv_border_color="@color/gray_dark"
-                        android:background="@color/white"
-                        />
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage4"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="4"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        app:riv_border_color="@color/gray_dark"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/white"
-                        />
-            </TableRow>
-        </TableLayout>
+                   <TableRow
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:gravity="center"
+                           android:paddingRight="16dp"
+                           android:paddingLeft="16dp"
+                           >
+                       <com.parse.ImageSelector
+                               android:id="@+id/itemImage1"
+                               android:src="@drawable/camera_insta"
+                               android:layout_gravity="left"
+                               android:scaleType="centerInside"
+                               android:layout_weight="1"
+                               app:removable="true"
+                               app:imageSelectorIndex="1"
+                               app:outputX="600"
+                               app:outputY="600"
+                               android:layout_width="150dp"
+                               android:layout_height="150dp"
+                               android:layout_marginLeft="5dp"
+                               app:riv_border_color="@color/gray_dark"
 
+                               />
+                       <com.parse.ImageSelector
+                               android:id="@+id/itemImage2"
+                               android:src="@drawable/camera_insta"
+                               android:layout_gravity="right"
+                               android:scaleType="centerInside"
+                               android:layout_weight="1"
+                               app:removable="true"
+                               app:imageSelectorIndex="2"
+                               app:outputX="600"
+                               app:outputY="600"
+                               android:layout_width="150dp"
+                               android:layout_height="150dp"
+                               android:layout_marginRight="5dp"
+                               app:riv_border_color="@color/gray_dark"
+                               />
+                   </TableRow>
+                   <TableRow
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:paddingTop="10dp"
+                           android:layout_gravity="center"
+                           android:gravity="center"
+                           android:paddingRight="16dp"
+                           android:paddingLeft="16dp"
+                           >
+                       <com.parse.ImageSelector
+                               android:id="@+id/itemImage3"
+                               android:src="@drawable/camera_insta"
+                               android:layout_gravity="left"
+                               android:scaleType="centerInside"
+                               android:layout_weight="1"
+                               app:removable="true"
+                               app:imageSelectorIndex="3"
+                               app:outputX="600"
+                               app:outputY="600"
+                               android:layout_width="150dp"
+                               android:layout_height="150dp"
+                               android:layout_marginLeft="5dp"
+                               app:riv_border_color="@color/gray_dark"
+                               />
+                       <com.parse.ImageSelector
+                               android:id="@+id/itemImage4"
+                               android:src="@drawable/camera_insta"
+                               android:layout_gravity="right"
+                               android:scaleType="centerInside"
+                               android:layout_weight="1"
+                               app:removable="true"
+                               app:imageSelectorIndex="4"
+                               app:outputX="600"
+                               app:outputY="600"
+                               android:layout_width="150dp"
+                               android:layout_height="150dp"
+                               android:layout_marginRight="5dp"
+                               app:riv_border_color="@color/gray_dark"
+                               />
+                   </TableRow>
+               </TableLayout>-->
         <TextView
                 android:text="@string/edit_item_details_title"
                 android:layout_marginTop="20dp"
@@ -199,15 +283,15 @@
                       android:textStyle="bold"
                       android:layout_gravity="center"
                     />
-            <Button android:layout_width="wrap_content" android:layout_height="35dp"
+            <Button android:layout_width="wrap_content" android:layout_height="40dp"
                     android:text="انتخاب"
                     android:layout_gravity="right"
                     android:layout_marginRight="5dp"
                     android:id="@+id/edit_item_category_semi_button"
-                    android:background="@color/cyan"
+                    android:background="@color/extra_dark_green"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     />
         </LinearLayout>
 

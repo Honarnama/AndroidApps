@@ -87,7 +87,7 @@
         بررسی کنید.
     </string>
 
-    <string name="please_check_internet_connection">لطفا اینترنت دستگاه خود را بررسی کنید.</string>
+    <string name="please_check_internet_connection"> لطفا اینترنت دستگاه خود را بررسی کنید. </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
 
     <string name="syncing_data">در حال همگام‌سازی اطلاعات</string>
@@ -177,5 +177,8 @@
     <string name="error_getting_province_list">
         خطا در نمایش فهرست استان‌ها.
     </string>
+    <string name="select">انتخاب</string>
+    <string name="getting_information">در حال گرفتن اطلاعات...</string>
+    <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
 
 </resources>
