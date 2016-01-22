@@ -27,8 +27,14 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     }
 
     public String getLocalClassName() {
-        final String pkg = getActivity().getPackageName();
-        final String cls = getClass().getCanonicalName();
+        String pkg = "";
+        if (getActivity() != null) {
+            pkg = getActivity().getPackageName();
+        }
+        String cls = "";
+        if (getClass() != null) {
+            cls = getClass().getCanonicalName();
+        }
         int packageLen = pkg.length();
         if (!cls.startsWith(pkg) || cls.length() <= packageLen
                 || cls.charAt(packageLen) != '.') {

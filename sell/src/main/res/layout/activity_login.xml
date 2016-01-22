@@ -108,9 +108,11 @@
                         android:id="@+id/login_button"
                         android:text="@string/enter_button"
                         android:layout_below="@id/login_password_edit_text"
-                        android:layout_marginTop="10dp"
                         style="@style/sell_full_width_button"
                         android:background="@color/gray_button_back"
+                        android:layout_margin="0dp"
+                        android:layout_marginTop="10dp"
+
                         />
             </RelativeLayout>
             <TextView

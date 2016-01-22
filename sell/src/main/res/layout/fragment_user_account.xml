@@ -145,6 +145,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
                 style="@style/sell_full_width_button"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 />
 
 
@@ -186,6 +188,8 @@
                 android:layout_marginTop="10dp"
                 style="@style/sell_full_width_button"
                 android:layout_below="@id/account_password_layer"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 />
 
         <!--

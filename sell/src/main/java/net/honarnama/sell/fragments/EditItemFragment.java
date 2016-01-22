@@ -73,6 +73,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private String mCategoryId;
     private String mCategoryName;
 
+    private boolean mFragmentHasView = false;
+
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
             mEditItemFragment = new EditItemFragment();
@@ -81,16 +83,34 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public void reset(boolean createNew) {
+
+        if (mFragmentHasView) {
+            mTitleEditText.setText("");
+            mDescriptionEditText.setText("");
+            mPriceEditText.setText("");
+
+            mCategoryId = null;
+            mChooseCategoryButton.setText(R.string.select);
+            for (ImageSelector imageSelector : mItemImages) {
+                imageSelector.removeSelectedImage();
+            }
+        }
         mItem = null;
         mItemId = null;
+        mCategoryId = null;
+        mCategoryName = null;
+        setDirty(false);
 
-        mDirty = false;
         mCreateNew = createNew;
     }
 
     public void setItemId(String itemId) {
         reset(false);
         mItemId = itemId;
+    }
+
+    private void setDirty(boolean dirty) {
+        mDirty = dirty;
     }
 
     public boolean isDirty() {
@@ -107,8 +127,36 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        TextWatcher textWatcherToMarkDirty = new TextWatcher() {
+            String mValue;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mValue = charSequence.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mValue != editable + "") {
+                    mDirty = true;
+                }
+            }
+        };
+        mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
+        mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
+        mPriceEditText.addTextChangedListener(textWatcherToMarkDirty);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mFragmentHasView = true;
         View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
         mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
@@ -167,16 +215,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         //    mCreateNew = false, savedDirty = false, mItemId = THE_ID
 
         logD(null, "onCreateView :: mCreateNew= " + mCreateNew);
-
         if (mCreateNew) {
-            mTitleEditText.setText("");
-            mDescriptionEditText.setText("");
-            mPriceEditText.setText("");
-            mCategoryId = null;
-            mChooseCategoryButton.setText(R.string.select);
-            for (ImageSelector imageSelector : mItemImages) {
-                imageSelector.removeSelectedImage();
-            }
+            reset(true);
         } else {
             boolean savedDirty = false;
             String savedItemId = null;
@@ -249,29 +289,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         }
                     });
                 } else {
-                    logE("Unexpected state!");
+//                    logE("Unexpected state!");
                 }
             }
         }
-
-        TextWatcher textWatcherToMarkDirty = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mDirty = true;
-            }
-        };
-        mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mPriceEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mChooseCategoryButton.addTextChangedListener(textWatcherToMarkDirty);
 
         rootView.findViewById(R.id.saveItemButton).setOnClickListener(this);
 
@@ -432,6 +453,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     mCategoryTextView.setError(null);
                     mCategoryName = data.getStringExtra("selectedCategoryName");
                     mCategoryId = data.getStringExtra("selectedCategoryObjectId");
+                    setDirty(true);
                     mChooseCategoryButton.setText(mCategoryName);
                 }
                 break;

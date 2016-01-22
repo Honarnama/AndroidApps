@@ -147,8 +147,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
-                    if(task.isFaulted())
-                    {
+                    if (task.isFaulted()) {
                         HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                         switchFragment(fragment);
                         Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
@@ -238,7 +237,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 fragment = ItemsFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_EDIT_ITEM:
-                fragment = mEditItemFragment;
+                fragment = EditItemFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
@@ -252,23 +251,28 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
         }
         // Not null && (Another section || Maybe editing but wants to create new item)
-        if ((fragment != null) && ((fragment != mFragment) || (fragment == mEditItemFragment))) {
-            if (mEditItemFragment.isDirty()) {
-                final HonarnamaBaseFragment finalFragment = fragment;
-                switchFragmentFromEdittingItem(new OnAcceptedListener() {
-                    @Override
-                    public void onAccepted() {
-                        mEditItemFragment.reset(true);
-                        switchFragment(finalFragment);
-                    }
-                });
-            } else {
-                if (fragment == mEditItemFragment) {
+//        if ((fragment != null) && ((fragment != mFragment) || (fragment == mEditItemFragment))) {
+        if ((fragment != null)) {
+            if (mFragment == mEditItemFragment) {
+                if (mEditItemFragment.isDirty()) {
+                    final HonarnamaBaseFragment finalFragment = fragment;
+                    switchFragmentFromEdittingItem(new OnAcceptedListener() {
+                        @Override
+                        public void onAccepted() {
+                            mEditItemFragment.reset(true);
+                            switchFragment(finalFragment);
+                        }
+                    });
+                } else {
                     mEditItemFragment.reset(true);
+                    switchFragment(fragment);
                 }
+            } else {
+                mEditItemFragment.reset(true);
                 switchFragment(fragment);
             }
         }
+
         return false;
     }
 
@@ -306,9 +310,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     @Override
     protected void onStop() {
-        if(mWaitingProgressDialog != null){
-            if(mWaitingProgressDialog.isShowing())
-            {
+        if (mWaitingProgressDialog != null) {
+            if (mWaitingProgressDialog.isShowing()) {
                 mWaitingProgressDialog.dismiss();
             }
         }
