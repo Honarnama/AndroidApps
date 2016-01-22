@@ -1,20 +1,29 @@
 package net.honarnama.sell.model;
 
+import com.parse.FindCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
 import net.honarnama.sell.BuildConfig;
 
+import android.accounts.NetworkErrorException;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -24,6 +33,18 @@ import bolts.TaskCompletionSource;
 public class Item extends ParseObject {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.Item";
     public final static int NUMBER_OF_IMAGES = 4;
+
+    //Defining fields
+    public static String TITLE = "title";
+    public static String DESCRIPTION = "description";
+    public static String OWNER = "owner";
+    public static String CATEGORY_ID = "categoryId";
+    public static String PRICE = "price";
+    public static String IMAGE_1 = "image_1";
+    public static String IMAGE_2 = "image_2";
+    public static String IMAGE_3 = "image_3";
+    public static String IMAGE_4 = "image_4";
+
 
     public Item() {
         super();
@@ -143,5 +164,31 @@ public class Item extends ParseObject {
                 return res.getTask();
             }
         });
+    }
+
+
+    public static Task<List<Item>> getUserItems(Context context) {
+        final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+            tcs.setError(new NetworkErrorException("Network connection failed"));
+            return tcs.getTask();
+        }
+
+        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        parseQuery.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
+        //TODO set limit for number of ads a user can have
+        parseQuery.findInBackground(new FindCallback<Item>() {
+            @Override
+            public void done(List<Item> items, ParseException e) {
+                if(e == null){
+                    tcs.trySetResult(items);
+                }
+                else{
+                    tcs.trySetError(e);
+                }
+            }
+        });
+        return tcs.getTask();
     }
 }
