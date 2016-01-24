@@ -196,7 +196,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar item_row clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -250,7 +250,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 startActivity(intent);
                 break;
         }
-        // Not null && (Another section || Maybe editing but wants to create new item)
+        // Not null && (Another section || Maybe editing but wants to create new item_row)
 //        if ((fragment != null) && ((fragment != mFragment) || (fragment == mEditItemFragment))) {
         if ((fragment != null)) {
             if (mFragment == mEditItemFragment) {

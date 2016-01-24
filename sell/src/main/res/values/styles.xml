@@ -2,9 +2,9 @@
 <resources>
     <style name="Toolbar_Theme">
         <!--
-        <item name="colorControlNormal">#ffffff</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">#ffffff</item>
+        <item_row name="colorControlNormal">#ffffff</item_row>
+        <item_row name="android:textStyle">bold</item_row>
+        <item_row name="android:textColor">#ffffff</item_row>
         -->
     </style>
 

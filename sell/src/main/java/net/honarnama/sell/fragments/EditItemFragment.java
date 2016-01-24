@@ -88,8 +88,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTitleEditText.setText("");
             mDescriptionEditText.setText("");
             mPriceEditText.setText("");
-
-            mCategoryId = null;
             mChooseCategoryButton.setText(R.string.select);
             for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.removeSelectedImage();
@@ -203,15 +201,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         // Mind fuck starts from here
         // The fragment is created
-        // * What if the wants to create a new item?
+        // * What if the wants to create a new item_row?
         //    mCreateNew = true
-        // * What if we were in the middle of editing an item, and the user clicked on create new?
+        // * What if we were in the middle of editing an item_row, and the user clicked on create new?
         //    mCreateNew = true
-        // * What if we were in the middle of creating new item, and phone called, and fragment was killed?
+        // * What if we were in the middle of creating new item_row, and phone called, and fragment was killed?
         //    mCreateNew = false, savedDirty = true, savedItemId = null
-        // * What if we were in the middle of editing an item, and phone called, and fragment was killed?
+        // * What if we were in the middle of editing an item_row, and phone called, and fragment was killed?
         //    mCreateNew = false, savedDirty = true, savedItemId = THE_ID
-        // * What if the wants to edit an item?
+        // * What if the wants to edit an item_row?
         //    mCreateNew = false, savedDirty = false, mItemId = THE_ID
 
         logD(null, "onCreateView :: mCreateNew= " + mCreateNew);
@@ -246,7 +244,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         @Override
                         public void done(Item item, ParseException e) {
                             if (e != null) {
-                                logE("Exception while loading item", "mItemId= " + mItemId, e);
+                                logE("Exception while loading item_row", "mItemId= " + mItemId, e);
                                 Toast.makeText(getActivity(), getActivity().getString(R.string.error_loading_item), Toast.LENGTH_LONG).show();
                             } else {
                                 // TODO: check if still we are need this

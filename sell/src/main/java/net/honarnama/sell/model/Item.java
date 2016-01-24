@@ -132,7 +132,7 @@ public class Item extends ParseObject {
             @Override
             public Task<Void> then(Task<Void> task) throws Exception {
                 if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "saveWithImages, image.saveInBackground s are done. item= " + item);
+                    Log.d(DEBUG_TAG, "saveWithImages, image.saveInBackground s are done. item_row= " + item);
                 }
                 if (!task.isCompleted()) {
                     return task;
@@ -151,7 +151,7 @@ public class Item extends ParseObject {
             @Override
             public Task<Item> then(Task<Void> task) throws Exception {
                 if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "saveWithImages, item.saveInBackground is done.");
+                    Log.d(DEBUG_TAG, "saveWithImages, item_row.saveInBackground is done.");
                 }
                 TaskCompletionSource<Item> res = new TaskCompletionSource<Item>();
                 if (task.isCompleted()) {

@@ -49,7 +49,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
-        final ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
+        ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
@@ -70,14 +70,19 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     }
                     Toast.makeText(getActivity(), R.string.error_getting_items_list + R.string.please_check_internet_connection, Toast.LENGTH_LONG);
                 } else {
-                    mAdapter = new ItemsAdapter(getActivity(), task.getResult());
-                    listView.setAdapter(mAdapter);
-
+                    List<Item> itemList = task.getResult();
+                    mAdapter.addAll(itemList);
+                    mAdapter.notifyDataSetChanged();
                 }
                 return null;
             }
         });
+
+
+        mAdapter = new ItemsAdapter(getActivity()) ;
+        listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
+
         return rootView;
     }
 
