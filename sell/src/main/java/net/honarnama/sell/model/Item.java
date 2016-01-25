@@ -48,6 +48,10 @@ public class Item extends ParseObject {
     public static String IMAGE_4 = "image_4";
     public static String STATUS = "status";
 
+    public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
+    public static Number STATUS_CODE_NOT_VERIFIED = -1;
+    public static Number STATUS_CODE_VERIFIED = 1;
+
 
     public Item() {
         super();
@@ -75,6 +79,10 @@ public class Item extends ParseObject {
 
     public Number getPrice() {
         return getNumber("price");
+    }
+
+    public Number getStatus(){
+        return  getNumber(STATUS);
     }
 
     public String getDescription() {

@@ -76,6 +76,18 @@ public class ItemsAdapter extends BaseAdapter {
 //        Log.e("Elnaz", mItems.get(1).getTitle());
         // Setting all values in listview
         mViewHolder.title.setText(item.getTitle());
+
+        if (item.getStatus() == Item.STATUS_CODE_CONFIRMATION_WAITING) {
+            mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
+        }
+
+        if (item.getStatus() == Item.STATUS_CODE_NOT_VERIFIED) {
+            mViewHolder.itemRowContainer.setBackground(mContext.getResources().getDrawable(R.drawable.red_borderd_background));
+            mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
+            mViewHolder.waitingToBeConfirmedTextView.setText("این آگهی تایید نشد");
+
+        }
+
         mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
@@ -139,12 +151,16 @@ public class ItemsAdapter extends BaseAdapter {
         ImageSelector icon;
         RelativeLayout deleteContainer;
         RelativeLayout editContainer;
+        TextView waitingToBeConfirmedTextView;
+        RelativeLayout itemRowContainer;
 
         public MyViewHolder(View view) {
             title = (TextView) view.findViewById(R.id.item_title_in_list);
             icon = (ImageSelector) view.findViewById(R.id.item_image_in_list);
             deleteContainer = (RelativeLayout) view.findViewById(R.id.item_delete_container);
             editContainer = (RelativeLayout) view.findViewById(R.id.item_edit_container);
+            waitingToBeConfirmedTextView = (TextView) view.findViewById(R.id.waiting_to_be_confirmed_text_view);
+            itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_container);
         }
     }
 }

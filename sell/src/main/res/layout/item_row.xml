@@ -3,6 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bordered_background"
+                android:id="@+id/item_row_container"
         >
 
     <com.parse.ImageSelector
@@ -47,7 +48,7 @@
                 style="@style/default_text_view"
                 android:text="ویرایش آگهی"
                 android:textSize="12dp"
-                android:textColor="#f39c12"
+                android:textColor="#2980b9"
                 android:layout_toLeftOf="@id/item_edit_image_view"
                 android:layout_centerVertical="true"
                 android:singleLine="true"
@@ -84,6 +85,7 @@
     </RelativeLayout>
 
     <TextView
+            android:id="@+id/waiting_to_be_confirmed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/default_text_view"
@@ -99,5 +101,6 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:layout_marginLeft="2dp"
+            android:visibility="gone"
             />
 </RelativeLayout>
