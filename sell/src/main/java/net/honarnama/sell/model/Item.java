@@ -1,6 +1,8 @@
 package net.honarnama.sell.model;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -44,6 +46,7 @@ public class Item extends ParseObject {
     public static String IMAGE_2 = "image_2";
     public static String IMAGE_3 = "image_3";
     public static String IMAGE_4 = "image_4";
+    public static String STATUS = "status";
 
 
     public Item() {
@@ -181,14 +184,47 @@ public class Item extends ParseObject {
         parseQuery.findInBackground(new FindCallback<Item>() {
             @Override
             public void done(List<Item> items, ParseException e) {
-                if(e == null){
+                if (e == null) {
                     tcs.trySetResult(items);
-                }
-                else{
+                } else {
                     tcs.trySetError(e);
                 }
             }
         });
+        return tcs.getTask();
+    }
+
+
+    public static Task<Void> deleteItem(Context context, String itemId) {
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+            tcs.setError(new NetworkErrorException("Network connection failed"));
+            return tcs.getTask();
+        }
+
+        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        parseQuery.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
+        parseQuery.getFirstInBackground(new GetCallback<Item>() {
+            @Override
+            public void done(final Item item, ParseException e) {
+                if (e == null) {
+                    item.deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                tcs.setResult(null);
+                            } else {
+                                tcs.trySetError(e);
+                            }
+                        }
+                    });
+                } else {
+                    tcs.trySetError(e);
+                }
+            }
+        });
+
         return tcs.getTask();
     }
 }

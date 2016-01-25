@@ -8,17 +8,25 @@ import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.Item;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import bolts.Continuation;
+import bolts.Task;
 
 /**
  * Created by reza on 11/5/15.
@@ -63,7 +71,7 @@ public class ItemsAdapter extends BaseAdapter {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        Item item = mItems.get(position);
+        final Item item = mItems.get(position);
 //        Log.e("Elnaz", mItems.get(0).getTitle());
 //        Log.e("Elnaz", mItems.get(1).getTitle());
         // Setting all values in listview
@@ -78,11 +86,35 @@ public class ItemsAdapter extends BaseAdapter {
         mViewHolder.deleteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO actually remove item from db
-                //TODO show loading dialog
-                //TODO show confirmation dialog
-                mItems.remove(position);
-                notifyDataSetChanged();
+
+                new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle))
+                        .setTitle("تایید حذف")
+                        .setMessage("این آگهی را حذف میکنید؟")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                final ProgressDialog progressDialog = new ProgressDialog(mContext);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setMessage(mContext.getString(R.string.please_wait));
+                                progressDialog.show();
+                                Item.deleteItem(mContext, mItems.get(position).getObjectId()).continueWith(new Continuation<Void, Object>() {
+                                    @Override
+                                    public Object then(Task<Void> task) throws Exception {
+                                        progressDialog.dismiss();
+                                        if (task.isFaulted()) {
+                                            Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + R.string.please_check_internet_connection, Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            mItems.remove(position);
+                                            notifyDataSetChanged();
+                                        }
+                                        return null;
+                                    }
+                                });
+
+                            }
+                        })
+                        .setNegativeButton("نه اشتباه شد.", null).show();
+
             }
         });
 
