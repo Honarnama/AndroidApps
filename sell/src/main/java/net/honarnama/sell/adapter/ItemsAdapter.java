@@ -60,7 +60,6 @@ public class ItemsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.e("Elnaz", position + "");
         MyViewHolder mViewHolder;
 
         if (convertView == null) {

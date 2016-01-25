@@ -81,8 +81,8 @@ public class Item extends ParseObject {
         return getNumber("price");
     }
 
-    public Number getStatus(){
-        return  getNumber(STATUS);
+    public Number getStatus() {
+        return getNumber(STATUS);
     }
 
     public String getDescription() {
@@ -96,14 +96,17 @@ public class Item extends ParseObject {
     public ParseFile[] getImages() {
         ParseFile[] res = new ParseFile[NUMBER_OF_IMAGES];
         for (int i = 0; i < NUMBER_OF_IMAGES; i++) {
-            ParseFile imageFile = getParseFile("image_" + (i + 1));
-            res[i] = imageFile;
+            if (has("image_" + (i + 1))) {
+                ParseFile imageFile = getParseFile("image_" + (i + 1));
+                res[i] = imageFile;
+            }
         }
         return res;
     }
 
     public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final String categoryId, final Number price, final ImageSelector[] itemImages) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
+        final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
 
         for (ImageSelector imageSelector : itemImages) {
@@ -117,10 +120,14 @@ public class Item extends ParseObject {
                     Log.d(DEBUG_TAG, "saveWithImages, new file: " + parseFile);
                     parseFileImages.add(parseFile);
                     tasks.add(parseFile.saveInBackground());
+                } else {
+                    parseFileImagesToRemove.add(parseFile);
                 }
             } else if (parseFile != null) {
                 Log.d(DEBUG_TAG, "saveWithImages, existing file: " + parseFile);
-                parseFileImages.add(parseFile);
+                if (!imageSelector.isDeleted()) {
+                    parseFileImages.add(parseFile);
+                }
             } else {
                 Log.d(DEBUG_TAG, "saveWithImages, ignoring " + imageSelector);
             }
@@ -137,6 +144,11 @@ public class Item extends ParseObject {
         } else {
             item = new Item(ParseUser.getCurrentUser(), title, description, categoryId, price);
         }
+
+        item.remove("image_1");
+        item.remove("image_2");
+        item.remove("image_3");
+        item.remove("image_4");
 
         Task<Void> task = Task.whenAll(tasks).continueWithTask(new Continuation<Void, Task<Void>>() {
 

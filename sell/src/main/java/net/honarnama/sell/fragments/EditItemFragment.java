@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mCategoryId = null;
         mCategoryName = null;
         setDirty(false);
-
         mCreateNew = createNew;
     }
 
@@ -267,9 +267,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 });
 
                                 ParseFile[] images = mItem.getImages();
+
+                                int counter = -1;
                                 for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
                                     if (images[i] != null) {
-                                        mItemImages[i].loadInBackground(images[i], new GetDataCallback() {
+                                        counter++;
+                                        mItemImages[counter].loadInBackground(images[i], new GetDataCallback() {
                                             @Override
                                             public void done(byte[] data, ParseException e) {
                                                 if (e == null) {
@@ -336,7 +339,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
-            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getParseFile() != null)) {
+            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getParseFile() != null && !imageSelector.isDeleted())) {
                 noImage = false;
                 break;
             }

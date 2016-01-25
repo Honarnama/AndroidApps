@@ -150,7 +150,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 
         String[] imageSourceProviders;
-        if (mIncludeRemoveImage && (mFinalImageUri != null || !isDeleted())) {
+        if (mIncludeRemoveImage && (mParseFile != null)) {
             imageSourceProviders = new String[3];
             imageSourceProviders[2] = mContext.getString(R.string.image_selector_option_text_remove);
         } else {
@@ -188,7 +188,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
                     case 2:
                         removeSelectedImage();
-                        mChanged = true;
                         if (BuildConfig.DEBUG) {
                             Log.d(LOG_TAG, "Image is removed");
                         }
@@ -201,13 +200,15 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public void removeSelectedImage() {
         mFinalImageUri = null;
+        mParseFile = null;
+        setFinalImageUri(null);
         if (mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageRemoved();
         }
         if (mDefaultDrawable != null) {
             setImageDrawable(mDefaultDrawable);
         }
-        mChanged = false;
+        mChanged = true;
         mIsDeleted = true;
     }
 
