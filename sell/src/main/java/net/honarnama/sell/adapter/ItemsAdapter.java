@@ -6,13 +6,12 @@ import com.parse.ParseException;
 
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.sell.model.Item;
+import net.honarnama.core.model.Item;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;

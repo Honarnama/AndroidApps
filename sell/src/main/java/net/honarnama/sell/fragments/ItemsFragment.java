@@ -1,14 +1,12 @@
 package net.honarnama.sell.fragments;
 
-import com.parse.ParseObject;
-
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
-import net.honarnama.sell.model.Item;
+import net.honarnama.core.model.Item;
 
 import android.app.ProgressDialog;
 import android.content.Context;

@@ -137,15 +137,38 @@ public class CacheData {
                     }
                 });
             }
-        }).continueWith(new Continuation<Object, Object>() {
+        }).continueWithTask(new Continuation<Object, Task<Void>>() {
             @Override
-            public Object then(Task<Object> task) throws Exception {
+            public Task<Void> then(Task<Object> task) throws Exception {
+                return cacheUserItems().continueWith(new Continuation<Void, Void>() {
+                    @Override
+                    public Void then(Task<Void> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false);
+                            if (BuildConfig.DEBUG) {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching Item Task Failed. Code: " + task.getError() +
+                                        "//" + task.getError().getMessage());
+                            } else {
+                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching Item Task Failed.");
+                            }
+                        } else {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                        }
+                        return null;
+                    }
+                });
+            }
+        }).continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
                 mPrefEditor.commit();
                 receivingDataProgressDialog.dismiss();
                 if (mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false) &&
-                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)
+                        ) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, true);
                     mPrefEditor.commit();
                     tcs.trySetResult(null);
@@ -383,6 +406,71 @@ public class CacheData {
 
                 }
 
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public Task<Void> cacheUserItems() {
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+        ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
+        query.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+            tcs.trySetError(new NetworkErrorException("No Network connection"));
+            return tcs.getTask();
+        }
+
+        query.findInBackground(new FindCallback<Item>() {
+            @Override
+            public void done(final List<Item> items, ParseException e) {
+                if (e == null) {
+                    tcs.setResult(null);
+                    ParseObject.unpinAllInBackground(Item.OBJECT_NAME, items, new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                ParseObject.pinAllInBackground(Item.OBJECT_NAME, items, new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+
+                                        if (e == null) {
+                                            SharedPreferences.Editor editor = mSharedPreferences.edit();
+                                            editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                                            editor.commit();
+                                        } else {
+                                            tcs.trySetError(e);
+                                        }
+                                    }
+                                });
+                            } else {
+                                tcs.trySetError(e);
+                            }
+                        }
+                    });
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "User does not have any items yet.");
+                        }
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                        editor.commit();
+                        tcs.setResult(null);
+                    } else {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "Caching item task failed.  Error Code: " + e.getCode() +
+                                            "//" + e.getMessage() + " // " + e, e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching item task failed. "
+                                    + e.getMessage());
+                        }
+                        tcs.trySetError(e);
+                    }
+
+                }
             }
         });
         return tcs.getTask();

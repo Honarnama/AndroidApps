@@ -7,6 +7,8 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
@@ -14,13 +16,16 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.sell.model.Item;
+import net.honarnama.core.model.Item;
 
+import android.accounts.NetworkErrorException;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -240,12 +245,26 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 if (mItemId != null) {
                     showLoadingDialog();
                     ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
+
+                    final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getActivity().getClass().getName(), "getting items from Local data store");
+                        }
+                        query.fromLocalDatastore();
+                    } else {
+                        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                            return null;
+                        }
+                    }
+
+
                     query.getInBackground(mItemId, new GetCallback<Item>() {
                         @Override
                         public void done(Item item, ParseException e) {
                             if (e != null) {
                                 logE("Exception while loading item_row", "mItemId= " + mItemId, e);
-                                Toast.makeText(getActivity(), getActivity().getString(R.string.error_loading_item), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), getActivity().getString(R.string.error_loading_item) + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
                             } else {
                                 // TODO: check if still we are need this
                                 mItem = item;
@@ -272,7 +291,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
                                     if (images[i] != null) {
                                         counter++;
-                                        switch (counter){
+                                        switch (counter) {
                                             case 0:
                                                 rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.VISIBLE);
                                                 rootView.findViewById(R.id.itemImage1).setVisibility(View.GONE);

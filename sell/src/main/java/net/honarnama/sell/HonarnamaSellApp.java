@@ -4,7 +4,7 @@ package net.honarnama.sell;
 import com.parse.ParseObject;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.sell.model.Item;
+import net.honarnama.core.model.Item;
 
 import android.util.Log;
 

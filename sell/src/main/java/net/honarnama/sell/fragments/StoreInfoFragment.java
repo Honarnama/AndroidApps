@@ -746,7 +746,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get store info from LocalDatastore");
+                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "getting store info from local datastore");
             }
             query.fromLocalDatastore();
         } else {
@@ -811,7 +811,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                     + e.getMessage());
                         }
                     }
-
                 }
 
             }

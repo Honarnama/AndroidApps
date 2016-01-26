@@ -1,4 +1,4 @@
-package net.honarnama.sell.model;
+package net.honarnama.core.model;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -10,16 +10,18 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.model.Store;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
-import net.honarnama.sell.BuildConfig;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -36,10 +38,11 @@ public class Item extends ParseObject {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.Item";
     public final static int NUMBER_OF_IMAGES = 4;
 
+    public static String OBJECT_NAME = "Item";
+
     //Defining fields
     public static String TITLE = "title";
     public static String DESCRIPTION = "description";
-    public static String OWNER = "owner";
     public static String CATEGORY_ID = "categoryId";
     public static String PRICE = "price";
     public static String IMAGE_1 = "image_1";
@@ -47,6 +50,7 @@ public class Item extends ParseObject {
     public static String IMAGE_3 = "image_3";
     public static String IMAGE_4 = "image_4";
     public static String STATUS = "status";
+    public static String OWNER = "owner";
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;
@@ -71,6 +75,10 @@ public class Item extends ParseObject {
         put("description", description);
         put("categoryId", categoryId);
         put("price", price);
+    }
+
+    public void setOwner(ParseUser parseUser) {
+        put(OWNER, parseUser);
     }
 
     public String getTitle() {
@@ -165,6 +173,7 @@ public class Item extends ParseObject {
                     count++;
                     item.put("image_" + count, parseFile);
                 }
+                item.pinInBackground();
                 return item.saveInBackground();
             }
         });
@@ -192,22 +201,70 @@ public class Item extends ParseObject {
 
     public static Task<List<Item>> getUserItems(Context context) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
-            tcs.setError(new NetworkErrorException("Network connection failed"));
-            return tcs.getTask();
-        }
-
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+            if (BuildConfig.DEBUG) {
+                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
+            }
+            parseQuery.fromLocalDatastore();
+        } else {
+
+            if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+                tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
+            }
+        }
         parseQuery.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
         //TODO set limit for number of ads a user can have
         parseQuery.findInBackground(new FindCallback<Item>() {
             @Override
-            public void done(List<Item> items, ParseException e) {
+            public void done(final List<Item> items, ParseException e) {
                 if (e == null) {
                     tcs.trySetResult(items);
+                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
+
+                        ParseObject.unpinAllInBackground(Item.OBJECT_NAME, items, new DeleteCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    ParseObject.pinAllInBackground(Item.OBJECT_NAME, items, new SaveCallback() {
+                                                @Override
+                                                public void done(ParseException e) {
+                                                    if (e == null) {
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                                                        editor.commit();
+                                                    }
+                                                }
+                                            }
+                                    );
+                                }
+                            }
+                        });
+                    }
                 } else {
-                    tcs.trySetError(e);
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "User does not have any items yet.");
+                        }
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                        editor.commit();
+                        tcs.trySetResult(null);
+                    }
+                    else {
+                        tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                    "Error Getting Items.  Error Code: " + e.getCode() +
+                                            "//" + e.getMessage() + " // " + e, e);
+                        } else {
+                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Items. "
+                                    + e.getMessage());
+                        }
+                    }
                 }
             }
         });
