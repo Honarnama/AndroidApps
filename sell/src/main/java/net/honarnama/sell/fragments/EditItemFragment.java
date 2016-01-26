@@ -152,10 +152,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentHasView = true;
-        View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
         mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.editProductDescription);
@@ -272,9 +272,46 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
                                     if (images[i] != null) {
                                         counter++;
+                                        switch (counter){
+                                            case 0:
+                                                rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.VISIBLE);
+                                                rootView.findViewById(R.id.itemImage1).setVisibility(View.GONE);
+                                                break;
+                                            case 1:
+                                                rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.VISIBLE);
+                                                rootView.findViewById(R.id.itemImage2).setVisibility(View.GONE);
+                                                break;
+                                            case 2:
+                                                rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.VISIBLE);
+                                                rootView.findViewById(R.id.itemImage3).setVisibility(View.GONE);
+                                                break;
+                                            case 3:
+                                                rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.VISIBLE);
+                                                rootView.findViewById(R.id.itemImage4).setVisibility(View.GONE);
+                                                break;
+                                        }
+                                        final int finalCounter = counter;
                                         mItemImages[counter].loadInBackground(images[i], new GetDataCallback() {
                                             @Override
                                             public void done(byte[] data, ParseException e) {
+                                                switch (finalCounter) {
+                                                    case 0:
+                                                        rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.GONE);
+                                                        rootView.findViewById(R.id.itemImage1).setVisibility(View.VISIBLE);
+                                                        break;
+                                                    case 1:
+                                                        rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.GONE);
+                                                        rootView.findViewById(R.id.itemImage2).setVisibility(View.VISIBLE);
+                                                        break;
+                                                    case 2:
+                                                        rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.GONE);
+                                                        rootView.findViewById(R.id.itemImage3).setVisibility(View.VISIBLE);
+                                                        break;
+                                                    case 3:
+                                                        rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.GONE);
+                                                        rootView.findViewById(R.id.itemImage4).setVisibility(View.VISIBLE);
+                                                        break;
+                                                }
                                                 if (e == null) {
                                                     logD(null, "Fetched! Data length: " + data.length);
                                                 } else {

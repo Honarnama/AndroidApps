@@ -55,6 +55,14 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 >
+            <RelativeLayout
+                    style="@style/GenericProgressBackground"
+                    android:id="@+id/loadingPanel_1"
+                    android:visibility="gone"
+                    >
+                <ProgressBar
+                        style="@style/GenericProgressIndicator"/>
+            </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage1"
                     android:src="@drawable/camera_insta"
@@ -71,6 +79,14 @@
                     app:riv_border_color="@color/gray_dark"
                     android:background="@color/white"
                     />
+            <RelativeLayout
+                    style="@style/GenericProgressBackground"
+                    android:id="@+id/loadingPanel_2"
+                    android:visibility="gone"
+                    >
+                <ProgressBar
+                        style="@style/GenericProgressIndicator"/>
+            </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage2"
                     android:src="@drawable/camera_insta"
@@ -98,6 +114,14 @@
                 android:layout_marginLeft="16dp"
                 android:orientation="horizontal"
                 >
+            <RelativeLayout
+                    style="@style/GenericProgressBackground"
+                    android:id="@+id/loadingPanel_3"
+                    android:visibility="gone"
+                    >
+                <ProgressBar
+                        style="@style/GenericProgressIndicator"/>
+            </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage3"
                     android:src="@drawable/camera_insta"
@@ -114,6 +138,14 @@
                     app:riv_border_color="@color/gray_dark"
                     android:background="@color/white"
                     />
+            <RelativeLayout
+                    style="@style/GenericProgressBackground"
+                    android:id="@+id/loadingPanel_4"
+                    android:visibility="gone"
+                    >
+                <ProgressBar
+                        style="@style/GenericProgressIndicator"/>
+            </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage4"
                     android:src="@drawable/camera_insta"

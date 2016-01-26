@@ -44,6 +44,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -91,6 +93,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public String mSelectedCityId;
     public String mSelectedCityName;
 
+    public ProgressBar mBannerProgressBar;
+    public ProgressBar mLogoProgressBar;
+
     public static StoreInfoFragment mStoreInfoFragment;
 
     @Override
@@ -132,6 +137,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         View rootView = inflater.inflate(R.layout.fragment_store_info, container, false);
         // Inflate the layout for this fragment
+
+        mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
+        mLogoProgressBar = (ProgressBar) rootView.findViewById(R.id.logo_progress_bar);
 
         mSendingDataProgressDialog = new ProgressDialog(getActivity());
 
@@ -617,17 +625,39 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         mSelectedProvinceId = store.getProvinceId();
                         mSelectedCityId = store.getCityId();
 
-
+                        mLogoProgressBar.setVisibility(View.VISIBLE);
                         mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
                             @Override
                             public void done(byte[] data, ParseException e) {
-
+                                mLogoProgressBar.setVisibility(View.GONE);
+                                if (e != null) {
+                                    if (BuildConfig.DEBUG) {
+                                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                                "Getting logo image failed" +
+                                                        "//" + e.getMessage(), e);
+                                    } else {
+                                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting  logo image failed. // " + e.getMessage());
+                                    }
+                                    Toast.makeText(getActivity(), "خطا در نمایش تصویر لوگو." + R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
+
+                        mBannerProgressBar.setVisibility(View.VISIBLE);
                         mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
                             @Override
                             public void done(byte[] data, ParseException e) {
-
+                                mBannerProgressBar.setVisibility(View.GONE);
+                                if(e != null){
+                                    if (BuildConfig.DEBUG) {
+                                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+                                                "Getting banner image failed" +
+                                                        "//" + e.getMessage(), e);
+                                    } else {
+                                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting  banner image failed. // " + e.getMessage());
+                                    }
+                                    Toast.makeText(getActivity(), "خطا در نمایش تصویر بنر."+ R.string.please_check_internet_connection, Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                     }

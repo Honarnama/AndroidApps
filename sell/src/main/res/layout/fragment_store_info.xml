@@ -18,10 +18,12 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/store_banner_container"
                 >
+
             <FrameLayout
                     android:id="@+id/store_banner_frame_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                 <com.parse.ImageSelector
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/store_banner_image_view"
@@ -41,6 +43,19 @@
                         app:removable="true"
                         app:imageSelectorIndex="1"
                         />
+                <ProgressBar
+                        style="@style/GenericProgressIndicator"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:id="@+id/banner_progress_bar"
+                        android:visibility="gone"
+                        />
+
             </FrameLayout>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:paddingRight="10dp"
@@ -50,7 +65,9 @@
                       android:background="@drawable/label"
                       android:textColor="@color/white"
                       android:text="تغییر بنر فروشگاه"
-                      android:layout_centerInParent="true"
+                      android:layout_centerHorizontal="true"
+                      android:layout_alignParentTop="true"
+                      android:layout_marginTop="20dp"
                     />
         </RelativeLayout>
 
@@ -60,6 +77,7 @@
                         android:layout_below="@id/store_banner_container"
                         android:layout_marginTop="-50dp"
                 >
+
             <com.parse.ImageSelector
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/store_logo_image_view"
@@ -79,6 +97,19 @@
                     android:layout_alignParentTop="true"
                     app:removable="true"
                     app:imageSelectorIndex="2"
+                    />
+
+            <ProgressBar
+                    style="@style/GenericProgressIndicator"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/logo_progress_bar"
+                    android:visibility="gone"
                     />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:paddingRight="10dp"
