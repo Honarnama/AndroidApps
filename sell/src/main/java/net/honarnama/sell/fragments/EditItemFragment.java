@@ -374,6 +374,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         final String price = mPriceEditText.getText().toString();
         final String description = mDescriptionEditText.getText().toString();
 
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+            Toast.makeText(getActivity(), R.string.error_network_is_not_enabled, Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
             if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getParseFile() != null && !imageSelector.isDeleted())) {
@@ -425,10 +431,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            Toast.makeText(getActivity(), R.string.error_network_is_not_enabled, Toast.LENGTH_LONG).show();
-            return false;
-        }
         return true;
     }
 

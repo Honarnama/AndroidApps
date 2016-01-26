@@ -335,6 +335,8 @@
             <EditText android:id="@+id/editProductDescription"
                       android:hint="@string/edit_item_description_hint"
                       style="@style/bordered_multiline_edit_text"
+                      android:inputType="textCapSentences|textMultiLine"
+
                     />
         </LinearLayout>
 
