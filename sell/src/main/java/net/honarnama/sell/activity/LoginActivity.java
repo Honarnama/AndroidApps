@@ -156,7 +156,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         } else {
                             hideLoadingDialog();
                             logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
-                            Toast.makeText(LoginActivity.this, R.string.error_login_failed, Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -209,7 +209,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent);
                 } else {
-                    Toast.makeText(LoginActivity.this, R.string.please_install_telegram, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -287,7 +287,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             switch (HonarnamaUser.getActivationMethod()) {
                 case EMAIL:
                     mMessageContainer.setVisibility(View.VISIBLE);
-                    mLoginMessageTextView.setText(R.string.not_verified);
+                    mLoginMessageTextView.setText(getString(R.string.not_verified));
 //                    mResendActivationLinkButton.setVisibility(View.VISIBLE);
                     break;
                 default:
@@ -311,7 +311,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                             if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                                 startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
                             } else {
-                                Toast.makeText(LoginActivity.this, R.string.please_install_telegram, Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
                             }
                         }
                         dialog.dismiss();
@@ -328,7 +328,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
                     if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
                         mMessageContainer.setVisibility(View.VISIBLE);
-                        mLoginMessageTextView.setText(R.string.verification_email_sent);
+                        mLoginMessageTextView.setText(getString(R.string.verification_email_sent));
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
 //                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
@@ -337,7 +337,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 //                        mResendActivationLinkButton.setVisibility(View.GONE);
 //                    }
                     mMessageContainer.setVisibility(View.VISIBLE);
-                    mLoginMessageTextView.setText(R.string.telegram_activation_timeout_message);
+                    mLoginMessageTextView.setText(getString(R.string.telegram_activation_timeout_message));
                     String telegramToken = "";
                     if (HonarnamaUser.getCurrentUser() != null) {
                         telegramToken = HonarnamaUser.getCurrentUser().getString("telegramCode");

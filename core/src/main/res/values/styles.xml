@@ -199,9 +199,7 @@
     </style>
 
     <style name="GenericProgressBackground" parent="android:Theme">
-        <item name="android:layout_width">150dp</item>
-        <item name="android:layout_height">150dp</item>
-        <item name="android:background">#ffffff</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:gravity">center</item>
     </style>
     <style name="GenericProgressIndicator" parent="@android:style/Widget.Holo.ProgressBar.Large">
@@ -209,7 +207,5 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:indeterminate">true</item>
     </style>
-
-
 
 </resources>

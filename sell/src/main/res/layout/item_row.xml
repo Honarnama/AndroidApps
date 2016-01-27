@@ -6,6 +6,18 @@
                 android:id="@+id/item_row_container"
         >
 
+    <RelativeLayout
+            style="@style/GenericProgressBackground"
+            android:id="@+id/item_icon_loading_panel"
+            android:visibility="gone"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="5dp"
+            >
+        <ProgressBar
+                style="@style/GenericProgressIndicator"/>
+    </RelativeLayout>
+
     <com.parse.ImageSelector
             android:id="@+id/item_image_in_list"
             android:layout_width="100dp"

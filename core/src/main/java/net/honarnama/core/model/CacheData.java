@@ -50,7 +50,6 @@ public class CacheData {
     public Task<Void> startSyncing() {
 
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
-        Toast.makeText(mContext, "startSyncing", Toast.LENGTH_SHORT).show();
 
         final ProgressDialog receivingDataProgressDialog = new ProgressDialog(mContext);
         receivingDataProgressDialog.setCancelable(false);

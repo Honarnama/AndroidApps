@@ -44,7 +44,6 @@
                     />
         </LinearLayout>
 
-
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,9 +58,16 @@
                     style="@style/GenericProgressBackground"
                     android:id="@+id/loadingPanel_1"
                     android:visibility="gone"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/bordered_box"
+                    android:layout_gravity="left"
                     >
                 <ProgressBar
-                        style="@style/GenericProgressIndicator"/>
+                        style="@style/GenericProgressIndicator"
+                        android:layout_centerInParent="true"
+                        />
             </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage1"
@@ -79,14 +85,24 @@
                     app:riv_border_color="@color/gray_dark"
                     android:background="@color/white"
                     />
+
+
             <RelativeLayout
                     style="@style/GenericProgressBackground"
                     android:id="@+id/loadingPanel_2"
                     android:visibility="gone"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bordered_box"
+                    android:layout_gravity="right"
                     >
                 <ProgressBar
-                        style="@style/GenericProgressIndicator"/>
+                        style="@style/GenericProgressIndicator"
+                        android:layout_centerInParent="true"
+                        />
             </RelativeLayout>
+
             <com.parse.ImageSelector
                     android:id="@+id/itemImage2"
                     android:src="@drawable/camera_insta"
@@ -104,6 +120,7 @@
                     android:background="@color/white"
                     />
         </LinearLayout>
+
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,9 +135,16 @@
                     style="@style/GenericProgressBackground"
                     android:id="@+id/loadingPanel_3"
                     android:visibility="gone"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/bordered_box"
+                    android:layout_gravity="left"
                     >
                 <ProgressBar
-                        style="@style/GenericProgressIndicator"/>
+                        style="@style/GenericProgressIndicator"
+                        android:layout_centerInParent="true"
+                        />
             </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage3"
@@ -142,9 +166,16 @@
                     style="@style/GenericProgressBackground"
                     android:id="@+id/loadingPanel_4"
                     android:visibility="gone"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bordered_box"
+                    android:layout_gravity="right"
                     >
                 <ProgressBar
-                        style="@style/GenericProgressIndicator"/>
+                        style="@style/GenericProgressIndicator"
+                        android:layout_centerInParent="true"
+                        />
             </RelativeLayout>
             <com.parse.ImageSelector
                     android:id="@+id/itemImage4"

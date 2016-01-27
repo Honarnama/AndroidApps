@@ -59,7 +59,7 @@ public class ItemsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        MyViewHolder mViewHolder;
+        final MyViewHolder mViewHolder;
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_row, parent, false);
@@ -86,10 +86,11 @@ public class ItemsAdapter extends BaseAdapter {
 
         }
 
+        mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
-
+                mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
             }
         });
 
@@ -112,7 +113,7 @@ public class ItemsAdapter extends BaseAdapter {
                                     public Object then(Task<Void> task) throws Exception {
                                         progressDialog.dismiss();
                                         if (task.isFaulted()) {
-                                            Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + R.string.please_check_internet_connection, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                                         } else {
                                             mItems.remove(position);
                                             notifyDataSetChanged();
@@ -151,6 +152,7 @@ public class ItemsAdapter extends BaseAdapter {
         RelativeLayout editContainer;
         TextView waitingToBeConfirmedTextView;
         RelativeLayout itemRowContainer;
+        RelativeLayout itemIcomLoadingPanel;
 
         public MyViewHolder(View view) {
             title = (TextView) view.findViewById(R.id.item_title_in_list);
@@ -159,6 +161,7 @@ public class ItemsAdapter extends BaseAdapter {
             editContainer = (RelativeLayout) view.findViewById(R.id.item_edit_container);
             waitingToBeConfirmedTextView = (TextView) view.findViewById(R.id.waiting_to_be_confirmed_text_view);
             itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_container);
+            itemIcomLoadingPanel = (RelativeLayout) view.findViewById(R.id.item_icon_loading_panel);
         }
     }
 }

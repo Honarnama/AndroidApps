@@ -203,13 +203,12 @@ public class Item extends ParseObject {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
             }
             parseQuery.fromLocalDatastore();
         } else {
-
             if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
                 return tcs.getTask();
