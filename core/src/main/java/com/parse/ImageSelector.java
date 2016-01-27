@@ -479,7 +479,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         }
         mParseFile = parseFile;
 
-        return parseFile.getDataInBackground().onSuccessTask(new Continuation<byte[], Task<byte[]>>() {
+        return parseFile.getDataInBackground().continueWithTask(new Continuation<byte[], Task<byte[]>>() {
             @Override
             public Task<byte[]> then(Task<byte[]> task) throws Exception {
                 byte[] data = task.getResult();

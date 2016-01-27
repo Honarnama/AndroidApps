@@ -55,7 +55,7 @@ public class HonarnamaBaseApp extends Application {
 
     private static HonarnamaBaseApp singleton;
 
-    public static HonarnamaBaseApp getInstance() {
+    public synchronized static HonarnamaBaseApp getInstance() {
         return singleton;
     }
 

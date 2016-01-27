@@ -1,5 +1,6 @@
 package net.honarnama.core.utils;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 
 import android.content.Context;
@@ -33,11 +34,11 @@ public class NetworkManager {
 
         if (displayToast) {
             if (activeNetworkInfo == null) {
-                Toast.makeText(context, context.getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
+                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
             }
             if(activeNetworkInfo != null && (!activeNetworkInfo.isConnected() || !activeNetworkInfo.isAvailable()) )
             {
-                Toast.makeText(context, context.getString(R.string.error_no_internet_connection), Toast.LENGTH_LONG).show();
+                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_no_internet_connection), Toast.LENGTH_LONG).show();
             }
         }
         return isNetworkEnabled;

@@ -63,6 +63,7 @@
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/bordered_box"
                     android:layout_gravity="left"
+
                     >
                 <ProgressBar
                         style="@style/GenericProgressIndicator"
@@ -82,7 +83,8 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginLeft="5dp"
-                    app:riv_border_color="@color/gray_dark"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/gray_light"
                     android:background="@color/white"
                     />
 
@@ -116,7 +118,8 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginRight="5dp"
-                    app:riv_border_color="@color/gray_dark"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/gray_light"
                     android:background="@color/white"
                     />
         </LinearLayout>
@@ -159,7 +162,8 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginLeft="5dp"
-                    app:riv_border_color="@color/gray_dark"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/gray_light"
                     android:background="@color/white"
                     />
             <RelativeLayout
@@ -190,7 +194,8 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginRight="5dp"
-                    app:riv_border_color="@color/gray_dark"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/gray_light"
                     android:background="@color/white"
                     />
         </LinearLayout>

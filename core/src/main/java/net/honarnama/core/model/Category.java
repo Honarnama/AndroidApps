@@ -1,28 +1,20 @@
 package net.honarnama.core.model;
 
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.base.R;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.util.List;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -81,5 +73,5 @@ public class Category extends ParseObject {
         });
         return tcs.getTask();
     }
-    
+
 }

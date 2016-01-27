@@ -351,8 +351,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                                         break;
                                                 }
                                                 if (e == null) {
-                                                    logD(null, "Fetched! Data length: " + data.length);
+                                                    if (data != null) {
+                                                        logD(null, "Fetched! Data length: " + data.length);
+                                                    }
                                                 } else {
+                                                    if (isVisible()) {
+                                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر." + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                    }
                                                     logE("Exception while loading image", "", e);
                                                 }
                                             }
@@ -414,9 +419,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
-            }
             return false;
         }
 

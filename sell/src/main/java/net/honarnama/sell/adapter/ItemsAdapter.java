@@ -4,6 +4,8 @@ import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
 
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.core.model.Item;
@@ -87,10 +89,12 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
+        mViewHolder.icon.setVisibility(View.GONE);
         mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
                 mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+                mViewHolder.icon.setVisibility(View.VISIBLE);
             }
         });
 
