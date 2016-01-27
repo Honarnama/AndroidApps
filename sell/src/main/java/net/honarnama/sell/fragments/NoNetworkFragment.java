@@ -1,35 +1,19 @@
 package net.honarnama.sell.fragments;
 
 
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.HonarnamaUser;
-import net.honarnama.sell.R;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
-import android.accounts.NetworkErrorException;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 /**
  * A simple {@link Fragment} subclass.

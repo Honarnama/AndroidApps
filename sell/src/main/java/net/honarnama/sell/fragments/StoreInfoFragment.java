@@ -45,7 +45,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -280,7 +279,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
@@ -427,7 +428,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.", Toast.LENGTH_LONG).show();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.", Toast.LENGTH_LONG).show();
+                        }
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
@@ -440,8 +443,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
             });
         } catch (IOException ioe) {
-            Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.",
-                    Toast.LENGTH_LONG).show();
+            if (isVisible()) {
+                Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر لوگو. لطفا دوباره تلاش کنید.",
+                        Toast.LENGTH_LONG).show();
+            }
 
             if (BuildConfig.DEBUG) {
                 Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -486,7 +491,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
+                        }
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Banner Failed. Code: " + e.getCode() +
                                     "//" + e.getMessage() + " // " + e);
@@ -499,8 +506,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
             });
         } catch (IOException ioe) {
-            Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ",
-                    Toast.LENGTH_LONG).show();
+            if (isVisible()) {
+                Toast.makeText(StoreInfoFragment.this.getActivity(), "خطا در ارسال تصویر بنر. لطفا دوباره تلاش کنید. ",
+                        Toast.LENGTH_LONG).show();
+            }
 
             if (BuildConfig.DEBUG) {
                 Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -533,7 +542,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         storeObject = new Store();
                         storeObject.setOwner(HonarnamaUser.getCurrentUser());
                     } else {
-                        Toast.makeText(getActivity(),getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        }
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                     "Error changing Store Info.  Error Code: " + e.getCode() +
@@ -570,11 +581,15 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             // TODO: handle "Invalid: name"
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
-                            Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
+                            }
                         }
                         mSendingDataProgressDialog.dismiss();
                     }
@@ -607,7 +622,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Store Task Failed. // " + task.getError().getMessage());
                     }
-                    Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    }
 
                     Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
                     getActivity().finish();
@@ -638,7 +656,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                     } else {
                                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting  logo image failed. // " + e.getMessage());
                                     }
-                                    Toast.makeText(getActivity(), "خطا در نمایش تصویر لوگو." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر لوگو." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                         });
@@ -656,7 +676,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                     } else {
                                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting  banner image failed. // " + e.getMessage());
                                     }
-                                    Toast.makeText(getActivity(), "خطا در نمایش تصویر بنر." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر بنر." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                         });
@@ -689,8 +711,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Province Task Failed. // " + task.getError().getMessage());
                     }
-                    Toast.makeText(getActivity(), getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
 
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     mProvincesOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> provinceMap : mProvincesOrderedTreeMap.values()) {
@@ -720,7 +744,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting City List Task Failed. // " + task.getError().getMessage());
                     }
-                    Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {

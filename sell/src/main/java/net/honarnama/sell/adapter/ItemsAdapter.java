@@ -113,7 +113,9 @@ public class ItemsAdapter extends BaseAdapter {
                                     public Object then(Task<Void> task) throws Exception {
                                         progressDialog.dismiss();
                                         if (task.isFaulted()) {
-                                            Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            if (mContext != null) {
+                                                Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
                                             mItems.remove(position);
                                             notifyDataSetChanged();

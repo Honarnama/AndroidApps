@@ -259,16 +259,16 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                     switchFragmentFromEdittingItem(new OnAcceptedListener() {
                         @Override
                         public void onAccepted() {
-                            mEditItemFragment.reset(true);
+                            mEditItemFragment.reset(ControlPanelActivity.this, true);
                             switchFragment(finalFragment);
                         }
                     });
                 } else {
-                    mEditItemFragment.reset(true);
+                    mEditItemFragment.reset(ControlPanelActivity.this, true);
                     switchFragment(fragment);
                 }
             } else {
-                mEditItemFragment.reset(true);
+                mEditItemFragment.reset(ControlPanelActivity.this, true);
                 switchFragment(fragment);
             }
         }
@@ -304,7 +304,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     }
 
     public void switchFragmentToEditItem(String itemId) {
-        mEditItemFragment.setItemId(itemId);
+        mEditItemFragment.setItemId(ControlPanelActivity.this, itemId);
         switchFragment(mEditItemFragment);
     }
 

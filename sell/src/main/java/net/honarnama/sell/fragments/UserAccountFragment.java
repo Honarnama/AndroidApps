@@ -170,9 +170,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(getActivity(), getString(R.string.message_profile_changed_successfully), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.message_profile_changed_successfully), Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(getActivity(),getString( R.string.message_altering_profile_Failed), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.message_altering_profile_Failed), Toast.LENGTH_LONG).show();
+                    }
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error changing user name.  Error Code: " + e.getCode() +
@@ -199,9 +203,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             public void done(ParseException e) {
                 sendingDataProgressDialog.dismiss();
                 if (null == e) {
-                    Toast.makeText(getActivity(),getString( R.string.successfully_changed_password), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.successfully_changed_password), Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(getActivity(),getString( R.string.changing_password_failed), Toast.LENGTH_LONG).show();
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.changing_password_failed), Toast.LENGTH_LONG).show();
+                    }
                     if (BuildConfig.DEBUG) {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                                 "Error changing password.  Error Code: " + e.getCode() +

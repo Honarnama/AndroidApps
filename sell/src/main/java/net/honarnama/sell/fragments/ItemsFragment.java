@@ -89,8 +89,9 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting User Items Failed. // " + task.getError().getMessage());
                     }
+                    if (isVisible()) {
                     Toast.makeText(getActivity(),getString( R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
-                } else {
+                }} else {
                     List<Item> itemList = task.getResult();
                     mAdapter.addAll(itemList);
                     mAdapter.notifyDataSetChanged();

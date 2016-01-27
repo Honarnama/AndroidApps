@@ -12,13 +12,12 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.core.model.Item;
 
-import android.accounts.NetworkErrorException;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -88,13 +87,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         return mEditItemFragment;
     }
 
-    public void reset(boolean createNew) {
+    public void reset(Context context, boolean createNew) {
 
         if (mFragmentHasView) {
             mTitleEditText.setText("");
             mDescriptionEditText.setText("");
             mPriceEditText.setText("");
-            mChooseCategoryButton.setText(getString(R.string.select));
+            mChooseCategoryButton.setText(context.getString(R.string.select));
             for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.removeSelectedImage();
             }
@@ -107,8 +106,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mCreateNew = createNew;
     }
 
-    public void setItemId(String itemId) {
-        reset(false);
+    public void setItemId(Context context, String itemId) {
+        reset(context, false);
         mItemId = itemId;
     }
 
@@ -236,7 +235,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         logD(null, "onCreateView :: mCreateNew= " + mCreateNew);
         if (mCreateNew) {
-            reset(true);
+            reset(getActivity(), true);
         } else {
             boolean savedDirty = false;
             String savedItemId = null;
@@ -280,7 +279,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         public void done(Item item, ParseException e) {
                             if (e != null) {
                                 logE("Exception while loading item_row", "mItemId= " + mItemId, e);
-                                Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                if (isVisible()) {
+                                    Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 // TODO: check if still we are need this
                                 mItem = item;
@@ -293,7 +294,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                     @Override
                                     public Object then(Task<String> task) throws Exception {
                                         if (task.isFaulted()) {
-                                            Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            if (isVisible()) {
+                                                Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
                                             mChooseCategoryButton.setText(task.getResult());
                                         }
@@ -411,7 +414,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
-            Toast.makeText(getActivity(), getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
+            if (isVisible()) {
+                Toast.makeText(getActivity(), getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
+            }
             return false;
         }
 
@@ -462,7 +467,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
 
         if (!mDirty) {
-            Toast.makeText(getActivity(), getString(R.string.item_not_changed), Toast.LENGTH_LONG).show();
+            if (isVisible()) {
+                Toast.makeText(getActivity(), getString(R.string.item_not_changed), Toast.LENGTH_LONG).show();
+            }
             return false;
         }
 
@@ -486,7 +493,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     logD(null, "saveItem, Back to then");
                     if (task.isCompleted()) {
                         logD(null, "saveItem, task.isCompleted()");
-                        Toast.makeText(getActivity(), getString(R.string.edit_item_save), Toast.LENGTH_LONG).show();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), "محصول با موفقیت ذخیره شد.", Toast.LENGTH_LONG).show();
+                        }
                         mDirty = false;
                         mItem = task.getResult();
                         mItemId = mItem.getObjectId();
@@ -497,7 +506,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         } else {
                             logD("Canceled while saveItem", "");
                         }
-                        Toast.makeText(getActivity(), getString(R.string.error_saving_item), Toast.LENGTH_LONG).show();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.error_saving_item), Toast.LENGTH_LONG).show();
+                        }
                     }
                     sendingDataProgressDialog.dismiss();
                     ControlPanelActivity activity = (ControlPanelActivity) getActivity();
@@ -507,7 +518,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }, Task.UI_THREAD_EXECUTOR);
         } catch (IOException ioe) {
             logE("Exception while saveItem", "", ioe);
-            Toast.makeText(getActivity(), getString(R.string.error_saving_item), Toast.LENGTH_LONG).show();
+            if (isVisible()) {
+                Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+            }
             sendingDataProgressDialog.dismiss();
         }
 
