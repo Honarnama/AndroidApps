@@ -37,6 +37,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -203,15 +205,15 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         });
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
-
-        mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
-        mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
+        mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
+
         setStoredStoreInfo();
     }
 

@@ -178,6 +178,7 @@
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
                     android:layout_toLeftOf="@id/register_password_star_marker"
+                    android:textDirection="ltr"
                     />
 
         </RelativeLayout>

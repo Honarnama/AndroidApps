@@ -215,7 +215,7 @@
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
                 android:inputType="phone"
-                android:gravity="left"
+                android:textDirection="ltr"
                 />
 
         <EditText
@@ -227,7 +227,7 @@
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
                 android:inputType="phone"
-                android:gravity="left"
+                android:textDirection="ltr"
                 />
 
 

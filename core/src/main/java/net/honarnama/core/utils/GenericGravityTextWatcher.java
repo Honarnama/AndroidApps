@@ -5,6 +5,7 @@ import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
 
 /**
@@ -19,6 +20,7 @@ public class GenericGravityTextWatcher implements TextWatcher {
     public void afterTextChanged(Editable s) {
     }
 
+
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
@@ -26,9 +28,12 @@ public class GenericGravityTextWatcher implements TextWatcher {
         if (s.length() > 0) {
             // position the text type in the left top corner
             editText.setGravity(Gravity.LEFT);
+            editText.setTextDirection(View.TEXT_DIRECTION_LTR);
+
         } else {
             // no text entered. Center the hint text.
             editText.setGravity(Gravity.RIGHT);
+            editText.setTextDirection(View.TEXT_DIRECTION_RTL);
         }
     }
 }

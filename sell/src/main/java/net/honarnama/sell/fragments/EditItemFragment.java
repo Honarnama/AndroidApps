@@ -13,6 +13,7 @@ import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.Item;
+import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -153,6 +154,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
         mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
         mPriceEditText.addTextChangedListener(textWatcherToMarkDirty);
+        mPriceEditText.addTextChangedListener(new GenericGravityTextWatcher(mPriceEditText));
     }
 
     @Override

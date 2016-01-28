@@ -319,6 +319,7 @@
                       android:layout_weight="2"
                       style="@style/bordered_edit_text"
                       android:inputType="number"
+                      android:textDirection="ltr"
                     />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -326,6 +327,7 @@
                       android:text="تومان"
                       android:layout_gravity="left|center"
                       android:gravity="left|center"
+                      android:layout_marginRight="5dp"
                     />
 
         </LinearLayout>
