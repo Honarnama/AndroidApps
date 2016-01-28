@@ -190,6 +190,7 @@
                 android:layout_below="@id/account_password_layer"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
+                android:visibility="gone"
                 />
 
         <!--

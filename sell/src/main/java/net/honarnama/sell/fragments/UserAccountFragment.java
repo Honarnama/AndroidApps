@@ -62,17 +62,11 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         mCurrentUser = ParseUser.getCurrentUser();
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_user_account, container, false);
         mPasswordLayout = (RelativeLayout) rootView.findViewById(R.id.account_password_layer);
-        if (HonarnamaUser.getActivationMethod() == HonarnamaUser.ActivationMethod.EMAIL) {
-            mPasswordLayout.setVisibility(View.VISIBLE);
-        }
-
         mNameEditText = (EditText) rootView.findViewById(R.id.account_name_edit_text);
-        mNameEditText.setText(mCurrentUser.getString("name"));
         mAlterNameButton = (Button) rootView.findViewById(R.id.account_alter_name_button);
         mAlterNameButton.setOnClickListener(this);
 
@@ -84,16 +78,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         mGenderMan = (ToggleButton) rootView.findViewById(R.id.account_gender_man);
         mGenderNotSaid = (ToggleButton) rootView.findViewById(R.id.account_gender_not_said);
 
-        switch (mCurrentUser.getInt("gender")) {
-            case HonarnamaBaseApp.GENDER_CODE_WOMAN:
-                mGenderWoman.setChecked(true);
-                break;
-            case HonarnamaBaseApp.GENDER_CODE_MAN:
-                mGenderMan.setChecked(true);
-                break;
-            default:
-                mGenderNotSaid.setChecked(true);
+        if (HonarnamaUser.getActivationMethod() == HonarnamaUser.ActivationMethod.EMAIL) {
+            mPasswordLayout.setVisibility(View.VISIBLE);
+            mChangePasswordButton.setVisibility(View.VISIBLE);
         }
+
+
+
         mGenderWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,12 +110,36 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 mGenderMan.setChecked(false);
             }
         });
-
-
         mNewPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mNewPasswordEditText));
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();;
+        setUserInfo();
+    }
+
+    public void setUserInfo() {
+        Log.e("Elnaz", "setUserInfo " + mCurrentUser.getString("name"));
+        mNameEditText.setText(mCurrentUser.getString("name"));
+        Log.e("Elnaz", "mNameEditText " + mNameEditText.getText().toString());
+        mGenderWoman.setChecked(false);
+        mGenderMan.setChecked(false);
+        mGenderNotSaid.setChecked(false);
+        switch (mCurrentUser.getInt("gender")) {
+            case HonarnamaBaseApp.GENDER_CODE_WOMAN:
+                mGenderWoman.setChecked(true);
+                break;
+            case HonarnamaBaseApp.GENDER_CODE_MAN:
+                mGenderMan.setChecked(true);
+                break;
+            default:
+                mGenderNotSaid.setChecked(true);
+        }
+
+        mNewPasswordEditText.setText("");
+    }
 
     @Override
     public void onClick(View view) {
@@ -229,8 +244,4 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 }

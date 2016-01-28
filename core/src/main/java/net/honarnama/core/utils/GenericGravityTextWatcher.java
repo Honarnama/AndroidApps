@@ -1,6 +1,8 @@
 package net.honarnama.core.utils;
 
 import android.text.Editable;
+import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.widget.EditText;

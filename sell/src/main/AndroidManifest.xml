@@ -56,6 +56,7 @@
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"
                 android:finishOnTaskLaunch="true"
+                android:windowSoftInputMode="stateHidden"
                 >
         </activity>
         <activity

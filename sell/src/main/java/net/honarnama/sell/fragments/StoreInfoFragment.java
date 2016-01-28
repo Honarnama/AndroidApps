@@ -18,6 +18,7 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -37,11 +38,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -201,10 +204,16 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
 
-        setStoredStoreInfo();
+        mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
+        mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setStoredStoreInfo();
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -626,6 +635,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     if (store != null) {
                         mNameEditText.setText(store.getName());
                         mDescriptionEditText.setText(store.getDescription());
+
                         mPhoneNumberEditText.setText(store.getPhoneNumber());
                         mCellNumberEditText.setText(store.getCellNumber());
 

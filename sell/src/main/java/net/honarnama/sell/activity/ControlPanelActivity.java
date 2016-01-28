@@ -16,6 +16,7 @@ import net.honarnama.core.model.CacheData;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.WidgetUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
@@ -24,6 +25,7 @@ import net.honarnama.sell.fragments.NoNetworkFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -35,6 +37,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +47,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import bolts.Continuation;
@@ -208,8 +213,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mResult.openDrawer();
             }
         }
-        if(id == R.id.add_item_action)
-        {
+        if (id == R.id.add_item_action) {
             mEditItemFragment.reset(ControlPanelActivity.this, true);
             switchFragment(EditItemFragment.getInstance());
         }
@@ -297,6 +301,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     }
 
     public void switchFragment(final HonarnamaBaseFragment fragment) {
+
+        WidgetUtil.hideKeyboard(ControlPanelActivity.this);
         mFragment = fragment;
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -305,6 +311,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         fragmentTransaction.commit();
 
         getSupportActionBar().setTitle(fragment.getTitle(this));
+
     }
 
     public void switchFragmentToEditItem(String itemId) {
@@ -346,4 +353,5 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         super.onDestroy();
 
     }
+
 }
