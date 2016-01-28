@@ -189,7 +189,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//            getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -208,7 +208,11 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mResult.openDrawer();
             }
         }
-
+        if(id == R.id.add_item_action)
+        {
+            mEditItemFragment.reset(ControlPanelActivity.this, true);
+            switchFragment(EditItemFragment.getInstance());
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -316,6 +320,25 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             }
         }
         super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragment == mEditItemFragment) {
+            if (mEditItemFragment.isDirty()) {
+                switchFragmentFromEdittingItem(new OnAcceptedListener() {
+                    @Override
+                    public void onAccepted() {
+                        mEditItemFragment.reset(ControlPanelActivity.this, true);
+                        switchFragment(ItemsFragment.getInstance());
+                    }
+                });
+            } else {
+                switchFragment(ItemsFragment.getInstance());
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

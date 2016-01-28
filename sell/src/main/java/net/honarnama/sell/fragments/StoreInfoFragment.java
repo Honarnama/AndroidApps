@@ -38,6 +38,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -382,18 +384,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mBannerImageView.onActivityResult(requestCode, resultCode, intent);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mLogoImageView != null) {
-            mLogoImageView.onSaveInstanceState(outState);
-        }
-
-        if (mBannerImageView != null) {
-            mBannerImageView.onSaveInstanceState(outState);
-        }
-    }
-
     public void uploadStoreLogo() {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
@@ -597,7 +587,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
             }
         });
-
     }
 
     private void setStoredStoreInfo() {
@@ -851,4 +840,17 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mLogoImageView != null) {
+            mLogoImageView.onSaveInstanceState(outState);
+        }
+
+        if (mBannerImageView != null) {
+            mBannerImageView.onSaveInstanceState(outState);
+        }
+    }
+
 }
