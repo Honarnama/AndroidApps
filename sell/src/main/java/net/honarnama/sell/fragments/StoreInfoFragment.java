@@ -27,6 +27,9 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.Dialog;
@@ -213,9 +216,25 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         super.onResume();
         mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
         mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
-
+        resetFields();
         setStoredStoreInfo();
     }
+
+    public void resetFields() {
+
+        if (isVisible()) {
+            mNameEditText.setText("");
+            mDescriptionEditText.setText("");
+            mPhoneNumberEditText.setText("");
+            mCellNumberEditText.setText("");
+
+            mNameEditText.setError(null);
+            mDescriptionEditText.setError(null);
+            mPhoneNumberEditText.setError(null);
+            mCellNumberEditText.setError(null);
+        }
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -557,7 +576,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         return;
                     }
                 }
-
+                Log.e("Elnaz", storeObject.getOwner().getUsername());
                 storeObject.setName(mNameEditText.getText().toString().trim());
                 storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
                 storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
@@ -577,7 +596,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     storeObject.setBanner(mParseFileBanner);
                 }
 
-                storeObject.pinInBackground();
                 storeObject.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -585,11 +603,31 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             if (isVisible()) {
                                 Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
                             }
+                            storeObject.pinInBackground();
                         } else {
-                            // TODO: handle "Invalid: name"
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "storeObject= " + storeObject, e);
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed), Toast.LENGTH_LONG).show();
+                            logE("Saving store failed, storeObject= " + storeObject + "// error: " + e, "Saving store failed, error message= " + e.getMessage(), e);
+                            try {
+                                JSONObject error = new JSONObject(e.getMessage());
+                                if (error.has("code")) {
+                                    Log.e("Elnaz", error.get("code") + "");
+                                }
+                                if ((error.has("code")) && error.get("code").toString().equals("3001")) {
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), "نام فروشگاه تکراری است. لطفا نام دیگری انتخاب کنید.", Toast.LENGTH_LONG).show();
+                                        mNameEditText.setError("نام فروشگاه تکراری است. لطفا نام دیگری انتخاب کنید.");
+                                    }
+                                } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
+                                    Toast.makeText(getActivity(), "شما فروشگاه دیگری دارید. یا صاحب این فروشگاه نیستید.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                                if (isVisible()) {
+                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                         mSendingDataProgressDialog.dismiss();
@@ -630,7 +668,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
                     getActivity().finish();
                     startActivity(intent);
-
 
                 } else {
                     Store store = task.getResult();
@@ -767,6 +804,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public Task<Store> getUserStoreAsync() {
         final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
         ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+
+        Log.e("Elnaz", "getUserStoreAsync:: " + HonarnamaUser.getCurrentUser().getUsername());
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -788,6 +827,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public void done(final Store store, ParseException e) {
                 if (e == null) {
+                    Log.e("Elnaz", "Store found");
                     tcs.trySetResult(store);
                     if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 

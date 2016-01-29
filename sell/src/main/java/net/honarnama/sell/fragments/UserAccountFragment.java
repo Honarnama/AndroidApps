@@ -180,7 +180,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         int genderCode = mGenderWoman.isChecked() ? 0 : (mGenderMan.isChecked() ? 1 : 2);
         mCurrentUser.put("gender", genderCode);
 
-        mCurrentUser.pinInBackground();
         mCurrentUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -188,6 +187,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.message_profile_changed_successfully), Toast.LENGTH_LONG).show();
                     }
+                    mCurrentUser.pinInBackground();
                 } else {
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.message_altering_profile_Failed), Toast.LENGTH_LONG).show();

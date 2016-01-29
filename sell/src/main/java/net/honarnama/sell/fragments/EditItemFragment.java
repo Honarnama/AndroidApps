@@ -59,7 +59,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
-    private TextView mImagesHintTextView;
     private EditText mPriceEditText;
     private TextView mImagesTitleTextView;
     private ScrollView mScrollView;
@@ -90,7 +89,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     public void reset(Context context, boolean createNew) {
 
-        if (mFragmentHasView) {
+        if (mFragmentHasView && isVisible()) {
             mTitleEditText.setText("");
             mDescriptionEditText.setText("");
             mPriceEditText.setText("");
@@ -98,6 +97,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.removeSelectedImage();
             }
+            mTitleEditText.setError(null);
+            mDescriptionEditText.setError(null);
+            mPriceEditText.setError(null);
+            mCategoryTextView.setError(null);
+            mImagesTitleTextView.setError(null);
         }
         mItem = null;
         mItemId = null;
@@ -182,7 +186,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.editProductDescription);
-        mImagesHintTextView = (TextView) rootView.findViewById(R.id.itemImageHint);
         mPriceEditText = (EditText) rootView.findViewById(R.id.editItemPrice);
         mImagesTitleTextView = (TextView) rootView.findViewById(R.id.edit_item_images_title_text_view);
         mScrollView = (ScrollView) rootView.findViewById(R.id.edit_item_scroll_view);
@@ -196,7 +199,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 new ImageSelector.OnImageSelectedListener() {
                     @Override
                     public boolean onImageSelected(Uri selectedImage, boolean cropped) {
-                        mImagesHintTextView.setError(null);
+                        mImagesTitleTextView.setError(null);
                         mDirty = true;
                         return true;
                     }
@@ -274,7 +277,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             return null;
                         }
                     }
-
 
                     query.getInBackground(mItemId, new GetCallback<Item>() {
                         @Override
@@ -399,7 +401,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
-                mTitleEditText.setError(null);
                 if (isFormInputsValid()) {
                     saveItem();
                 }
@@ -511,7 +512,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             logD("Canceled while saveItem", "");
                         }
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_saving_item), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }
                     sendingDataProgressDialog.dismiss();

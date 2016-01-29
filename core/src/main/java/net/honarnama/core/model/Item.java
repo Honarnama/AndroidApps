@@ -173,7 +173,6 @@ public class Item extends ParseObject {
                     count++;
                     item.put("image_" + count, parseFile);
                 }
-                item.pinInBackground();
                 return item.saveInBackground();
             }
         });
@@ -187,6 +186,7 @@ public class Item extends ParseObject {
                 }
                 TaskCompletionSource<Item> res = new TaskCompletionSource<Item>();
                 if (task.isCompleted()) {
+                    item.pinInBackground();
                     res.setResult(item);
                 } else if (task.isFaulted()) {
                     res.setError(task.getError());
