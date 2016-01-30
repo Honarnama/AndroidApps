@@ -3,6 +3,7 @@ package net.honarnama.sell.fragments;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -75,9 +77,20 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_items, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
         listView.setEmptyView(rootView.findViewById(R.id.empty_list_view));
+
+        Store.checkIfUserHaveStore(getActivity()).continueWith(new Continuation<Boolean, Object>() {
+            @Override
+            public Object then(Task<Boolean> task) throws Exception {
+                if ((task.isFaulted() || (task.isCompleted() && task.getResult() == false))) {
+                    rootView.findViewById(R.id.no_store_warning_container).setVisibility(View.VISIBLE);
+                }
+                return null;
+            }
+        });
+
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
@@ -105,6 +118,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 } else {
                     List<Item> itemList = task.getResult();
                     mAdapter.addAll(itemList);
+                    TextView emptyListTextView= (TextView)rootView.findViewById(R.id.empty_list_view);
+                    emptyListTextView.setText("شما هنوز محصولی ثبت نکرده‌اید.");
                     mAdapter.notifyDataSetChanged();
                 }
                 return null;

@@ -6,6 +6,34 @@
         android:id="@+id/items_container"
         android:orientation="vertical"
         >
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/important_bar_background"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/no_store_warning_container"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+            >
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:src="@drawable/important"
+                   android:layout_alignParentRight="true"
+                   android:id="@+id/no_store_warning_image"
+                   android:layout_centerVertical="true"
+                />
+        <TextView
+                  style="@style/tiny_text_view"
+                  android:text="تا زمانی که فروشگاه خود را نساخته‌اید محصولاتتان منتشر نخواهند شد."
+                  android:textColor="@color/orange"
+                  android:paddingRight="5dp"
+                  android:paddingLeft="10dp"
+                  android:layout_toLeftOf="@id/no_store_warning_image"
+                  android:layout_centerVertical="true"
+                />
+    </RelativeLayout>
+
     <ListView android:id="@+id/items_listView"
               android:orientation="vertical"
               android:layout_width="match_parent"
@@ -19,7 +47,7 @@
     <TextView android:id="@+id/empty_list_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="شما هنوز محصولی ثبت نکرده‌اید."
+              android:text="در حال گرفتن فهرست محصولات..."
               android:gravity="center"
               style="@style/default_text_view"
               android:layout_marginTop="20dp"

@@ -9,7 +9,6 @@
         android:id="@+id/edit_item_scroll_view"
         >
 
-
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
