@@ -183,6 +183,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         mCurrentUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
+                sendingDataProgressDialog.dismiss();
                 if (e == null) {
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.message_profile_changed_successfully), Toast.LENGTH_LONG).show();
@@ -201,7 +202,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                                 + e.getMessage());
                     }
                 }
-                sendingDataProgressDialog.dismiss();
+
             }
         });
     }

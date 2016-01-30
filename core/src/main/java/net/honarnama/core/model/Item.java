@@ -203,17 +203,31 @@ public class Item extends ParseObject {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
+                }
+                parseQuery.fromLocalDatastore();
+            } else {
+                tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available"));
                 return tcs.getTask();
             }
         }
+
+
+//        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
+//            if (BuildConfig.DEBUG) {
+//                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
+//            }
+//            parseQuery.fromLocalDatastore();
+//        } else {
+//            if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+//                tcs.setError(new NetworkErrorException("Network connection failed"));
+//                return tcs.getTask();
+//            }
+//        }
         parseQuery.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
         //TODO set limit for number of ads a user can have
         parseQuery.findInBackground(new FindCallback<Item>() {
@@ -221,27 +235,26 @@ public class Item extends ParseObject {
             public void done(final List<Item> items, ParseException e) {
                 if (e == null) {
                     tcs.trySetResult(items);
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
-
-                        ParseObject.unpinAllInBackground(Item.OBJECT_NAME, items, new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    ParseObject.pinAllInBackground(Item.OBJECT_NAME, items, new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
-                                                        editor.commit();
-                                                    }
+//                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
+                    ParseObject.unpinAllInBackground(Item.OBJECT_NAME, items, new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                ParseObject.pinAllInBackground(Item.OBJECT_NAME, items, new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
+                                                    editor.commit();
                                                 }
                                             }
-                                    );
-                                }
+                                        }
+                                );
                             }
-                        });
-                    }
+                        }
+                    });
+//                    }
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (BuildConfig.DEBUG) {
@@ -252,8 +265,7 @@ public class Item extends ParseObject {
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         editor.commit();
                         tcs.trySetResult(null);
-                    }
-                    else {
+                    } else {
                         tcs.trySetError(e);
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),

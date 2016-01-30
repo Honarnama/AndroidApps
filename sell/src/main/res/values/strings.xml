@@ -48,6 +48,8 @@
     <string name="error_store_province_not_set">لطفا استان فروشگاه را مشخص کنید.</string>
     <string name="error_store_city_not_set">لطفا شهر فروشگاه را مشخص کنید.</string>
     <string name="error_phone_number_is_not_valid">شماره تلفن وارد شده معتبر نیست.</string>
+    <string name="error_uploading_logo">خطا در ارسال تصویر لوگو.</string>
+    <string name="error_uploading_banner">خطا در ارسال تصویر بنر.</string>
 
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">

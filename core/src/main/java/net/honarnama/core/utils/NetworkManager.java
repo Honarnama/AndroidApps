@@ -34,7 +34,7 @@ public class NetworkManager {
 
         if (displayToast) {
             if (activeNetworkInfo == null) {
-                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_network_is_not_enabled), Toast.LENGTH_LONG).show();
+                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_network_is_not_enabled), Toast.LENGTH_SHORT).show();
             }
             if(activeNetworkInfo != null && (!activeNetworkInfo.isConnected() || !activeNetworkInfo.isAvailable()) )
             {

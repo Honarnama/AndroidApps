@@ -181,5 +181,6 @@
     <string name="getting_information">در حال گرفتن اطلاعات...</string>
     <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
     <string name="error_getting_items_list">خطا در گرفتن فهرست محصولات.</string>
+    <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
 
 </resources>

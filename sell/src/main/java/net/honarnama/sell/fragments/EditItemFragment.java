@@ -281,6 +281,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     query.getInBackground(mItemId, new GetCallback<Item>() {
                         @Override
                         public void done(Item item, ParseException e) {
+                            hideLoadingDialog();
                             if (e != null) {
                                 logE("Exception while loading item_row", "mItemId= " + mItemId, e);
                                 if (isVisible()) {
@@ -370,7 +371,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 }
                                 mDirty = false;
                             }
-                            hideLoadingDialog();
                         }
                     });
                 } else {
@@ -496,6 +496,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 @Override
                 public Void then(Task<Item> task) throws Exception {
                     logD(null, "saveItem, Back to then");
+                    sendingDataProgressDialog.dismiss();
                     if (task.isCompleted()) {
                         logD(null, "saveItem, task.isCompleted()");
                         if (isVisible()) {
@@ -515,7 +516,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }
-                    sendingDataProgressDialog.dismiss();
                     ControlPanelActivity activity = (ControlPanelActivity) getActivity();
                     activity.switchFragment(ItemsFragment.getInstance());
                     return null;
@@ -523,10 +523,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }, Task.UI_THREAD_EXECUTOR);
         } catch (IOException ioe) {
             logE("Exception while saveItem", "", ioe);
+            if(sendingDataProgressDialog.isShowing())
+            {
+                sendingDataProgressDialog.dismiss();
+            }
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
             }
-            sendingDataProgressDialog.dismiss();
         }
 
     }
