@@ -16,6 +16,7 @@ import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -53,8 +54,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -104,6 +108,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     public ProgressBar mBannerProgressBar;
     public ProgressBar mLogoProgressBar;
+
+    public TextView mStatusBarTextView;
+    public RelativeLayout mStoreNotVerifiedNotif;
 
     public static StoreInfoFragment mStoreInfoFragment;
 
@@ -157,6 +164,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.store_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.store_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.store_cell_number);
+
+        mStatusBarTextView = (TextView) rootView.findViewById(R.id.store_status_bar_text_view);
+        mStoreNotVerifiedNotif = (RelativeLayout) rootView.findViewById(R.id.store_not_verified_notif_container);
 
         mBannerFrameLayout = rootView.findViewById(R.id.store_banner_frame_layout);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
@@ -693,6 +703,17 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         mCityEditEext.setText(getString(R.string.getting_information));
                         mProvinceEditEext.setText(getString(R.string.getting_information));
 
+
+                        if (store.getStatus() == Item.STATUS_CODE_CONFIRMATION_WAITING) {
+                            mStatusBarTextView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (store.getStatus() == Item.STATUS_CODE_NOT_VERIFIED) {
+                            mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
+                            mStatusBarTextView.setVisibility(View.VISIBLE);
+                            mStatusBarTextView.setText("لطفا تغییرات خواسته شده را اعمال کنید.");
+                        }
+
                         mLogoProgressBar.setVisibility(View.VISIBLE);
                         mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
                             @Override
@@ -767,8 +788,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     } else {
                         Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Getting Province Task Failed. // " + task.getError().getMessage());
                     }
-                    if(progressDialog.isShowing())
-                    {
+                    if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
                     if (isVisible()) {

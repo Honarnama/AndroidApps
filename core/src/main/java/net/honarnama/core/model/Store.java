@@ -44,6 +44,11 @@ public class Store extends ParseObject {
     public static String OWNER = "owner";
     public static String PROVINCE_ID = "provinceId";
     public static String CITY_ID = "cityId";
+    public static String STATUS = "status";
+
+    public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
+    public static Number STATUS_CODE_NOT_VERIFIED = -1;
+    public static Number STATUS_CODE_VERIFIED = 1;
 
 
     public String getName() {
@@ -86,6 +91,10 @@ public class Store extends ParseObject {
 
     public void setLogo(ParseFile parseFile) {
         put(LOGO, parseFile);
+    }
+
+    public Number getStatus() {
+        return getNumber(STATUS);
     }
 
 

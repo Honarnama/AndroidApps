@@ -66,4 +66,6 @@
     <color name="teal">#009688</color>
     <color name="transparent_white">#00ffffff</color>
 
+    <color name="super_extra_dark_red">#B71C1C</color>
+
 </resources>
