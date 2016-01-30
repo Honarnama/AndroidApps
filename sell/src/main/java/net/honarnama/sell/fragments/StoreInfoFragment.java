@@ -443,17 +443,17 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     if (e == null) {
 //                        saveStore(parseFile);
                         uploadStoreBanner();
-                        try {
-                            ParseIO.copyFile(storeLogoImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME));
-                        } catch (IOException e1) {
-                            if (BuildConfig.DEBUG) {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                        "Error copying store logo to sd card " + e1, e1);
-                            } else {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
-                                        + e1.getMessage());
-                            }
-                        }
+//                        try {
+//                            ParseIO.copyFile(storeLogoImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME));
+//                        } catch (IOException e1) {
+//                            if (BuildConfig.DEBUG) {
+//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+//                                        "Error copying store logo to sd card " + e1, e1);
+//                            } else {
+//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
+//                                        + e1.getMessage());
+//                            }
+//                        }
                     } else {
                         if (isVisible()) {
                             Toast.makeText(getActivity(), R.string.error_uploading_logo + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
@@ -507,17 +507,17 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 public void done(ParseException e) {
                     if (e == null) {
                         saveStore();
-                        try {
-                            ParseIO.copyFile(storeBannerImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_BANNER_FILE_NAME));
-                        } catch (IOException e1) {
-                            if (BuildConfig.DEBUG) {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                        "Error copying store banner to sd card " + e1, e1);
-                            } else {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store banner to sd card"
-                                        + e1.getMessage());
-                            }
-                        }
+//                        try {
+//                            ParseIO.copyFile(storeBannerImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_BANNER_FILE_NAME));
+//                        } catch (IOException e1) {
+//                            if (BuildConfig.DEBUG) {
+//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
+//                                        "Error copying store banner to sd card " + e1, e1);
+//                            } else {
+//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store banner to sd card"
+//                                        + e1.getMessage());
+//                            }
+//                        }
                     } else {
                         mSendingDataProgressDialog.dismiss();
                         if (isVisible()) {

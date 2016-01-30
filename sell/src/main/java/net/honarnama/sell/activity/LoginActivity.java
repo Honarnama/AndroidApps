@@ -169,6 +169,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
     private void gotoControlPanel() {
         Intent intent = new Intent(this, ControlPanelActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
