@@ -7,16 +7,15 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.parse.LogOutCallback;
+import com.parse.ParseException;
 
-import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
-import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.WidgetUtil;
+import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
@@ -25,30 +24,24 @@ import net.honarnama.sell.fragments.NoNetworkFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import bolts.Continuation;
@@ -59,7 +52,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
-    public static final int DRAWER_ITEM_IDENTIFIER_EDIT_ITEM = 4;
+    public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
     public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 5;
 
     private Toolbar mToolbar;
@@ -101,16 +94,16 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.nav_title_items).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
                         new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EDIT_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
         };
+
 
         mResult.getDrawerLayout().post(new Runnable() {
             @Override
@@ -137,13 +130,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         this.mDrawerToggle.syncState();
 
         mEditItemFragment = EditItemFragment.getInstance();
+
         processIntent(getIntent());
 
-        //
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
 //        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-
+            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_STORE_INFO);
+            mResult.openDrawer();
             if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
                 HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                 switchFragment(fragment);
@@ -152,15 +146,21 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
+                    switchFragment(StoreInfoFragment.getInstance());
                     if (task.isFaulted()) {
                         HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                         switchFragment(fragment);
                         Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
                     }
+
                     return null;
                 }
             });
+        } else {
+            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_STORE_INFO);
+            switchFragment(StoreInfoFragment.getInstance());
         }
+
     }
 
     @Override
@@ -215,7 +215,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         }
         if (id == R.id.add_item_action) {
             mEditItemFragment.reset(ControlPanelActivity.this, true);
-            switchFragment(EditItemFragment.getInstance());
+            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ADD_ITEM);
+            switchFragment(mEditItemFragment);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -244,7 +245,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             case DRAWER_ITEM_IDENTIFIER_ITEMS:
                 fragment = ItemsFragment.getInstance();
                 break;
-            case DRAWER_ITEM_IDENTIFIER_EDIT_ITEM:
+            case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
                 fragment = EditItemFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
@@ -252,10 +253,22 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
                 mWaitingProgressDialog.setCancelable(false);
                 mWaitingProgressDialog.show();
-                HonarnamaUser.logOut();
-                Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-                finish();
-                startActivity(intent);
+                HonarnamaUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            logE("Error Logging user out.", " error message: " + e.getMessage() + " // error code: " + e.getCode(), e);
+                        }
+                        if (mWaitingProgressDialog.isShowing()) {
+                            mWaitingProgressDialog.dismiss();
+                        }
+
+                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
                 break;
         }
         // Not null && (Another section || Maybe editing but wants to create new item_row)
@@ -302,7 +315,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     public void switchFragment(final HonarnamaBaseFragment fragment) {
 
-        WidgetUtil.hideKeyboard(ControlPanelActivity.this);
+        WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mFragment = fragment;
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -311,6 +324,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         fragmentTransaction.commit();
 
         getSupportActionBar().setTitle(fragment.getTitle(this));
+
 
     }
 
@@ -331,17 +345,21 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     @Override
     public void onBackPressed() {
-        if (mFragment == mEditItemFragment) {
+        if (mResult.isDrawerOpen()) {
+            mResult.closeDrawer();
+        } else if (mFragment == mEditItemFragment) {
             if (mEditItemFragment.isDirty()) {
                 switchFragmentFromEdittingItem(new OnAcceptedListener() {
                     @Override
                     public void onAccepted() {
                         mEditItemFragment.reset(ControlPanelActivity.this, true);
                         switchFragment(ItemsFragment.getInstance());
+                        mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ITEMS);
                     }
                 });
             } else {
                 switchFragment(ItemsFragment.getInstance());
+                mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ITEMS);
             }
         } else {
             super.onBackPressed();

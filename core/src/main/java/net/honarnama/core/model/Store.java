@@ -1,10 +1,27 @@
 package net.honarnama.core.model;
 
+import com.parse.GetCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.NetworkManager;
+
+import android.accounts.NetworkErrorException;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import bolts.Task;
+import bolts.TaskCompletionSource;
 
 /**
  * Created by elnaz on 1/5/16.
@@ -88,22 +105,57 @@ public class Store extends ParseObject {
         put(OWNER, parseUser);
     }
 
-    public String getProvinceId()
-    {
+    public String getProvinceId() {
         return getString(PROVINCE_ID);
     }
-    public void setProvinceId(String provinceId)
-    {
+
+    public void setProvinceId(String provinceId) {
         put(PROVINCE_ID, provinceId);
     }
 
-    public String getCityId()
-    {
+    public String getCityId() {
         return getString(CITY_ID);
     }
 
-    public void setCityId(String cityId)
-    {
+    public void setCityId(String cityId) {
         put(CITY_ID, cityId);
+    }
+
+    public static Task<Boolean> checkIfUserHaveStore(Context context) {
+        final TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
+        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(context, false)) {
+            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting store info from local datastore");
+                }
+                query.fromLocalDatastore();
+            } else {
+                tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));
+                return tcs.getTask();
+            }
+        }
+
+        query.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(Store object, ParseException e) {
+                if (e == null) {
+                    tcs.setResult(true);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        tcs.setResult(false);
+                    } else {
+                        tcs.setError(e);
+                    }
+                }
+            }
+        });
+
+        return tcs.getTask();
     }
 }

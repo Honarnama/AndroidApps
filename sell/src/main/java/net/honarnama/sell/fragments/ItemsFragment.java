@@ -77,6 +77,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
+        listView.setEmptyView(rootView.findViewById(R.id.empty_list_view));
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);

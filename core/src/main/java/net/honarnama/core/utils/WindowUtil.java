@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 /**
  * Created by elnaz on 1/28/16.
  */
-public class WidgetUtil {
+public class WindowUtil {
     public static void hideKeyboard(Context ctx) {
         InputMethodManager inputManager = (InputMethodManager) ctx
                 .getSystemService(Context.INPUT_METHOD_SERVICE);

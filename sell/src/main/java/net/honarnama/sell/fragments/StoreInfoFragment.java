@@ -122,6 +122,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -208,16 +209,19 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         });
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
+
+        resetFields();
+        setStoredStoreInfo();
+
         return rootView;
     }
 
     @Override
     public void onResume() {
+        Log.e("Elnaz", "onResume");
         super.onResume();
         mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
         mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
-        resetFields();
-        setStoredStoreInfo();
     }
 
     public void resetFields() {
@@ -789,8 +793,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-                if(progressDialog.isShowing())
-                {
+                if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
                 if (task.isFaulted()) {
@@ -832,7 +835,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {
                     Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getActivity().getClass().getName(), "getting store info from local datastore");
@@ -925,6 +928,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         if (mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
 }
