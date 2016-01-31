@@ -24,7 +24,8 @@ public class NetworkManager {
         return mNetworkManagerInstance;
     }
 
-    public boolean isNetworkEnabled(Context context, Boolean displayToast) {
+    public boolean isNetworkEnabled(Boolean displayToast) {
+        Context context = HonarnamaBaseApp.getInstance();
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

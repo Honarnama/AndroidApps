@@ -4,6 +4,7 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -61,10 +62,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
@@ -101,7 +103,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
                 progressDialog.dismiss();
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
                     Toast.makeText(getActivity(), "برای مشاهده به‌روزترین اطلاعات دستگاه خود را به اینترنت متصل کنید.", Toast.LENGTH_LONG).show();
                 }
                 if (task.isFaulted()) {

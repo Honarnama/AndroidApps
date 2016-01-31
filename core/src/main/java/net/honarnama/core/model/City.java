@@ -10,6 +10,7 @@ import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
@@ -97,7 +98,8 @@ public class City extends ParseObject {
         parseQuery.whereEqualTo(PARENT_ID, parentId);
         parseQuery.orderByAscending(ORDER);
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
@@ -106,13 +108,12 @@ public class City extends ParseObject {
             parseQuery.fromLocalDatastore();
         } else {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(mContext, true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
                 return tcs.getTask();
             }
 //            mReceivingDataProgressDialog.show();
         }
-
 
 
         parseQuery.findInBackground(new FindCallback<City>() {

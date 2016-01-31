@@ -11,6 +11,7 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 import net.honarnama.core.adapter.CategoriesAdapter;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.ProgressDialog;
@@ -70,14 +71,15 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
+//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
+        final SharedPreferences sharedPref= getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             logD(null, "get categories list from LocalDatastore in buildCategoriesHierarchyHashMap");
             parseQuery.fromLocalDatastore();
         } else {
             logD(null, "get categories list from remote database in buildCategoriesHierarchyHashMap");
-            if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 return;
             }
             receivingDataProgressDialog.show();

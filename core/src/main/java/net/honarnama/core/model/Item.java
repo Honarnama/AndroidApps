@@ -202,9 +202,9 @@ public class Item extends ParseObject {
     public static Task<List<Item>> getUserItems(Context context) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {
                     Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
@@ -286,7 +286,7 @@ public class Item extends ParseObject {
     public static Task<Void> deleteItem(Context context, String itemId) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(context, true)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             tcs.setError(new NetworkErrorException("Network connection failed"));
             return tcs.getTask();
         }

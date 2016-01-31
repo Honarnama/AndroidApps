@@ -143,7 +143,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
 
-        if (!(NetworkManager.getInstance().isNetworkEnabled(this, true))) {
+        if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
             return;
         }
 

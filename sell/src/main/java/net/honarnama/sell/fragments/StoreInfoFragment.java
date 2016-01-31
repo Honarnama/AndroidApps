@@ -136,10 +136,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
@@ -269,7 +270,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         switch (view.getId()) {
             case R.id.register_store_button:
                 if (AreFormInputsValid()) {
-                    if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                         return;
                     }
                     mSendingDataProgressDialog.setCancelable(false);
@@ -432,7 +433,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     public void uploadStoreLogo() {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             mSendingDataProgressDialog.dismiss();
             if (isVisible()) {
                 Toast.makeText(getActivity(), R.string.error_uploading_logo + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
@@ -498,7 +499,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     public void uploadStoreBanner() {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             mSendingDataProgressDialog.dismiss();
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
@@ -565,7 +566,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private void saveStore() {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             mSendingDataProgressDialog.dismiss();
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
@@ -705,11 +706,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         mProvinceEditEext.setText(getString(R.string.getting_information));
 
 
-                        if (store.getStatus() == Item.STATUS_CODE_CONFIRMATION_WAITING) {
+                        if (store.getStatus() == Store.STATUS_CODE_CONFIRMATION_WAITING) {
                             mStatusBarTextView.setVisibility(View.VISIBLE);
                         }
 
-                        if (store.getStatus() == Item.STATUS_CODE_NOT_VERIFIED) {
+                        if (store.getStatus() == Store.STATUS_CODE_NOT_VERIFIED) {
                             mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
                             mStatusBarTextView.setVisibility(View.VISIBLE);
                             mStatusBarTextView.setText("لطفا تغییرات خواسته شده را اعمال کنید.");
@@ -840,7 +841,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
 
                 }
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
                     Toast.makeText(getActivity(), "برای مشاهده به‌روزترین اطلاعات دستگاه خود را به اینترنت متصل کنید.", Toast.LENGTH_LONG).show();
                 }
                 return null;
@@ -855,9 +856,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {
                     Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getActivity().getClass().getName(), "getting store info from local datastore");

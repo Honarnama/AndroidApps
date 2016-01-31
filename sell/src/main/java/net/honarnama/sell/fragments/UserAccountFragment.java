@@ -84,7 +84,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         }
 
 
-
         mGenderWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +115,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
     @Override
     public void onResume() {
-        super.onResume();;
+        super.onResume();
+        ;
         setUserInfo();
     }
 
@@ -144,7 +144,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
         switch (view.getId()) {
             case R.id.account_alter_name_button:
-                if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
                 if (mNameEditText.getText().toString().trim().length() > 0) {
@@ -155,7 +155,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 }
                 break;
             case R.id.account_alter_password_button:
-                if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
                 if (mNewPasswordEditText.getText().toString().trim().length() > 0) {

@@ -10,6 +10,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
@@ -29,6 +30,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -69,7 +71,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         if (!HonarnamaUser.isAuthenticatedUser()) {
             return;
         }
-
+        WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
@@ -133,12 +135,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
         processIntent(getIntent());
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 //        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_STORE_INFO);
             mResult.openDrawer();
-            if (!NetworkManager.getInstance().isNetworkEnabled(this, true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                 switchFragment(fragment);
                 return;
@@ -146,19 +148,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
                 @Override
                 public Object then(Task<Void> task) throws Exception {
-                    switchFragment(StoreInfoFragment.getInstance());
                     if (task.isFaulted()) {
                         HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                         switchFragment(fragment);
                         Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
                     }
-
                     return null;
                 }
             });
-        } else {
-            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_STORE_INFO);
-            switchFragment(StoreInfoFragment.getInstance());
         }
 
     }
@@ -324,7 +321,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         fragmentTransaction.commit();
 
         getSupportActionBar().setTitle(fragment.getTitle(this));
-
 
     }
 

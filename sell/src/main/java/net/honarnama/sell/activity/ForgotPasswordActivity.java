@@ -40,7 +40,7 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
         mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!NetworkManager.getInstance().isNetworkEnabled(ForgotPasswordActivity.this, true)) {
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
                 String email = mForgotPasswordEmailEditEext.getText().toString().trim();

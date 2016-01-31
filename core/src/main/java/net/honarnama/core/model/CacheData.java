@@ -43,7 +43,8 @@ public class CacheData {
 
     public CacheData(Context context) {
         mContext = context;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mSharedPreferences = context.getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         mPrefEditor = mSharedPreferences.edit();
     }
 
@@ -198,7 +199,7 @@ public class CacheData {
 
     public Task<List<ParseObject>> findAsync(final ParseQuery parseQuery) {
         final TaskCompletionSource<List<ParseObject>> tcs = new TaskCompletionSource<>();
-        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.trySetError(new NetworkErrorException("No Network connection"));
             return tcs.getTask();
         }
@@ -342,7 +343,7 @@ public class CacheData {
         ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.trySetError(new NetworkErrorException("No Network connection"));
             return tcs.getTask();
         }
@@ -415,7 +416,7 @@ public class CacheData {
         ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
         query.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(mContext, false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.trySetError(new NetworkErrorException("No Network connection"));
             return tcs.getTask();
         }

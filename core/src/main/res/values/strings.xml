@@ -80,7 +80,7 @@
     </string>
     <string name="error_register_password_is_empty">"فیلد رمز عبور خالی است. "</string>
     <string name="error_login_wrong_username">نام کاربری یا رمز عبور اشتباه است.</string>
-    <string name="error_login_failed">خطا در ورود به حساب</string>
+    <string name="error_login_failed"> خطا در ورود به حساب.</string>
 
     <string name="error_network_is_not_enabled">دستگاه شما به اینترنت متصل نیست.</string>
     <string name="error_no_internet_connection">مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را

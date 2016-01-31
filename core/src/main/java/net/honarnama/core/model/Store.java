@@ -136,9 +136,10 @@ public class Store extends ParseObject {
 
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(context, false)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {
                     Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting store info from local datastore");

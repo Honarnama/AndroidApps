@@ -76,7 +76,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         final ParseUser user = HonarnamaUser.getCurrentUser();
         if (user != null) {
-            if (!(NetworkManager.getInstance().isNetworkEnabled(this, true))) {
+            if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
                 return;
             }
             showLoadingDialog();
@@ -155,7 +155,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         } else {
                             hideLoadingDialog();
                             logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
-                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed)+getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -226,7 +226,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
 
-        if (!(NetworkManager.getInstance().isNetworkEnabled(this, true))) {
+        if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
             return;
         }
 

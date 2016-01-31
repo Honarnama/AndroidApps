@@ -14,6 +14,7 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -165,10 +166,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
@@ -273,7 +275,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         }
                         query.fromLocalDatastore();
                     } else {
-                        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+                        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                             return null;
                         }
                     }
@@ -421,7 +423,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         final String description = mDescriptionEditText.getText().toString();
 
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(getActivity(), true)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
         }
 
