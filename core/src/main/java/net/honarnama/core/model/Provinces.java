@@ -58,10 +58,6 @@ public class Provinces extends ParseObject {
     public Task<TreeMap<Number, HashMap<String, String>>> getOrderedProvinces(Context context) {
 
         mContext = context;
-//
-//        mReceivingDataProgressDialog = new ProgressDialog(mContext);
-//        mReceivingDataProgressDialog.setCancelable(false);
-//        mReceivingDataProgressDialog.setMessage(mContext.getString(R.string.receiving_data));
 
         final TaskCompletionSource<TreeMap<Number, HashMap<String, String>>> tcs = new TaskCompletionSource<>();
 

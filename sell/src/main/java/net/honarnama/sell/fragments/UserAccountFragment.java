@@ -121,9 +121,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     public void setUserInfo() {
-        Log.e("Elnaz", "setUserInfo " + mCurrentUser.getString("name"));
         mNameEditText.setText(mCurrentUser.getString("name"));
-        Log.e("Elnaz", "mNameEditText " + mNameEditText.getText().toString());
         mGenderWoman.setChecked(false);
         mGenderMan.setChecked(false);
         mGenderNotSaid.setChecked(false);

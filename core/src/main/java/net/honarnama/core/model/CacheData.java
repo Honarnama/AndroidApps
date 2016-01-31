@@ -384,7 +384,7 @@ public class CacheData {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "User does not have any store yet.");
+                                    "Caching user store result: User does not have any store yet.");
                         }
 
                         SharedPreferences.Editor editor = mSharedPreferences.edit();

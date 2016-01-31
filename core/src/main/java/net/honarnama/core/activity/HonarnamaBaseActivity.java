@@ -32,11 +32,11 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         }
     }
 
-    String getMessage(String productionMsg, String debugMsg) {
+    String getMessage(String debugMsg, String productionMsg) {
         if ((debugMsg != null) && BuildConfig.DEBUG) {
             String message;
             if (productionMsg != null) {
-                message = productionMsg + " // " + debugMsg;
+                message = productionMsg + " //  debugMsg: " + debugMsg;
             } else {
                 message = debugMsg;
             }

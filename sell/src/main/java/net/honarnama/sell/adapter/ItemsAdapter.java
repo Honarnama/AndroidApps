@@ -72,8 +72,6 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         final Item item = mItems.get(position);
-//        Log.e("Elnaz", mItems.get(0).getTitle());
-//        Log.e("Elnaz", mItems.get(1).getTitle());
         // Setting all values in listview
         mViewHolder.title.setText(item.getTitle());
 

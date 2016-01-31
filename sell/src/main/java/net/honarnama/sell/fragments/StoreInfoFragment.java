@@ -220,27 +220,29 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
 
-        resetFields();
         setStoredStoreInfo();
-
         return rootView;
     }
 
     @Override
     public void onResume() {
-        Log.e("Elnaz", "onResume");
         super.onResume();
         mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
         mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
     }
 
     public void resetFields() {
-
-        if (isVisible()) {
+        if (mNameEditText != null) {
             mNameEditText.setText("");
             mDescriptionEditText.setText("");
             mPhoneNumberEditText.setText("");
             mCellNumberEditText.setText("");
+
+            mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
+            mSelectedCityId = City.DEFAULT_CITY_ID;
+
+            mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
+            mCityEditEext.setText(City.DEFAULT_CITY_NAME);
 
             mNameEditText.setError(null);
             mDescriptionEditText.setError(null);
@@ -659,7 +661,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     private void setStoredStoreInfo() {
-
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.please_wait));
@@ -759,10 +760,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                 }
                             }
                         });
+                    } else {
+                        resetFields();
                     }
                 }
                 return null;
-
             }
         }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
@@ -774,7 +776,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 if (mSelectedCityId == null) {
                     mSelectedCityId = City.DEFAULT_CITY_ID;
                 }
-                return provinces.getOrderedProvinces(getActivity());
+                return provinces.getOrderedProvinces(HonarnamaBaseApp.getInstance());
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
@@ -808,7 +810,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getOrderedCities(getActivity(), mSelectedProvinceId);
+                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
@@ -872,7 +874,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public void done(final Store store, ParseException e) {
                 if (e == null) {
-                    Log.e("Elnaz", "Store found");
                     tcs.trySetResult(store);
 //                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
@@ -905,7 +906,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "User does not have any store yet.");
+                                    "Getting User Store Result: User does not have any store yet.");
                         }
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);

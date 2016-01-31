@@ -89,7 +89,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     public void reset(Context context, boolean createNew) {
 
-        if (mFragmentHasView && isVisible()) {
+        if (mFragmentHasView) {
             mTitleEditText.setText("");
             mDescriptionEditText.setText("");
             mPriceEditText.setText("");

@@ -93,7 +93,6 @@
                         android:layout_alignParentTop="true"
                         style="@style/edit_text_default"
                         android:padding="10dp"
-                        android:text="mojahedi.elnaz@gmail.com"
                         />
                 <EditText
                         android:id="@+id/login_password_edit_text"
@@ -102,7 +101,6 @@
                         android:layout_below="@id/login_username_edit_text"
                         style="@style/edit_text_default"
                         android:padding="10dp"
-                        android:text="1"
                         />
                 <Button
                         android:id="@+id/login_button"

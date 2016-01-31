@@ -109,8 +109,6 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
                         });
                     }
 
-                    Toast.makeText(ChooseCategoryActivity.this, artCategories.size() + "", Toast.LENGTH_SHORT).show();
-
                     for (int i = 0; i < artCategories.size(); i++) {
 
                         Category artCategory = artCategories.get(i);

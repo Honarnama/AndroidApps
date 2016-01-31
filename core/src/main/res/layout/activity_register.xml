@@ -223,7 +223,6 @@
                     android:ellipsize="start"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    android:text="mojahedi.elnaz@gmail.com"
                     />
         </LinearLayout>
 
