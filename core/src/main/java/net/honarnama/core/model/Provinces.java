@@ -16,7 +16,6 @@ import net.honarnama.core.utils.NetworkManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -94,7 +93,7 @@ public class Provinces extends ParseObject {
         ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
         parseQuery.orderByAscending(Provinces.ORDER);
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get provinces list from LocalDatastore");

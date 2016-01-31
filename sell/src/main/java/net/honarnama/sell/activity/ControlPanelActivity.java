@@ -22,8 +22,8 @@ import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
-import net.honarnama.sell.fragments.UserAccountFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
+import net.honarnama.sell.fragments.UserAccountFragment;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -36,7 +36,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
@@ -136,7 +135,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         processIntent(getIntent());
 
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 //        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
             mResult.openDrawer();

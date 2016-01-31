@@ -6,12 +6,12 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.HonarnamaUser;
-import net.honarnama.sell.R;
+import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.R;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;

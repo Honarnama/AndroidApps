@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ImageSelector">
-        <attr name="removable" format="boolean" />
-        <attr name="imageSelectorIndex" format="integer" />
-        <attr name="outputX" format="integer|reference" />
-        <attr name="outputY" format="integer|reference" />
-        <attr name="aspectX" format="integer|reference" />
-        <attr name="aspectY" format="integer|reference" />
+        <attr name="removable" format="boolean"/>
+        <attr name="imageSelectorIndex" format="integer"/>
+        <attr name="outputX" format="integer|reference"/>
+        <attr name="outputY" format="integer|reference"/>
+        <attr name="aspectX" format="integer|reference"/>
+        <attr name="aspectY" format="integer|reference"/>
     </declare-styleable>
 </resources>

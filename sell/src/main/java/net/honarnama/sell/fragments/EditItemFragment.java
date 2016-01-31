@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -167,7 +166,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                              Bundle savedInstanceState) {
 
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
@@ -363,7 +362,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                                     }
                                                 } else {
                                                     if (isVisible()) {
-                                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر." + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                                                     }
                                                     logE("Exception while loading image", "", e);
                                                 }
@@ -449,13 +448,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         if (price.trim().length() == 0) {
             mPriceEditText.requestFocus();
-            mPriceEditText.setError("لطفا قیمت محصول را تعیین کنید.");
+            mPriceEditText.setError(getString(R.string.error_item_price_not_set));
             return false;
         }
 
         if (Integer.valueOf(price.trim()) < 100) {
             mPriceEditText.requestFocus();
-            mPriceEditText.setError("حداقل قیمت محصول ۱۰۰ تومان است.");
+            mPriceEditText.setError(getString(R.string.error_item_price_is_low));
             return false;
         }
 
@@ -502,7 +501,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     if (task.isCompleted()) {
                         logD(null, "saveItem, task.isCompleted()");
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), "محصول با موفقیت ذخیره شد.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getString(R.string.item_saved_successfully), Toast.LENGTH_LONG).show();
                         }
                         mDirty = false;
                         mItem = task.getResult();
@@ -525,8 +524,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }, Task.UI_THREAD_EXECUTOR);
         } catch (IOException ioe) {
             logE("Exception while saveItem", "", ioe);
-            if(sendingDataProgressDialog.isShowing())
-            {
+            if (sendingDataProgressDialog.isShowing()) {
                 sendingDataProgressDialog.dismiss();
             }
             if (isVisible()) {

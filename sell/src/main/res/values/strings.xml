@@ -20,7 +20,7 @@
     <string name="toolbar_title">هنرنما برای فروشندگان</string>
 
     <string name="nav_title_seller_account">حساب کاربری</string>
-    <string name="nav_title_store_info"> مشخصات فروشگاه </string>
+    <string name="nav_title_store_info">مشخصات فروشگاه</string>
 
     <string name="nav_title_items">محصولات</string>
     <string name="nav_title_new_item">ثبت محصول جدید</string>
@@ -33,7 +33,8 @@
     <string name="sending_verification_docs_failed">خطایی در هنگام ارسال مدارک رخ داد.</string>
     <string name="nav_title_orders">سفارشات</string>
     <string name="forgot_password_desc">
-        آدرس ایمیلی که با آن ثبت‌نام کردید را وارد کنید تا لینک بازنشانی رمز عبور را برایتان به آن آدرس بفرستیم.
+        آدرس ایمیلی که با آن ثبت‌نام کردید را وارد کنید تا لینک بازنشانی رمز عبور را برایتان به آن
+        آدرس بفرستیم.
     </string>
     <string name="please_install_telegram">لطفا برنامه‌ی تلگرام را بر روی دستگاه خود نصب کنید.
     </string>
@@ -50,6 +51,43 @@
     <string name="error_phone_number_is_not_valid">شماره تلفن وارد شده معتبر نیست.</string>
     <string name="error_uploading_logo">خطا در ارسال تصویر لوگو.</string>
     <string name="error_uploading_banner">خطا در ارسال تصویر بنر.</string>
+    <string name="error_item_price_not_set">"لطفا قیمت محصول را تعیین کنید."</string>
+    <string name="error_item_price_is_low">"حداقل قیمت محصول ۱۰۰ تومان است."</string>
+    <string name="has_not_registered_any_store">شما هنوز محصولی ثبت نکرده‌اید.</string>
+    <string name="fill_at_least_one_communication_ways">حداقل یکی از گزینه ‌های تماس را پر کنید.
+    </string>
+    <string name="store_name_already_exists">نام فروشگاه تکراری است. لطفا نام دیگری انتخاب کنید.
+    </string>
+    <string name="you_own_another_store_or_u_r_not_the_right_owner">شما فروشگاه دیگری دارید. یا صاحب
+        این فروشگاه نیستید.
+    </string>
+    <string name="please_apply_requested_modification">لطفا تغییرات خواسته شده را اعمال کنید.
+    </string>
+    <string name="item_saved_successfully">محصول با موفقیت ذخیره شد.</string>
+    <string name="password_reset_link_sent">لینک بازنشانی رمز عبور برایتان ارسال شد.</string>
+    <string name="no_user_found_matching_email">کاربری با آدرس ایمیل داده شده پیدا نشد.</string>
+    <string name="error_sending_reset_pass_link">"خطا در ارسال لینک بازنشانی رمز عبور. "</string>
+    <string name="log_in_with_telegram">ورود با حساب تلگرام</string>
+    <string name="use_side_menu_to_manage_account_and_items">لطفا از منوی کناری برای مدیریت محصولات
+        و حساب خود استفاده کنید.
+    </string>
+    <string name="toman">تومان</string>
+    <string name="ad_category">دسته‌بندی آگهی:</string>
+    <string name="items_wont_publish_unless_has_registered_store">تا زمانی که فروشگاه خود را
+        نساخته‌اید محصولاتتان منتشر نخواهند شد.
+    </string>
+    <string name="getting_items">در حال گرفتن فهرست محصولات...</string>
+    <string name="change_banner">تغییر بنر فروشگاه</string>
+    <string name="waiting_to_be_confirmed">منتظر تایید ناظر</string>
+    <string name="change_logo">تغییر لوگو</string>
+    <string name="store_not_confirmed">فروشگاه شما تایید نشد.</string>
+    <string name="store_name">نام فروشگاه</string>
+    <string name="provine_select_title">استان:</string>
+    <string name="description_hint">توضیحات</string>
+    <string name="phone_hint">شماره تلفن ثابت - مثال 34567890-021</string>
+    <string name="apply_changes">اعمال تغییرات</string>
+    <string name="edit_ad">ویرایش آگهی</string>
+    <string name="delete_ad">حذف آگهی</string>
 
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">

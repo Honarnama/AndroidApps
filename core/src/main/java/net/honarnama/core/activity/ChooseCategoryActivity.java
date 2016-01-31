@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -72,7 +71,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
-        final SharedPreferences sharedPref= getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             logD(null, "get categories list from LocalDatastore in buildCategoriesHierarchyHashMap");

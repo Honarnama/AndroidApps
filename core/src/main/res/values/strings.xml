@@ -80,14 +80,15 @@
     </string>
     <string name="error_register_password_is_empty">"فیلد رمز عبور خالی است. "</string>
     <string name="error_login_wrong_username">نام کاربری یا رمز عبور اشتباه است.</string>
-    <string name="error_login_failed"> خطا در ورود به حساب.</string>
+    <string name="error_login_failed">خطا در ورود به حساب.</string>
 
     <string name="error_network_is_not_enabled">دستگاه شما به اینترنت متصل نیست.</string>
     <string name="error_no_internet_connection">مشکل در برقراری ارتباط. لطفا کیفیت اینترنت خود را
         بررسی کنید.
     </string>
 
-    <string name="please_check_internet_connection">" لطفا اینترنت دستگاه خود را بررسی کنید. "</string>
+    <string name="please_check_internet_connection">" لطفا اینترنت دستگاه خود را بررسی کنید. "
+    </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
 
     <string name="syncing_data">در حال همگام‌سازی اطلاعات</string>
@@ -131,7 +132,7 @@
     <string name="edit_item_description_hint">توضیحات</string>
     <string name="error_edit_item_title_is_empty">فیلد عنوان خالی است.</string>
     <string name="error_edit_item_description_is_empty">فیلد توضیحات خالی است.</string>
-    <string name="error_category_is_not_selected"> دسته‌بندی آگهی انتخاب نشده است. </string>
+    <string name="error_category_is_not_selected">دسته‌بندی آگهی انتخاب نشده است.</string>
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
     <string name="edit_item_done">محصول شما با موفقیت ذخیره شد.</string>
@@ -182,5 +183,24 @@
     <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
     <string name="error_getting_items_list">خطا در گرفتن فهرست محصولات.</string>
     <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
+    <string name="error_displaying_image">خطا در نمایش تصویر.</string>
+    <string name="connec_to_see_updated_notif_message">برای مشاهده به‌روزترین اطلاعات دستگاه خود را
+        به اینترنت متصل کنید.
+    </string>
+    <string name="error_displaying_store_logo">خطا در نمایش تصویر لوگو.</string>
+    <string name="error_displaying_store_banner">خطا در نمایش تصویر بنر.</string>
+    <string name="privacy_policy_notfi">استفاده از هنرنما و ساخت حساب کاربری در آن به معنای موافقت
+        شما با شرایط استفاده از خدمات و سیاست‌های حریم خصوصی است.
+    </string>
+    <string name="wont_specify">مشخص نمی‌کنم</string>
+    <string name="man">مرد</string>
+    <string name="woman">زن</string>
+    <string name="item_price">قیمت محصول</string>
+    <string name="error_stablishing_connection">خطا در برقراری ارتباط</string>
+    <string name="retry">تلاش مجدد</string>
+    <string name="province">استان</string>
+    <string name="city_select">شهر:</string>
+    <string name="city">شهر</string>
+    <string name="store_contact_info">اطلاعات تماس</string>
 
 </resources>

@@ -14,7 +14,6 @@ import net.honarnama.core.utils.NetworkManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import bolts.Task;

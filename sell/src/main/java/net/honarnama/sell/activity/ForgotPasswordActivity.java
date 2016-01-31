@@ -1,6 +1,5 @@
 package net.honarnama.sell.activity;
 
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
@@ -10,10 +9,8 @@ import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,43 +42,40 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
                 }
                 String email = mForgotPasswordEmailEditEext.getText().toString().trim();
 
-                if(email.length() == 0)
-                {
+                if (email.length() == 0) {
                     mForgotPasswordEmailEditEext.requestFocus();
                     mForgotPasswordEmailEditEext.setError(getString(R.string.error_email_field_can_not_be_empty));
                     return;
+                } else {
+                    boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mForgotPasswordEmailEditEext.getText().toString()).matches();
+                    if (!isOK) {
+                        mForgotPasswordEmailEditEext.requestFocus();
+                        mForgotPasswordEmailEditEext.setError(getString(net.honarnama.base.R.string.error_email_address_is_not_valid));
+                        return;
+                    }
                 }
-                else
-                {
-                    mWaitingProgressDialog = new ProgressDialog(ForgotPasswordActivity.this);
-                    mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
-                    mWaitingProgressDialog.setCancelable(false);
-                    mWaitingProgressDialog.show();
+                mWaitingProgressDialog = new ProgressDialog(ForgotPasswordActivity.this);
+                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
+                mWaitingProgressDialog.setCancelable(false);
+                mWaitingProgressDialog.show();
 
-                    ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            mWaitingProgressDialog.dismiss();
-                            if(e== null)
-                            {
-                                Toast.makeText(ForgotPasswordActivity.this, "لینک بازنشانی رمز عبور برایتان ارسال شد.", Toast.LENGTH_LONG).show();
-                                kill_activity();
-                            }
-                            else
-                            {
-                                if(e.getCode()==ParseException.EMAIL_NOT_FOUND)
-                                {
-                                    Toast.makeText(ForgotPasswordActivity.this, "کاربری با آدرس ایمیل داده شده پیدا نشد.", Toast.LENGTH_LONG).show();
-                                }
-                                else
-                                {
-                                    Toast.makeText(ForgotPasswordActivity.this, "متاسفانه خطایی رخ داد. لطفا مجددا تلاش کنید.", Toast.LENGTH_LONG).show();
-                                    logE("Error sending request for forgot password link", "Error Code: " + e.getCode() + "// Error Message: "+e.getMessage(), e);
-                                }
+                ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        mWaitingProgressDialog.dismiss();
+                        if (e == null) {
+                            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.password_reset_link_sent), Toast.LENGTH_LONG).show();
+                            kill_activity();
+                        } else {
+                            if (e.getCode() == ParseException.EMAIL_NOT_FOUND) {
+                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.no_user_found_matching_email), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.error_sending_reset_pass_link) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                logE("Error sending request for forgot password link", "Error Code: " + e.getCode() + "// Error Message: " + e.getMessage(), e);
                             }
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     }

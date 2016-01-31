@@ -4,11 +4,9 @@ import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
 
-import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.model.Item;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.core.model.Item;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

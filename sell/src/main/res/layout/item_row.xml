@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:background="@drawable/bordered_background"
                 android:id="@+id/item_row_container"
         >
-<RelativeLayout android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-        android:id="@+id/item_image_in_list_container"
-        >
-    <RelativeLayout
-            style="@style/GenericProgressBackground"
-            android:id="@+id/item_icon_loading_panel"
-            android:visibility="gone"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="5dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/bordered_box"
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_image_in_list_container"
             >
-        <ProgressBar
-                style="@style/GenericProgressIndicator"
-                android:layout_centerInParent="true"
+        <RelativeLayout
+                style="@style/GenericProgressBackground"
+                android:id="@+id/item_icon_loading_panel"
+                android:visibility="gone"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bordered_box"
+                >
+            <ProgressBar
+                    style="@style/GenericProgressIndicator"
+                    android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
+
+        <com.parse.ImageSelector
+                android:id="@+id/item_image_in_list"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:src="@drawable/camera_insta"
+                app:riv_border_width="1dp"
+                app:riv_border_color="@color/gray_light"
                 />
     </RelativeLayout>
-
-    <com.parse.ImageSelector
-            android:id="@+id/item_image_in_list"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentRight="true"
-            android:layout_margin="5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:src="@drawable/camera_insta"
-            app:riv_border_width="1dp"
-            app:riv_border_color="@color/gray_light"
-            />
-</RelativeLayout>
 
 
     <TextView
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/default_text_view"
-                android:text="ویرایش آگهی"
+                android:text="@string/edit_ad"
                 android:textSize="12dp"
                 android:textColor="#2980b9"
                 android:layout_toLeftOf="@id/item_edit_image_view"
@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/default_text_view"
-                android:text="حذف آگهی"
+                android:text="@string/delete_ad"
                 android:textSize="12dp"
                 android:textColor="#c0392b"
                 android:layout_toLeftOf="@id/item_delete_image_view"
@@ -114,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/default_text_view"
-            android:text="منتظر تایید ناظر"
+            android:text="@string/waiting_to_be_confirmed"
             android:textSize="12dp"
             android:textColor="@color/text_color"
             android:layout_centerVertical="true"

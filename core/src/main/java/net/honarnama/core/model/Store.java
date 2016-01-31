@@ -1,7 +1,6 @@
 package net.honarnama.core.model;
 
 import com.parse.GetCallback;
-import com.parse.ImageSelector;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -17,7 +16,6 @@ import net.honarnama.core.utils.NetworkManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import bolts.Task;
@@ -137,7 +135,7 @@ public class Store extends ParseObject {
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {

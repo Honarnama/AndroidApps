@@ -314,7 +314,7 @@
 
             <EditText android:id="@+id/editItemPrice"
                       android:layout_width="0dp"
-                      android:hint="قیمت محصول"
+                      android:hint="@string/item_price"
                       android:layout_weight="2"
                       style="@style/bordered_edit_text"
                       android:inputType="number"
@@ -323,7 +323,7 @@
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       style="@style/default_text_view"
-                      android:text="تومان"
+                      android:text="@string/toman"
                       android:layout_gravity="left|center"
                       android:gravity="left|center"
                       android:layout_marginRight="5dp"
@@ -342,7 +342,7 @@
                       android:layout_gravity="center"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="دسته‌بندی آگهی:"
+                      android:text="@string/ad_category"
                       android:layout_centerVertical="true"
                       android:id="@+id/edit_item_category_text_view"
                       android:editable="false"
@@ -353,7 +353,7 @@
                       android:layout_gravity="center"
                     />
             <Button android:layout_width="wrap_content" android:layout_height="40dp"
-                    android:text="انتخاب"
+                    android:text="@string/select"
                     android:layout_gravity="right"
                     android:layout_marginRight="5dp"
                     android:id="@+id/edit_item_category_semi_button"

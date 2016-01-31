@@ -18,7 +18,7 @@
                 />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/default_text_view"
-                  android:text="خطا در برقراری ارتباط"
+                  android:text="@string/error_stablishing_connection"
                   android:id="@+id/no_network_fragment_title"
                   android:layout_toLeftOf="@id/no_network_fragment_error_icon"
                   android:textStyle="bold"
@@ -44,7 +44,7 @@
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               style="@style/tiny_text_view"
-              android:text="تلاش مجدد"
+              android:text="@string/retry"
               android:id="@+id/no_network_fragment_retry"
               android:layout_below="@id/no_network_fragment_retry_icon"
               android:layout_centerHorizontal="true"

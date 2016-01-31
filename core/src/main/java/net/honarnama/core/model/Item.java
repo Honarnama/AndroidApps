@@ -21,7 +21,6 @@ import net.honarnama.core.utils.ParseIO;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -203,7 +202,7 @@ public class Item extends ParseObject {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {

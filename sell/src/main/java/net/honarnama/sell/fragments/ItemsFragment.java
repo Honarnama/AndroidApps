@@ -3,6 +3,7 @@ package net.honarnama.sell.fragments;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -10,14 +11,12 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
-import net.honarnama.core.model.Item;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,7 +62,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
@@ -104,7 +103,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             public Object then(Task<List<Item>> task) throws Exception {
                 progressDialog.dismiss();
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), "برای مشاهده به‌روزترین اطلاعات دستگاه خود را به اینترنت متصل کنید.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }
                 if (task.isFaulted()) {
                     if (BuildConfig.DEBUG) {
@@ -120,8 +119,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 } else {
                     List<Item> itemList = task.getResult();
                     mAdapter.addAll(itemList);
-                    TextView emptyListTextView= (TextView)rootView.findViewById(R.id.empty_list_view);
-                    emptyListTextView.setText("شما هنوز محصولی ثبت نکرده‌اید.");
+                    TextView emptyListTextView = (TextView) rootView.findViewById(R.id.empty_list_view);
+                    emptyListTextView.setText(getString(R.string.has_not_registered_any_store));
                     mAdapter.notifyDataSetChanged();
                 }
                 return null;

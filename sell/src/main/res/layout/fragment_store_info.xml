@@ -67,7 +67,7 @@
                       android:paddingTop="5dp"
                       android:background="@drawable/label"
                       android:textColor="@color/white"
-                      android:text="تغییر بنر فروشگاه"
+                      android:text="@string/change_banner"
                       android:layout_centerHorizontal="true"
                       android:layout_alignParentTop="true"
                       android:layout_marginTop="20dp"
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/default_text_view"
-                    android:text="منتظر تایید ناظر"
+                    android:text="@string/waiting_to_be_confirmed"
                     android:textColor="@color/gray_super_extra_dark"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
@@ -142,7 +142,7 @@
                       android:paddingTop="5dp"
                       android:background="@drawable/label"
                       android:textColor="@color/white"
-                      android:text="تغییر لوگو"
+                      android:text="@string/change_logo"
                       android:layout_centerInParent="true"
                       android:textSize="14sp"
                     />
@@ -163,7 +163,7 @@
                     />
             <TextView
                     style="@style/tiny_text_view"
-                    android:text="فروشگاه شما تایید نشد."
+                    android:text="@string/store_not_confirmed"
                     android:textColor="@color/orange"
                     android:paddingRight="5dp"
                     android:paddingLeft="10dp"
@@ -172,7 +172,7 @@
         </RelativeLayout>
 
         <EditText
-                android:hint="نام فروشگاه"
+                android:hint="@string/store_name"
                 android:layout_below="@id/store_not_verified_notif_container"
                 android:layout_marginTop="10dp"
                 android:id="@+id/store_name_edit_text"
@@ -190,7 +190,7 @@
                       android:layout_below="@id/store_name_edit_text"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="استان: "
+                      android:text="@string/provine_select_title"
                       android:layout_centerVertical="true"
                       android:id="@+id/provinces_text_view"
                       android:editable="false"
@@ -200,7 +200,7 @@
                       android:textStyle="bold"
                     />
             <EditText
-                    android:hint="استان"
+                    android:hint="@string/province"
                     android:id="@+id/store_province_edit_text"
                     style="@style/bordered_edit_text"
                     android:layout_marginRight="16dp"
@@ -217,7 +217,7 @@
                       android:layout_below="@id/provinces_container"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="شهر: "
+                      android:text="@string/city_select"
                       android:layout_centerVertical="true"
                       android:id="@+id/city_text_view"
                       android:editable="false"
@@ -227,7 +227,7 @@
                       android:textStyle="bold"
                     />
             <EditText
-                    android:hint="شهر"
+                    android:hint="@string/city"
                     android:id="@+id/store_city_edit_text"
                     style="@style/bordered_edit_text"
                     android:layout_marginRight="16dp"
@@ -238,7 +238,7 @@
         <EditText
                 android:layout_below="@id/city_container"
                 android:id="@+id/store_description_edit_text"
-                android:hint="توضیحات "
+                android:hint="@string/description_hint"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
@@ -246,14 +246,14 @@
                 />
 
         <TextView style="@style/section_title"
-                  android:text="اطلاعات تماس"
+                  android:text="@string/store_contact_info"
                   android:layout_below="@id/store_description_edit_text"
                   android:layout_marginTop="20dp"
                   android:id="@+id/store_contact_title"
                   android:layout_width="match_parent"
                 />
         <EditText
-                android:hint="شماره تلفن ثابت - مثال 34567890-021"
+                android:hint="@string/phone_hint"
                 android:layout_below="@id/store_contact_title"
                 android:layout_marginTop="10dp"
                 android:id="@+id/store_phone_number"
@@ -279,7 +279,7 @@
 
         <Button
                 android:id="@+id/register_store_button"
-                android:text="اعمال تغییرات"
+                android:text="@string/apply_changes"
                 android:layout_below="@id/store_cell_number"
                 style="@style/sell_full_width_button"
                 />

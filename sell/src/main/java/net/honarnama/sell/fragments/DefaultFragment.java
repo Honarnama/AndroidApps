@@ -2,9 +2,7 @@ package net.honarnama.sell.fragments;
 
 
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
-import net.honarnama.sell.activity.ControlPanelActivity;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -16,7 +16,6 @@ import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -40,21 +39,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -137,7 +130,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                              Bundle savedInstanceState) {
 
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
 
             if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
@@ -318,7 +311,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             }
         });
         provinceDialog.setCancelable(true);
-        provinceDialog.setTitle("انتخاب استان");
+        provinceDialog.setTitle(getString(R.string.select_province));
         provinceDialog.show();
     }
 
@@ -376,7 +369,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             }
         });
         cityDialog.setCancelable(true);
-        cityDialog.setTitle("انتخاب شهر");
+        cityDialog.setTitle(getString(R.string.select_city));
         cityDialog.show();
     }
 
@@ -398,7 +391,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
-            mCellNumberEditText.setError("حداقل یکی از گزینه ‌های تماس را پر کنید.");
+            mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));
             return false;
         }
 
@@ -436,7 +429,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             mSendingDataProgressDialog.dismiss();
             if (isVisible()) {
-                Toast.makeText(getActivity(), R.string.error_uploading_logo + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
             }
             return;
         }
@@ -469,7 +462,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 //                        }
                     } else {
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), R.string.error_uploading_logo + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
                         }
                         if (BuildConfig.DEBUG) {
                             Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Uploading Store Logo Failed. Code: " + e.getCode() +
@@ -485,7 +478,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         } catch (IOException ioe) {
             mSendingDataProgressDialog.dismiss();
             if (isVisible()) {
-                Toast.makeText(getActivity(), R.string.error_uploading_logo + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
             }
             if (BuildConfig.DEBUG) {
                 Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
@@ -636,11 +629,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                 JSONObject error = new JSONObject(e.getMessage());
                                 if ((error.has("code")) && error.get("code").toString().equals("3001")) {
                                     if (isVisible()) {
-                                        Toast.makeText(getActivity(), "نام فروشگاه تکراری است. لطفا نام دیگری انتخاب کنید.", Toast.LENGTH_LONG).show();
-                                        mNameEditText.setError("نام فروشگاه تکراری است. لطفا نام دیگری انتخاب کنید.");
+                                        Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
+                                        mNameEditText.setError(getString(R.string.store_name_already_exists));
                                     }
                                 } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
-                                    Toast.makeText(getActivity(), "شما فروشگاه دیگری دارید. یا صاحب این فروشگاه نیستید.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
                                 } else {
                                     if (isVisible()) {
                                         Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
@@ -713,7 +706,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         if (store.getStatus() == Store.STATUS_CODE_NOT_VERIFIED) {
                             mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
                             mStatusBarTextView.setVisibility(View.VISIBLE);
-                            mStatusBarTextView.setText("لطفا تغییرات خواسته شده را اعمال کنید.");
+                            mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
                         }
 
                         mLogoProgressBar.setVisibility(View.VISIBLE);
@@ -733,7 +726,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                         progressDialog.dismiss();
                                     }
                                     if (isVisible()) {
-                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر لوگو." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -756,7 +749,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                         progressDialog.dismiss();
                                     }
                                     if (isVisible()) {
-                                        Toast.makeText(getActivity(), "خطا در نمایش تصویر بنر." + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -842,7 +835,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 }
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), "برای مشاهده به‌روزترین اطلاعات دستگاه خود را به اینترنت متصل کنید.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }
                 return null;
             }
@@ -857,7 +850,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
 
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref =  HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
@@ -866,7 +859,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
                 query.fromLocalDatastore();
             } else {
-                tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));
+                tcs.setError(new NetworkErrorException("No network connection + Offline data not available for store"));
                 return tcs.getTask();
             }
         }

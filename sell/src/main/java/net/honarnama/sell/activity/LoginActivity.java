@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +41,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private EditText mPasswordEditText;
     private View mMessageContainer;
     private TextView mLoginMessageTextView;
-//    private View mResendActivationLinkButton;
+    //    private View mResendActivationLinkButton;
     private ProgressDialog mLoadingDialog;
     private TextView mForgotPasswordTextView;
     private LinearLayout mTelegramLoginContainer;
@@ -155,7 +154,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         } else {
                             hideLoadingDialog();
                             logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
-                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed)+getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }
                 });

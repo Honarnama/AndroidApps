@@ -1,19 +1,12 @@
 package net.honarnama.core.utils;
 
-import com.parse.FindCallback;
 import com.parse.FunctionCallback;
-import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import android.util.Log;
-
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by elnaz on 7/26/15.
