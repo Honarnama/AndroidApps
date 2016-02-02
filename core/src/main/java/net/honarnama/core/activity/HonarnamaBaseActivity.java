@@ -31,43 +31,46 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         }
     }
 
-    String getMessage(String debugMsg, String productionMsg) {
+    String getMessage(String sharedMsg, String debugMsg) {
         if ((debugMsg != null) && BuildConfig.DEBUG) {
             String message;
-            if (productionMsg != null) {
-                message = productionMsg + " //  debugMsg: " + debugMsg;
+            if (sharedMsg != null) {
+                message = sharedMsg + " //  debugMsg: " + debugMsg;
             } else {
                 message = debugMsg;
             }
             return message;
-        } else if (productionMsg != null) {
-            return productionMsg;
+        } else if (sharedMsg != null) {
+            return sharedMsg;
         }
         return null;
     }
 
-    public void logE(String productionMsg, String debugMsg, Throwable throwable) {
+    public void logE(String sharedMsg, String debugMsg, Throwable throwable) {
         if (BuildConfig.DEBUG) {
-            Log.e(getDebugTag(), getMessage(productionMsg, debugMsg), throwable);
-        } else if (productionMsg != null) {
-            Log.e(getDebugTag(), productionMsg);
+            Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
+        } else if (sharedMsg != null) {
+            Log.e(getDebugTag(), sharedMsg);
         }
     }
 
-    public void logE(String productionMsg, String debugMsg) {
-        Log.e(getDebugTag(), getMessage(productionMsg, debugMsg));
+    public void logE(String sharedMsg, String debugMsg) {
+        Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg));
     }
 
-    public void logE(String message) {
-        logE(message, null);
+    public void logE(String sharedMsg) {
+        logE(sharedMsg, null);
     }
 
-    public void logI(String productionMsg, String debugMsg) {
-        Log.i(getDebugTag(), getMessage(productionMsg, debugMsg));
+    public void logI(String sharedMsg, String debugMsg) {
+        Log.i(getDebugTag(), getMessage(sharedMsg, debugMsg));
     }
 
-    public void logD(String productionMsg, String debugMsg) {
-        Log.d(getDebugTag(), getMessage(productionMsg, debugMsg));
+    public void logD(String sharedMsg, String debugMsg) {
+        Log.d(getDebugTag(), getMessage(sharedMsg, debugMsg));
     }
 
+    public void logD(String debugMsg) {
+        Log.d(getDebugTag(), getMessage(null, debugMsg));
+    }
 }

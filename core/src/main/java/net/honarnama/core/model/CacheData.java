@@ -33,7 +33,7 @@ import bolts.TaskCompletionSource;
 
 //TODO cache sstore
 
-public class CacheData {
+public class CacheData extends HonarnamaBaseModel {
 
     SharedPreferences mSharedPreferences;
     Context mContext;
@@ -61,12 +61,7 @@ public class CacheData {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false);
 //                    editor.commit();
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Receiving remote data for categories failed. Code: " + task.getError() +
-                                "//" + task.getError().getMessage());
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Receiving remote data for categories failed");
-                    }
+                    logE("Caching categories task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
                 }
@@ -82,12 +77,7 @@ public class CacheData {
             public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching provinces task failed. Code: " + task.getError() +
-                                "//" + task.getError().getMessage());
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching provinces task failed.");
-                    }
+                    logE("Caching provinces task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
                 }
@@ -103,12 +93,7 @@ public class CacheData {
             public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching cities task failed. Code: " + task.getError() +
-                                "//" + task.getError().getMessage());
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching cities task failed.");
-                    }
+                    logE("Caching cities task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
                 }
@@ -122,12 +107,7 @@ public class CacheData {
                     public Object then(Task<Store> task) throws Exception {
                         if (task.isFaulted()) {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false);
-                            if (BuildConfig.DEBUG) {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching Store Task Failed. Code: " + task.getError() +
-                                        "//" + task.getError().getMessage());
-                            } else {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching Store Task Failed.");
-                            }
+                            logE("Caching Store Task Failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
                         } else {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
                         }
@@ -143,12 +123,7 @@ public class CacheData {
                     public Void then(Task<Void> task) throws Exception {
                         if (task.isFaulted()) {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false);
-                            if (BuildConfig.DEBUG) {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "Caching Item Task Failed. Code: " + task.getError() +
-                                        "//" + task.getError().getMessage());
-                            } else {
-                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching Item Task Failed.");
-                            }
+                            logE("Caching Item Task Failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
                         } else {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         }
@@ -171,7 +146,7 @@ public class CacheData {
                     mPrefEditor.commit();
                     tcs.trySetResult(null);
                 } else {
-                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "caching data task failed.");
+                    logE("caching data task failed.");
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
                     mPrefEditor.commit();
                     tcs.trySetError(new RuntimeException("Syncing data failed."));
@@ -207,11 +182,7 @@ public class CacheData {
                 if (e == null) {
                     tcs.trySetResult(objects);
                 } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding remote data for " + parseQuery.getClassName() + " failed. Code: " + e.getCode() + " // " + e.getMessage());
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding remote data for " + parseQuery.getClassName() + " failed.");
-                    }
+                    logE("Finding remote data failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // findind data for object " + parseQuery.getClassName() + " // Error: " + e);
                     tcs.trySetError(e);
                 }
             }
@@ -230,11 +201,7 @@ public class CacheData {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e != null) {
-                                        if (BuildConfig.DEBUG) {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCategoryAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
-                                        } else {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching category failed.");
-                                        }
+                                        logE("Recaching category failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
                                         tcs.trySetError(e);
                                     } else {
                                         tcs.trySetResult(null);
@@ -274,11 +241,7 @@ public class CacheData {
                                     if (e == null) {
                                         tcs.trySetResult(null);
                                     } else {
-                                        if (BuildConfig.DEBUG) {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheProvincesAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
-                                        } else {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching provinces failed.");
-                                        }
+                                        logE("Recaching provinces failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
                                         tcs.trySetError(e);
                                     }
                                 }
@@ -318,11 +281,7 @@ public class CacheData {
                                     if (e == null) {
                                         tcs.trySetResult(null);
                                     } else {
-                                        if (BuildConfig.DEBUG) {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "recacheCityAsync failed. Code: " + e.getCode() + " // " + e.getMessage());
-                                        } else {
-                                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "recaching cities failed.");
-                                        }
+                                        logE("Recaching cities failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
                                         tcs.trySetError(e);
                                     }
                                 }
@@ -382,8 +341,7 @@ public class CacheData {
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "Caching user store result: User does not have any store yet.");
+                            logD("Caching user store result: User does not have any store yet. Error: " + e);
                         }
 
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -391,14 +349,7 @@ public class CacheData {
                         editor.commit();
                         tcs.setResult(null);
                     } else {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "Caching store task failed.  Error Code: " + e.getCode() +
-                                            "//" + e.getMessage() + " // " + e, e);
-                        } else {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching store task failed. "
-                                    + e.getMessage());
-                        }
+                        logE("Caching store task failed. Error Code: " + e.getCode(), "// Error Msg: " + e.getMessage() + " // Error: " + e, e);
                         tcs.trySetError(e);
                     }
 
@@ -449,22 +400,14 @@ public class CacheData {
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "User does not have any items yet.");
+                            logD("User does not have any items yet.");
                         }
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         editor.commit();
                         tcs.setResult(null);
                     } else {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "Caching item task failed.  Error Code: " + e.getCode() +
-                                            "//" + e.getMessage() + " // " + e, e);
-                        } else {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Caching item task failed. "
-                                    + e.getMessage());
-                        }
+                        logE("Caching item task failed. Error Code: " + e.getCode(), " // Msg: " + e.getMessage() + " // Error: " + e, e);
                         tcs.trySetError(e);
                     }
 

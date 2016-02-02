@@ -30,6 +30,8 @@ import bolts.TaskCompletionSource;
 @ParseClassName("City")
 public class City extends ParseObject {
 
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.City";
+
     public static String OBJECT_NAME = "City";
     public static String NAME = "name";
     public static String ORDER = "order";
@@ -100,7 +102,7 @@ public class City extends ParseObject {
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get city list from LocalDatastore");
+                Log.d(DEBUG_TAG, " Getting city list from LocalDatastore");
             }
             parseQuery.fromLocalDatastore();
         } else {
@@ -123,9 +125,9 @@ public class City extends ParseObject {
                     tcs.trySetResult(cityList);
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
+                        Log.e(DEBUG_TAG, "Finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding cities failed.");
+                        Log.e(DEBUG_TAG, "Finding cities failed.");
                     }
                     tcs.trySetError(e);
                 }

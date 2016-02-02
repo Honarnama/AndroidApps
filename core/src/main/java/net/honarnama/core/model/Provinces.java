@@ -31,6 +31,7 @@ import bolts.TaskCompletionSource;
  */
 @ParseClassName("Provinces")
 public class Provinces extends ParseObject {
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/provinceModel";
 
     public static String OBJECT_NAME = "Provinces";
     public static String NAME = "name";
@@ -95,9 +96,7 @@ public class Provinces extends ParseObject {
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get provinces list from LocalDatastore");
-            }
+            Log.d(DEBUG_TAG, "Getting provinces list from Local datastore");
             parseQuery.fromLocalDatastore();
         } else {
 
@@ -142,9 +141,9 @@ public class Provinces extends ParseObject {
                     tcs.trySetResult(provincesList);
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage());
+                        Log.e(DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding provinces failed.");
+                        Log.e(DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode());
                     }
                     tcs.trySetError(e);
                 }

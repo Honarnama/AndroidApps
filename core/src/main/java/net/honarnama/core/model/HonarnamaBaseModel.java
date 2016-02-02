@@ -1,35 +1,19 @@
-package net.honarnama.core.fragment;
+package net.honarnama.core.model;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 
 /**
- * Created by reza on 11/23/15.
+ * Created by elnaz on 2/2/16.
  */
-public abstract class HonarnamaBaseFragment extends Fragment {
-
-    private boolean announced = false;
-
-    abstract public String getTitle(Context context);
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG && !announced) {
-            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Fragment created,\tadb catlog tag:   'Honarnama/" + getLocalClassName() + ":V'");
-            announced = true;
-        }
-    }
+public class HonarnamaBaseModel {
 
     public String getLocalClassName() {
         String pkg = "";
-        if (getActivity() != null) {
-            pkg = getActivity().getPackageName();
+        if (HonarnamaBaseApp.getInstance() != null) {
+            pkg = HonarnamaBaseApp.getInstance().getPackageName();
         }
         String cls = "";
         if (getClass() != null) {
@@ -93,5 +77,4 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     public void logD(String debugMsg) {
         Log.d(getDebugTag(), getMessage(null, debugMsg));
     }
-
 }

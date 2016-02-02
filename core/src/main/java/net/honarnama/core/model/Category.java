@@ -21,6 +21,7 @@ import bolts.TaskCompletionSource;
 
 @ParseClassName("art_categories")
 public class Category extends ParseObject {
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.Category";
 
     public static String OBJECT_NAME = "art_categories";
     public static String NAME = "name";
@@ -44,7 +45,7 @@ public class Category extends ParseObject {
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
-                Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "get category from Local datastore");
+                Log.d(DEBUG_TAG, " Getting categories from local datastore");
             }
             parseQuery.fromLocalDatastore();
         } else {
@@ -63,9 +64,9 @@ public class Category extends ParseObject {
                     tcs.trySetResult(category.getName());
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getName(), "finding  category failed. Code: " + e.getCode() + " // " + e.getMessage());
+                        Log.e(DEBUG_TAG, "Finding  category failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
                     } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "finding category failed.");
+                        Log.e(DEBUG_TAG, "Finding category failed. Code: " + e.getCode());
                     }
                     tcs.trySetError(e);
                 }

@@ -5,6 +5,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.core.utils.FileUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -58,7 +58,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private OnImageSelectedListener mOnImageSelectedListener;
     private Activity mActivity;
 
-    private Uri mTempImageUriCapture;
+    private Uri mSelectedImageUri;
     private Uri mTempImageUriCrop;
     private Uri mFinalImageUri;
 
@@ -165,9 +165,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     case 0:
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                            mTempImageUriCapture = createImageFile();
-                            if (mTempImageUriCapture != null) {
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTempImageUriCapture);
+                            mSelectedImageUri = createImageFile();
+                            if (mSelectedImageUri != null) {
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImageUri);
                                 mActivity.startActivityForResult(
                                         takePictureIntent, mIntentCodeCapture);
                             }
@@ -253,7 +253,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (requestCode == mIntentCodeCapture) {
             if (resultCode == Activity.RESULT_OK) {
                 if (!(mCropNeeded && crop())) {
-                    imageSelected(mTempImageUriCapture, false);
+                    imageSelected(mSelectedImageUri, false);
                 } // else: crop will handle
             } else {
                 if (BuildConfig.DEBUG) {
@@ -263,28 +263,40 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             }
         } else if (requestCode == mIntentCodeSelect) {
             if (resultCode == Activity.RESULT_OK) {
+                Uri selectedImageURI = intent.getData();
                 String filePath = null;
-                Uri _uri = intent.getData();
-                Log.d("", "URI = " + _uri);
-                if (_uri != null && "content".equals(_uri.getScheme())) {
-                    Cursor cursor = mContext.getContentResolver().query(_uri,
-                            new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
-                            null, null, null);
-                    cursor.moveToFirst();
-                    filePath = cursor.getString(0);
-                    cursor.close();
-                    mTempImageUriCapture = Uri.fromFile(new File(filePath));
+                Log.d("", "URI = " + selectedImageURI);
+                if (selectedImageURI != null && "content".equals(selectedImageURI.getScheme())) {
+                    filePath = FileUtil.getRealPathFromURI(HonarnamaBaseApp.getInstance(), selectedImageURI);
+
+                    mSelectedImageUri = Uri.fromFile(new File(filePath));
                 } else {
-                    mTempImageUriCapture = _uri;
+                    mSelectedImageUri = selectedImageURI;
                 }
 
+
+//                String filePath = null;
+//                Uri _uri = intent.getData();
+//                Log.d("", "URI = " + _uri);
+//                if (_uri != null && "content".equals(_uri.getScheme())) {
+//                    Cursor cursor = mContext.getContentResolver().query(_uri,
+//                            new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
+//                            null, null, null);
+//                    cursor.moveToFirst();
+//                    filePath = cursor.getString(0);
+//                    cursor.close();
+//                    mSelectedImageUri = Uri.fromFile(new File(filePath));
+//                } else {
+//                    mSelectedImageUri = _uri;
+//                }
+//
                 if (BuildConfig.DEBUG) {
-                    Log.d(LOG_TAG, "Converted mIntentCodeSelect _uri= " + _uri
-                            + " to mTempImageUriCapture= " + mTempImageUriCapture);
+                    Log.d(LOG_TAG, "Converted mIntentCodeSelect selectedImageURI= " + selectedImageURI
+                            + " to mSelectedImageUri= " + mSelectedImageUri);
                 }
 
                 if (!(mCropNeeded && crop())) {
-                    imageSelected(mTempImageUriCapture, false);
+                    imageSelected(mSelectedImageUri, false);
                 } // else: crop will handle
             } else {
                 if (BuildConfig.DEBUG) {
@@ -312,11 +324,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(new Date());
         String imageFileName = "Honarnama_" + timeStamp;
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "Honarnama");
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
         File image;
         try {
-
             image = File.createTempFile(
                     imageFileName,  /* prefix */
                     ".jpg",         /* suffix */
@@ -350,7 +364,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             return false;
         }
 
-        cropIntent.setData(mTempImageUriCapture);
+        cropIntent.setData(mSelectedImageUri);
 
         if (mOutputX >= 0) {
             cropIntent.putExtra("outputX", mOutputX);
@@ -381,12 +395,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mTempImageUriCapture != null) {
-            File f = new File(mTempImageUriCapture.getPath());
-            if (f.canWrite()) {
-                f.delete();
-            }
-        }
+//        if (mSelectedImageUri != null) {
+//            File f = new File(mSelectedImageUri.getPath());
+//            if (f.canWrite()) {
+//                f.delete();
+//            }
+//        }
 
         if (mTempImageUriCrop != null) {
             File f = new File(mTempImageUriCrop.getPath());
@@ -399,8 +413,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void onSaveInstanceState(Bundle outState) {
         String prefix = "ImageSelector_" + mImageSelectorIndex;
 
-        if (mTempImageUriCapture != null) {
-            outState.putString(prefix + "_mTempImageUriCapture", mTempImageUriCapture.toString());
+        if (mSelectedImageUri != null) {
+            outState.putString(prefix + "_mTempImageUriCapture", mSelectedImageUri.toString());
         }
 
         if (mTempImageUriCrop != null) {
@@ -419,7 +433,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
-                mTempImageUriCapture = Uri.parse(_mTempImageUriCapture);
+                mSelectedImageUri = Uri.parse(_mTempImageUriCapture);
             }
 
             String _mTempImageUriCrop = savedInstanceState.getString(prefix + "_mTempImageUriCrop");

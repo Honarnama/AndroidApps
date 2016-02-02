@@ -168,7 +168,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     private void processIntent(Intent intent) {
         Uri data = intent.getData();
 
-        logI(null, "processIntent :: data= " + data);
+        logD("processIntent :: data= " + data);
 
         if (data != null) {
             final String itemId = data.getQueryParameter("itemId");
@@ -253,7 +253,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            logE("Error Logging user out.", " error message: " + e.getMessage() + " // error code: " + e.getCode(), e);
+                            logE("Error logging user out." + " Error Code: " + e.getCode(), " // Msg: " + e.getMessage() + " // Error: " + e, e);
                         }
                         if (mWaitingProgressDialog.isShowing()) {
                             mWaitingProgressDialog.dismiss();

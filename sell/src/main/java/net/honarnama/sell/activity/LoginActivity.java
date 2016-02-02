@@ -79,7 +79,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 return;
             }
             showLoadingDialog();
-            logI("Parse user is not empty", "user= " + user.getEmail());
+            logD("Parse user is not empty", "user= " + user.getEmail());
             user.fetchInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException parseException) {
@@ -103,7 +103,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             processIntent(getIntent());
         }
 
-        logI(null, "created!");
     }
 
     private void showLoadingDialog() {
@@ -129,13 +128,13 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
         mLoginMessageTextView.setText("");
         Uri data = intent.getData();
-        logI(null, "processIntent :: data= " + data);
+        logD("processIntent :: data= " + data);
 
         if (data != null) {
             final String telegramToken = data.getQueryParameter("telegramToken");
             final String register = data.getQueryParameter("register");
 
-            logI(null, "telegramToken= " + telegramToken + ", register= " + register);
+            logD("telegramToken= " + telegramToken + ", register= " + register);
 
             if (telegramToken != null && telegramToken.length() > 0) {
                 showLoadingDialog();
@@ -153,7 +152,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                         } else {
                             hideLoadingDialog();
-                            logE("Error while logging in using token", "telegramToken= " + telegramToken, e);
+                            logE("Error while logging in using token. ", " // telegramToken= " + telegramToken, e);
                             Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }

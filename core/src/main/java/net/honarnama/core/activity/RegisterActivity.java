@@ -243,7 +243,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
                     Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
                     logE("Sign-up Failed. Code: " + e.getCode(),
-                            e.getMessage(), e);
+                            " // Error Msg: " + e.getMessage() + " // " + e , e);
                 }
             }
         });
@@ -356,7 +356,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         */
         switch (requestCode) {
             default:
-                logD(null, "Unexpected requestCode= " + requestCode);
+                logD("Unexpected requestCode= " + requestCode, null);
         }
     }
 

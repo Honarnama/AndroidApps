@@ -31,6 +31,8 @@ public class Store extends ParseObject {
         super();
     }
 
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/storeModel";
+
     public static String OBJECT_NAME = "Store";
 
     public static String NAME = "name";
@@ -139,9 +141,7 @@ public class Store extends ParseObject {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting store info from local datastore");
-                }
+                Log.d(DEBUG_TAG, "Getting store info from local datastore.");
                 query.fromLocalDatastore();
             } else {
                 tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));

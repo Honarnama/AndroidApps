@@ -8,6 +8,7 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.core.adapter.CategoriesAdapter;
 import net.honarnama.core.model.Category;
@@ -74,10 +75,14 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         final SharedPreferences sharedPref = getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
-            logD(null, "get categories list from LocalDatastore in buildCategoriesHierarchyHashMap");
+            if (BuildConfig.DEBUG) {
+                logD("get categories list from LocalDatastore in buildCategoriesHierarchyHashMap");
+            }
             parseQuery.fromLocalDatastore();
         } else {
-            logD(null, "get categories list from remote database in buildCategoriesHierarchyHashMap");
+            if (BuildConfig.DEBUG) {
+                logD("get categories list from remote database in buildCategoriesHierarchyHashMap");
+            }
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 return;
             }

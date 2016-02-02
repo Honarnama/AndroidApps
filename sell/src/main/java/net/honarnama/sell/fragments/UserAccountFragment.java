@@ -191,14 +191,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.message_altering_profile_Failed), Toast.LENGTH_LONG).show();
                     }
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error changing user name.  Error Code: " + e.getCode() +
-                                        "//" + e.getMessage() + " // " + e, e);
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error changing user name. "
-                                + e.getMessage());
-                    }
+                    logE("Error changing user name. Code: " + e.getCode(), " // Msg: " + e.getMessage(), e);
                 }
 
             }
@@ -224,14 +217,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.changing_password_failed), Toast.LENGTH_LONG).show();
                     }
-                    if (BuildConfig.DEBUG) {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                "Error changing password.  Error Code: " + e.getCode() +
-                                        "//" + e.getMessage() + " // " + e, e);
-                    } else {
-                        Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error changing password. "
-                                + e.getMessage());
-                    }
+                    logE("Error changing password. Code: " + e.getCode(), " // Msg: " + e.getMessage(), e);
                 }
             }
         });

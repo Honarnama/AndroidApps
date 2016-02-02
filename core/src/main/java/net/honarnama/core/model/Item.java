@@ -21,6 +21,7 @@ import net.honarnama.core.utils.ParseIO;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -201,12 +202,12 @@ public class Item extends ParseObject {
     public static Task<List<Item>> getUserItems(Context context) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
                 if (BuildConfig.DEBUG) {
-                    Log.d(HonarnamaBaseApp.PRODUCTION_TAG + "/" + context.getClass().getName(), "getting items from Local data store");
+                    Log.d(DEBUG_TAG, "Getting items from local data store");
                 }
                 parseQuery.fromLocalDatastore();
             } else {
@@ -256,10 +257,7 @@ public class Item extends ParseObject {
 //                    }
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "User does not have any items yet.");
-                        }
+                        Log.d(DEBUG_TAG, "User does not have any items yet.");
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         editor.commit();
@@ -267,12 +265,11 @@ public class Item extends ParseObject {
                     } else {
                         tcs.trySetError(e);
                         if (BuildConfig.DEBUG) {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                    "Error Getting Items.  Error Code: " + e.getCode() +
-                                            "//" + e.getMessage() + " // " + e, e);
+                            Log.e(DEBUG_TAG,
+                                    "Error getting user Items. Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
                         } else {
-                            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error Getting Items. "
-                                    + e.getMessage());
+                            Log.e(DEBUG_TAG,
+                                    "Error getting user Items. Error Code: " + e.getCode());
                         }
                     }
                 }
@@ -285,7 +282,7 @@ public class Item extends ParseObject {
     public static Task<Void> deleteItem(Context context, String itemId) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.setError(new NetworkErrorException("Network connection failed"));
             return tcs.getTask();
         }
