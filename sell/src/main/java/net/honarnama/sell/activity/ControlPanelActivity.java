@@ -11,6 +11,7 @@ import com.parse.LogOutCallback;
 import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
@@ -167,8 +168,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     private void processIntent(Intent intent) {
         Uri data = intent.getData();
-
-        logD("processIntent :: data= " + data);
+        if (BuildConfig.DEBUG) {
+            logD("processIntent :: data= " + data);
+        }
 
         if (data != null) {
             final String itemId = data.getQueryParameter("itemId");
@@ -253,7 +255,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            logE("Error logging user out." + " Error Code: " + e.getCode(), " // Msg: " + e.getMessage() + " // Error: " + e, e);
+                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                         }
                         if (mWaitingProgressDialog.isShowing()) {
                             mWaitingProgressDialog.dismiss();

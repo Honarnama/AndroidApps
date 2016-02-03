@@ -106,7 +106,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }
                 if (task.isFaulted()) {
-                    logE("Getting User Items Failed.", "", task.getError());
+                    logE("Getting User Items Failed. Error: "+ task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }

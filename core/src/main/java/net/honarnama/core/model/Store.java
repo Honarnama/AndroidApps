@@ -141,7 +141,9 @@ public class Store extends ParseObject {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                Log.d(DEBUG_TAG, "Getting store info from local datastore.");
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Getting store info from local datastore.");
+                }
                 query.fromLocalDatastore();
             } else {
                 tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));

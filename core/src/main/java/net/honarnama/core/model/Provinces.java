@@ -1,5 +1,6 @@
 package net.honarnama.core.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
@@ -96,7 +97,9 @@ public class Provinces extends ParseObject {
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
-            Log.d(DEBUG_TAG, "Getting provinces list from Local datastore");
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "Getting provinces list from Local datastore");
+            }
             parseQuery.fromLocalDatastore();
         } else {
 
@@ -143,7 +146,7 @@ public class Provinces extends ParseObject {
                     if (BuildConfig.DEBUG) {
                         Log.e(DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
                     } else {
-                        Log.e(DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode());
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
                     }
                     tcs.trySetError(e);
                 }

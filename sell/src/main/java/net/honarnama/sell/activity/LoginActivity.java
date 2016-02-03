@@ -9,6 +9,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.activity.RegisterActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -79,7 +80,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 return;
             }
             showLoadingDialog();
-            logD("Parse user is not empty", "user= " + user.getEmail());
+            if (BuildConfig.DEBUG) {
+                logD("Parse user is not empty", "user= " + user.getEmail());
+            }
             user.fetchInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException parseException) {
@@ -128,13 +131,16 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
         mLoginMessageTextView.setText("");
         Uri data = intent.getData();
-        logD("processIntent :: data= " + data);
+        if (BuildConfig.DEBUG) {
+            logD("processIntent :: data= " + data);
+        }
 
         if (data != null) {
             final String telegramToken = data.getQueryParameter("telegramToken");
             final String register = data.getQueryParameter("register");
-
-            logD("telegramToken= " + telegramToken + ", register= " + register);
+            if (BuildConfig.DEBUG) {
+                logD("telegramToken= " + telegramToken + ", register= " + register);
+            }
 
             if (telegramToken != null && telegramToken.length() > 0) {
                 showLoadingDialog();
@@ -152,7 +158,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                         } else {
                             hideLoadingDialog();
-                            logE("Error while logging in using token. ", " // telegramToken= " + telegramToken, e);
+                            logE("Error while logging in using token. " + " // telegramToken= " + telegramToken + " // Error: " + e, "", e);
                             Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -260,7 +266,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 } else {
                     progressDialog.dismiss();
                     // Signup failed. Look at the ParseException to see what happened.
-                    logE("logInInBackground Failed. ", e.getMessage(), e);
+                    logE("logInInBackground Failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), "", e);
                     mMessageContainer.setVisibility(View.VISIBLE);
                     mLoginMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
 //                    mResendActivationLinkButton.setVisibility(View.GONE);

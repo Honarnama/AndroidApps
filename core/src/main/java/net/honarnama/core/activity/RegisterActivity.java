@@ -7,6 +7,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
@@ -242,8 +243,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                     }
 
                     Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
-                    logE("Sign-up Failed. Code: " + e.getCode(),
-                            " // Error Msg: " + e.getMessage() + " // " + e , e);
+                    logE("Sign-up Failed. Code: " + e.getCode() +
+                            " // Error Msg: " + e.getMessage(), "", e);
                 }
             }
         });
@@ -356,7 +357,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         */
         switch (requestCode) {
             default:
-                logD("Unexpected requestCode= " + requestCode, null);
+                if (BuildConfig.DEBUG) {
+                    logD("Unexpected requestCode= " + requestCode);
+                }
         }
     }
 

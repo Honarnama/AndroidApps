@@ -1,5 +1,6 @@
 package net.honarnama.core.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -30,7 +31,7 @@ import bolts.TaskCompletionSource;
 @ParseClassName("City")
 public class City extends ParseObject {
 
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.City";
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/cityModel";
 
     public static String OBJECT_NAME = "City";
     public static String NAME = "name";
@@ -127,7 +128,7 @@ public class City extends ParseObject {
                     if (BuildConfig.DEBUG) {
                         Log.e(DEBUG_TAG, "Finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
-                        Log.e(DEBUG_TAG, "Finding cities failed.");
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding  city failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e);
                     }
                     tcs.trySetError(e);
                 }

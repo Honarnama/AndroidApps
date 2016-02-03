@@ -39,7 +39,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -464,7 +463,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
                         }
-                        logE("Uploading Store Logo Failed. Code: " + e.getCode() + "//" + e.getMessage(), "", e);
+                        logE("Uploading Store Logo Failed. Code: " + e.getCode() + " // Msg:" + e.getMessage() + " // Error: " + e, "", e);
                         mSendingDataProgressDialog.dismiss();
                     }
                 }
@@ -474,7 +473,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
             }
-            logE("Failed on preparing store logo image. ioe=" + ioe.getMessage(), "", ioe);
+            logE("Failed on preparing store logo image. ioe=" + ioe.getMessage() + " // Error: " + ioe, "", ioe);
         }
     }
 
@@ -518,7 +517,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
                         }
                         logE("Uploading Store Banner Failed. Code: " + e.getCode()
-                                + "// Msg: " + e.getMessage(), "", e);
+                                + "// Msg: " + e.getMessage() + " // Error: " + e, "", e);
                     }
                 }
             });
@@ -527,7 +526,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
             }
-            logE("Failed on preparing store banner image. ioe=" + ioe.getMessage(), "", ioe);
+            logE("Failed on preparing store banner image. ioe=" + ioe.getMessage() + " // Error: " + ioe, "", ioe);
         }
     }
 
@@ -559,7 +558,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
-                        logE("Error changing Store Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage(), "", e);
+                        logE("Error changing Store Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
                         return;
                     }
                 }
@@ -592,7 +591,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             }
                             storeObject.pinInBackground();
                         } else {
-                            logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage(), "", e);
+                            logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
                             try {
                                 JSONObject error = new JSONObject(e.getMessage());
                                 if ((error.has("code")) && error.get("code").toString().equals("3001")) {
@@ -635,7 +634,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public Void then(Task<Store> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Getting Store Task Failed. // " + task.getError().getMessage(), "", task.getError());
+                    logE("Getting Store Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                     progressDialog.dismiss();
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
@@ -677,7 +676,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             public void done(byte[] data, ParseException e) {
                                 mLogoProgressBar.setVisibility(View.GONE);
                                 if (e != null) {
-                                    logE("Getting  logo image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), "", e);
+                                    logE("Getting  logo image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                     if (progressDialog.isShowing()) {
                                         progressDialog.dismiss();
                                     }
@@ -694,7 +693,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                             public void done(byte[] data, ParseException e) {
                                 mBannerProgressBar.setVisibility(View.GONE);
                                 if (e != null) {
-                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), "", e);
+                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                                     if (progressDialog.isShowing()) {
                                         progressDialog.dismiss();
                                     }
@@ -727,7 +726,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
-                    logE("Getting Province Task Failed. Msg: " + task.getError().getMessage(), "", task.getError());
+                    logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
 
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
@@ -759,7 +758,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
                 if (task.isFaulted()) {
                     mCityEditEext.setText(City.DEFAULT_CITY_NAME);
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage(), "", task.getError());
+                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
@@ -793,7 +792,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                logD("Getting store info from local datastore");
+                if (BuildConfig.DEBUG) {
+                    logD("Getting store info from local datastore");
+                }
                 query.fromLocalDatastore();
             } else {
                 tcs.setError(new NetworkErrorException("No network connection + Offline data not available for store"));
@@ -836,14 +837,16 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        logD("Getting User Store Result: User does not have any store yet.");
+                        if (BuildConfig.DEBUG) {
+                            logD("Getting User Store Result: User does not have any store yet.");
+                        }
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
                         editor.commit();
                         tcs.trySetResult(null);
                     } else {
                         tcs.trySetError(e);
-                        logE("Error Getting Store Info. Code: " + e.getCode() + " // Msg: " + e.getMessage(), "", e);
+                        logE("Error Getting Store Info. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                     }
                 }
 

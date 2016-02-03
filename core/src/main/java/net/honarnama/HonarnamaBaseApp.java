@@ -1,5 +1,6 @@
 package net.honarnama;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
@@ -88,7 +89,7 @@ public class HonarnamaBaseApp extends Application {
                 Log.e(PRODUCTION_TAG + "/" + getClass().getSimpleName(),
                         "NO SDCARD");
             } else {
-                Log.e(PRODUCTION_TAG, "NO SDCARD");
+                Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "NO SDCARD");
             }
         } else {
             APP_FOLDER = new File(Environment.getExternalStorageDirectory() + File.separator + "Honarnama");

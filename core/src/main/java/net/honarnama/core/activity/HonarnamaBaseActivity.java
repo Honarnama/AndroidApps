@@ -1,5 +1,7 @@
 package net.honarnama.core.activity;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 
@@ -50,7 +52,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            Log.e(getDebugTag(), sharedMsg);
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
         }
     }
 

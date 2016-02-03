@@ -1,5 +1,6 @@
 package net.honarnama.core.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -21,7 +22,7 @@ import bolts.TaskCompletionSource;
 
 @ParseClassName("art_categories")
 public class Category extends ParseObject {
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.Category";
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/categoryModel";
 
     public static String OBJECT_NAME = "art_categories";
     public static String NAME = "name";
@@ -45,7 +46,7 @@ public class Category extends ParseObject {
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, " Getting categories from local datastore");
+                Log.d(DEBUG_TAG, "Getting categories from local datastore");
             }
             parseQuery.fromLocalDatastore();
         } else {
@@ -64,9 +65,9 @@ public class Category extends ParseObject {
                     tcs.trySetResult(category.getName());
                 } else {
                     if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding  category failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
+                        Log.e(DEBUG_TAG, "Finding  category failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), e);
                     } else {
-                        Log.e(DEBUG_TAG, "Finding category failed. Code: " + e.getCode());
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding  category failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e);
                     }
                     tcs.trySetError(e);
                 }

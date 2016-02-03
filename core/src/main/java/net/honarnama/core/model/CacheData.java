@@ -61,7 +61,7 @@ public class CacheData extends HonarnamaBaseModel {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false);
 //                    editor.commit();
-                    logE("Caching categories task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
+                    logE("Caching categories task failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, true);
                 }
@@ -77,7 +77,7 @@ public class CacheData extends HonarnamaBaseModel {
             public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false);
-                    logE("Caching provinces task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
+                    logE("Caching provinces task failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, true);
                 }
@@ -93,7 +93,7 @@ public class CacheData extends HonarnamaBaseModel {
             public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false);
-                    logE("Caching cities task failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
+                    logE("Caching cities task failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
                 } else {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
                 }
@@ -107,7 +107,7 @@ public class CacheData extends HonarnamaBaseModel {
                     public Object then(Task<Store> task) throws Exception {
                         if (task.isFaulted()) {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false);
-                            logE("Caching Store Task Failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
+                            logE("Caching Store Task Failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
                         } else {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
                         }
@@ -123,7 +123,7 @@ public class CacheData extends HonarnamaBaseModel {
                     public Void then(Task<Void> task) throws Exception {
                         if (task.isFaulted()) {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false);
-                            logE("Caching Item Task Failed. Error Msg : " + task.getError().getMessage(), " // task error: " + task.getError(), task.getError());
+                            logE("Caching Item Task Failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
                         } else {
                             mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         }
@@ -182,7 +182,7 @@ public class CacheData extends HonarnamaBaseModel {
                 if (e == null) {
                     tcs.trySetResult(objects);
                 } else {
-                    logE("Finding remote data failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // findind data for object " + parseQuery.getClassName() + " // Error: " + e);
+                    logE("Finding remote data failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // findind data for object " + parseQuery.getClassName() + " // Error: " + e, "", e);
                     tcs.trySetError(e);
                 }
             }
@@ -201,7 +201,7 @@ public class CacheData extends HonarnamaBaseModel {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e != null) {
-                                        logE("Recaching category failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
+                                        logE("Recaching category failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                         tcs.trySetError(e);
                                     } else {
                                         tcs.trySetResult(null);
@@ -241,7 +241,7 @@ public class CacheData extends HonarnamaBaseModel {
                                     if (e == null) {
                                         tcs.trySetResult(null);
                                     } else {
-                                        logE("Recaching provinces failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
+                                        logE("Recaching provinces failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                         tcs.trySetError(e);
                                     }
                                 }
@@ -281,7 +281,7 @@ public class CacheData extends HonarnamaBaseModel {
                                     if (e == null) {
                                         tcs.trySetResult(null);
                                     } else {
-                                        logE("Recaching cities failed. Error Code: " + e.getCode(), " // Error Msg: " + e.getMessage() + " // Error:" + e, e);
+                                        logE("Recaching cities failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                         tcs.trySetError(e);
                                     }
                                 }
@@ -349,7 +349,7 @@ public class CacheData extends HonarnamaBaseModel {
                         editor.commit();
                         tcs.setResult(null);
                     } else {
-                        logE("Caching store task failed. Error Code: " + e.getCode(), "// Error Msg: " + e.getMessage() + " // Error: " + e, e);
+                        logE("Caching store task failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error: " + e, "", e);
                         tcs.trySetError(e);
                     }
 
@@ -407,7 +407,7 @@ public class CacheData extends HonarnamaBaseModel {
                         editor.commit();
                         tcs.setResult(null);
                     } else {
-                        logE("Caching item task failed. Error Code: " + e.getCode(), " // Msg: " + e.getMessage() + " // Error: " + e, e);
+                        logE("Caching item task failed. Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                         tcs.trySetError(e);
                     }
 

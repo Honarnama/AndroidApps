@@ -73,6 +73,9 @@
                   android:launchMode="singleTask"
                 >
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="bfd2de2b7ac2ce16acc26914dde9c0cea6796d39" />
     </application>
 
 </manifest>

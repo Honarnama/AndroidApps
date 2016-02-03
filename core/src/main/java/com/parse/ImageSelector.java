@@ -1,5 +1,6 @@
 package com.parse;
 
+import com.crashlytics.android.Crashlytics;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -340,7 +341,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             if (BuildConfig.DEBUG) {
                 Log.e(LOG_TAG, "While preparing for takePicture", ex);
             } else {
-                Log.e(LOG_TAG, "Exception: " + ex);
+                Crashlytics.logException(ex);
             }
             return null;
         }

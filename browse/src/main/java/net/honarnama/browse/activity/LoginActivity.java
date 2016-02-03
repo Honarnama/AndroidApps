@@ -1,5 +1,6 @@
 package net.honarnama.browse.activity;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -203,6 +204,11 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                     break;
             }
         } else {
+            ParseUser u = HonarnamaUser.getCurrentUser();
+            Crashlytics.setUserIdentifier(u.getSessionToken());
+            Crashlytics.setUserEmail(u.getEmail());
+            Crashlytics.setUserName(u.getUsername());
+
             gotoControlPanel();
         }
     }

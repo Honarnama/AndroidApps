@@ -1,5 +1,6 @@
 package net.honarnama.core.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -125,19 +126,25 @@ public class Item extends ParseObject {
                             "image_" + imageSelector.getImageSelectorIndex() + ".jpeg",
                             new File(imageSelector.getFinalImageUri().getPath())
                     );
-                    Log.d(DEBUG_TAG, "saveWithImages, new file: " + parseFile);
+                    if (BuildConfig.DEBUG) {
+                        Log.d(DEBUG_TAG, "saveWithImages, new file: " + parseFile);
+                    }
                     parseFileImages.add(parseFile);
                     tasks.add(parseFile.saveInBackground());
                 } else {
                     parseFileImagesToRemove.add(parseFile);
                 }
             } else if (parseFile != null) {
-                Log.d(DEBUG_TAG, "saveWithImages, existing file: " + parseFile);
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "saveWithImages, existing file: " + parseFile);
+                }
                 if (!imageSelector.isDeleted()) {
                     parseFileImages.add(parseFile);
                 }
             } else {
-                Log.d(DEBUG_TAG, "saveWithImages, ignoring " + imageSelector);
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "saveWithImages, ignoring " + imageSelector);
+                }
             }
         }
 
@@ -257,7 +264,9 @@ public class Item extends ParseObject {
 //                    }
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        Log.d(DEBUG_TAG, "User does not have any items yet.");
+                        if (BuildConfig.DEBUG) {
+                            Log.d(DEBUG_TAG, "User does not have any items yet.");
+                        }
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, true);
                         editor.commit();
@@ -268,8 +277,7 @@ public class Item extends ParseObject {
                             Log.e(DEBUG_TAG,
                                     "Error getting user Items. Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
                         } else {
-                            Log.e(DEBUG_TAG,
-                                    "Error getting user Items. Error Code: " + e.getCode());
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error getting user Items. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
                         }
                     }
                 }

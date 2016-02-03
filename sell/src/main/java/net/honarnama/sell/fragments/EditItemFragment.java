@@ -239,7 +239,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         // * What if the wants to edit an item_row?
         //    mCreateNew = false, savedDirty = false, mItemId = THE_ID
 
-        logD("onCreateView :: mCreateNew= " + mCreateNew);
+        if (BuildConfig.DEBUG) {
+            logD("onCreateView :: mCreateNew= " + mCreateNew);
+        }
         if (mCreateNew) {
             reset(getActivity(), true);
         } else {
@@ -250,7 +252,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 savedItemId = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
             }
 
-            logD("onCreateView :: savedDirty= " + savedDirty + ", savedItemId= " + savedItemId);
+            if (BuildConfig.DEBUG) {
+                logD("onCreateView :: savedDirty= " + savedDirty + ", savedItemId= " + savedItemId);
+            }
 
             if (savedDirty) {
                 mDirty = true;
@@ -269,7 +273,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
 
                     if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
-                        logD("Getting items from Local data store");
+                        if (BuildConfig.DEBUG) {
+                            logD("Getting items from Local data store");
+                        }
                         query.fromLocalDatastore();
                     } else {
                         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -282,7 +288,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         public void done(Item item, ParseException e) {
                             hideLoadingDialog();
                             if (e != null) {
-                                logE("Exception while loading item_row. ", "mItemId= " + mItemId, e);
+                                logE("Exception while loading item_row. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "mItemId= " + mItemId, e);
                                 if (isVisible()) {
                                     Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                                 }
@@ -356,13 +362,16 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                                 }
                                                 if (e == null) {
                                                     if (data != null) {
-                                                        logD(null, "Fetched! Data length: " + data.length);
+                                                        if (BuildConfig.DEBUG) {
+                                                            logD("Fetched! Data length: " + data.length);
+                                                        }
                                                     }
                                                 } else {
                                                     if (isVisible()) {
                                                         Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                                                     }
-                                                    logE("Exception while loading image", "", e);
+
+                                                    logE("Exception while loading image. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                                                 }
                                             }
                                         });
@@ -494,22 +503,30 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             Item.saveWithImages(mItem, title, description, mCategoryId, price, mItemImages).continueWith(new Continuation<Item, Void>() {
                 @Override
                 public Void then(Task<Item> task) throws Exception {
-                    logD("saveItem, Back to then");
+                    if (BuildConfig.DEBUG) {
+                        logD("saveItem, Back to then");
+                    }
                     sendingDataProgressDialog.dismiss();
                     if (task.isCompleted()) {
-                        logD("saveItem, task.isCompleted()");
+                        if (BuildConfig.DEBUG) {
+                            logD("saveItem, task.isCompleted()");
+                        }
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getString(R.string.item_saved_successfully), Toast.LENGTH_LONG).show();
                         }
                         mDirty = false;
                         mItem = task.getResult();
                         mItemId = mItem.getObjectId();
-                        logD("saveItem, mItem= " + mItem + ", mItemId= " + mItemId);
+                        if (BuildConfig.DEBUG) {
+                            logD("saveItem, mItem= " + mItem + ", mItemId= " + mItemId);
+                        }
                     } else {
                         if (task.isFaulted()) {
-                            logE("Fault while saveItem", "", task.getError());
+                            logE("Fault while saveItem. Error: " + task.getError(), "", task.getError());
                         } else {
-                            logD("Canceled while saveItem", "");
+                            if (BuildConfig.DEBUG) {
+                                logD("Canceled while saveItem", "");
+                            }
                         }
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
@@ -521,7 +538,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
             }, Task.UI_THREAD_EXECUTOR);
         } catch (IOException ioe) {
-            logE("Exception while saveItem", "", ioe);
+            logE("Exception while saveItem. Error: " + ioe, "", ioe);
             if (sendingDataProgressDialog.isShowing()) {
                 sendingDataProgressDialog.dismiss();
             }
