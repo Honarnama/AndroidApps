@@ -3,7 +3,10 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.iconics.typeface.ITypeface;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -116,7 +119,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.rules).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(GoogleMaterial.Icon.gmd_check_circle),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(FontAwesome.Icon.faw_gavel).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.about_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
                         new SecondaryDrawerItem().withName(R.string.support_us).
@@ -156,7 +159,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mResult.setActionBarDrawerToggle(mDrawerToggle);
 
-        mResult.addStickyFooterItem(new SecondaryDrawerItem().withName("StickyFooterItem").with);
+//        mResult.addStickyFooterItem(new SecondaryDrawerItem().withName("StickyFooterItem").with);
         this.mDrawerToggle.syncState();
 
         mEditItemFragment = EditItemFragment.getInstance();
@@ -277,6 +280,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
             case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
                 fragment = EditItemFragment.getInstance();
+                break;
+            case DRAWER_ITEM_IDENTIFIER_RULES:
+                String url = "http://www.honarnama.net/rules";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
