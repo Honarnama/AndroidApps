@@ -125,7 +125,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.support_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.share_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
@@ -282,7 +282,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 fragment = EditItemFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_RULES:
-                String url = "http://www.honarnama.net/rules";
+                String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -293,6 +293,15 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
                 intent.setPackage("com.farsitel.bazaar");
                 startActivity(intent);
+                break;
+
+            case DRAWER_ITEM_IDENTIFIER_SHARE:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "برنامه‌ٔ هنرنما برای فروشندگان رو از کافه بازار دانلود کن. اینم لینکش:" +
+                        "\n" + "http://cafebazaar.ir/app/" + HonarnamaSellApp.getInstance().getPackageName() + "/");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
