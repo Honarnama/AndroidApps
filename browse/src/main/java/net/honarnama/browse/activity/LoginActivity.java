@@ -256,8 +256,14 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == HonarnamaBaseApp.INTENT_REGISTER_CODE) {
                 Toast.makeText(LoginActivity.this, "here", Toast.LENGTH_LONG).show();
-                if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK)) {
-                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK, false)) {
+                if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
+                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
+                        Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
+                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
                         Toast.makeText(LoginActivity.this, getString(R.string.successful_signup), Toast.LENGTH_LONG).show();
                     }
                 }

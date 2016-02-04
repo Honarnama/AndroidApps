@@ -1,5 +1,8 @@
 package net.honarnama.sell.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -8,6 +11,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.parse.LogOutCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -63,14 +67,23 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     private EditItemFragment mEditItemFragment;
     private ProgressDialog mWaitingProgressDialog;
 
+    Tracker mTracker;
+
     Drawer mResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!HonarnamaUser.isAuthenticatedUser()) {
+            if (BuildConfig.DEBUG) {
+                logD("User was not authenticated!");
+            }
             return;
         }
+        mTracker = HonarnamaBaseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("ControlPanel");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
@@ -157,7 +170,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 }
             });
         }
-
     }
 
     @Override
@@ -215,6 +227,11 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             mEditItemFragment.reset(ControlPanelActivity.this, true);
             mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ADD_ITEM);
             switchFragment(mEditItemFragment);
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("AddItem")
+                    .build());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -320,6 +337,11 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_container, fragment);
         fragmentTransaction.commit();
+
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("SwitchFragment")
+                .build());
 
         getSupportActionBar().setTitle(fragment.getTitle(this));
 

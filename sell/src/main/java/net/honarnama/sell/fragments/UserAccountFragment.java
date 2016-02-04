@@ -1,6 +1,9 @@
 package net.honarnama.sell.fragments;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -11,6 +14,7 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.app.Fragment;
@@ -46,6 +50,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     private ToggleButton mGenderWoman;
     private ToggleButton mGenderMan;
     private ToggleButton mGenderNotSaid;
+
+    private Tracker mTracker;
 
     public synchronized static UserAccountFragment getInstance() {
         if (mUserAccountFragment == null) {
@@ -116,7 +122,10 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     @Override
     public void onResume() {
         super.onResume();
-        ;
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("AccountFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         setUserInfo();
     }
 

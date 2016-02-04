@@ -1,5 +1,8 @@
 package net.honarnama.sell.fragments;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -106,6 +109,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     public static StoreInfoFragment mStoreInfoFragment;
 
+    private Tracker mTracker;
+
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_store_info);
@@ -122,6 +127,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("StoreFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

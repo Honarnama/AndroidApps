@@ -1,5 +1,8 @@
 package net.honarnama.sell.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
@@ -7,6 +10,7 @@ import com.parse.RequestPasswordResetCallback;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.app.ProgressDialog;
@@ -21,9 +25,16 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
     private EditText mForgotPasswordEmailEditEext;
     private ProgressDialog mWaitingProgressDialog;
 
+    private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("ForgotPasswordActivity");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         setContentView(R.layout.activity_forgot_password);
 
         mForgotPasswordEmailEditEext = (EditText) findViewById(R.id.forgot_password_email_edit_text);

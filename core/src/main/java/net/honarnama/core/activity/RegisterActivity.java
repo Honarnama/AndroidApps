@@ -1,5 +1,8 @@
 package net.honarnama.core.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -44,9 +47,16 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
     private Button mRegisterButton;
 
+    private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaBaseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("Register");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         setContentView(R.layout.activity_register);
 
         mNameEditText = (EditText) findViewById(R.id.register_name_edit_text);

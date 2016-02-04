@@ -1,5 +1,8 @@
 package net.honarnama.sell.fragments;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
@@ -28,7 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private String mCategoryName;
 
     private boolean mFragmentHasView = false;
+
+    private Tracker mTracker;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -165,6 +169,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
+
 //        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
@@ -244,7 +249,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
         if (mCreateNew) {
             reset(getActivity(), true);
+            mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+            mTracker.setScreenName("AddItem");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         } else {
+
+            mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+            mTracker.setScreenName("EditItem");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
             boolean savedDirty = false;
             String savedItemId = null;
             if (savedInstanceState != null) {
@@ -587,4 +600,5 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, mChooseCategoryButton.getText().toString());
         }
     }
+
 }

@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_id": "honarnama-sell",
+    "project_number": "545969739469",
+    "name": "Honarnama-Sell"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545969739469:android:7518007580834915",
+        "client_id": "android:net.honarnama.sell",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "net.honarnama.sell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-73292543-1"
+          }
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

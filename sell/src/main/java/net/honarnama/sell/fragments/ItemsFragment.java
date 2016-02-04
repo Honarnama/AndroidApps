@@ -1,5 +1,8 @@
 package net.honarnama.sell.fragments;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
@@ -37,8 +40,8 @@ import bolts.Task;
 public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.OnItemClickListener {
 
     ItemsAdapter mAdapter;
-
     public static ItemsFragment mItemsFragment;
+    private Tracker mTracker;
 
     @Override
     public String getTitle(Context context) {
@@ -56,6 +59,10 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("ItemsFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -106,7 +113,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }
                 if (task.isFaulted()) {
-                    logE("Getting User Items Failed. Error: "+ task.getError(), "", task.getError());
+                    logE("Getting User Items Failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }

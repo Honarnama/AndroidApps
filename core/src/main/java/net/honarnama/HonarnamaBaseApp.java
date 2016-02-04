@@ -1,11 +1,15 @@
 package net.honarnama;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+
 import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
 
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.R;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
@@ -20,7 +24,7 @@ import java.io.File;
 /**
  * Created by elnaz on 7/22/15.
  */
-public class HonarnamaBaseApp extends Application {
+public abstract class HonarnamaBaseApp extends Application {
 
     public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String DOMAIN = "honarnama.net";
@@ -110,4 +114,5 @@ public class HonarnamaBaseApp extends Application {
         return HonarnamaBaseApp.PARSE_CLIENT_KEY;
     }
 
+    abstract public Tracker getDefaultTracker();
 }

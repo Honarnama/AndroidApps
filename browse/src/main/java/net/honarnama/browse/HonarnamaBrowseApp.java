@@ -1,5 +1,7 @@
 package net.honarnama.browse;
 
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.ParseObject;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -18,5 +20,9 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
         if (BuildConfig.DEBUG) {
             Log.i(PRODUCTION_TAG, "HonarnamaBrowseApp.onCreate()");
         }
+    }
+
+    public Tracker getDefaultTracker() {
+        return null; // TODO
     }
 }

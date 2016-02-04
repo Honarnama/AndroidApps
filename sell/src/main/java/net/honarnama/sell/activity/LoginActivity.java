@@ -1,5 +1,8 @@
 package net.honarnama.sell.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -15,6 +18,7 @@ import net.honarnama.core.activity.RegisterActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.app.Activity;
@@ -47,9 +51,15 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private TextView mForgotPasswordTextView;
     private LinearLayout mTelegramLoginContainer;
 
+    private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("LoginActivity");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         setContentView(R.layout.activity_login);
         mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);

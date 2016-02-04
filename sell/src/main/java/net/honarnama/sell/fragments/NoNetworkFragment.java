@@ -1,8 +1,12 @@
 package net.honarnama.sell.fragments;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
@@ -22,6 +26,15 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
 
     public static NoNetworkFragment mNoNetworkFragment;
     public ImageView mRetryIcon;
+    private Tracker mTracker;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("NoNetworkFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
     public synchronized static NoNetworkFragment getInstance() {
         if (mNoNetworkFragment == null) {
