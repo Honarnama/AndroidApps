@@ -123,7 +123,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.about_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
                         new SecondaryDrawerItem().withName(R.string.support_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.share_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share),
                         new DividerDrawerItem().withSelectable(false),
@@ -286,6 +286,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
+                break;
+
+            case DRAWER_ITEM_IDENTIFIER_SUPPORT:
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
+                intent.setPackage("com.farsitel.bazaar");
+                startActivity(intent);
                 break;
             case DRAWER_ITEM_IDENTIFIER_EXIT:
                 //sign user out
