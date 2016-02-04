@@ -202,5 +202,9 @@
     <string name="city_select">شهر:</string>
     <string name="city">شهر</string>
     <string name="store_contact_info">اطلاعات تماس</string>
+    <string name="rules">قوانین</string>
+    <string name="about_us">درباره‌ی هنرنما</string>
+    <string name="support_us">حمایت از هنرنما</string>
+    <string name="share_us">معرفی به دوستان</string>
 
 </resources>

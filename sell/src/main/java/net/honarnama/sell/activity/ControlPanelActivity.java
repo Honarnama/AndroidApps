@@ -11,7 +11,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.parse.LogOutCallback;
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -59,7 +58,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
     public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 6;
+    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 7;
+    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 8;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 9;
+
 
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -111,8 +115,18 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.rules).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(GoogleMaterial.Icon.gmd_check_circle),
+                        new SecondaryDrawerItem().withName(R.string.about_us).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
+                        new SecondaryDrawerItem().withName(R.string.support_us).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle),
+                        new SecondaryDrawerItem().withName(R.string.share_us).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share),
+                        new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
+
                 )
                 .withOnDrawerItemClickListener(this)
                 .build();
@@ -142,6 +156,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mResult.setActionBarDrawerToggle(mDrawerToggle);
 
+        mResult.addStickyFooterItem(new SecondaryDrawerItem().withName("StickyFooterItem").with);
         this.mDrawerToggle.syncState();
 
         mEditItemFragment = EditItemFragment.getInstance();
