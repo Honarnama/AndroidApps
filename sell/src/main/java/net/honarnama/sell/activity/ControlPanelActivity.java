@@ -26,6 +26,7 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.fragments.AboutFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
@@ -281,6 +282,11 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
                 fragment = EditItemFragment.getInstance();
                 break;
+
+            case DRAWER_ITEM_IDENTIFIER_ABOUT:
+                fragment = AboutFragment.getInstance();
+                break;
+
             case DRAWER_ITEM_IDENTIFIER_RULES:
                 String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
