@@ -21,6 +21,15 @@ public class HonarnamaUser extends ParseUser {
         return false;
     }
 
+    public static String getUserEnteredEmailAddress()
+    {
+        return getCurrentUser().get("userEnteredEmailAddress").toString();
+    }
+
+    public static String getName()
+    {
+        return getCurrentUser().get("name").toString();
+    }
     public static void telegramLogInInBackground(String token, final LogInCallback logInCallback) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("token", token);

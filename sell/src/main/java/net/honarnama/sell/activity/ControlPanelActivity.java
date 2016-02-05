@@ -28,6 +28,7 @@ import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.AboutFragment;
+import net.honarnama.sell.fragments.ContactFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
@@ -67,11 +68,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
     public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 5;
-    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 6;
-    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 7;
-    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 8;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 9;
+    public static final int DRAWER_ITEM_IDENTIFIER_CONTACT = 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 6;
+    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 7;
+    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 8;
+    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 9;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 10;
 
 
     private Toolbar mToolbar;
@@ -137,6 +139,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.contact_us).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(FontAwesome.Icon.faw_envelope),
                         new SecondaryDrawerItem().withName(R.string.rules).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(FontAwesome.Icon.faw_gavel).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.about_us).
@@ -300,25 +304,24 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
                 fragment = EditItemFragment.getInstance();
                 break;
-
             case DRAWER_ITEM_IDENTIFIER_ABOUT:
                 fragment = AboutFragment.getInstance();
                 break;
-
+            case DRAWER_ITEM_IDENTIFIER_CONTACT:
+                fragment = ContactFragment.getInstance();
+                break;
             case DRAWER_ITEM_IDENTIFIER_RULES:
                 String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
                 break;
-
             case DRAWER_ITEM_IDENTIFIER_SUPPORT:
                 Intent intent = new Intent(Intent.ACTION_EDIT);
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
                 intent.setPackage("com.farsitel.bazaar");
                 startActivity(intent);
                 break;
-
             case DRAWER_ITEM_IDENTIFIER_SHARE:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);

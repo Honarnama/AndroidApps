@@ -1,0 +1,90 @@
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
+        android:layoutDirection="rtl"
+        android:id="@+id/store_fragment_scroll_view"
+        >
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="0dp"
+                    android:background="@color/gray_extra_light"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:layoutDirection="rtl"
+            >
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  style="@style/default_text_view"
+                  android:text="@string/contact_text"
+                  android:id="@+id/contact_text"
+                  android:layout_margin="16dp"
+                  android:gravity="right"
+                  android:textDirection="rtl"
+                />
+
+        <EditText
+                android:hint="عنوان پیام"
+                android:layout_marginTop="10dp"
+                android:id="@+id/contact_subject"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                android:layout_below="@id/contact_text"
+                />
+
+        <EditText
+                android:id="@+id/contact_body"
+                android:hint="@string/contact_body"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_multiline_edit_text"
+                android:lines="7"
+                android:layout_below="@id/contact_subject"
+                />
+        <EditText
+                android:hint="@string/contact_no"
+                android:layout_marginTop="10dp"
+                android:id="@+id/contact_phone"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                android:layout_below="@id/contact_body"
+                />
+
+        <EditText
+                android:hint="@string/email_address_hint"
+                android:layout_marginTop="10dp"
+                android:id="@+id/contact_email"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                android:layout_below="@id/contact_phone"
+                />
+
+        <CheckBox android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:id="@+id/send_device_info_check_box"
+                  android:text="@string/send_device_info"
+                  android:gravity="right|center_vertical"
+                  android:layout_below="@id/contact_email"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginRight="10dp"
+                  android:layout_marginLeft="16dp"
+                  style="@style/default_text_view"
+                  android:checked="true"
+                />
+
+        <Button
+                android:id="@+id/contact_butoon"
+                android:text="@string/send"
+                android:layout_below="@id/send_device_info_check_box"
+                style="@style/sell_full_width_button"
+                />
+
+
+    </RelativeLayout>
+</net.honarnama.core.utils.ObservableScrollView>

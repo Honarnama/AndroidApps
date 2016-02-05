@@ -324,7 +324,7 @@
                 />
 
         <TextView
-                android:id="@+id/honarnama_rules_and_policy"
+                android:id="@+id/honarnama_rules"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/register_button"

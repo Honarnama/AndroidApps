@@ -20,12 +20,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -106,6 +108,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
         });
 
+        TextView rulesTextView = (TextView) findViewById(R.id.honarnama_rules);
+        rulesTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

@@ -189,8 +189,10 @@
     </string>
     <string name="error_displaying_store_logo">خطا در نمایش تصویر لوگو.</string>
     <string name="error_displaying_store_banner">خطا در نمایش تصویر بنر.</string>
-    <string name="privacy_policy_notfi">استفاده از هنرنما و ساخت حساب کاربری در آن به معنای موافقت
-        شما با شرایط استفاده از خدمات و سیاست‌های حریم خصوصی است.
+    <string name="privacy_policy_notfi">
+        استفاده از هنزنما و ساخت حساب کاربری در آن به معنای موافقت شما با
+        <a href="https://www.honarnama.net/terms">قوانین هنرنما</a>
+        است.
     </string>
     <string name="wont_specify">مشخص نمی‌کنم</string>
     <string name="man">مرد</string>
@@ -206,6 +208,12 @@
     <string name="about_us">درباره‌ی هنرنما</string>
     <string name="support_us">حمایت از هنرنما</string>
     <string name="share_us">معرفی به دوستان</string>
+    <string name="contact_us">تماس با ما</string>
 
+    <string name="contact_text">      در صورت بروز هرگونه مشکل و یا برای ارائه‌ی پیشنهادات و انتقادات خود، با تیم پشتیبانی هنرنما از طریق پر کردن فرم زیر و ارسال آن یا فرستادن ایمیل به آدرس
+ <a href="mailto:support@honarnama.net">support@honarnama.net</a>
+        در ارتباط باشید.</string>
+    <string name="contact_no">شماره تماس</string>
+    <string name="contact_body">متن پیام</string>
 
 </resources>
