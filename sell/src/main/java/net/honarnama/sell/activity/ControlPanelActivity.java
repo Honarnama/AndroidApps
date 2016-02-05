@@ -3,6 +3,7 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.crashlytics.android.Crashlytics;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -42,6 +43,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -51,7 +53,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.InputStream;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -76,8 +81,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     private ProgressDialog mWaitingProgressDialog;
 
     Tracker mTracker;
-
     Drawer mResult;
+    TextView mAboutTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,19 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
+
+        mAboutTextView = (TextView) findViewById(R.id.about_us_text_view);
+        try {
+            Resources res = getResources();
+            InputStream in_s = res.openRawResource(R.raw.about_us);
+            byte[] b = new byte[in_s.available()];
+            in_s.read(b);
+            mAboutTextView.setText(new String(b));
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
+
+
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -375,7 +393,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     }
 
     public void switchFragment(final HonarnamaBaseFragment fragment) {
-
+        View includedAbout = findViewById(R.id.about_included_in_control_panel);
+        if (includedAbout != null) {
+            includedAbout.setVisibility(View.GONE);
+        }
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mFragment = fragment;
 

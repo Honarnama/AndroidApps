@@ -42,21 +42,17 @@ public class AboutFragment extends HonarnamaBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
         TextView aboutTextView = (TextView) rootView.findViewById(R.id.about_us_text_view);
         try {
             Resources res = getResources();
             InputStream in_s = res.openRawResource(R.raw.about_us);
-
             byte[] b = new byte[in_s.available()];
             in_s.read(b);
             aboutTextView.setText(new String(b));
         } catch (Exception e) {
-            // e.printStackTrace();
             Crashlytics.logException(e);
         }
-
         return rootView;
     }
 

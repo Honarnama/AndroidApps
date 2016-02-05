@@ -38,7 +38,10 @@ public class HonarnamaUser extends ParseUser {
 
     public static ActivationMethod getActivationMethod() {
         ParseUser user = getCurrentUser();
-        String activationMethod = user.getString("activationMethod");
+        String activationMethod = "";
+        if (user != null) {
+            activationMethod = user.getString("activationMethod");
+        }
         if ("email".equals(activationMethod)) {
             return ActivationMethod.EMAIL;
         } else if ("mobileNumber".equals(activationMethod)) {

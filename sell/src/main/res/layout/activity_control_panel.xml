@@ -34,7 +34,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
+`       <include
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/fragment_about"
+                android:id="@+id/about_included_in_control_panel"
+                />
         </FrameLayout>
     </FrameLayout>
 
