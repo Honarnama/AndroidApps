@@ -1,9 +1,17 @@
 package net.honarnama.core.utils;
 
+import com.crashlytics.android.Crashlytics;
+
+import net.honarnama.HonarnamaBaseApp;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by elnaz on 2/2/16.

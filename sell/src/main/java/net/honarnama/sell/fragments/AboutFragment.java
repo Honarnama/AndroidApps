@@ -1,6 +1,8 @@
 package net.honarnama.sell.fragments;
 
 
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.FileUtil;
 import net.honarnama.sell.R;
@@ -8,11 +10,15 @@ import net.honarnama.sell.R;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
+
+import java.io.InputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,9 +44,19 @@ public class AboutFragment extends HonarnamaBaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
-        WebView webview = (WebView) rootView.findViewById(R.id.about_web_view);
-//        webview.loadData(FileUtil.getTextFromResource(R.raw.about_us), "text/html", "utf-8");
-        webview.loadUrl("file:///android_asset/about_us.html");
+        TextView aboutTextView = (TextView) rootView.findViewById(R.id.about_us_text_view);
+        try {
+            Resources res = getResources();
+            InputStream in_s = res.openRawResource(R.raw.about_us);
+
+            byte[] b = new byte[in_s.available()];
+            in_s.read(b);
+            aboutTextView.setText(new String(b));
+        } catch (Exception e) {
+            // e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
         return rootView;
     }
 

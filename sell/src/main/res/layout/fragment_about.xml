@@ -1,22 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_height="fill_parent" android:layout_width="fill_parent"
-            android:fadeScrollbars="false"
-
+            android:fadeScrollbars="true"
         >
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/edit_text_border"
-            android:layout_margin="16dp"
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:background="@drawable/black_orib_back"
             >
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_border"
+                android:layout_marginTop="75dp"
+                >
 
-        <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-                 android:id="@+id/about_web_view" android:layout_width="fill_parent"
-                 android:layout_height="fill_parent"
+            <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:singleLine="false"
+                    android:id="@+id/about_us_text_view"
+                    style="@style/default_text_view"
+                    android:lineSpacingExtra="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="110dp"
+                    />
+        </RelativeLayout>
+        <ImageView android:layout_width="100dp" android:layout_height="135dp"
+                   android:src="@drawable/logo_main"
+                   android:layout_centerHorizontal="true"
+                   android:id="@+id/about_logo"
                 />
 
-
-    </LinearLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:text="محلی برای برپایی غرفه‌های هنری"
+                  android:gravity="center"
+                  style="@style/default_text_view"
+                  android:textStyle="bold"
+                  android:textSize="20sp"
+                  android:layout_marginTop="5dp"
+                  android:layout_centerHorizontal="true"
+                  android:layout_below="@id/about_logo"
+                />
+    </RelativeLayout>
 </ScrollView>
