@@ -6,13 +6,16 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.FileUtil;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.R;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -89,6 +92,9 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 String phone = mPhone.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
 
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    return;
+                }
                 if (subject.length() == 0) {
                     mSubject.setError("موضوع پیام نمی‌تواند خالی باشد.");
                     return;
@@ -135,10 +141,26 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("subject", subject);
                 params.put("fromEmail", email);
                 params.put("fromName", HonarnamaUser.getName());
+
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage(getString(R.string.please_wait));
+                progressDialog.show();
+
                 ParseCloud.callFunctionInBackground("sendMail", params, new FunctionCallback<Object>() {
                     @Override
                     public void done(Object response, ParseException parseException) {
-                        logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
+                        progressDialog.dismiss();
+                        if (parseException != null) {
+                            logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), getString(R.string.contact_sent_successfully), Toast.LENGTH_LONG).show();
+                            }
+                        }
                     }
                 });
 
