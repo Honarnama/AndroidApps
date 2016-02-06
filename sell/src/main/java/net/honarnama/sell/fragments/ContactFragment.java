@@ -131,8 +131,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
                     s += "\n HOST: " + android.os.Build.HOST;
                     body = body + s;
                 }
-                logE(body);
-                params.put("text", body + "\n phone: " + phone);
+                params.put("text", body + "\n \n Phone: " + phone);
                 params.put("subject", subject);
                 params.put("fromEmail", email);
                 params.put("fromName", HonarnamaUser.getName());
