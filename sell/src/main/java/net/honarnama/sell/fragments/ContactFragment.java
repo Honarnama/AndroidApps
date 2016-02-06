@@ -151,6 +151,8 @@ public class ContactFragment extends HonarnamaBaseFragment {
                     @Override
                     public void done(Object response, ParseException parseException) {
                         progressDialog.dismiss();
+                        mSubject.setText("");
+                        mBody.setText("");
                         if (parseException != null) {
                             logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
                             if (isVisible()) {
