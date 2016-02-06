@@ -89,7 +89,7 @@
     <string name="edit_ad">ویرایش آگهی</string>
     <string name="delete_ad">حذف آگهی</string>
     <string name="send_device_info">ارسال مشخصات دستگاه</string>
-
+    <string name="switch_app">برنامه‌ی خریداران</string>
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_title_seller_account</item>

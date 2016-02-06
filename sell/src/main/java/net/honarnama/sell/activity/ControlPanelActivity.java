@@ -22,6 +22,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
+import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
@@ -49,6 +50,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
@@ -73,7 +75,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 7;
     public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 8;
     public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 9;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 10;
+    public static final int DRAWER_ITEM_IDENTIFIER_SWITCH_APP = 10;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 11;
 
 
     private Toolbar mToolbar;
@@ -145,20 +148,21 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(FontAwesome.Icon.faw_gavel).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.about_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
-                        new SecondaryDrawerItem().withName(R.string.support_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.share_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.support_us).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle).withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.switch_app).withSelectable(false).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
 
-                )
+                ).withFooter(R.layout.footer)
                 .withOnDrawerItemClickListener(this)
                 .build();
         mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
         };
-
 
         mResult.getDrawerLayout().post(new Runnable() {
             @Override
@@ -211,6 +215,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 }
             });
         }
+
+        mResult.getFooter().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
+            }
+        });
     }
 
     @Override
@@ -322,6 +333,19 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 intent.setPackage("com.farsitel.bazaar");
                 startActivity(intent);
                 break;
+
+            case DRAWER_ITEM_IDENTIFIER_SWITCH_APP:
+                if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
+                    startActivity(launchIntent);
+                } else {
+                    Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
+                    browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
+                    browseAppIntent.setPackage("com.farsitel.bazaar");
+                    startActivity(browseAppIntent);
+                }
+                break;
+
             case DRAWER_ITEM_IDENTIFIER_SHARE:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);

@@ -211,11 +211,12 @@
     <string name="contact_us">تماس با ما</string>
 
     <string name="contact_text">      در صورت بروز هرگونه مشکل و یا برای ارائه‌ی پیشنهادات و انتقادات خود، با تیم پشتیبانی هنرنما از طریق پر کردن فرم زیر و ارسال آن یا فرستادن ایمیل به آدرس
- <a href="mailto:support@honarnama.net">support@honarnama.net</a>
+ <a href="mailto:support@honarnama.net">salam@honarnama.net</a>
         در ارتباط باشید.</string>
     <string name="contact_no">شماره تماس</string>
     <string name="contact_body">متن پیام</string>
     <string name="contact_sent_successfully">پیام شما با موفقیت ارسال شد. با تشکر.</string>
     <string name="error_occured">متاسفانه خطایی رخ داد.</string>
+    <string name="site_url">www.honarnama.net</string>
 
 </resources>
