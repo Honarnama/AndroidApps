@@ -99,16 +99,16 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             }
         });
 
-
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.show();
+//
+//        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage(getString(R.string.please_wait));
+//        progressDialog.show();
 
         Item.getUserItems(getActivity()).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
                     Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }

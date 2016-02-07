@@ -115,6 +115,14 @@ public class ContactFragment extends HonarnamaBaseFragment {
 //                    Toast.makeText(getActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 //                }
 
+                mContactButton.setText(getString(R.string.sending));
+                mContactButton.setEnabled(false);
+                mContactButton.setClickable(false);
+                mSubject.setEnabled(false);
+                mBody.setEnabled(false);
+                mPhone.setEnabled(false);
+                mEmail.setEnabled(false);
+
                 Map<String, String> params = new HashMap<>();
 
                 if (mSendDeviceInfo.isChecked()) {
@@ -142,15 +150,19 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("fromEmail", email);
                 params.put("fromName", HonarnamaUser.getName());
 
-                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage(getString(R.string.please_wait));
-                progressDialog.show();
-
                 ParseCloud.callFunctionInBackground("sendMail", params, new FunctionCallback<Object>() {
                     @Override
                     public void done(Object response, ParseException parseException) {
-                        progressDialog.dismiss();
+
+                        mContactButton.setText(getString(R.string.send));
+                        mContactButton.setEnabled(true);
+                        mContactButton.setClickable(true);
+
+                        mSubject.setEnabled(true);
+                        mBody.setEnabled(true);
+                        mPhone.setEnabled(true);
+                        mEmail.setEnabled(true);
+
                         mSubject.setText("");
                         mBody.setText("");
                         if (parseException != null) {

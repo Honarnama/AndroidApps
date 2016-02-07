@@ -218,5 +218,6 @@
     <string name="contact_sent_successfully">پیام شما با موفقیت ارسال شد. با تشکر.</string>
     <string name="error_occured">متاسفانه خطایی رخ داد.</string>
     <string name="site_url">www.honarnama.net</string>
+    <string name="sending">در حال ارسال...</string>
 
 </resources>
