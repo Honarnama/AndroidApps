@@ -23,25 +23,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.LoginActivity"
-                  android:theme="@style/Theme.Holo.Dialog.NoActionBar"
-                  android:screenOrientation="portrait"
-                >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-
-                <data
-                        android:host="www.honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="http"/>
-                <data
-                        android:host="www.honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="https"/>
-            </intent-filter>
-        </activity>
         <activity
                 android:name=".activity.RegisterActivity"
                 android:label="@string/title_activity_register"

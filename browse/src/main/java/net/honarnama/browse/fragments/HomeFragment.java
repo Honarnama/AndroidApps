@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
 
         getActivity().findViewById(R.id.tab_layout).setVisibility(View.VISIBLE);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragments(new RecommendedItemsFragment(), getString(R.string.recommended_items));
         adapter.addFragments(new RecentActivitiesFragment(), getString(R.string.recent_activity));
         viewPager.setAdapter(adapter);
 
