@@ -4,10 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.crashlytics.android.Crashlytics;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.typeface.IIcon;
-import com.mikepenz.iconics.typeface.ITypeface;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -50,7 +47,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.method.LinkMovementMethod;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
@@ -139,27 +135,28 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_store),
                         new SecondaryDrawerItem().withName(R.string.nav_title_items).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_new_item).
+                        new SecondaryDrawerItem().withName(R.string.register_new_item).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.contact_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(FontAwesome.Icon.faw_envelope),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(GoogleMaterial.Icon.gmd_email),
                         new SecondaryDrawerItem().withName(R.string.rules).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(FontAwesome.Icon.faw_gavel).withSelectable(false),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(GoogleMaterial.Icon.gmd_gavel).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.about_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
                         new SecondaryDrawerItem().withName(R.string.share_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.support_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star_circle).withSelectable(false),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.switch_app).withSelectable(false).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap_horiz),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_power_off)
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_exit_to_app)
 
                 ).withFooter(R.layout.footer)
                 .withOnDrawerItemClickListener(this)
+                .withShowDrawerOnFirstLaunch(true)
                 .build();
         mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
         };
@@ -185,7 +182,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         getSupportActionBar().setHomeButtonEnabled(false);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mResult.setActionBarDrawerToggle(mDrawerToggle);
-
 //        mResult.addStickyFooterItem(new SecondaryDrawerItem().withName("StickyFooterItem").with);
         this.mDrawerToggle.syncState();
 
@@ -197,7 +193,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 //        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-            mResult.openDrawer();
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
                 switchFragment(fragment);

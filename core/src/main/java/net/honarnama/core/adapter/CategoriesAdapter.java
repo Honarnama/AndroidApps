@@ -74,7 +74,7 @@ public class CategoriesAdapter extends BaseAdapter {
         if (!mNodeCategories.contains(mArtCategoriesObjectIds.get(position))) {
             categoryDrillDownArrowImageView.setVisibility(View.VISIBLE);
             categoryDrillDownArrowImageView.setImageDrawable(new IconicsDrawable(mContext)
-                    .icon(GoogleMaterial.Icon.gmd_arrow_in)
+                    .icon(GoogleMaterial.Icon.gmd_arrow_back)
                     .color(mContext.getResources().getColor(R.color.nokhodi_botte_jeghe))
                     .sizeDp(15));
         }

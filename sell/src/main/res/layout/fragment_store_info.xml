@@ -156,19 +156,27 @@
                         android:layout_below="@id/store_logo_container"
                         android:visibility="gone"
                 >
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                       android:src="@drawable/important"
-                       android:layout_alignParentRight="true"
-                       android:id="@+id/store_not_verified_notif_image"
-                    />
+
             <TextView
                     style="@style/tiny_text_view"
                     android:text="@string/store_not_confirmed"
                     android:textColor="@color/orange"
-                    android:paddingRight="5dp"
-                    android:paddingLeft="10dp"
-                    android:layout_toLeftOf="@id/store_not_verified_notif_image"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
                     />
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:id="@+id/store_not_verified_notif_image"
+                    android:layout_centerVertical="true"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_color="@color/orange"
+                    app:iiv_icon="gmd-info"
+                    android:layout_alignParentRight="true"/>
+
         </RelativeLayout>
 
         <EditText

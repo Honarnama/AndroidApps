@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="fill_parent" android:layout_width="fill_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
             android:fadeScrollbars="false"
             android:background="@color/gray_extra_light"
         >
@@ -17,26 +18,33 @@
                     android:background="@color/gray_extra_light"
             >
 
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:background="@drawable/important_bar_background"
-                      android:layout_marginTop="10dp"
-                      android:id="@+id/account_fragment_important_bar"
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/important_bar_background"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/account_fragment_important_bar"
                 >
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                       android:src="@drawable/important"
-                    />
             <TextView
                     android:id="@+id/account_fragment_subtitle"
+                    style="@style/tiny_text_view"
                     android:text="@string/register_form_subtitle"
                     android:textColor="@color/orange"
-                    android:paddingRight="5dp"
-                    android:paddingLeft="10dp"
-                    style="@style/tiny_text_view"
-
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
                     />
-        </LinearLayout>
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_color="@color/orange"
+                    app:iiv_icon="gmd-info"
+                    android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
         <LinearLayout
                 android:id="@+id/account_name_layout"

@@ -27,27 +27,34 @@
                 android:layout_alignParentRight="true"
                 />
 
-        <LinearLayout android:layout_width="wrap_content"
+        <RelativeLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:orientation="horizontal"
                       android:background="@drawable/important_bar_background"
                       android:layout_marginTop="10dp"
                       android:layout_below="@id/register_form_title"
                       android:id="@+id/register_important_bar_container"
                 >
-            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                       android:src="@drawable/important"
-                    />
             <TextView
                     android:id="@+id/register_form_subtitle"
                     android:text="@string/register_form_subtitle"
                     android:textColor="@color/orange"
-                    android:paddingRight="5dp"
-                    android:paddingLeft="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="24dp"
                     style="@style/tiny_text_view"
-
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
                     />
-        </LinearLayout>
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:id="@+id/no_store_warning_image"
+                    android:layout_centerVertical="true"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_color="@color/orange"
+                    app:iiv_icon="gmd-info"
+                    android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
         <LinearLayout
                 android:id="@+id/register_name_layout"

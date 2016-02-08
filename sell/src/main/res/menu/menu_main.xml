@@ -7,6 +7,6 @@
               android:icon="@drawable/plus"
               android:orderInCategory="100"
               app:showAsAction="always"
-              android:title="Settings" />
+              android:title="@string/register_new_item" />
 
 </menu>

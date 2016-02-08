@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:gravity="top"
                 android:layoutDirection="rtl"
         >
@@ -12,10 +13,16 @@
                   android:gravity="center"
                   android:layout_marginTop="50dp"
             >
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                   android:src="@drawable/error"
-                   android:id="@+id/no_network_fragment_error_icon"
+
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_centerHorizontal="true"
+                android:id="@+id/no_network_fragment_error_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:iiv_icon="gmd-warning"
+                app:iiv_color="@android:color/holo_red_dark"
                 />
+
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/default_text_view"
                   android:text="@string/error_stablishing_connection"
@@ -34,13 +41,15 @@
               android:id="@+id/no_network_fragment_sub_title"
             />
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-               android:src="@drawable/refresh"
-               android:layout_below="@id/no_network_fragment_sub_title"
-               android:layout_centerHorizontal="true"
-               android:layout_marginTop="40dp"
-               android:id="@+id/no_network_fragment_retry_icon"
-            />
+    <com.mikepenz.iconics.view.IconicsImageView
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:id="@+id/no_network_fragment_retry_icon"
+            android:layout_width="152dp"
+            android:layout_height="152dp"
+            app:iiv_icon="gmd-sync"
+            app:iiv_color="@color/gray_dark"
+            android:layout_below="@id/no_network_fragment_sub_title"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               style="@style/tiny_text_view"

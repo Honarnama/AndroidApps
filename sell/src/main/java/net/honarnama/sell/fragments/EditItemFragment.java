@@ -133,7 +133,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         if (mItemId != null) {
             return context.getString(R.string.nav_title_edit_item);
         } else {
-            return context.getString(R.string.nav_title_new_item);
+            return context.getString(R.string.register_new_item);
         }
     }
 
