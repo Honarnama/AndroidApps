@@ -36,7 +36,7 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
             new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread thread, Throwable ex) {
-                    Crashlytics.logException(ex);
+                    Crashlytics.log(Log.ERROR, "HonarnamaSellApp", "Uncaught Exception: " + ex);
                     // here I do logging of exception to a db
                     Intent restartIntent = new Intent(getApplicationContext(), ControlPanelActivity.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
