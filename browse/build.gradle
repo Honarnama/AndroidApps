@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "net.honarnama.browse"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 11
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"

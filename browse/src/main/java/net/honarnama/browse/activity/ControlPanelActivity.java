@@ -11,14 +11,6 @@ import android.view.View;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity {
 
-
-    public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;
-    public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
-    public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
-    public static final int DRAWER_ITEM_IDENTIFIER_EDIT_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_ORDERS = 5;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 6;
-
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
     private Fragment mFragment;
