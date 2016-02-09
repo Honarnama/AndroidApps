@@ -5,6 +5,7 @@ import com.crashlytics.android.Crashlytics;
 
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.FileUtil;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.app.Fragment;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +53,7 @@ public class AboutFragment extends HonarnamaBaseFragment {
             in_s.read(b);
             aboutTextView.setText(new String(b));
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            Crashlytics.log(Log.ERROR, HonarnamaSellApp.PRODUCTION_TAG, "Error setting about us text: " + e);
         }
         return rootView;
     }

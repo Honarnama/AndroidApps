@@ -55,8 +55,7 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                             1000, pendingIntent);
                     System.exit(2);
                     // re-throw critical exception further to the os (important)
-                    //TODO: ask reza is this necessary?
-                    defaultUEH.uncaughtException(thread, ex);
+//                    defaultUEH.uncaughtException(thread, ex);
                 }
             };
 

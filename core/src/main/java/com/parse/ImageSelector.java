@@ -341,7 +341,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             if (BuildConfig.DEBUG) {
                 Log.e(LOG_TAG, "While preparing for takePicture", ex);
             } else {
-                Crashlytics.logException(ex);
+                Crashlytics.log(Log.ERROR, LOG_TAG, "While preparing for takePicture " + ex);
             }
             return null;
         }
