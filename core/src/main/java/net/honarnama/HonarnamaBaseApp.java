@@ -36,6 +36,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_REGISTER_CODE = 3000;
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
+    public static final String EXTRA_KEY_UNCAUGHT_EXCEPTION = "EXTRA_KEY_UNCAUGHT_EXCEPTION";
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;

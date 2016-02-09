@@ -1,12 +1,14 @@
-<resources>
+<resources
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="MissingTranslation">
     <string name="app_name">Honarnama</string>
     <string name="nav_title_main_page">صفحه اصلی</string>
-    <string name="nav_title_login"> ورود به حساب کاربری </string>
+    <string name="nav_title_login">ورود به حساب کاربری</string>
     <string name="nav_title_switch_to_exhibitors_app">
         رفتن به برنامه‌ی فروشندگان هنرنما
     </string>
 
-    <string name="toolbar_title"> هنرنما </string>
+    <string name="toolbar_title">هنرنما</string>
     <string name="nav_title_sign_up">ساخت حساب کاربری</string>
     <string name="recommended_items">محصولات پیشنهادی</string>
     <string name="recent_activity">" فعالیت شما "</string>

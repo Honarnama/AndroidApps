@@ -57,11 +57,11 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     }
 
     public void logE(String sharedMsg, String debugMsg) {
-        Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg));
+        logE(sharedMsg, debugMsg, null);
     }
 
     public void logE(String sharedMsg) {
-        logE(sharedMsg, null);
+        logE(sharedMsg, null, null);
     }
 
     public void logI(String sharedMsg, String debugMsg) {

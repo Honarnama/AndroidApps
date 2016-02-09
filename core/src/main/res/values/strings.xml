@@ -219,5 +219,8 @@
     <string name="error_occured">متاسفانه خطایی رخ داد.</string>
     <string name="site_url">www.honarnama.net</string>
     <string name="sending">در حال ارسال...</string>
+    <string name="uncaught_exception_msg">متاسفانه خطایی رخ داد. این مشکل در نسخه‌ی بعد برطرف خواهد
+        شد.
+    </string>
 
 </resources>

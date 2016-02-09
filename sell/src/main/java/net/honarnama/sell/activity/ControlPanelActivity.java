@@ -95,6 +95,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             }
             return;
         }
+
+        if (getIntent().hasExtra(HonarnamaSellApp.EXTRA_KEY_UNCAUGHT_EXCEPTION)) {
+            Toast.makeText(ControlPanelActivity.this, R.string.uncaught_exception_msg, Toast.LENGTH_SHORT).show();
+            logE(getIntent().getStringExtra(HonarnamaSellApp.EXTRA_KEY_UNCAUGHT_EXCEPTION));
+        }
+
         mTracker = HonarnamaBaseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ControlPanel");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
