@@ -11,11 +11,13 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.model.Item;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,14 +38,21 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                 public void uncaughtException(Thread thread, Throwable ex) {
                     Crashlytics.logException(ex);
                     // here I do logging of exception to a db
-                    PendingIntent myActivity = PendingIntent.getActivity(getApplicationContext(),
-                            192837, new Intent(getApplicationContext(), ControlPanelActivity.class),
+                    Intent restartIntent = new Intent(getApplicationContext(), ControlPanelActivity.class);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    }
+                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(HonarnamaSellApp.getInstance().getBaseContext(),
+                            0, restartIntent,
                             PendingIntent.FLAG_ONE_SHOT);
 
                     AlarmManager alarmManager;
                     alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                            1000, myActivity);
+                            1000, pendingIntent);
                     System.exit(2);
                     // re-throw critical exception further to the os (important)
                     //TODO: ask reza is this necessary?
