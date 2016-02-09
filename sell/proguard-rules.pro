@@ -21,3 +21,8 @@
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
 -keepattributes SourceFile,LineNumberTable,*Annotation*
+
+-keep class .R
+-keep class **.R$* {
+    <fields>;
+}
