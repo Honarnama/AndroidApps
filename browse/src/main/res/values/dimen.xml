@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="home_tab_bar_height">52dp</dimen>
+    <dimen name="home_tab_icon_size">42dp</dimen>
+    <dimen name="home_tab_back_icon_size">60dp</dimen>
+    <dimen name="home_tab_bar_item_width">56dp</dimen>
+</resources>

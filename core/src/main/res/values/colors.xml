@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="super_extra_light_amber">#FFF8E1</color>
-    <color name="extra_light_amber">#FFECB3</color>
-    <color name="light_amber">#FFE082</color>
+    <color name="amber_super_extra_light_">#FFF8E1</color>
+    <color name="amber_extra_light">#FFECB3</color>
+    <color name="amber_light">#FFE082</color>
+    <color name="amber">#FFC107</color>
+    <color name="amber_dark">#FFB300</color>
+    <color name="amber_extra_dark">#FF8F00</color>
+    <color name="amber_super_extra_dark">#FF6F00</color>
+
     <color name="nokhodi_back">#FFDFAA</color>
     <color name="nokhodi_botte_jeghe">#ffbf54</color>
     <color name="dark_blue">#3a6fb4</color>
@@ -46,8 +51,7 @@
     <color name="dark_orange">#EF6C00</color>
     <color name="extra_dark_orange">#E65100</color>
 
-    <color name="amber">#FFC107</color>
-    <color name="browse_app_launcher_color_dark_amber">#edb200</color>
+    <color name="amber_launcher_color">#edb200</color>
 
     <color name="dirty_pink_light">#FFCDD2</color>
     <color name="dirty_pink">#EF9A9A</color>

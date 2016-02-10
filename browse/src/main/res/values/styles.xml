@@ -35,4 +35,11 @@
         <item name="android:background">@color/amber</item>
     </style>
 
+
+    <style name="tabItemText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+
 </resources>

@@ -15,4 +15,10 @@
     <string name="recommended_items_default_message">برای اینکه بتوانید محصولات مورد علاقه‌تان را
         ذخیره کنید و پیشنهادهای مارا ببینید، ابتدا بایستی وارد سایت شوید.
     </string>
+
+    <string name="main_page">"صفحه اصلی"</string>
+    <string name="categories">"دسته‌بندی هنری"</string>
+    <string name="shops">"غرفه‌ها"</string>
+    <string name="favorites">"نشان شده‌ها"</string>
+
 </resources>
