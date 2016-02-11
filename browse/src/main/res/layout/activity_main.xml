@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-    <!--
-        <net.honarnama.browse.widget.NonSwipeableViewPager
-                android:id="@+id/viewPager"
-                android:layout_above="@+id/tab_bar_divider"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-                -->
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layoutDirection="rtl"
+            android:title="@string/hornama"
+            android:elevation="4dp"/>
+
+    <net.honarnama.browse.widget.NonSwipeableViewPager
+            android:id="@+id/view_pager"
+            android:layout_below="@id/toolbar"
+            android:layout_above="@+id/tab_bar_divider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     <net.honarnama.browse.widget.MainTabBar
             android:id="@+id/tab_bar"

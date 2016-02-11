@@ -222,5 +222,6 @@
     <string name="uncaught_exception_msg">متاسفانه خطایی رخ داد. این مشکل در نسخه‌ی بعد برطرف خواهد
         شد.
     </string>
+    <string name="hornama">هنرنما</string>
 
 </resources>
