@@ -13,20 +13,20 @@ import android.view.ViewGroup;
 /**
  * Created by elnaz on 2/11/16.
  */
-public class ItemsFragment extends HonarnamaBrowseFragment {
-    public static ItemsFragment mItemsFragment;
+public class ShopsFragment extends HonarnamaBrowseFragment {
+    public static ShopsFragment mShopsFragment;
 
-    public synchronized static ItemsFragment getInstance() {
-        if (mItemsFragment == null) {
-            mItemsFragment = new ItemsFragment();
+    public synchronized static ShopsFragment getInstance() {
+        if (mShopsFragment == null) {
+            mShopsFragment = new ShopsFragment();
         }
-        return mItemsFragment;
+        return mShopsFragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_items, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         return rootView;
     }
 

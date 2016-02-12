@@ -1,23 +1,22 @@
 package net.honarnama.browse.model;
 
+import net.honarnama.browse.fragment.CatsFragment;
 import net.honarnama.browse.fragment.ChildFragment;
+import net.honarnama.browse.fragment.FavsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
+import net.honarnama.browse.fragment.ShopsFragment;
 
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
+import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 /**
  * Created by elnaz on 2/10/16.
@@ -35,7 +34,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public ChildFragment getItem(int position) {
         //return MyFragment.newInstance();
         return fragmentsList.get(position);
     }
@@ -57,14 +56,14 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
             case TAB_HOME:
                 return ItemsFragment.getInstance();
 
-//            case TAB_CATS:
-//                return CatsFragment.newInstance();
-//
-//            case TAB_SHOPS:
-//                return ShopsFragment.newInstance(null);
-//
-//            case TAB_FAVS:
-//                return FavsFragment.newInstance();
+            case TAB_CATS:
+                return CatsFragment.getInstance();
+
+            case TAB_SHOPS:
+                return ShopsFragment.getInstance();
+
+            case TAB_FAVS:
+                return FavsFragment.getInstance();
         }
         return null;
     }

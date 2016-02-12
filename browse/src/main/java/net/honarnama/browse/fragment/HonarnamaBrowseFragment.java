@@ -11,7 +11,7 @@ import android.util.Log;
 /**
  * Created by elnaz on 2/11/16.
  */
-public abstract class HonarnamaSellFragment extends android.support.v4.app.Fragment {
+public abstract class HonarnamaBrowseFragment extends android.support.v4.app.Fragment {
 
     private boolean announced = false;
 

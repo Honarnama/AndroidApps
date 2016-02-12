@@ -1,7 +1,6 @@
 package net.honarnama.browse.fragment;
 
 import net.honarnama.browse.R;
-import net.honarnama.browse.widget.MainTabBar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,7 @@ import java.lang.reflect.Field;
 /**
  * Created by elnaz on 2/11/16.
  */
-public class ChildFragment extends HonarnamaSellFragment {
+public class ChildFragment extends HonarnamaBrowseFragment {
 
     private static String CHILD_FRAGMENT_TAG = "child_fragment_tag";
 
@@ -28,14 +27,12 @@ public class ChildFragment extends HonarnamaSellFragment {
 
     public static ChildFragment mChildFragment;
 
-    public synchronized static ChildFragment getInstance(int tag) {
-        if (mChildFragment == null) {
-            mChildFragment = new ChildFragment();
-        }
+    public static ChildFragment getInstance(int tag) {
+        ChildFragment childFragment = new ChildFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(CHILD_FRAGMENT_TAG, tag);
-        mChildFragment.setArguments(bundle);
-        return mChildFragment;
+        childFragment.setArguments(bundle);
+        return childFragment;
     }
 
     @Override

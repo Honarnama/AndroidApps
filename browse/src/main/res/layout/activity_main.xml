@@ -24,14 +24,17 @@
             android:layout_below="@id/toolbar"
             android:layout_above="@+id/tab_bar_divider"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            />
 
     <net.honarnama.browse.widget.MainTabBar
             android:id="@+id/tab_bar"
             android:background="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/home_tab_bar_height"/>
+            android:layout_height="@dimen/home_tab_bar_height"
+            android:layoutDirection="ltr"/>
 
     <View
             android:id="@+id/tab_bar_divider"

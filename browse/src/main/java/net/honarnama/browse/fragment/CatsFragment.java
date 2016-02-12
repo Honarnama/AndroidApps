@@ -13,14 +13,14 @@ import android.view.ViewGroup;
 /**
  * Created by elnaz on 2/11/16.
  */
-public class ItemsFragment extends HonarnamaBrowseFragment {
-    public static ItemsFragment mItemsFragment;
+public class CatsFragment extends HonarnamaBrowseFragment {
+    public static CatsFragment mCatsFragment;
 
-    public synchronized static ItemsFragment getInstance() {
-        if (mItemsFragment == null) {
-            mItemsFragment = new ItemsFragment();
+    public synchronized static CatsFragment getInstance() {
+        if (mCatsFragment == null) {
+            mCatsFragment = new CatsFragment();
         }
-        return mItemsFragment;
+        return mCatsFragment;
     }
 
     @Override
