@@ -10,7 +10,7 @@
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/dark_cyan</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:editTextStyle">@style/edit_text_default</item>
     </style>

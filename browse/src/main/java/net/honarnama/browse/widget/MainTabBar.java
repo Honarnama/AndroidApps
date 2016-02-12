@@ -68,7 +68,7 @@ public class MainTabBar extends LinearLayout {
                         .sizeDp(20), R.string.main_page);
         Tab catsTab = new Tab(Integer.valueOf(TAB_CATS),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_view_headline)
+                        .icon(GoogleMaterial.Icon.gmd_list)
                         .color(Color.RED)
                         .sizeDp(20), R.string.categories);
         Tab shopsTab = new Tab(Integer.valueOf(TAB_SHOPS),

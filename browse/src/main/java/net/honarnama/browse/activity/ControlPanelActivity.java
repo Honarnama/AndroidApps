@@ -1,13 +1,17 @@
 package net.honarnama.browse.activity;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+
 import net.honarnama.browse.R;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.model.MainFragmentAdapter;
 import net.honarnama.browse.widget.MainTabBar;
-import net.honarnama.browse.widget.NonSwipeableViewPager;
+import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.WindowUtil;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,13 +26,13 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
-public class ControlPanelActivity extends HonarnamaBaseActivity implements MainTabBar.OnTabItemClickListener {
+public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
 
     public static Button btnRed; // Works as a badge
     //Declared static; so it can be accessed from all other Activities
 
     MainFragmentAdapter mMainFragmentAdapter;
-    NonSwipeableViewPager mViewPager;
+    LockableViewPager mViewPager;
     private Toolbar mToolbar;
     private int mActiveTab;
     private MainTabBar mMainTabBar;
@@ -44,8 +48,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements MainT
                 new MainFragmentAdapter(
                         getSupportFragmentManager());
 
-        mViewPager = (NonSwipeableViewPager) findViewById(R.id.view_pager);
+        mViewPager = (LockableViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mMainFragmentAdapter);
+        mViewPager.setSwipeable(false);
 
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -72,8 +77,17 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements MainT
         mMainTabBar.setOnTabItemClickListener(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        mToolbar.setTitle(R.string.toolbar_title);
+        mToolbar.setTitle(R.string.hornama);
+
+        setDefaultTab();
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
+                .icon(GoogleMaterial.Icon.gmd_menu)
+                .color(Color.WHITE)
+                .sizeDp(24));
+
     }
 
     public void switchFragment(Fragment fragment) {
@@ -91,7 +105,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements MainT
     }
 
     @Override
-    public void onTabSelect(Object tabTag, boolean byUser) {
+    public void onTabSelect(Object tabTag, boolean userTriggered) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         mActiveTab = tag;
@@ -117,5 +131,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements MainT
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (int) tabTag;
         mMainFragmentAdapter.getItem(tag).onSelectedTabClick();
+    }
+
+    public void setDefaultTab() {
+        // Fetch the selected tab index with default
+        int selectedTabIndex = getIntent().getIntExtra(SELECTED_TAB_EXTRA_KEY, TAB_HOME);
+        // Switch to page based on index
+        mViewPager.setCurrentItem(selectedTabIndex);
     }
 }

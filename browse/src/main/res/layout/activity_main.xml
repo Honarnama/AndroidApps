@@ -19,7 +19,7 @@
             android:title="@string/hornama"
             android:elevation="4dp"/>
 
-    <net.honarnama.browse.widget.NonSwipeableViewPager
+    <net.honarnama.browse.widget.LockableViewPager
             android:id="@+id/view_pager"
             android:layout_below="@id/toolbar"
             android:layout_above="@+id/tab_bar_divider"
