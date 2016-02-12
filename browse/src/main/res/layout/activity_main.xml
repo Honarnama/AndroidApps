@@ -6,18 +6,11 @@
                 android:layout_height="match_parent"
                 android:layoutDirection="rtl">
 
-    <android.support.v7.widget.Toolbar
+    <include
+            layout="@layout/toolbar_main"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:layout_gravity="right"
-            android:gravity="right"
-            android:layoutDirection="rtl"
-            android:title="@string/hornama"
-            android:elevation="4dp"/>
+            android:layout_height="?attr/actionBarSize"/>
 
     <net.honarnama.browse.widget.LockableViewPager
             android:id="@+id/view_pager"

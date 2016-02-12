@@ -2,6 +2,7 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.fragment.ChildFragment;
@@ -16,9 +17,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
@@ -39,11 +43,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+//        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // ViewPager and its adapters use support library
-        // fragments, so use getSupportFragmentManager.
+
         mMainFragmentAdapter =
                 new MainFragmentAdapter(
                         getSupportFragmentManager());
@@ -77,16 +81,17 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mMainTabBar.setOnTabItemClickListener(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.hornama);
 
         setDefaultTab();
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        TextView mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
                 .icon(GoogleMaterial.Icon.gmd_menu)
                 .color(Color.WHITE)
-                .sizeDp(24));
+                .sizeDp(20));
 
     }
 
@@ -138,5 +143,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         int selectedTabIndex = getIntent().getIntExtra(SELECTED_TAB_EXTRA_KEY, TAB_HOME);
         // Switch to page based on index
         mViewPager.setCurrentItem(selectedTabIndex);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
+                .icon(GoogleMaterial.Icon.gmd_search)
+                .color(Color.WHITE)
+                .sizeDp(20));
+        return true;
     }
 }
