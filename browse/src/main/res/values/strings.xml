@@ -20,5 +20,7 @@
     <string name="categories">"دسته‌بندی هنری"</string>
     <string name="shops">"غرفه‌ها"</string>
     <string name="favorites">"نشان شده‌ها"</string>
+    <string name="no_shop_found">غرفه‌ای یافت نشد.</string>
+    <string name="error_getting_shop_lsit">خطا در گرفتن فهرست غرفه‌ها.</string>
 
 </resources>

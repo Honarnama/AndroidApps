@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_id": "honarnama-browse",
+    "project_number": "154294311793",
+    "name": "Honarnama-Browse"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154294311793:android:2df86f6c468aa552",
+        "client_id": "android:net.honarnama.browse",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "net.honarnama.browse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-73292543-2"
+          }
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

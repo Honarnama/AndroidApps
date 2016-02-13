@@ -15,6 +15,7 @@ import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.app.Activity;
@@ -58,7 +59,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTracker = HonarnamaBaseApp.getInstance().getDefaultTracker();
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("Register");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 

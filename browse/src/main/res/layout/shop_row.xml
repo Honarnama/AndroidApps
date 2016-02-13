@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bordered_background"
+                android:id="@+id/shop_row_container"
+        >
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/shop_logo_in_list_container"
+            >
+        <RelativeLayout
+                style="@style/GenericProgressBackground"
+                android:id="@+id/shop_logo_loading_panel"
+                android:visibility="gone"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bordered_box"
+                >
+            <ProgressBar
+                    style="@style/GenericProgressIndicator"
+                    android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
+
+        <com.parse.ImageSelector
+                android:id="@+id/shop_logo_in_list"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:src="@drawable/default_logo_hand"
+                app:riv_border_width="1dp"
+                app:riv_border_color="@color/gray_light"
+                />
+    </RelativeLayout>
+
+
+    <TextView
+            android:id="@+id/shop_title_in_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_alignTop="@android:id/icon"
+            android:layout_toLeftOf="@id/shop_logo_in_list_container"
+            style="@style/default_text_view"
+            android:textStyle="bold"
+            />
+
+
+</RelativeLayout>

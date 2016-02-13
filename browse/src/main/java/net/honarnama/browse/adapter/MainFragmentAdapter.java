@@ -4,6 +4,7 @@ import net.honarnama.browse.fragment.CatsFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.FavsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
+import net.honarnama.browse.fragment.ShopsFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
