@@ -101,7 +101,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             logE(getIntent().getStringExtra(HonarnamaSellApp.EXTRA_KEY_UNCAUGHT_EXCEPTION));
         }
 
-        mTracker = HonarnamaBaseApp.getInstance().getDefaultTracker();
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ControlPanel");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 

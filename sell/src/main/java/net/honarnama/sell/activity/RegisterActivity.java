@@ -1,4 +1,4 @@
-package net.honarnama.core.activity;
+package net.honarnama.sell.activity;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -11,10 +11,11 @@ import com.parse.SignUpCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.base.R;
+import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.sell.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -31,7 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-
+/**
+ * Created by elnaz on 2/13/16.
+ */
 public class RegisterActivity extends HonarnamaBaseActivity implements View.OnClickListener {
 
     private EditText mNameEditText;

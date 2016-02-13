@@ -1,10 +1,9 @@
-package net.honarnama.browse.model;
+package net.honarnama.browse.adapter;
 
 import net.honarnama.browse.fragment.CatsFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.FavsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
-import net.honarnama.browse.fragment.ShopsFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +18,7 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 /**
- * Created by elnaz on 2/10/16.
+ * Created by elnaz on 2/13/16.
  */
 public class MainFragmentAdapter extends FragmentPagerAdapter {
     public List<ChildFragment> fragmentsList = new ArrayList<>();

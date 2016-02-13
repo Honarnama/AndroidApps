@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
@@ -31,5 +32,3 @@ dependencies {
         transitive = true
     }
 }
-
-apply plugin: 'com.google.gms.google-services'

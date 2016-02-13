@@ -12,7 +12,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="16dp"
-                    tools:context="net.honarnama.core.activity.RegisterActivity"
+                    tools:context="net.honarnama.sell.activity.RegisterActivity"
                     android:layout_gravity="right"
                     android:layoutDirection="rtl"
                     android:gravity="right">
@@ -28,11 +28,11 @@
                 />
 
         <RelativeLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:background="@drawable/important_bar_background"
-                      android:layout_marginTop="10dp"
-                      android:layout_below="@id/register_form_title"
-                      android:id="@+id/register_important_bar_container"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/important_bar_background"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/register_form_title"
+                        android:id="@+id/register_important_bar_container"
                 >
             <TextView
                     android:id="@+id/register_form_subtitle"
