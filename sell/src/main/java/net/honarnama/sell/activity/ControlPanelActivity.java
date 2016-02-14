@@ -224,6 +224,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
             }
         });
+
+        mResult.openDrawer();
     }
 
     @Override
