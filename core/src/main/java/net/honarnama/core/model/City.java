@@ -2,6 +2,7 @@ package net.honarnama.core.model;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -129,6 +130,42 @@ public class City extends ParseObject {
                         Log.e(DEBUG_TAG, "Finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
                     } else {
                         Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding  city failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e);
+                    }
+                    tcs.trySetError(e);
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public Task<City> getCityById(String cityId) {
+        final TaskCompletionSource<City> tcs = new TaskCompletionSource<>();
+
+        ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
+        parseQuery.whereEqualTo(OBJECT_ID, cityId);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "Getting city by id from local datastore");
+            }
+            parseQuery.fromLocalDatastore();
+        } else {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
+            }
+        }
+
+        parseQuery.getFirstInBackground(new GetCallback<City>() {
+            @Override
+            public void done(City city, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(city);
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG, "Finding city by id failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding city by id failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
                     }
                     tcs.trySetError(e);
                 }

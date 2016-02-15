@@ -571,61 +571,88 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         return;
                     }
                 }
-                storeObject.setName(mNameEditText.getText().toString().trim());
-                storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
-                storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
-                storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
-                storeObject.setProvinceId(mSelectedProvinceId);
-                storeObject.setCityId(mSelectedCityId);
 
-                if (mLogoImageView.isDeleted()) {
-                    storeObject.remove(Store.LOGO);
-                } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
-                    storeObject.setLogo(mParseFileLogo);
-                }
-
-                if (mBannerImageView.isDeleted()) {
-                    storeObject.remove(Store.BANNER);
-                } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
-                    storeObject.setBanner(mParseFileBanner);
-                }
-
-                storeObject.saveInBackground(new SaveCallback() {
+                new Provinces().getProvinceById(mSelectedProvinceId).continueWithTask(new Continuation<Provinces, Task<City>>() {
                     @Override
-                    public void done(ParseException e) {
-                        mSendingDataProgressDialog.dismiss();
-                        if (e == null) {
+                    public Task<City> then(Task<Provinces> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mSendingDataProgressDialog.dismiss();
                             if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                             }
-                            storeObject.pinInBackground();
+                            return Task.forError(task.getError());
                         } else {
-                            logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-                            try {
-                                JSONObject error = new JSONObject(e.getMessage());
-                                if ((error.has("code")) && error.get("code").toString().equals("3001")) {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
-                                        mNameEditText.setError(getString(R.string.store_name_already_exists));
-                                    }
-                                } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
-                                    Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
-                                } else {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            }
+                            storeObject.setProvince(task.getResult());
+                            return new City().getCityById(mSelectedCityId);
                         }
+                    }
+                }).continueWith(new Continuation<City, Object>() {
+                    @Override
+                    public Object then(Task<City> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mSendingDataProgressDialog.dismiss();
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            storeObject.setCity(task.getResult());
+                            storeObject.setName(mNameEditText.getText().toString().trim());
+                            storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
+                            storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
+                            storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
 
+                            if (mLogoImageView.isDeleted()) {
+                                storeObject.remove(Store.LOGO);
+                            } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
+                                storeObject.setLogo(mParseFileLogo);
+                            }
+
+                            if (mBannerImageView.isDeleted()) {
+                                storeObject.remove(Store.BANNER);
+                            } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
+                                storeObject.setBanner(mParseFileBanner);
+                            }
+
+                            storeObject.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    mSendingDataProgressDialog.dismiss();
+                                    if (e == null) {
+                                        if (isVisible()) {
+                                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+                                        }
+                                        storeObject.pinInBackground();
+                                    } else {
+                                        logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+                                        try {
+                                            JSONObject error = new JSONObject(e.getMessage());
+                                            if ((error.has("code")) && error.get("code").toString().equals("3001")) {
+                                                if (isVisible()) {
+                                                    Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
+                                                    mNameEditText.setError(getString(R.string.store_name_already_exists));
+                                                }
+                                            } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
+                                                Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
+                                            } else {
+                                                if (isVisible()) {
+                                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        } catch (JSONException e1) {
+                                            logE("Saving store failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+                                            if (isVisible()) {
+                                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
+
+                        }
+                        return null;
                     }
                 });
-
             }
         });
     }
@@ -662,8 +689,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         mPhoneNumberEditText.setText(store.getPhoneNumber());
                         mCellNumberEditText.setText(store.getCellNumber());
 
-                        mSelectedProvinceId = store.getProvinceId();
-                        mSelectedCityId = store.getCityId();
+                        mSelectedProvinceId = store.getProvince().getObjectId();
+                        mSelectedCityId = store.getCity().getObjectId();
 
                         mCityEditEext.setText(getString(R.string.getting_information));
                         mProvinceEditEext.setText(getString(R.string.getting_information));

@@ -3,6 +3,7 @@ package net.honarnama.core.model;
 import com.crashlytics.android.Crashlytics;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -147,6 +148,42 @@ public class Provinces extends ParseObject {
                         Log.e(DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
                     } else {
                         Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding provinces failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+                    }
+                    tcs.trySetError(e);
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public Task<Provinces> getProvinceById(String provinceId) {
+        final TaskCompletionSource<Provinces> tcs = new TaskCompletionSource<>();
+
+        ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
+        parseQuery.whereEqualTo(OBJECT_ID, provinceId);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "Getting province by id from local datastore");
+            }
+            parseQuery.fromLocalDatastore();
+        } else {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
+            }
+        }
+
+        parseQuery.getFirstInBackground(new GetCallback<Provinces>() {
+            @Override
+            public void done(Provinces province, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(province);
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG, "Finding province by id failed.Code: " + e.getCode() + " // " + e.getMessage(), e);
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding province by id failed.Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
                     }
                     tcs.trySetError(e);
                 }

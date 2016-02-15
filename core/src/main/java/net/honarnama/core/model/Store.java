@@ -42,8 +42,8 @@ public class Store extends ParseObject {
     public static String LOGO = "logo";
     public static String BANNER = "banner";
     public static String OWNER = "owner";
-    public static String PROVINCE_ID = "provinceId";
-    public static String CITY_ID = "cityId";
+    public static String PROVINCE = "province";
+    public static String CITY = "city";
     public static String STATUS = "status";
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
@@ -114,20 +114,20 @@ public class Store extends ParseObject {
         put(OWNER, parseUser);
     }
 
-    public String getProvinceId() {
-        return getString(PROVINCE_ID);
+    public ParseObject getProvince() {
+        return getParseObject(PROVINCE);
     }
 
-    public void setProvinceId(String provinceId) {
-        put(PROVINCE_ID, provinceId);
+    public void setProvince(Provinces province) {
+        put(PROVINCE, province);
     }
 
-    public String getCityId() {
-        return getString(CITY_ID);
+    public ParseObject getCity() {
+        return getParseObject(CITY);
     }
 
-    public void setCityId(String cityId) {
-        put(CITY_ID, cityId);
+    public void setCity(City city) {
+        put(CITY, city);
     }
 
     public static Task<Boolean> checkIfUserHaveStore(Context context) {
