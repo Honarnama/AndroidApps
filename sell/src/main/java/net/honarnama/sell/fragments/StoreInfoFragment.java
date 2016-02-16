@@ -397,6 +397,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             mCityEditEext.setError(getString(R.string.error_store_city_not_set));
         }
 
+        if (mDescriptionEditText.getText().toString().trim().length() == 0) {
+            mDescriptionEditText.requestFocus();
+            mDescriptionEditText.setError(getString(R.string.store_desc_cant_be_empty));
+            return false;
+        }
+
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
             mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));

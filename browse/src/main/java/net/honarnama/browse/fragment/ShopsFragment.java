@@ -3,11 +3,13 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.parse.ParseObject;
+
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
@@ -15,16 +17,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.acl.Owner;
 import java.util.List;
 
 import bolts.Continuation;
@@ -55,7 +56,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ShopsFragment");
@@ -75,27 +75,28 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.shops_listView);
-        listView.setEmptyView(rootView.findViewById(R.id.empty_list_view));
+        listView.setEmptyView(rootView.findViewById(R.id.empty_items_list_view));
 
-        Shop.getList(getActivity()).continueWith(new Continuation<List<Store>, Object>() {
+//        final TextView emptyListTextView = (TextView) rootView.findViewById(R.id.empty_shops_list_view);
+        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        loadingCircle.setVisibility(View.VISIBLE);
+        Shop.getShopList(getActivity()).continueWith(new Continuation<List<ParseObject>, Object>() {
             @Override
-            public Object then(Task<List<Store>> task) throws Exception {
+            public Object then(Task<List<ParseObject>> task) throws Exception {
+                loadingCircle.setVisibility(View.GONE);
                 if (task.isFaulted()) {
                     logE("Getting Shops Failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), mFragmentActivity.getString(R.string.error_getting_shop_lsit) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_shop_lsit) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }
                 } else {
-                    List<Store> shopList = task.getResult();
+                    List<ParseObject> shopList = task.getResult();
                     mAdapter.addAll(shopList);
-                    TextView emptyListTextView = (TextView) rootView.findViewById(R.id.empty_list_view);
-                    emptyListTextView.setText(getString(R.string.no_shop_found));
                     mAdapter.notifyDataSetChanged();
                 }
                 return null;
             }
         });
-
 
         mAdapter = new ShopsAdapter(getActivity());
         listView.setAdapter(mAdapter);
@@ -106,13 +107,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        Item item = (Item) mAdapter.getItem(i);
-        Toast.makeText(getActivity(), "Shop " + i, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        ParseObject selectedStore = (ParseObject) mAdapter.getItem(i);
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        controlPanelActivity.displayShopPage(selectedStore.getObjectId(), selectedStore.getParseUser(Shop.OWNER));
     }
 
     @Override

@@ -1,0 +1,152 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="0dp"
+                android:background="@color/gray_extra_light"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layoutDirection="rtl">
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/store_banner_container"
+            >
+
+        <FrameLayout
+                android:id="@+id/store_banner_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <com.parse.ImageSelector
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/store_banner_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/party_flags"
+                    app:riv_corner_radius="0dp"
+                    app:riv_border_width="0dp"
+                    app:riv_oval="false"
+                    app:outputX="640"
+                    app:outputY="640"
+                    app:riv_border_color="@color/gray_super_extra_light"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    app:removable="true"
+                    app:imageSelectorIndex="1"
+                    />
+            <ProgressBar
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    style="@style/GenericProgressIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center"
+                    android:id="@+id/banner_progress_bar"
+                    android:visibility="gone"
+                    />
+        </FrameLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/store_logo_container"
+                    android:layout_below="@id/store_banner_container"
+                    android:layout_marginTop="-50dp"
+            >
+
+        <com.parse.ImageSelector
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/store_logo_image_view"
+                android:src="@drawable/default_logo_hand"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                app:riv_corner_radius="20dip"
+                app:riv_border_width="4dip"
+                app:riv_border_color="@color/gray_extra_light"
+                app:riv_oval="true"
+                app:outputX="480"
+                app:outputY="480"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                app:removable="true"
+                app:imageSelectorIndex="2"
+                />
+
+        <ProgressBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                style="@style/GenericProgressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:layout_centerInParent="true"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/transparent"
+                android:id="@+id/logo_progress_bar"
+                android:visibility="gone"
+                />
+    </RelativeLayout>
+
+    <TextView
+            android:layout_below="@id/store_logo_container"
+            android:layout_marginTop="10dp"
+            android:id="@+id/store_name_text_view"
+            style="@style/section_title"
+            android:layout_centerHorizontal="true"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            />
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              style="@style/default_text_view"
+              android:id="@+id/store_desc_text_view"
+              android:layout_below="@id/store_name_text_view"
+              android:layout_margin="10dp"
+              android:gravity="right"
+            />
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:layout_below="@id/store_desc_text_view"
+                  android:gravity="right"
+                  android:id="@+id/place_container"
+                  android:layout_marginRight="5dp"
+            >
+
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                app:iiv_color="@color/extra_dark_green"
+                app:iiv_icon="gmd-place"
+                android:paddingBottom="5dp"
+                android:id="@+id/shop_place_icon"
+                />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  style="@style/tiny_text_view"
+                  android:id="@+id/shop_place_text_view"
+                  android:text="عجبا"
+                  android:textSize="14sp"
+                  android:textColor="@color/extra_dark_green"
+                  android:layout_gravity="right|bottom"
+                />
+    </LinearLayout>
+
+    <TextView
+            android:layout_below="@id/place_container"
+            android:layout_marginTop="10dp"
+            style="@style/section_title"
+            android:layout_centerHorizontal="true"
+            android:padding="5dp"
+            android:text="@string/shop_items"
+            />
+</RelativeLayout>

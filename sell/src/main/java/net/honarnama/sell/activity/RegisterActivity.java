@@ -329,6 +329,12 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                 return false;
             }
 
+            if (mPasswordEdiText.getText().toString().trim().length() < 6) {
+                mPasswordEdiText.requestFocus();
+                mPasswordEdiText.setError(getString(R.string.password_is_short));
+                return false;
+            }
+
             if (mConfirmPasswordEditText.getText().toString().trim().length() == 0) {
                 mConfirmPasswordEditText.requestFocus();
                 mConfirmPasswordEditText.setError(getString(R.string.error_confirm_password_field_cant_be_empty));

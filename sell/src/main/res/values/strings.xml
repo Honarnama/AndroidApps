@@ -92,6 +92,8 @@
     <string name="delete_ad">حذف آگهی</string>
     <string name="send_device_info">ارسال مشخصات دستگاه</string>
     <string name="switch_app">برنامه‌ی خریداران</string>
+    <string name="password_is_short">رمز عبور بایستی بیشتر از ۶ حرف باشد.</string>
+    <string name="store_desc_cant_be_empty">توضیحات فروشگاه نمی‌تواند خالی باشد.</string>
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_title_seller_account</item>

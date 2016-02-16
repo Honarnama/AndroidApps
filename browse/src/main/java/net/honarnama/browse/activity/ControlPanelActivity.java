@@ -2,10 +2,13 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
+import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.core.utils.WindowUtil;
@@ -102,7 +105,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commitAllowingStateLoss();
         } catch (Exception e) {
-            logE("Exception While Switching Fragments in CPA.");
+            logE("Exception While Switching Fragments in CPA." + e);
+        }
+    }
+
+    public void displayShopPage(String shopId, ParseUser owner) {
+        try {
+            ShopPageFragment shopPageFragment = ShopPageFragment.getInstance(shopId, owner);
+            switchFragment(shopPageFragment);
+        } catch (Exception e) {
+            logE("Exception While Switching to ShopPageFragment." + e);
         }
     }
 

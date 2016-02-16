@@ -3,9 +3,11 @@ package net.honarnama.browse;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import com.parse.Parse;
 import com.parse.ParseObject;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.browse.model.Item;
 
 import android.app.Application;
 import android.util.Log;
@@ -22,6 +24,7 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
         if (BuildConfig.DEBUG) {
             Log.i(PRODUCTION_TAG, "HonarnamaBrowseApp.onCreate()");
         }
+        ParseObject.registerSubclass(Item.class);
     }
 
 

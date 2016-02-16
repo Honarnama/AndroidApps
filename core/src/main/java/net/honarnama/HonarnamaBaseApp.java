@@ -12,6 +12,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 
@@ -81,6 +82,7 @@ public abstract class HonarnamaBaseApp extends Application {
         ParseObject.registerSubclass(Store.class);
         ParseObject.registerSubclass(Provinces.class);
         ParseObject.registerSubclass(City.class);
+        ParseObject.registerSubclass(Item.class);
 
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 

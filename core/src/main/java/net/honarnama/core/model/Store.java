@@ -45,6 +45,9 @@ public class Store extends ParseObject {
     public static String PROVINCE = "province";
     public static String CITY = "city";
     public static String STATUS = "status";
+    public static String VALIDITY_CHECKED = "validity_checked";
+    public static String OBJECT_ID = "objectId";
+
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;

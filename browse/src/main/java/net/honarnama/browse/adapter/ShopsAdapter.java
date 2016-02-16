@@ -3,6 +3,7 @@ package net.honarnama.browse.adapter;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Shop;
@@ -25,12 +26,12 @@ import java.util.List;
 public class ShopsAdapter extends BaseAdapter {
 
     Context mContext;
-    List<Store> mShops;
+    List<ParseObject> mShops;
     private static LayoutInflater mInflater = null;
 
     public ShopsAdapter(Context context) {
         mContext = context;
-        mShops = new ArrayList<Store>();
+        mShops = new ArrayList<ParseObject>();
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -61,9 +62,11 @@ public class ShopsAdapter extends BaseAdapter {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final Store store = mShops.get(position);
+        final ParseObject store = mShops.get(position);
         // Setting all values in listview
-        mViewHolder.title.setText(store.getName());
+        mViewHolder.title.setText(store.getString("name"));
+        mViewHolder.desc.setText(store.getString("description"));
+        mViewHolder.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
 
         mViewHolder.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.setVisibility(View.GONE);
@@ -78,21 +81,26 @@ public class ShopsAdapter extends BaseAdapter {
 
     }
 
-    public void addAll(List<Store> shopList) {
+    public void addAll(List<ParseObject> shopList) {
         mShops.addAll(shopList);
     }
 
     private class MyViewHolder {
         TextView title;
+        TextView desc;
         ImageSelector icon;
         RelativeLayout shopRowContainer;
         RelativeLayout shopLogoLoadingPanel;
+        TextView shopPlace;
 
         public MyViewHolder(View view) {
             title = (TextView) view.findViewById(R.id.shop_title_in_list);
+            desc = (TextView) view.findViewById(R.id.shop_desc_in_list);
             icon = (ImageSelector) view.findViewById(R.id.shop_logo_in_list);
             shopRowContainer = (RelativeLayout) view.findViewById(R.id.shop_row_container);
             shopLogoLoadingPanel = (RelativeLayout) view.findViewById(R.id.shop_logo_loading_panel);
+            shopPlace = (TextView) view.findViewById(R.id.shop_place_text_view);
+
         }
     }
 }
