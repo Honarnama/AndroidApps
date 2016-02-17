@@ -60,6 +60,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                logE("onPageScrolled");
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
@@ -109,17 +110,19 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
     }
 
-    public void displayShopPage(String shopId, ParseUser owner) {
+    public void displayShopPage(String shopId) {
         try {
-            ShopPageFragment shopPageFragment = ShopPageFragment.getInstance(shopId, owner);
+            ShopPageFragment shopPageFragment = ShopPageFragment.getInstance(shopId);
             switchFragment(shopPageFragment);
         } catch (Exception e) {
             logE("Exception While Switching to ShopPageFragment." + e);
         }
+        mMainTabBar.deselectAllTabs();
     }
 
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {
+        logE("onTabSelect");
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         mActiveTab = tag;
@@ -135,6 +138,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
             case TAB_FAVS:
                 mViewPager.setCurrentItem(TAB_FAVS, false);
+                break;
+            default:
+                mViewPager.setCurrentItem(TAB_HOME, false);
                 break;
         }
         mMainFragmentAdapter.getItem(tag).onTabClick();

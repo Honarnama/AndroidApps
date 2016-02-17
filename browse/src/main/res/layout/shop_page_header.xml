@@ -97,56 +97,64 @@
                 />
     </RelativeLayout>
 
-    <TextView
-            android:layout_below="@id/store_logo_container"
-            android:layout_marginTop="10dp"
-            android:id="@+id/store_name_text_view"
-            style="@style/section_title"
-            android:layout_centerHorizontal="true"
-            android:paddingRight="5dp"
-            android:paddingLeft="5dp"
-            />
-
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-              style="@style/default_text_view"
-              android:id="@+id/store_desc_text_view"
-              android:layout_below="@id/store_name_text_view"
-              android:layout_margin="10dp"
-              android:gravity="right"
-            />
-
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:layout_below="@id/store_desc_text_view"
-                  android:gravity="right"
-                  android:id="@+id/place_container"
-                  android:layout_marginRight="5dp"
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/store_logo_container"
+                    android:id="@+id/store_info_container"
+                    android:visibility="gone"
             >
-
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                app:iiv_color="@color/extra_dark_green"
-                app:iiv_icon="gmd-place"
-                android:paddingBottom="5dp"
-                android:id="@+id/shop_place_icon"
+        <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/store_name_text_view"
+                style="@style/section_title"
+                android:layout_centerHorizontal="true"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
                 />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  style="@style/tiny_text_view"
-                  android:id="@+id/shop_place_text_view"
-                  android:textSize="14sp"
-                  android:textColor="@color/extra_dark_green"
-                  android:layout_gravity="right|bottom"
-                />
-    </LinearLayout>
 
-    <TextView
-            android:layout_below="@id/place_container"
-            android:layout_marginTop="10dp"
-            style="@style/section_title"
-            android:layout_centerHorizontal="true"
-            android:padding="5dp"
-            android:text="@string/shop_items"
-            />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  style="@style/default_text_view"
+                  android:id="@+id/store_desc_text_view"
+                  android:layout_below="@id/store_name_text_view"
+                  android:layout_margin="10dp"
+                  android:gravity="right"
+                />
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_below="@id/store_desc_text_view"
+                      android:gravity="right"
+                      android:id="@+id/place_container"
+                      android:layout_marginRight="5dp"
+                >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    app:iiv_color="@color/extra_dark_green"
+                    app:iiv_icon="gmd-place"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/shop_place_icon"
+                    />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      style="@style/tiny_text_view"
+                      android:id="@+id/shop_place_text_view"
+                      android:textSize="14sp"
+                      android:textColor="@color/extra_dark_green"
+                      android:layout_gravity="right|bottom"
+                    />
+        </LinearLayout>
+        <TextView
+                android:layout_below="@id/place_container"
+                android:layout_marginTop="10dp"
+                style="@style/section_title"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/shop_items"
+                />
+    </RelativeLayout>
+
+
 </RelativeLayout>

@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,12 +72,12 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         return "صفحه‌ی اختصاصی غرفه";
     }
 
-    public synchronized static ShopPageFragment getInstance(String shopId, ParseUser owner) {
+    public synchronized static ShopPageFragment getInstance(String shopId) {
         ShopPageFragment shopPageFragment = new ShopPageFragment();
         Bundle args = new Bundle();
         args.putString("shopId", shopId);
         shopPageFragment.setArguments(args);
-        shopPageFragment.setOwner(owner);
+//        shopPageFragment.setOwner(owner);
         return shopPageFragment;
     }
 
@@ -125,34 +126,13 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mShopDesc = (TextView) rootView.findViewById(R.id.store_desc_text_view);
         mShopPlace = (TextView) rootView.findViewById(R.id.shop_place_text_view);
 
+        final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
+
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
         emptyListTextVie.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
-        Item.getItemsByOwner(mOwner).continueWith(new Continuation<List<Item>, Object>() {
-            @Override
-            public Object then(Task<List<Item>> task) throws Exception {
-                loadingCircle.setVisibility(View.GONE);
-                emptyListTextVie.setVisibility(View.VISIBLE);
-                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.shop_has_no_item));
-                if (task.isFaulted()) {
-                    logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
-                    }
-                } else {
-                    List<Item> shopItems = task.getResult();
-                    mAdapter.addAll(shopItems);
-                    mAdapter.notifyDataSetChanged();
-                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
-                }
-                return null;
-            }
-        }).continueWithTask(new Continuation<Object, Task<ParseObject>>() {
-            @Override
-            public Task<ParseObject> then(Task<Object> task) throws Exception {
-                return Shop.getShopById(shopId);
-            }
-        }).continueWith(new Continuation<ParseObject, Object>() {
+
+        Shop.getShopById(shopId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
                 if (task.isFaulted()) {
@@ -161,8 +141,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }
                 } else {
+                    infoContainer.setVisibility(View.VISIBLE);
                     ParseObject shop = task.getResult();
-
+                    mOwner = shop.getParseUser(Store.OWNER);
                     mShopName.setText(shop.getString(Store.NAME));
                     mShopDesc.setText(shop.getString(Store.DESCRIPTION));
                     String province = shop.getParseObject(Store.PROVINCE).getString(Provinces.NAME);
@@ -197,6 +178,30 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                             }
                         }
                     });
+                }
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<List<Item>>>() {
+            @Override
+            public Task<List<Item>> then(Task<Object> task) throws Exception {
+                return Item.getItemsByOwner(mOwner);
+            }
+        }).continueWith(new Continuation<List<Item>, Object>() {
+            @Override
+            public Object then(Task<List<Item>> task) throws Exception {
+                loadingCircle.setVisibility(View.GONE);
+                emptyListTextVie.setVisibility(View.VISIBLE);
+                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.shop_has_no_item));
+                if (task.isFaulted()) {
+                    logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                    }
+                } else {
+                    List<Item> shopItems = task.getResult();
+                    mAdapter.addAll(shopItems);
+                    mAdapter.notifyDataSetChanged();
+                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
                 }
                 return null;
             }

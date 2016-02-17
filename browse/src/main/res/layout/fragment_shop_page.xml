@@ -30,6 +30,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:visibility="gone"
+                    android:layout_margin="5dp"
                     >
                 <ProgressBar
                         style="?android:attr/progressBarStyle"

@@ -179,6 +179,13 @@ public class MainTabBar extends LinearLayout {
         icon.setColorFilter(mNotSelectedTabColor);
     }
 
+    public void deselectAllTabs() {
+        deselectTabView(findViewWithTag(TAB_HOME));
+        deselectTabView(findViewWithTag(TAB_CATS));
+        deselectTabView(findViewWithTag(TAB_SHOPS));
+        deselectTabView(findViewWithTag(TAB_FAVS));
+    }
+
     public void setOnTabItemClickListener(@NonNull OnTabItemClickListener onTabItemClickListener) {
         mOnTabItemClickListener = onTabItemClickListener;
     }
