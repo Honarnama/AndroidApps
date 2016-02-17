@@ -1,41 +1,60 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="0dp"
-                android:background="@color/gray_extra_light"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:layoutDirection="rtl">
-    <LinearLayout
-            android:id="@+id/loading_circle_container"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            >
-        <ProgressBar
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"/>
-    </LinearLayout>
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+        android:id="@+id/store_fragment_scroll_view"
+        >
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    <ListView android:id="@+id/shop_items_listView"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:divider="@android:color/transparent"
-              android:dividerHeight="5dp"
-              android:layout_marginBottom="5dp"
-            />
+        <include layout="@layout/shop_page_header"
+                 android:id="@+id/header_layout"></include>
 
-    <TextView android:id="@+id/empty_items_list_view"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              style="@style/default_text_view"
-              android:layout_marginTop="20dp"
-              android:layout_gravity="center"
-            />
-</RelativeLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        android:background="@color/gray_extra_light"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:layoutDirection="rtl"
+                        android:layout_below="@id/header_layout"
+                >
+            <LinearLayout
+                    android:id="@+id/loading_circle_container"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    >
+                <ProgressBar
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+            <ListView android:id="@+id/shop_items_listView"
+                      android:orientation="vertical"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:divider="@android:color/transparent"
+                      android:dividerHeight="5dp"
+                      android:layout_marginBottom="5dp"
+                    />
+
+            <TextView android:id="@+id/empty_items_list_view"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:gravity="center"
+                      style="@style/default_text_view"
+                      android:layout_marginTop="20dp"
+                      android:layout_gravity="center"
+                    />
+        </RelativeLayout>
+    </RelativeLayout>
+</net.honarnama.core.utils.ObservableScrollView>

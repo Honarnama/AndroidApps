@@ -18,18 +18,22 @@ import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,7 +47,7 @@ import bolts.Task;
 /**
  * Created by elnaz on 2/15/16.
  */
-public class ShopPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class ShopPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
@@ -57,6 +61,10 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopDesc;
     public TextView mShopPlace;
     private ParseUser mOwner;
+    public ListView mListView;
+
+    private ObservableScrollView mScrollView;
+    private View mBannerFrameLayout;
 
     @Override
     public String getTitle(Context context) {
@@ -98,12 +106,14 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final String shopId = getArguments().getString("shopId");
 
 
-        ListView listView = (ListView) rootView.findViewById(R.id.shop_items_listView);
-        final TextView emptyListTextVie = (TextView) rootView.findViewById(R.id.empty_items_list_view);
-        listView.setEmptyView(emptyListTextVie);
+        mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
-        View header = getActivity().getLayoutInflater().inflate(R.layout.shop_page_header, null);
-        listView.addHeaderView(header);
+        final TextView emptyListTextVie = (TextView) rootView.findViewById(R.id.empty_items_list_view);
+        mListView.setEmptyView(emptyListTextVie);
+
+        mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
+        mScrollView.setOnScrollChangedListener(this);
+        mBannerFrameLayout = rootView.findViewById(R.id.store_banner_frame_layout);
 
         mLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.store_banner_image_view);
@@ -131,9 +141,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     }
                 } else {
                     List<Item> shopItems = task.getResult();
-                    logE("Item size: " + shopItems.size());
                     mAdapter.addAll(shopItems);
                     mAdapter.notifyDataSetChanged();
+                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
                 }
                 return null;
             }
@@ -164,7 +174,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     mLogoImageView.loadInBackground(shop.getParseFile(Store.LOGO), new GetDataCallback() {
                         @Override
                         public void done(byte[] data, ParseException e) {
-                            logE("Inja");
                             mLogoProgressBar.setVisibility(View.GONE);
                             if (e != null) {
                                 logE("Getting  logo image for shop " + shopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
@@ -194,9 +203,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         });
 
         mAdapter = new ShopItemsAdapter(getActivity());
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(this);
-
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
         return rootView;
 
     }
@@ -210,4 +218,13 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
     }
+
+    @Override
+    public void onScrollChanged(int deltaX, int deltaY) {
+        int scrollY = mScrollView.getScrollY();
+        // Add parallax effect
+        mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
+
+    }
+
 }

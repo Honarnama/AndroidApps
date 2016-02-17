@@ -6,8 +6,9 @@
                 android:background="@color/gray_extra_light"
                 android:layout_gravity="right"
                 android:gravity="right"
-                android:layoutDirection="rtl">
-
+                android:layoutDirection="rtl"
+                android:id="@+id/header_container"
+        >
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/store_banner_container"
@@ -134,7 +135,6 @@
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/tiny_text_view"
                   android:id="@+id/shop_place_text_view"
-                  android:text="عجبا"
                   android:textSize="14sp"
                   android:textColor="@color/extra_dark_green"
                   android:layout_gravity="right|bottom"
