@@ -45,5 +45,10 @@ public class FavsFragment extends HonarnamaBrowseFragment {
     public String getTitle(Context context) {
         return null;
     }
+
+    @Override
+    public void onSelectedTabClick() {
+
+    }
 }
 

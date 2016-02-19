@@ -45,5 +45,10 @@ public class CatsFragment extends HonarnamaBrowseFragment {
     public String getTitle(Context context) {
         return null;
     }
+
+    @Override
+    public void onSelectedTabClick() {
+
+    }
 }
 

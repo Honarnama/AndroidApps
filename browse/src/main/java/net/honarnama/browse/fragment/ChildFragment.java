@@ -142,15 +142,15 @@ public class ChildFragment extends HonarnamaBrowseFragment {
     }
 
     public void onSelectedTabClick() {
-//        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
-//            popAllFragment();
-//        } else {
-//            if (getChildFragmentManager().getFragments() != null
-//                    && getChildFragmentManager().getFragments().size() > 0) {
-//                ((BazaarDialogFragment) getChildFragmentManager().getFragments().get(0))
-//                        .onSelectedTabClick();
-//            }
-//        }
+        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
+            popAllFragment();
+        } else {
+            if (getChildFragmentManager().getFragments() != null
+                    && getChildFragmentManager().getFragments().size() > 0) {
+                ((HonarnamaBrowseFragment) getChildFragmentManager().getFragments().get(0))
+                        .onSelectedTabClick();
+            }
+        }
     }
 
     public void onTabClick() {

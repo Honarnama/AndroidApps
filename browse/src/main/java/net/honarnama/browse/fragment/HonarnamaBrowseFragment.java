@@ -94,4 +94,6 @@ public abstract class HonarnamaBrowseFragment extends android.support.v4.app.Fra
         Log.d(getDebugTag(), getMessage(null, debugMsg));
     }
 
+    abstract public void onSelectedTabClick();
+
 }

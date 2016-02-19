@@ -134,4 +134,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 break;
         }
     }
+
+    public void onSelectedTabClick() {
+    }
 }

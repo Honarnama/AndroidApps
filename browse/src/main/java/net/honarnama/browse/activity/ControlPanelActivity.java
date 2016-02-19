@@ -2,8 +2,6 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
@@ -29,6 +27,7 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
+import static net.honarnama.browse.widget.MainTabBar.DUMMY_TAB_SHOP_PAGE;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
 
@@ -40,6 +39,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private Toolbar mToolbar;
     private int mActiveTab;
     private MainTabBar mMainTabBar;
+    private String mShopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,16 +55,18 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager = (LockableViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mMainFragmentAdapter);
         mViewPager.setSwipeable(false);
-
-        mViewPager.setOffscreenPageLimit(4);
+//        mViewPager.setOffscreenPageLimit(4);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                logE("onPageScrolled");
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
-                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position));
+                    if (mActiveTab == DUMMY_TAB_SHOP_PAGE) {
+                        switchFragment(ShopPageFragment.getInstance(getShopId()));
+                    } else {
+                        switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position));
+                    }
                 }
             }
 
@@ -111,18 +113,21 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void displayShopPage(String shopId) {
-        try {
-            ShopPageFragment shopPageFragment = ShopPageFragment.getInstance(shopId);
-            switchFragment(shopPageFragment);
-        } catch (Exception e) {
-            logE("Exception While Switching to ShopPageFragment." + e);
-        }
+        setShopId(shopId);
+        mViewPager.setCurrentItem(DUMMY_TAB_SHOP_PAGE, false);
         mMainTabBar.deselectAllTabs();
+    }
+
+    public void setShopId(String shopId) {
+        mShopId = shopId;
+    }
+
+    public String getShopId() {
+        return mShopId;
     }
 
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {
-        logE("onTabSelect");
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         mActiveTab = tag;

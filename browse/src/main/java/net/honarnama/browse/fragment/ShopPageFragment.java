@@ -93,6 +93,11 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
+    @Override
+    public void onSelectedTabClick() {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

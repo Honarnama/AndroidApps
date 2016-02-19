@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,9 @@ public class MainTabBar extends LinearLayout {
     public static final int TAB_SHOPS = 2;
 
     public static final int TAB_FAVS = 3;
+
+    public static final int DUMMY_TAB_SHOP_PAGE = 4;
+
 
     private int mSelectedTabColor;
 
@@ -139,6 +143,8 @@ public class MainTabBar extends LinearLayout {
      * @param byUser whether user selected this tab
      */
     private void setSelectedTab(@NonNull Object tabTag, boolean byUser) {
+        Log.e("inja", "setSelectedTab, mSelectedTabTag: " + mSelectedTabTag);
+        Log.e("inja", "setSelectedTab, tabTag: " + tabTag);
         if (tabTag.equals(mSelectedTabTag)) {
             if (mOnTabItemClickListener != null) {
                 mOnTabItemClickListener.onSelectedTabClick(tabTag, byUser);
@@ -180,6 +186,7 @@ public class MainTabBar extends LinearLayout {
     }
 
     public void deselectAllTabs() {
+        mSelectedTabTag = null;
         deselectTabView(findViewWithTag(TAB_HOME));
         deselectTabView(findViewWithTag(TAB_CATS));
         deselectTabView(findViewWithTag(TAB_SHOPS));

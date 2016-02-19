@@ -17,6 +17,7 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
+import static net.honarnama.browse.widget.MainTabBar.DUMMY_TAB_SHOP_PAGE;
 
 /**
  * Created by elnaz on 2/13/16.
@@ -24,13 +25,13 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 public class MainFragmentAdapter extends FragmentPagerAdapter {
     public List<ChildFragment> fragmentsList = new ArrayList<>();
 
-
     public MainFragmentAdapter(FragmentManager fm) {
         super(fm);
         fragmentsList.add(ChildFragment.getInstance(TAB_HOME));
         fragmentsList.add(ChildFragment.getInstance(TAB_CATS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
         fragmentsList.add(ChildFragment.getInstance(TAB_FAVS));
+        fragmentsList.add(ChildFragment.getInstance(DUMMY_TAB_SHOP_PAGE));
     }
 
     @Override
@@ -48,7 +49,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // return CONTENT.length;
-        return 4;
+        return fragmentsList.size();
     }
 
     public Fragment getDefaultFragmentForTab(int tabTag) {
