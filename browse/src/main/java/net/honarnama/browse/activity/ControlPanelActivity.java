@@ -62,11 +62,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
-                    if (mActiveTab == DUMMY_TAB_SHOP_PAGE) {
-                        switchFragment(ShopPageFragment.getInstance(getShopId()));
-                    } else {
-                        switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position));
-                    }
+                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position));
                 }
             }
 
@@ -114,8 +110,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void displayShopPage(String shopId) {
         setShopId(shopId);
-        mViewPager.setCurrentItem(DUMMY_TAB_SHOP_PAGE, false);
+//        mViewPager.setCurrentItem(DUMMY_TAB_SHOP_PAGE, false);
         mMainTabBar.deselectAllTabs();
+        switchFragment(ShopPageFragment.getInstance(shopId));
     }
 
     public void setShopId(String shopId) {
@@ -174,5 +171,17 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 .color(Color.WHITE)
                 .sizeDp(20));
         return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {
+            if (mActiveTab != TAB_HOME) {
+                mMainTabBar.setSelectedTab(TAB_HOME);
+            } else {
+                finish();
+            }
+        }
     }
 }

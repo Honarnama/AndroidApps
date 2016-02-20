@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.lang.reflect.Field;
 
 
@@ -82,26 +83,15 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
 
     public boolean back() {
-        /*
-        if (mTag == MainTabBar.TAB_SEARCH
-                || getChildFragmentManager().getBackStackEntryCount() > 1) {
+        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
             Fragment fragment = getChildFragmentManager().getFragments()
                     .get(getChildFragmentManager().getBackStackEntryCount() - 1);
-            if (mTag == HomeTabBar.TAB_SEARCH && fragment != null) {
-                if (fragment instanceof SearchFragment) {
-                    return ((SearchFragment) fragment).back();
-                } else {
-                    getChildFragmentManager().popBackStackImmediate();
-                    return true;
-                }
-            } else {
+            if (fragment != null) {
                 getChildFragmentManager().popBackStackImmediate();
                 return true;
             }
-        } else {
-            return false;
+
         }
-        */
         return false;
     }
 
