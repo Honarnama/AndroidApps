@@ -143,8 +143,6 @@ public class MainTabBar extends LinearLayout {
      * @param byUser whether user selected this tab
      */
     private void setSelectedTab(@NonNull Object tabTag, boolean byUser) {
-        Log.e("inja", "setSelectedTab, mSelectedTabTag: " + mSelectedTabTag);
-        Log.e("inja", "setSelectedTab, tabTag: " + tabTag);
         if (tabTag.equals(mSelectedTabTag)) {
             if (mOnTabItemClickListener != null) {
                 mOnTabItemClickListener.onSelectedTabClick(tabTag, byUser);
@@ -162,7 +160,7 @@ public class MainTabBar extends LinearLayout {
      *
      * @param tabView tab view to be selected
      */
-    private void selectTabView(@NonNull View tabView) {
+    public void selectTabView(@NonNull View tabView) {
         if (mSelectedTabTag != null) {
             deselectTabView(findViewWithTag(mSelectedTabTag));
         }

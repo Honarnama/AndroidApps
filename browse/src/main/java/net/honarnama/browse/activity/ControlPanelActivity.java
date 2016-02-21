@@ -40,6 +40,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private int mActiveTab;
     private MainTabBar mMainTabBar;
     private String mShopId;
+    public  TextView mTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        TextView mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+        mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
                 .icon(GoogleMaterial.Icon.gmd_menu)
                 .color(Color.WHITE)
@@ -113,6 +114,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 //        mViewPager.setCurrentItem(DUMMY_TAB_SHOP_PAGE, false);
         mMainTabBar.deselectAllTabs();
         switchFragment(ShopPageFragment.getInstance(shopId));
+        mTitle.setText("غرفه هنری");
     }
 
     public void setShopId(String shopId) {

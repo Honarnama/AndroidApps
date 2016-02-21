@@ -1,6 +1,8 @@
 package net.honarnama.browse.fragment;
 
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
+import net.honarnama.browse.widget.MainTabBar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +11,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
+
+import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 
 
 /**
@@ -88,6 +93,10 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                     .get(getChildFragmentManager().getBackStackEntryCount() - 1);
             if (fragment != null) {
                 getChildFragmentManager().popBackStackImmediate();
+                TextView toolbarTitle = (TextView) ((ControlPanelActivity) getActivity()).findViewById(R.id.toolbar_title);
+                toolbarTitle.setText(getString(R.string.hornama));
+
+                MainTabBar mainTabBar = (MainTabBar) ((ControlPanelActivity) getActivity()).findViewById(R.id.tab_bar);
                 return true;
             }
 

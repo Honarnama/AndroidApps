@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.security.acl.Owner;
@@ -110,6 +111,14 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         ParseObject selectedStore = (ParseObject) mAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayShopPage(selectedStore.getObjectId());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        TextView toolbarTitle = (TextView) ((ControlPanelActivity) getActivity()).findViewById(R.id.toolbar_title);
+//        toolbarTitle.setText(getString(R.string.shops));
+
     }
 
     @Override
