@@ -111,8 +111,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void displayShopPage(String shopId) {
         setShopId(shopId);
-//        mViewPager.setCurrentItem(DUMMY_TAB_SHOP_PAGE, false);
-        mMainTabBar.deselectAllTabs();
+//        mMainTabBar.deselectAllTabs();
         switchFragment(ShopPageFragment.getInstance(shopId));
         mTitle.setText("غرفه هنری");
     }
