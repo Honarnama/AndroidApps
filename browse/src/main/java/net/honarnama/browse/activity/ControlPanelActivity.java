@@ -201,6 +201,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         // onResume gets called after this to handle the intent
         Log.e("inja", "onNewIntent");
         setIntent(intent);
+        handleExternalIntent(intent);
     }
 
     private void processIntent(Intent intent) {
