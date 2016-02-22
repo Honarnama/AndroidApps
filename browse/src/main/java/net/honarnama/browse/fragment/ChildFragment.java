@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,21 +114,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         }
     }
 
-    /**
-     * pop all dialog fragment
-     *
-     * public void popAllDialogFragment() {
-     * if (getChildFragmentManager().getFragments() != null) {
-     * for (Fragment fragment : getChildFragmentManager().getFragments()) {
-     * if (fragment != null && fragment.getTag() != null && fragment.getTag()
-     * .equals(HomeActivity.DIALOG_FRAGMENT_TAG)) {
-     * ((DialogFragment) fragment).dismiss();
-     * }
-     * }
-     * }
-     * }
-     */
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -135,9 +121,12 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+           logE("NoSuchFieldException"+ e);
+        } catch (IllegalAccessException e) {
+            logE("IllegalAccessException"+ e);
         }
+
     }
 
     public void onSelectedTabClick() {

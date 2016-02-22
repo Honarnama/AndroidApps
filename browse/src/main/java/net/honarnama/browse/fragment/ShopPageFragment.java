@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
@@ -22,6 +23,7 @@ import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,6 +68,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
+    private RelativeLayout mShare;
+    public String mShopId;
 
     @Override
     public String getTitle(Context context) {
@@ -109,7 +113,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             return rootView;
         }
         final View rootView = inflater.inflate(R.layout.fragment_shop_page, container, false);
-        final String shopId = getArguments().getString("shopId");
+        mShopId = getArguments().getString("shopId");
 
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
@@ -130,6 +134,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mShopName = (TextView) rootView.findViewById(R.id.store_name_text_view);
         mShopDesc = (TextView) rootView.findViewById(R.id.store_desc_text_view);
         mShopPlace = (TextView) rootView.findViewById(R.id.shop_place_text_view);
+        mShare = (RelativeLayout) rootView.findViewById(R.id.shop_share_container);
+        mShare.setOnClickListener(this);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
@@ -137,16 +143,17 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         emptyListTextVie.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
 
-        Shop.getShopById(shopId).continueWith(new Continuation<ParseObject, Object>() {
+        Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Getting Shop  with id " + shopId + " failed. Error: " + task.getError(), "", task.getError());
+                    logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
+                    mShare.setVisibility(View.VISIBLE);
                     ParseObject shop = task.getResult();
                     mOwner = shop.getParseUser(Store.OWNER);
                     mShopName.setText(shop.getString(Store.NAME));
@@ -162,7 +169,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         public void done(byte[] data, ParseException e) {
                             mLogoProgressBar.setVisibility(View.GONE);
                             if (e != null) {
-                                logE("Getting  logo image for shop " + shopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
+                                logE("Getting  logo image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                 if (isVisible()) {
                                     Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                                 }
@@ -176,7 +183,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         public void done(byte[] data, ParseException e) {
                             mBannerProgressBar.setVisibility(View.GONE);
                             if (e != null) {
-                                logE("Getting  banner image for shop " + shopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+                                logE("Getting  banner image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
                                 if (isVisible()) {
                                     Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                                 }
@@ -221,6 +228,17 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public void onClick(View v) {
+
+        if (v.getId() == R.id.shop_share_container) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT,
+                    getString(R.string.art_shop) + " " + mShopName.getText());
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "غرفه هنری " + mShopName.getText() + " تو برنامه هنرما رو ببین: " +
+                    "\n" + "http://honarnama.net/shop/" + mShopId);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
 
     }
 

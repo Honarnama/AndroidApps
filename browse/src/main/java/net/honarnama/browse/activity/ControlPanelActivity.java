@@ -3,6 +3,7 @@ package net.honarnama.browse.activity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
@@ -11,17 +12,28 @@ import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.core.utils.WindowUtil;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
+
+import java.util.List;
+
+import bolts.Task;
+import bolts.TaskCompletionSource;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
@@ -40,7 +52,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private int mActiveTab;
     private MainTabBar mMainTabBar;
     private String mShopId;
-    public  TextView mTitle;
+    public TextView mTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +75,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
-                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position));
+                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position), false);
                 }
             }
 
@@ -93,35 +105,33 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 .color(Color.WHITE)
                 .sizeDp(20));
 
+        handleExternalIntent(getIntent());
+
     }
 
-    public void switchFragment(Fragment fragment) {
-        FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
-                .getChildFragmentManager();
+    public void switchFragment(Fragment fragment, boolean isExternal) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         try {
-            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.child_fragment_root, fragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commitAllowingStateLoss();
+            FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                    .getChildFragmentManager();
+                FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.child_fragment_root, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commitAllowingStateLoss();
         } catch (Exception e) {
             logE("Exception While Switching Fragments in CPA." + e);
         }
     }
 
-    public void displayShopPage(String shopId) {
+    public void displayShopPage(String shopId, boolean isExternal) {
         setShopId(shopId);
 //        mMainTabBar.deselectAllTabs();
-        switchFragment(ShopPageFragment.getInstance(shopId));
-        mTitle.setText("غرفه هنری");
+        switchFragment(ShopPageFragment.getInstance(shopId), isExternal);
+        mTitle.setText(R.string.art_shop);
     }
 
     public void setShopId(String shopId) {
         mShopId = shopId;
-    }
-
-    public String getShopId() {
-        return mShopId;
     }
 
     @Override
@@ -185,4 +195,51 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         }
     }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+        Log.e("inja", "onNewIntent");
+        setIntent(intent);
+    }
+
+    private void processIntent(Intent intent) {
+        Uri data = intent.getData();
+        if (BuildConfig.DEBUG) {
+            logD("processIntent :: data= " + data);
+        }
+
+        if (data != null) {
+            if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+                List<String> segments = data.getPathSegments();
+                Log.e("inja", segments + "");
+                if (segments.size() > 1 && segments.get(0).equals("shop")) {
+                    String shopId = segments.get(1).replace("/", "");
+                    mMainTabBar.setSelectedTab(TAB_SHOPS);
+                    displayShopPage(shopId, true);
+                }
+            }
+        }
+    }
+
+    public void handleExternalIntent(final Intent intent) {
+        findViewById(R.id.tab_bar).getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @SuppressLint("NewApi")
+                    @SuppressWarnings("deprecation")
+                    @Override
+                    public void onGlobalLayout() {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                            findViewById(R.id.tab_bar).getViewTreeObserver()
+                                    .removeGlobalOnLayoutListener(this);
+                        } else {
+                            findViewById(R.id.tab_bar).getViewTreeObserver()
+                                    .removeOnGlobalLayoutListener(this);
+                        }
+                        processIntent(intent);
+                    }
+                });
+    }
+
+
 }

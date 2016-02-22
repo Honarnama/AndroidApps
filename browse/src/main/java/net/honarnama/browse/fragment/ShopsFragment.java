@@ -110,7 +110,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ParseObject selectedStore = (ParseObject) mAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayShopPage(selectedStore.getObjectId());
+        controlPanelActivity.displayShopPage(selectedStore.getObjectId(), false);
     }
 
     @Override

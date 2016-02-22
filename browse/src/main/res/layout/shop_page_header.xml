@@ -50,6 +50,41 @@
                     android:id="@+id/banner_progress_bar"
                     android:visibility="gone"
                     />
+            <View android:id="@+id/fade_bg"
+                  android:layout_width="fill_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  android:background="@drawable/fade_back"
+                  android:visibility="visible"
+                  android:layout_alignParentTop="true"
+                    />
+
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:id="@+id/shop_share_container"
+                            android:visibility="gone"
+                    >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:iiv_color="@color/white"
+                        app:iiv_icon="gmd-share"
+                        android:layout_gravity="top|right"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:id="@+id/share_shop"
+
+                        />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/share_us"
+                          android:textSize="14sp"
+                          android:textColor="@color/white"
+                          android:paddingRight="5dp"
+                          android:layout_toLeftOf="@id/share_shop"
+                          android:layout_marginTop="16dp"
+                        />
+            </RelativeLayout>
+
         </FrameLayout>
 
 
