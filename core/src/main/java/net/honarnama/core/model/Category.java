@@ -37,7 +37,7 @@ public class Category extends ParseObject {
         return getString(NAME);
     }
 
-    public Task<String> findCategoryName(String categoryId, Context mContext) {
+    public static Task<String> getCategoryNameById(String categoryId) {
         final TaskCompletionSource<String> tcs = new TaskCompletionSource<>();
 
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
@@ -56,8 +56,6 @@ public class Category extends ParseObject {
                 return tcs.getTask();
             }
         }
-
-
         parseQuery.getFirstInBackground(new GetCallback<Category>() {
             @Override
             public void done(Category category, ParseException e) {
@@ -76,4 +74,39 @@ public class Category extends ParseObject {
         return tcs.getTask();
     }
 
+    public static Task<Category> getCategoryById(String catId) {
+        final TaskCompletionSource<Category> tcs = new TaskCompletionSource<>();
+
+        ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
+        parseQuery.whereEqualTo(OBJECT_ID, catId);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "Getting category by id from local datastore");
+            }
+            parseQuery.fromLocalDatastore();
+        } else {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
+            }
+        }
+
+        parseQuery.getFirstInBackground(new GetCallback<Category>() {
+            @Override
+            public void done(Category category, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(category);
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG, "Finding category by id failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding category by id failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+                    }
+                    tcs.trySetError(e);
+                }
+            }
+        });
+        return tcs.getTask();
+    }
 }

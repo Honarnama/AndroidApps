@@ -44,7 +44,7 @@ public class Item extends ParseObject {
     //Defining fields
     public static String TITLE = "title";
     public static String DESCRIPTION = "description";
-    public static String CATEGORY_ID = "categoryId";
+    public static String CATEGORY = "category";
     public static String PRICE = "price";
     public static String IMAGE_1 = "image_1";
     public static String IMAGE_2 = "image_2";
@@ -62,19 +62,19 @@ public class Item extends ParseObject {
         super();
     }
 
-    public Item(ParseUser owner, String title, String description, String categoryId, Number price) {
+    public Item(ParseUser owner, String title, String description, Category category, Number price) {
         super();
         put("title", title);
         put("description", description);
         put("owner", owner);
-        put("categoryId", categoryId);
+        put(CATEGORY, category);
         put("price", price);
     }
 
-    private void update(String title, String description, String categoryId, Number price) {
+    private void update(String title, String description, Category category, Number price) {
         put("title", title);
         put("description", description);
-        put("categoryId", categoryId);
+        put(CATEGORY, category);
         put("price", price);
     }
 
@@ -98,8 +98,8 @@ public class Item extends ParseObject {
         return getString("description");
     }
 
-    public String getCategoryId() {
-        return getString("categoryId");
+    public Category getCategory() {
+        return (Category) getParseObject(CATEGORY);
     }
 
     public ParseFile[] getImages() {
@@ -113,7 +113,7 @@ public class Item extends ParseObject {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final String categoryId, final Number price, final ImageSelector[] itemImages) throws IOException {
+    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final Category category, final Number price, final ImageSelector[] itemImages) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
@@ -155,9 +155,9 @@ public class Item extends ParseObject {
         final Item item;
         if (originalItem != null) {
             item = originalItem;
-            item.update(title, description, categoryId, price);
+            item.update(title, description, category, price);
         } else {
-            item = new Item(ParseUser.getCurrentUser(), title, description, categoryId, price);
+            item = new Item(ParseUser.getCurrentUser(), title, description, category, price);
         }
 
         item.remove("image_1");

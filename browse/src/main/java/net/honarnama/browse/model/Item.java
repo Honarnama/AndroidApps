@@ -11,6 +11,7 @@ import net.honarnama.base.BuildConfig;
 
 import android.util.Log;
 
+import java.util.Collections;
 import java.util.List;
 
 import bolts.Task;
@@ -26,6 +27,7 @@ public class Item extends net.honarnama.core.model.Item {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.OWNER, owner);
+        parseQuery.include(Item.CATEGORY);
 
         parseQuery.findInBackground(new FindCallback<Item>() {
             @Override
@@ -45,6 +47,38 @@ public class Item extends net.honarnama.core.model.Item {
                                     "Error getting shop items for owner: " + owner.getObjectId() + ". Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
                         } else {
                             Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error getting shop items for owner: " + owner.getObjectId() + ". Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+                        }
+                    }
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
+    public static Task<List<Item>> getRandomItems() {
+        final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
+        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        parseQuery.include(Item.CATEGORY);
+
+        parseQuery.findInBackground(new FindCallback<Item>() {
+            @Override
+            public void done(final List<Item> items, ParseException e) {
+                if (e == null) {
+                    Collections.shuffle(items);
+                    tcs.trySetResult(items);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG, "Getting random items failed. " + e);
+                        }
+                        tcs.trySetResult(null);
+                    } else {
+                        tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG,
+                                    "Getting random items failed. Error code: " + e.getCode() + "Error Msg: " + e.getMessage() + "// Error: " + e);
+                        } else {
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG,  "Getting random items failed. Error code: " + e.getCode() + "Error Msg: " + e.getMessage() + "// Error: " + e);
                         }
                     }
                 }

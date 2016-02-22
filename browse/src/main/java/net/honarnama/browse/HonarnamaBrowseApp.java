@@ -17,6 +17,8 @@ import android.util.Log;
  */
 public class HonarnamaBrowseApp extends HonarnamaBaseApp {
 
+    public static final String PRODUCTION_TAG = "HonarnamaBrowse";
+
     @Override
     public void onCreate() {
         super.onCreate();

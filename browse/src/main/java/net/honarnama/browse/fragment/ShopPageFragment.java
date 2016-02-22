@@ -3,7 +3,6 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
@@ -12,7 +11,7 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
-import net.honarnama.browse.adapter.ShopItemsAdapter;
+import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
@@ -24,18 +23,14 @@ import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -54,7 +49,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
-    private ShopItemsAdapter mAdapter;
+    private ItemsAdapter mAdapter;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
     public ProgressBar mBannerProgressBar;
@@ -118,8 +113,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
-        final TextView emptyListTextVie = (TextView) rootView.findViewById(R.id.empty_items_list_view);
-        mListView.setEmptyView(emptyListTextVie);
+        final RelativeLayout emptyListContainere = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
+        mListView.setEmptyView(emptyListContainere);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
@@ -140,7 +135,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
-        emptyListTextVie.setVisibility(View.GONE);
+        emptyListContainere.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
 
         Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
@@ -202,8 +197,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
                 loadingCircle.setVisibility(View.GONE);
-                emptyListTextVie.setVisibility(View.VISIBLE);
-                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.shop_has_no_item));
+                emptyListContainere.setVisibility(View.VISIBLE);
                 if (task.isFaulted()) {
                     logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
@@ -219,7 +213,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         });
 
-        mAdapter = new ShopItemsAdapter(getActivity());
+        mAdapter = new ItemsAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;

@@ -15,6 +15,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
@@ -311,9 +312,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 mTitleEditText.setText(mItem.getTitle());
                                 mDescriptionEditText.setText(mItem.getDescription());
                                 mPriceEditText.setText(mItem.getPrice() + "");
-                                mCategoryId = mItem.getCategoryId();
+                                mCategoryId = mItem.getCategory().getObjectId();
                                 mChooseCategoryButton.setText(getString(R.string.getting_information));
-                                new Category().findCategoryName(mCategoryId, getActivity()).continueWith(new Continuation<String, Object>() {
+                                new Category().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
                                     @Override
                                     public Object then(Task<String> task) throws Exception {
                                         if (task.isFaulted()) {
@@ -503,9 +504,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     private void saveItem() {
-        String title = mTitleEditText.getText().toString().trim();
-        String description = mDescriptionEditText.getText().toString().trim();
-        Number price = Integer.valueOf(mPriceEditText.getText().toString().trim());
+        final String title = mTitleEditText.getText().toString().trim();
+        final String description = mDescriptionEditText.getText().toString().trim();
+        final Number price = Integer.valueOf(mPriceEditText.getText().toString().trim());
+        final String catId = mCategoryId;
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
@@ -513,13 +515,29 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Item.saveWithImages(mItem, title, description, mCategoryId, price, mItemImages).continueWith(new Continuation<Item, Void>() {
+            Category.getCategoryById(catId).continueWithTask(new Continuation<Category, Task<Item>>() {
+                @Override
+                public Task<Item> then(Task<Category> task) throws Exception {
+
+                    if (task.isFaulted()) {
+                        sendingDataProgressDialog.dismiss();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        }
+                        return Task.forError(task.getError());
+                    } else {
+                        return Item.saveWithImages(mItem, title, description, task.getResult(), price, mItemImages);
+                    }
+                }
+            }).continueWith(new Continuation<Item, Void>() {
                 @Override
                 public Void then(Task<Item> task) throws Exception {
                     if (BuildConfig.DEBUG) {
                         logD("saveItem, Back to then");
                     }
-                    sendingDataProgressDialog.dismiss();
+                    if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
+                        sendingDataProgressDialog.dismiss();
+                    }
                     if (task.isCompleted()) {
                         if (BuildConfig.DEBUG) {
                             logD("saveItem, task.isCompleted()");
@@ -550,8 +568,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     return null;
                 }
             }, Task.UI_THREAD_EXECUTOR);
-        } catch (IOException ioe) {
-            logE("Exception while saveItem. Error: " + ioe, "", ioe);
+        } catch (Exception e) {
+            logE("Exception while saveItem. Error: " + e, "", e);
             if (sendingDataProgressDialog.isShowing()) {
                 sendingDataProgressDialog.dismiss();
             }
