@@ -136,7 +136,7 @@
     <string name="error_edit_item_no_image">حداقل یک عکس اجباریست.</string>
     <string name="edit_item_save">ذخیره</string>
     <string name="edit_item_done">محصول شما با موفقیت ذخیره شد.</string>
-    <string name="error_saving_item">خطا در ذخیرهٔ محصول</string>
+    <string name="error_saving_item">"خطا در هنگام ذخیره‌سازی محصول."</string>
     <string name="item_not_changed">از آخرین ذخیره‌سازی تغییری در اطلاعات محصول ایجاد نشده است.
     </string>
     <string name="error_loading_item">خطا در خواندن اطلاعات محصول</string>

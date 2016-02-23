@@ -52,6 +52,7 @@ public class Item extends ParseObject {
     public static String IMAGE_4 = "image_4";
     public static String STATUS = "status";
     public static String OWNER = "owner";
+    public static String STORE = "store";
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;
@@ -62,20 +63,26 @@ public class Item extends ParseObject {
         super();
     }
 
-    public Item(ParseUser owner, String title, String description, Category category, Number price) {
+    public Item(ParseUser owner, String title, String description, Category category, Number price, Store store) {
         super();
-        put("title", title);
-        put("description", description);
-        put("owner", owner);
+        put(TITLE, title);
+        put(DESCRIPTION, description);
+        put(OWNER, owner);
         put(CATEGORY, category);
-        put("price", price);
+        put(PRICE, price);
+        if (store != null) {
+            put(STORE, store);
+        }
     }
 
-    private void update(String title, String description, Category category, Number price) {
-        put("title", title);
-        put("description", description);
+    private void update(String title, String description, Category category, Number price, Store store) {
+        put(TITLE, title);
+        put(DESCRIPTION, description);
         put(CATEGORY, category);
-        put("price", price);
+        put(PRICE, price);
+        if (store != null) {
+            put(STORE, store);
+        }
     }
 
     public void setOwner(ParseUser parseUser) {
@@ -102,6 +109,14 @@ public class Item extends ParseObject {
         return (Category) getParseObject(CATEGORY);
     }
 
+    public Store getStore() {
+        return (Store) getParseObject(STORE);
+    }
+
+    public void setStore(Store store) {
+        put(STORE, store);
+    }
+
     public ParseFile[] getImages() {
         ParseFile[] res = new ParseFile[NUMBER_OF_IMAGES];
         for (int i = 0; i < NUMBER_OF_IMAGES; i++) {
@@ -113,7 +128,8 @@ public class Item extends ParseObject {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description, final Category category, final Number price, final ImageSelector[] itemImages) throws IOException {
+    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description,
+                                            final Category category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
@@ -155,9 +171,9 @@ public class Item extends ParseObject {
         final Item item;
         if (originalItem != null) {
             item = originalItem;
-            item.update(title, description, category, price);
+            item.update(title, description, category, price, store);
         } else {
-            item = new Item(ParseUser.getCurrentUser(), title, description, category, price);
+            item = new Item(ParseUser.getCurrentUser(), title, description, category, price, store);
         }
 
         item.remove("image_1");
@@ -196,6 +212,11 @@ public class Item extends ParseObject {
                     item.pinInBackground();
                     res.setResult(item);
                 } else if (task.isFaulted()) {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG, "Saving Item failed. Item: " + item + " // Task faulted: " + task.getError());
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Saving Item failed. Item: " + item + " // Task faulted with error: " + task.getError());
+                    }
                     res.setError(task.getError());
                 } else {
                     res.setCancelled();
@@ -205,6 +226,21 @@ public class Item extends ParseObject {
         });
     }
 
+
+    public static void setUserItemsStore(final Store store) {
+        ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
+        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+        query.findInBackground(new FindCallback<Item>() {
+            @Override
+            public void done(List<Item> objects, ParseException e) {
+                for (Item item : objects) {
+                    item.setStore(store);
+                    item.pinInBackground();
+                    item.saveEventually();
+                }
+            }
+        });
+    }
 
     public static Task<List<Item>> getUserItems(Context context) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();

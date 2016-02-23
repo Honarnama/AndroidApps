@@ -1,5 +1,6 @@
 package net.honarnama.core.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -169,6 +170,47 @@ public class Store extends ParseObject {
             }
         });
 
+        return tcs.getTask();
+    }
+
+
+    public static Task<Store> getStoreByOwner(final ParseUser parseUser) {
+        final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
+
+        final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);
+        parseQuery.whereEqualTo(OWNER, parseUser);
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "Getting store for owner from local datastore");
+            }
+            parseQuery.fromLocalDatastore();
+        } else {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                tcs.setError(new NetworkErrorException("Network connection failed"));
+                return tcs.getTask();
+            }
+        }
+
+        parseQuery.getFirstInBackground(new GetCallback<Store>() {
+            @Override
+            public void done(Store store, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(store);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        tcs.trySetResult(null);
+                    } else {
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
+                        } else {
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+                        }
+                        tcs.trySetError(e);
+                    }
+                }
+            }
+        });
         return tcs.getTask();
     }
 }

@@ -17,6 +17,7 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Item;
+import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -81,6 +82,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private String mCategoryId;
     private String mCategoryName;
 
+    public Store mStore = null;
     private boolean mFragmentHasView = false;
 
     private Tracker mTracker;
@@ -515,18 +517,38 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Category.getCategoryById(catId).continueWithTask(new Continuation<Category, Task<Item>>() {
+            Store.getStoreByOwner(HonarnamaUser.getCurrentUser()).continueWithTask(new Continuation<Store, Task<Category>>() {
                 @Override
-                public Task<Item> then(Task<Category> task) throws Exception {
-
+                public Task<Category> then(Task<Store> task) throws Exception {
                     if (task.isFaulted()) {
-                        sendingDataProgressDialog.dismiss();
+                        mDirty = true;
+                        if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
+                            sendingDataProgressDialog.dismiss();
+                        }
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         }
                         return Task.forError(task.getError());
                     } else {
-                        return Item.saveWithImages(mItem, title, description, task.getResult(), price, mItemImages);
+                        mStore = task.getResult();
+                        return Category.getCategoryById(catId);
+                    }
+                }
+            }).continueWithTask(new Continuation<Category, Task<Item>>() {
+                @Override
+                public Task<Item> then(Task<Category> task) throws Exception {
+
+                    if (task.isFaulted()) {
+                        mDirty = true;
+                        if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
+                            sendingDataProgressDialog.dismiss();
+                        }
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        }
+                        return Task.forError(task.getError());
+                    } else {
+                        return Item.saveWithImages(mItem, title, description, task.getResult(), price, mItemImages, mStore);
                     }
                 }
             }).continueWith(new Continuation<Item, Void>() {
@@ -553,6 +575,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         }
                     } else {
                         if (task.isFaulted()) {
+                            mDirty = true;
                             logE("Fault while saveItem. Error: " + task.getError(), "", task.getError());
                         } else {
                             if (BuildConfig.DEBUG) {

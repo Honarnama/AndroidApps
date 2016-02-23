@@ -19,6 +19,7 @@ import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -110,6 +111,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public static StoreInfoFragment mStoreInfoFragment;
 
     private Tracker mTracker;
+
+    public boolean mIsNew = true;
 
     @Override
     public String getTitle(Context context) {
@@ -564,10 +567,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 final Store storeObject;
                 if (e == null) {
                     storeObject = store;
+                    mIsNew = false;
                 } else {
                     if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                         storeObject = new Store();
                         storeObject.setOwner(HonarnamaUser.getCurrentUser());
+                        mIsNew = true;
                     } else {
                         mSendingDataProgressDialog.dismiss();
                         if (isVisible()) {
@@ -628,6 +633,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                                             Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
                                         }
                                         storeObject.pinInBackground();
+                                        if (mIsNew) {
+                                            Item.setUserItemsStore(storeObject);
+                                        }
                                     } else {
                                         logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
                                         try {
