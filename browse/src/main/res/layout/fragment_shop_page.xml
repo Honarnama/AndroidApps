@@ -61,7 +61,6 @@
                           android:layout_centerHorizontal="true"
                           android:layout_centerVertical="true"
                           android:background="@drawable/important_bar_background"
-                          android:textColor="@color/orange"
                           android:paddingTop="2dp"
                           android:paddingBottom="2dp"
                           android:paddingLeft="10dp"

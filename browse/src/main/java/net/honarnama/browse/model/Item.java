@@ -27,6 +27,7 @@ public class Item extends net.honarnama.core.model.Item {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.OWNER, owner);
+        parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
         parseQuery.include(Item.CATEGORY);
 
         parseQuery.findInBackground(new FindCallback<Item>() {
@@ -58,6 +59,7 @@ public class Item extends net.honarnama.core.model.Item {
     public static Task<List<Item>> getRandomItems() {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
         parseQuery.include(Item.CATEGORY);
 
         parseQuery.findInBackground(new FindCallback<Item>() {

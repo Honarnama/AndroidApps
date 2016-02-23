@@ -15,6 +15,7 @@ import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.utils.FileUtil;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
@@ -22,11 +23,18 @@ import net.honarnama.core.utils.ParseIO;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +58,8 @@ public class Item extends ParseObject {
     public static String IMAGE_2 = "image_2";
     public static String IMAGE_3 = "image_3";
     public static String IMAGE_4 = "image_4";
+    public static String THUMBNAIL = "thumbnail";
+
     public static String STATUS = "status";
     public static String OWNER = "owner";
     public static String STORE = "store";
@@ -132,12 +142,16 @@ public class Item extends ParseObject {
                                             final Category category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
+//        final ArrayList<ParseFile> parseFileThumbnails = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
 
+        int counter = 0;
         for (ImageSelector imageSelector : itemImages) {
+
             ParseFile parseFile = imageSelector.getParseFile();
             if (imageSelector.isChanged()) {
                 if (imageSelector.getFinalImageUri() != null) {
+                    counter++;
                     parseFile = ParseIO.getParseFileFromFile(
                             "image_" + imageSelector.getImageSelectorIndex() + ".jpeg",
                             new File(imageSelector.getFinalImageUri().getPath())
@@ -147,6 +161,16 @@ public class Item extends ParseObject {
                     }
                     parseFileImages.add(parseFile);
                     tasks.add(parseFile.saveInBackground());
+//                    if (counter == 1) {
+//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imageSelector.getFinalImageUri().getPath()), 120, 120);
+////                        thumbImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+////                        OutputStream outputStream = new FileOutputStream("thumbnail.jpeg");
+////                        stream.writeTo(outputStream);
+//                        ParseFile thumbParseFile = ParseIO.getParseFileFromFile("thumbnail.jpeg", FileUtil.convertBitmapToFile(thumbImage));
+//                        parseFileThumbnails.add(thumbParseFile);
+//                        tasks.add(thumbParseFile.saveInBackground());
+//                    }
                 } else {
                     parseFileImagesToRemove.add(parseFile);
                 }
@@ -196,6 +220,7 @@ public class Item extends ParseObject {
                     count++;
                     item.put("image_" + count, parseFile);
                 }
+//                item.put(THUMBNAIL, parseFileThumbnails.get(0));
                 return item.saveInBackground();
             }
         });

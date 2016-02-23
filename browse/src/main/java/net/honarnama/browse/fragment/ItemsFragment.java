@@ -1,9 +1,12 @@
 package net.honarnama.browse.fragment;
 
 
+import com.parse.ParseQueryAdapter;
+
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.ItemsAdapter;
+import net.honarnama.browse.adapter.ItemsParseAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.utils.WindowUtil;
 
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,36 +50,53 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
-        final TextView emptyListTextVie = (TextView) rootView.findViewById(R.id.empty_items_list_view);
-        mListView.setEmptyView(emptyListTextVie);
+        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
+        mListView.setEmptyView(emptyListContainer);
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
-        emptyListTextVie.setVisibility(View.GONE);
-        loadingCircle.setVisibility(View.VISIBLE);
 
-        Item.getRandomItems().continueWith(new Continuation<List<Item>, Object>() {
+//        Item.getRandomItems().continueWith(new Continuation<List<Item>, Object>() {
+//            @Override
+//            public Object then(Task<List<Item>> task) throws Exception {
+//                loadingCircle.setVisibility(View.GONE);
+//                emptyListTextVie.setVisibility(View.VISIBLE);
+//                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.no_item_found));
+//                if (task.isFaulted()) {
+//                    logE("Getting random items failed. Error: " + task.getError(), "", task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+//                    }
+//                } else {
+//                    List<Item> items = task.getResult();
+//                    mAdapter.addAll(items);
+//                    mAdapter.notifyDataSetChanged();
+//                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
+//                }
+//                return null;
+//            }
+//        });
+//
+//        mAdapter = new ItemsAdapter(getActivity());
+//        mListView.setAdapter(mAdapter);
+        final ItemsParseAdapter itemsParseAdapter = new ItemsParseAdapter(HonarnamaBrowseApp.getInstance());
+        itemsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
             @Override
-            public Object then(Task<List<Item>> task) throws Exception {
+            public void onLoading() {
+                loadingCircle.setVisibility(View.VISIBLE);
+                emptyListContainer.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoaded(List objects, Exception e) {
                 loadingCircle.setVisibility(View.GONE);
-                emptyListTextVie.setVisibility(View.VISIBLE);
-                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.no_item_found));
-                if (task.isFaulted()) {
-                    logE("Getting random items failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
-                    }
-                } else {
-                    List<Item> items = task.getResult();
-                    mAdapter.addAll(items);
-                    mAdapter.notifyDataSetChanged();
-                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
+
+                if (itemsParseAdapter.isEmpty()) {
+                    emptyListContainer.setVisibility(View.VISIBLE);
                 }
-                return null;
             }
         });
+        mListView.setAdapter(itemsParseAdapter);
 
-        mAdapter = new ItemsAdapter(getActivity());
-        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;
     }

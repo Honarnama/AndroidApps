@@ -76,7 +76,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.shops_listView);
-        listView.setEmptyView(rootView.findViewById(R.id.empty_items_list_view));
+        listView.setEmptyView(rootView.findViewById(R.id.empty_shops_list_view));
 
 //        final TextView emptyListTextView = (TextView) rootView.findViewById(R.id.empty_shops_list_view);
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);

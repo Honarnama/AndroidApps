@@ -73,36 +73,41 @@
                   android:textSize="14sp"
                 />
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_toLeftOf="@id/item_row_image_container"
                         android:layout_below="@id/item_row_desc"
-                        android:gravity="center_vertical|right"
-                        android:layout_alignBottom="@id/item_row_image_container"
+                        android:layout_alignParentBottom="true"
                 >
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical|right"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"
+                    >
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/item_row_cat"
-                    style="@style/tiny_text_view"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/text_bar_back"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="30dp"
-                    android:gravity="right|center_vertical"
-                    />
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/hierarchy"
-                    android:id="@+id/item_cat_icon"
-                    android:gravity="right|center_vertical"
-                    android:layout_centerVertical="true"
-                    />
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/item_row_cat"
+                        style="@style/tiny_text_view"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/text_bar_back"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="30dp"
+                        android:gravity="right|center_vertical"
+                        />
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/hierarchy"
+                        android:id="@+id/item_cat_icon"
+                        android:gravity="right|center_vertical"
+                        android:layout_centerVertical="true"
+                        />
+            </RelativeLayout>
         </RelativeLayout>
-
     </RelativeLayout>
 </RelativeLayout>
