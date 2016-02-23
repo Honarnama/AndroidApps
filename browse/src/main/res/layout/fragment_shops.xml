@@ -5,6 +5,7 @@
         android:layoutDirection="rtl"
         android:id="@+id/items_container"
         android:orientation="vertical"
+        android:background="@color/gray_extra_light"
         >
 
     <LinearLayout

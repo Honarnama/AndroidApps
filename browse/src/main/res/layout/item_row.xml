@@ -73,25 +73,36 @@
                   android:textSize="14sp"
                 />
 
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                app:iiv_color="@color/extra_dark_green"
-                app:iiv_icon="gmd-list"
-                android:paddingBottom="10dp"
-                android:layout_toLeftOf="@id/item_row_image_container"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/item_cat_icon"
-                />
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/item_row_image_container"
+                        android:layout_below="@id/item_row_desc"
+                        android:gravity="center_vertical|right"
+                        android:layout_alignBottom="@id/item_row_image_container"
+                >
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  style="@style/tiny_text_view"
-                  android:id="@+id/item_row_cat"
-                  android:layout_alignParentBottom="true"
-                  android:paddingBottom="5dp"
-                  android:layout_below="@id/item_row_desc"
-                  android:layout_toLeftOf="@id/item_cat_icon"
-                />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_row_cat"
+                    style="@style/tiny_text_view"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/text_bar_back"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="30dp"
+                    android:gravity="right|center_vertical"
+                    />
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/hierarchy"
+                    android:id="@+id/item_cat_icon"
+                    android:gravity="right|center_vertical"
+                    android:layout_centerVertical="true"
+                    />
+        </RelativeLayout>
 
     </RelativeLayout>
 </RelativeLayout>

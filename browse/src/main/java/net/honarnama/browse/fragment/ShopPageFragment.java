@@ -113,8 +113,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
-        final RelativeLayout emptyListContainere = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
-        mListView.setEmptyView(emptyListContainere);
+        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
@@ -135,7 +134,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
-        emptyListContainere.setVisibility(View.GONE);
+        emptyListContainer.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
 
         Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
@@ -197,7 +196,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
                 loadingCircle.setVisibility(View.GONE);
-                emptyListContainere.setVisibility(View.VISIBLE);
+                mListView.setEmptyView(emptyListContainer);
+                emptyListContainer.setVisibility(View.VISIBLE);
                 if (task.isFaulted()) {
                     logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
