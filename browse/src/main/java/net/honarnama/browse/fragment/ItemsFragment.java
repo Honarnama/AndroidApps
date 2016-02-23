@@ -96,7 +96,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
         });
         mListView.setAdapter(itemsParseAdapter);
-
         mListView.setOnItemClickListener(this);
         return rootView;
     }

@@ -59,6 +59,7 @@ public class Item extends ParseObject {
     public static String IMAGE_3 = "image_3";
     public static String IMAGE_4 = "image_4";
     public static String THUMBNAIL = "thumbnail";
+    public static String VALIDITY_CHECKED = "validity_checked";
 
     public static String STATUS = "status";
     public static String OWNER = "owner";

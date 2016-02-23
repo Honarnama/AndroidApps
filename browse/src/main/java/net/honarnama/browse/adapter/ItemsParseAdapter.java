@@ -28,7 +28,6 @@ import bolts.TaskCompletionSource;
  * Created by elnaz on 2/23/16.
  */
 public class ItemsParseAdapter extends ParseQueryAdapter {
-
     public ItemsParseAdapter(Context context) {
         // Use the QueryFactory to construct a PQA that will only show
         // Todos marked as high-pri
@@ -37,6 +36,7 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
             public ParseQuery create() {
                 ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
                 parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
+                parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
                 parseQuery.include(Item.CATEGORY);
                 return parseQuery;
             }

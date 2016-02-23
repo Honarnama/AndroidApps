@@ -44,6 +44,7 @@
                     android:adjustViewBounds="true"
                     app:riv_border_width="1dp"
                     app:riv_border_color="@color/gray_light"
+                    android:src="@drawable/camera_insta"
                     />
         </RelativeLayout>
 
@@ -83,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|right"
                             android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="10dp"
                     >
 
                 <TextView
