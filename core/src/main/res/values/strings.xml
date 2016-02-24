@@ -225,6 +225,9 @@
     </string>
     <string name="hornama">هنرنما</string>
     <string name="error_displaying_shop">خطا در نمایش غرفه.</string>
-
     <string name="art_event">رویداد هنری</string>
+
+    <string name="status_label">وضعیت:</string>
+    <string name="active">فعال</string>
+    <string name="passive">غیرفعال</string>
 </resources>

@@ -102,6 +102,7 @@
                         android:id="@+id/event_not_verified_notif_container"
                         android:layout_below="@id/event_banner_container"
                         android:visibility="gone"
+                        android:layout_marginTop="10dp"
                 >
 
             <TextView
@@ -200,9 +201,62 @@
                 style="@style/bordered_multiline_edit_text"
                 />
 
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/event_description_edit_text"
+                        android:id="@+id/event_status_container"
+                >
+
+            <TextView style="@style/default_text_view"
+                      android:text="@string/status_label"
+                      android:id="@+id/status_label"
+                      android:layout_centerVertical="true"
+                      android:editable="false"
+                      android:cursorVisible="false"
+                      android:focusable="false"
+                      android:clickable="false"
+                      android:textStyle="bold"
+                    />
+
+            <RadioGroup android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_toLeftOf="@id/status_label"
+                        android:layout_marginRight="16dp"
+                        android:layout_centerVertical="true"
+                    >
+
+                <RadioButton
+                        android:id="@+id/active_event"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/active"
+                        android:textSize="16sp"
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button_image"
+                        android:checked="true"
+                        android:textColor="@color/text_color"/>
+                <RadioButton
+                        android:id="@+id/passive_event"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/passive"
+                        android:layout_marginRight="10dp"
+                        android:textSize="16sp"
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button_image"
+                        android:textColor="@color/text_color"
+                        android:checked="false"
+                        />
+            </RadioGroup>
+        </RelativeLayout>
+
         <TextView style="@style/section_title"
                   android:text="@string/contact_info"
-                  android:layout_below="@id/event_description_edit_text"
+                  android:layout_below="@id/event_status_container"
                   android:layout_marginTop="20dp"
                   android:id="@+id/event_contact_title"
                   android:layout_width="match_parent"

@@ -52,6 +52,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +78,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private EditText mCellNumberEditText;
     private Button mRegisterEventButton;
     private ImageSelector mBannerImageView;
+
+    private RadioButton mActive;
+    private RadioButton mPassive;
 
     private ObservableScrollView mScrollView;
 
@@ -164,6 +168,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.event_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.event_cell_number);
 
+        mActive = (RadioButton) rootView.findViewById(R.id.active_event);
+        mPassive = (RadioButton) rootView.findViewById(R.id.passive_event);
+
+        mActive.setOnClickListener(this);
+        mPassive.setOnClickListener(this);
+
+
         mStatusBarTextView = (TextView) rootView.findViewById(R.id.event_status_bar_text_view);
         mEventNotVerifiedNotif = (RelativeLayout) rootView.findViewById(R.id.event_not_verified_notif_container);
 
@@ -218,6 +229,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mDescriptionEditText.setText("");
             mPhoneNumberEditText.setText("");
             mCellNumberEditText.setText("");
+
+            mActive.setChecked(true);
+            mPassive.setChecked(false);
 
             mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
             mSelectedCityId = City.DEFAULT_CITY_ID;
@@ -527,12 +541,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 Toast.makeText(getActivity(), getString(R.string.error_updating_event_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                             }
                         } else {
+                            eventObject.setActive(mActive.isChecked());
                             eventObject.setCity(task.getResult());
                             eventObject.setName(mNameEditText.getText().toString().trim());
                             eventObject.setDescription(mDescriptionEditText.getText().toString().trim());
                             eventObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
                             eventObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
-
 
                             if (mBannerImageView.isDeleted()) {
                                 eventObject.remove(Event.BANNER);
@@ -610,6 +624,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 } else {
                     Event event = task.getResult();
                     if (event != null) {
+
+                        mActive.setChecked(event.getActive());
+                        mPassive.setChecked(!event.getActive());
+
                         mNameEditText.setText(event.getName());
                         mDescriptionEditText.setText(event.getDescription());
 
