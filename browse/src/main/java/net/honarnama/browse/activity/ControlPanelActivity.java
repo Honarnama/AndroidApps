@@ -32,14 +32,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import bolts.Task;
-import bolts.TaskCompletionSource;
-
-import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
-import static net.honarnama.browse.widget.MainTabBar.DUMMY_TAB_SHOP_PAGE;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
 
@@ -143,8 +139,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case TAB_HOME:
                 mViewPager.setCurrentItem(TAB_HOME, false);
                 break;
-            case TAB_CATS:
-                mViewPager.setCurrentItem(TAB_CATS, false);
+            case TAB_EVENTS:
+                mViewPager.setCurrentItem(TAB_EVENTS, false);
                 break;
             case TAB_SHOPS:
                 mViewPager.setCurrentItem(TAB_SHOPS, false);

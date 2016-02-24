@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +25,9 @@ public class MainTabBar extends LinearLayout {
 
     public static final int TAB_HOME = 0;
 
-    public static final int TAB_CATS = 1;
+    public static final int TAB_SHOPS = 1;
 
-    public static final int TAB_SHOPS = 2;
+    public static final int TAB_EVENTS = 2;
 
     public static final int TAB_FAVS = 3;
 
@@ -70,23 +69,23 @@ public class MainTabBar extends LinearLayout {
                         .icon(GoogleMaterial.Icon.gmd_home)
                         .color(Color.RED)
                         .sizeDp(20), R.string.main_page);
-        Tab catsTab = new Tab(Integer.valueOf(TAB_CATS),
-                new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_list)
-                        .color(Color.RED)
-                        .sizeDp(20), R.string.categories);
         Tab shopsTab = new Tab(Integer.valueOf(TAB_SHOPS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_store)
                         .color(Color.RED)
                         .sizeDp(20), R.string.shops);
+        Tab eventsTab = new Tab(Integer.valueOf(TAB_EVENTS),
+                new IconicsDrawable(mContext)
+                        .icon(GoogleMaterial.Icon.gmd_event)
+                        .color(Color.RED)
+                        .sizeDp(20), R.string.events);
         Tab favsTab = new Tab(Integer.valueOf(TAB_FAVS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_favorite)
                         .color(Color.RED)
                         .sizeDp(20), R.string.favorites);
         setTabs(new MainTabBar.Tab[]{
-                homeTab, catsTab, shopsTab, favsTab
+                homeTab, shopsTab, eventsTab, favsTab
         }, TAB_HOME);
     }
 
@@ -186,7 +185,7 @@ public class MainTabBar extends LinearLayout {
     public void deselectAllTabs() {
         mSelectedTabTag = null;
         deselectTabView(findViewWithTag(TAB_HOME));
-        deselectTabView(findViewWithTag(TAB_CATS));
+        deselectTabView(findViewWithTag(TAB_EVENTS));
         deselectTabView(findViewWithTag(TAB_SHOPS));
         deselectTabView(findViewWithTag(TAB_FAVS));
     }

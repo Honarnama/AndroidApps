@@ -28,6 +28,7 @@ public class Item extends net.honarnama.core.model.Item {
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.OWNER, owner);
         parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
         parseQuery.include(Item.CATEGORY);
 
         parseQuery.findInBackground(new FindCallback<Item>() {

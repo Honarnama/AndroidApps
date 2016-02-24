@@ -13,7 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.honarnama.browse.widget.MainTabBar.TAB_CATS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
@@ -27,7 +27,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
     public MainFragmentAdapter(FragmentManager fm) {
         super(fm);
         fragmentsList.add(ChildFragment.getInstance(TAB_HOME));
-        fragmentsList.add(ChildFragment.getInstance(TAB_CATS));
+        fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
         fragmentsList.add(ChildFragment.getInstance(TAB_FAVS));
     }
@@ -55,7 +55,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
             case TAB_HOME:
                 return ItemsFragment.getInstance();
 
-            case TAB_CATS:
+            case TAB_EVENTS:
                 return CatsFragment.getInstance();
 
             case TAB_SHOPS:

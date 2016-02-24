@@ -9,10 +9,7 @@ import com.parse.ParseQueryAdapter;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.ItemsParseAdapter;
-import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.adapter.ShopsParseAdapter;
-import net.honarnama.browse.model.Shop;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
@@ -27,14 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.security.acl.Owner;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 
 public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {

@@ -229,7 +229,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             sendIntent.putExtra(Intent.EXTRA_SUBJECT,
                     getString(R.string.art_shop) + " " + mShopName.getText());
             sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "غرفه هنری " + mShopName.getText() + " تو برنامه هنرما رو ببین: " +
-                    "\n" + "http://honarnama.net/shop/" + mShopId);
+                    "\n" + "http://www.honarnama.net/shop/" + mShopId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }
