@@ -6,7 +6,7 @@
         android:fadeScrollbars="false"
         android:scrollbarThumbVertical="@drawable/custom_scrollbar"
         android:layoutDirection="rtl"
-        android:id="@+id/store_fragment_scroll_view"
+        android:id="@+id/event_manager_scroll_view"
         >
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -19,17 +19,17 @@
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/store_banner_container"
+                        android:id="@+id/event_banner_container"
                 >
 
             <FrameLayout
-                    android:id="@+id/store_banner_frame_layout"
+                    android:id="@+id/event_banner_frame_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 <com.parse.ImageSelector
                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/store_banner_image_view"
+                        android:id="@+id/event_banner_image_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -67,16 +67,16 @@
                       android:paddingTop="5dp"
                       android:background="@drawable/label"
                       android:textColor="@color/white"
-                      android:text="@string/change_banner"
+                      android:text="@string/change_event_banner"
                       android:layout_centerHorizontal="true"
                       android:layout_alignParentTop="true"
                       android:layout_marginTop="20dp"
-                      android:id="@+id/change_store_banner_text_view"
+                      android:id="@+id/change_event_banner_text_view"
                       android:textSize="14sp"
                     />
 
             <TextView
-                    android:id="@+id/store_status_bar_text_view"
+                    android:id="@+id/event_status_bar_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/default_text_view"
@@ -97,69 +97,16 @@
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/store_logo_container"
-                        android:layout_below="@id/store_banner_container"
-                        android:layout_marginTop="-50dp"
-                >
-
-            <com.parse.ImageSelector
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/store_logo_image_view"
-                    android:src="@drawable/default_logo_hand"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="fitCenter"
-                    app:riv_corner_radius="20dip"
-                    app:riv_border_width="4dip"
-                    app:riv_border_color="@color/gray_extra_light"
-                    app:riv_oval="true"
-                    app:outputX="480"
-                    app:outputY="480"
-                    android:scaleX="1"
-                    android:scaleY="1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentTop="true"
-                    app:removable="true"
-                    app:imageSelectorIndex="2"
-                    />
-
-            <ProgressBar
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    style="@style/GenericProgressIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitCenter"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@android:color/transparent"
-                    android:id="@+id/logo_progress_bar"
-                    android:visibility="gone"
-                    />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:paddingRight="10dp"
-                      android:paddingLeft="10dp"
-                      android:paddingBottom="5dp"
-                      android:paddingTop="5dp"
-                      android:background="@drawable/label"
-                      android:textColor="@color/white"
-                      android:text="@string/change_logo"
-                      android:layout_centerInParent="true"
-                      android:textSize="14sp"
-                    />
-        </RelativeLayout>
-
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:background="@drawable/important_bar_background"
                         android:layout_marginRight="16dp"
-                        android:id="@+id/store_not_verified_notif_container"
-                        android:layout_below="@id/store_logo_container"
+                        android:id="@+id/event_not_verified_notif_container"
+                        android:layout_below="@id/event_banner_container"
                         android:visibility="gone"
                 >
 
             <TextView
                     style="@style/tiny_text_view"
-                    android:text="@string/store_not_confirmed"
+                    android:text="@string/event_not_confirmed"
                     android:textColor="@color/orange"
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
@@ -169,7 +116,7 @@
                     android:layout_marginRight="5dp"
                     />
             <com.mikepenz.iconics.view.IconicsImageView
-                    android:id="@+id/store_not_verified_notif_image"
+                    android:id="@+id/event_not_verified_notif_image"
                     android:layout_centerVertical="true"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -180,10 +127,10 @@
         </RelativeLayout>
 
         <EditText
-                android:hint="@string/store_name"
-                android:layout_below="@id/store_not_verified_notif_container"
+                android:hint="@string/event_name"
+                android:layout_below="@id/event_not_verified_notif_container"
                 android:layout_marginTop="10dp"
-                android:id="@+id/store_name_edit_text"
+                android:id="@+id/event_name_edit_text"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
@@ -195,7 +142,7 @@
                       android:layout_marginRight="16dp"
                       android:layout_marginLeft="16dp"
                       android:layout_marginTop="10dp"
-                      android:layout_below="@id/store_name_edit_text"
+                      android:layout_below="@id/event_name_edit_text"
                 >
             <TextView style="@style/default_text_view"
                       android:text="@string/provine_select_title"
@@ -209,7 +156,7 @@
                     />
             <EditText
                     android:hint="@string/province"
-                    android:id="@+id/store_province_edit_text"
+                    android:id="@+id/event_province_edit_text"
                     style="@style/bordered_edit_text"
                     android:layout_marginRight="16dp"
                     />
@@ -236,7 +183,7 @@
                     />
             <EditText
                     android:hint="@string/city"
-                    android:id="@+id/store_city_edit_text"
+                    android:id="@+id/event_city_edit_text"
                     style="@style/bordered_edit_text"
                     android:layout_marginRight="16dp"
                     />
@@ -245,7 +192,7 @@
 
         <EditText
                 android:layout_below="@id/city_container"
-                android:id="@+id/store_description_edit_text"
+                android:id="@+id/event_description_edit_text"
                 android:hint="@string/description_hint"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
@@ -255,16 +202,16 @@
 
         <TextView style="@style/section_title"
                   android:text="@string/contact_info"
-                  android:layout_below="@id/store_description_edit_text"
+                  android:layout_below="@id/event_description_edit_text"
                   android:layout_marginTop="20dp"
-                  android:id="@+id/store_contact_title"
+                  android:id="@+id/event_contact_title"
                   android:layout_width="match_parent"
                 />
         <EditText
                 android:hint="@string/phone_hint"
-                android:layout_below="@id/store_contact_title"
+                android:layout_below="@id/event_contact_title"
                 android:layout_marginTop="10dp"
-                android:id="@+id/store_phone_number"
+                android:id="@+id/event_phone_number"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
@@ -274,9 +221,9 @@
 
         <EditText
                 android:hint="@string/mobile_number_hint"
-                android:layout_below="@id/store_phone_number"
+                android:layout_below="@id/event_phone_number"
                 android:layout_marginTop="10dp"
-                android:id="@+id/store_cell_number"
+                android:id="@+id/event_cell_number"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
@@ -286,9 +233,9 @@
 
 
         <Button
-                android:id="@+id/register_store_button"
+                android:id="@+id/register_event_button"
                 android:text="@string/apply_changes"
-                android:layout_below="@id/store_cell_number"
+                android:layout_below="@id/event_cell_number"
                 style="@style/sell_full_width_button"
                 />
 

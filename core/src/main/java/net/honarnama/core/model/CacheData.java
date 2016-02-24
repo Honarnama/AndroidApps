@@ -115,6 +115,22 @@ public class CacheData extends HonarnamaBaseModel {
                     }
                 });
             }
+        }).continueWithTask(new Continuation<Object, Task<Object>>() {
+            @Override
+            public Task<Object> then(Task<Object> task) throws Exception {
+                return cacheUserEvent().continueWith(new Continuation<Event, Object>() {
+                    @Override
+                    public Object then(Task<Event> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false);
+                            logE("Caching Event Task Failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
+                        } else {
+                            mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, true);
+                        }
+                        return null;
+                    }
+                });
+            }
         }).continueWithTask(new Continuation<Object, Task<Void>>() {
             @Override
             public Task<Void> then(Task<Object> task) throws Exception {
@@ -140,6 +156,7 @@ public class CacheData extends HonarnamaBaseModel {
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)
                         ) {
                     mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, true);
@@ -359,6 +376,74 @@ public class CacheData extends HonarnamaBaseModel {
         });
         return tcs.getTask();
     }
+
+
+
+    public Task<Event> cacheUserEvent() {
+        final TaskCompletionSource<Event> tcs = new TaskCompletionSource<>();
+        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
+        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+            tcs.trySetError(new NetworkErrorException("No Network connection"));
+            return tcs.getTask();
+        }
+
+        query.getFirstInBackground(new GetCallback<Event>() {
+            @Override
+            public void done(final Event event, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(event);
+
+                    final List<Event> tempEventList = new ArrayList<Event>() {{
+                        add(event);
+                    }};
+
+                    ParseObject.unpinAllInBackground(Event.OBJECT_NAME, tempEventList, new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                ParseObject.pinAllInBackground(Event.OBJECT_NAME, tempEventList, new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if (e == null) {
+                                                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, true);
+                                                    editor.commit();
+                                                } else {
+                                                    tcs.trySetError(e);
+                                                }
+                                            }
+                                        }
+                                );
+                            } else {
+                                tcs.trySetError(e);
+                            }
+                        }
+                    });
+
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            logD("Caching user event result: User does not have any event yet. Error: " + e);
+                        }
+
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, true);
+                        editor.commit();
+                        tcs.setResult(null);
+                    } else {
+                        logE("Caching event task failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error: " + e, "", e);
+                        tcs.trySetError(e);
+                    }
+
+                }
+
+            }
+        });
+        return tcs.getTask();
+    }
+
 
     public Task<Void> cacheUserItems() {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();

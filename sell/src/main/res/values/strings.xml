@@ -1,6 +1,6 @@
 <resources
-        tools:ignore="MissingTranslation"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="MissingTranslation">
     <string name="title_activity_control_panel">ControlPanel</string>
 
     <string name="hello_world">Hello world!</string>
@@ -23,7 +23,7 @@
 
     <string name="nav_title_seller_account">حساب کاربری</string>
     <string name="nav_title_store_info">مشخصات فروشگاه</string>
-
+    <string name="nav_title_event_manager">مدیریت رویداد هنری</string>
     <string name="nav_title_items">محصولات</string>
     <string name="register_new_item">ثبت محصول جدید</string>
     <string name="nav_title_edit_item">ویرایش محصول</string>
@@ -80,10 +80,13 @@
     </string>
     <string name="getting_items">در حال گرفتن فهرست محصولات...</string>
     <string name="change_banner">تغییر بنر فروشگاه</string>
+    <string name="change_event_banner">تغییر بنر رویداد</string>
     <string name="waiting_to_be_confirmed">منتظر تایید ناظر</string>
     <string name="change_logo">تغییر لوگو</string>
     <string name="store_not_confirmed">فروشگاه شما تایید نشد.</string>
+    <string name="event_not_confirmed">رویداد هنری شما تایید نشد.</string>
     <string name="store_name">نام فروشگاه</string>
+    <string name="event_name">نام رویداد</string>
     <string name="provine_select_title">استان:</string>
     <string name="description_hint">توضیحات</string>
     <string name="phone_hint">شماره تلفن ثابت - مثال 34567890-021</string>
@@ -94,6 +97,37 @@
     <string name="switch_app">برنامه‌ی خریداران</string>
     <string name="password_is_short">رمز عبور بایستی بیشتر از ۶ حرف باشد.</string>
     <string name="store_desc_cant_be_empty">توضیحات فروشگاه نمی‌تواند خالی باشد.</string>
+    <string name="error_event_name_cant_be_empty">نام رویداد نمی‌تواند خالی باشد.</string>
+    <string name="error_event_province_not_set">لطفا استان رویداد را انتخاب کنید.</string>
+    <string name="error_event_city_not_set">لطفا شهر رویداد را انتخاب کنید.</string>
+    <string name="error_event_desc_cant_be_empty">توضیحات رویداد نمی‌تواند خالی باشد.</string>
+    <string name="event_name_already_exists">نام رویداد تکراری است.</string>
+    <string name="you_own_another_event_or_u_r_not_the_right_owner">شما در حال حاضر رویداد دیگری ثبت
+        کرده‌اید یا صاحب این رویداد نیستید.
+    </string>
+    <string name="saving_event_info_failed">
+        ذخیره رویداد با خطا مواجه شد.
+    </string>
+
+    <string name="getting_event_info_failed">
+        خطا در دریافت اطلاعات رویداد.
+    </string>
+
+    <string name="error_displaying_event_banner">
+خطا در نمایش بنر رویداد.
+    </string>
+
+    <string name="error_updating_event_info">
+        خطا در به‌روزرسانی اطلاعات رویداد.
+    </string>
+
+    <string name="successfully_saved_event_info">
+        اطلاعات رویداد با موفقیت ذخیره شد.
+    </string>
+
+    <string name="successfully_changed_event_info">
+        اطلاعات رویداد با موفقیت ویرایش شد.
+    </string>
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_title_seller_account</item>

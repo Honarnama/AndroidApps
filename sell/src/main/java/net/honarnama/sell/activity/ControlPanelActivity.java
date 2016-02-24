@@ -28,6 +28,7 @@ import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.AboutFragment;
 import net.honarnama.sell.fragments.ContactFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
+import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
 import net.honarnama.sell.fragments.StoreInfoFragment;
@@ -67,13 +68,15 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
     public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_CONTACT = 5;
-    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 6;
-    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 7;
-    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 8;
-    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 9;
-    public static final int DRAWER_ITEM_IDENTIFIER_SWITCH_APP = 10;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 11;
+    public static final int DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER= 5;
+
+    public static final int DRAWER_ITEM_IDENTIFIER_CONTACT = 6;
+    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 7;
+    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 8;
+    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 9;
+    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 10;
+    public static final int DRAWER_ITEM_IDENTIFIER_SWITCH_APP = 11;
+    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 12;
 
 
     private Toolbar mToolbar;
@@ -144,6 +147,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
                         new SecondaryDrawerItem().withName(R.string.register_new_item).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
+                        new SecondaryDrawerItem().withName(R.string.art_event).
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER).withIcon(GoogleMaterial.Icon.gmd_event),
                         new DividerDrawerItem().withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.contact_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(GoogleMaterial.Icon.gmd_email),
@@ -318,6 +323,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
             case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
                 fragment = EditItemFragment.getInstance();
+                break;
+            case DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER:
+                fragment = EventManagerFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_ABOUT:
                 fragment = AboutFragment.getInstance();
