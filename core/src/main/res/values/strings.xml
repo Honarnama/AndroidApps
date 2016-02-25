@@ -202,7 +202,7 @@
     <string name="error_stablishing_connection">خطا در برقراری ارتباط</string>
     <string name="retry">تلاش مجدد</string>
     <string name="province">استان</string>
-    <string name="city_select">شهر:</string>
+    <string name="city_label">شهر:</string>
     <string name="city">شهر</string>
     <string name="contact_info">اطلاعات تماس</string>
     <string name="rules">قوانین</string>

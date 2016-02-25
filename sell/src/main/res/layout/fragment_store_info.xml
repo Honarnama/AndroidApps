@@ -206,7 +206,7 @@
                       android:layout_below="@id/store_name_edit_text"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="@string/provine_select_title"
+                      android:text="@string/provine_label"
                       android:layout_centerVertical="true"
                       android:id="@+id/provinces_text_view"
                       android:editable="false"
@@ -233,7 +233,7 @@
                       android:layout_below="@id/provinces_container"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="@string/city_select"
+                      android:text="@string/city_label"
                       android:layout_centerVertical="true"
                       android:id="@+id/city_text_view"
                       android:editable="false"

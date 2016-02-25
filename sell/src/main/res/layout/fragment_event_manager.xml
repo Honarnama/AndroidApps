@@ -154,7 +154,7 @@
                       android:layout_below="@id/event_name_edit_text"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="@string/provine_select_title"
+                      android:text="@string/provine_label"
                       android:layout_centerVertical="true"
                       android:id="@+id/provinces_text_view"
                       android:editable="false"
@@ -162,12 +162,12 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
+                      android:layout_width="60dp"
                     />
             <EditText
                     android:hint="@string/province"
                     android:id="@+id/event_province_edit_text"
                     style="@style/bordered_edit_text"
-                    android:layout_marginRight="16dp"
                     />
         </LinearLayout>
 
@@ -181,7 +181,7 @@
                       android:layout_below="@id/provinces_container"
                 >
             <TextView style="@style/default_text_view"
-                      android:text="@string/city_select"
+                      android:text="@string/city_label"
                       android:layout_centerVertical="true"
                       android:id="@+id/city_text_view"
                       android:editable="false"
@@ -189,12 +189,12 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
+                      android:layout_width="60dp"
                     />
             <EditText
                     android:hint="@string/city"
                     android:id="@+id/event_city_edit_text"
                     style="@style/bordered_edit_text"
-                    android:layout_marginRight="16dp"
                     />
         </LinearLayout>
 
@@ -238,6 +238,7 @@
                       android:focusable="false"
                       android:clickable="false"
                       android:textStyle="bold"
+                      android:layout_width="60dp"
                     />
 
             <RadioGroup android:layout_width="wrap_content"
@@ -245,7 +246,6 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_toLeftOf="@id/status_label"
-                        android:layout_marginRight="16dp"
                         android:layout_centerVertical="true"
                     >
 
