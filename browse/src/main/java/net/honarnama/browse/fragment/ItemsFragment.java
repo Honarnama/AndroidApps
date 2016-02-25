@@ -1,12 +1,15 @@
 package net.honarnama.browse.fragment;
 
 
+import com.parse.ParseObject;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ItemsParseAdapter;
+import net.honarnama.browse.adapter.ShopsParseAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.utils.WindowUtil;
 
@@ -35,7 +38,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
 
-    private ItemsAdapter mAdapter;
+    ItemsParseAdapter mItemsParseAdapter;
 
 
     public synchronized static ItemsFragment getInstance() {
@@ -78,8 +81,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //
 //        mAdapter = new ItemsAdapter(getActivity());
 //        mListView.setAdapter(mAdapter);
-        final ItemsParseAdapter itemsParseAdapter = new ItemsParseAdapter(HonarnamaBrowseApp.getInstance());
-        itemsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
+        mItemsParseAdapter = new ItemsParseAdapter(HonarnamaBrowseApp.getInstance());
+        mItemsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
             @Override
             public void onLoading() {
                 loadingCircle.setVisibility(View.VISIBLE);
@@ -90,12 +93,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             public void onLoaded(List objects, Exception e) {
                 loadingCircle.setVisibility(View.GONE);
 
-                if (itemsParseAdapter.isEmpty()) {
+                if (mItemsParseAdapter.isEmpty()) {
                     emptyListContainer.setVisibility(View.VISIBLE);
                 }
             }
         });
-        mListView.setAdapter(itemsParseAdapter);
+        mListView.setAdapter(mItemsParseAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;
     }
@@ -122,8 +125,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position);
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }
 }
 

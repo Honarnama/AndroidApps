@@ -64,6 +64,7 @@ public class Item extends ParseObject {
     public static String STATUS = "status";
     public static String OWNER = "owner";
     public static String STORE = "store";
+    public static String OBJECT_ID = "objectId";
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;

@@ -7,6 +7,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
+import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
@@ -48,6 +49,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private int mActiveTab;
     private MainTabBar mMainTabBar;
     private String mShopId;
+    private String mItemId;
     public TextView mTitle;
 
     @Override
@@ -126,9 +128,23 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mTitle.setText(R.string.art_shop);
     }
 
+    public void displayItemPage(String itemId, boolean isExternal)
+    {
+        setItemId(itemId);
+        switchFragment(ItemPageFragment.getInstance(itemId), isExternal);
+
+        //TODO SET ITEM CATEGORY AS TITLE
+//        mTitle.setText();
+    }
+
     public void setShopId(String shopId) {
         mShopId = shopId;
     }
+
+    public void setItemId(String itemId) {
+        mItemId = itemId;
+    }
+
 
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {

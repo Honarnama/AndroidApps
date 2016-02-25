@@ -1,0 +1,42 @@
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+        android:id="@+id/fragment_scroll_view"
+        >
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+        <include layout="@layout/item_page_header"
+                 android:id="@+id/header_layout"></include>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        android:background="@color/gray_extra_light"
+                        android:layoutDirection="rtl"
+                        android:layout_below="@id/header_layout"
+                >
+            <LinearLayout
+                    android:id="@+id/loading_circle_container"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_margin="5dp"
+                    >
+                <ProgressBar
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</net.honarnama.core.utils.ObservableScrollView>
