@@ -211,9 +211,11 @@
     <string name="share_us">معرفی به دوستان</string>
     <string name="contact_us">تماس با ما</string>
 
-    <string name="contact_text">      در صورت بروز هرگونه مشکل و یا برای ارائه‌ی پیشنهادات و انتقادات خود، با تیم پشتیبانی هنرنما از طریق پر کردن فرم زیر و ارسال آن یا فرستادن ایمیل به آدرس
- <a href="mailto:support@honarnama.net">salam@honarnama.net</a>
-        در ارتباط باشید.</string>
+    <string name="contact_text">در صورت بروز هرگونه مشکل و یا برای ارائه‌ی پیشنهادات و انتقادات خود،
+        با تیم پشتیبانی هنرنما از طریق پر کردن فرم زیر و ارسال آن یا فرستادن ایمیل به آدرس
+        <a href="mailto:support@honarnama.net">salam@honarnama.net</a>
+        در ارتباط باشید.
+    </string>
     <string name="contact_no">شماره تماس</string>
     <string name="contact_body">متن پیام</string>
     <string name="contact_sent_successfully">پیام شما با موفقیت ارسال شد. با تشکر.</string>
@@ -226,8 +228,11 @@
     <string name="hornama">هنرنما</string>
     <string name="error_displaying_shop">خطا در نمایش غرفه.</string>
     <string name="art_event">رویداد هنری</string>
-
+    <string name="event_address">
+        آدرس رویداد
+    </string>
     <string name="status_label">وضعیت:</string>
     <string name="active">فعال</string>
     <string name="passive">غیرفعال</string>
+    <string name="event_info">مشخصات رویداد</string>
 </resources>

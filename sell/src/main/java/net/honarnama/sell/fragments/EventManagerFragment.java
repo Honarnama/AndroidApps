@@ -73,6 +73,7 @@ import bolts.TaskCompletionSource;
 public class EventManagerFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
     private EditText mNameEditText;
+    private EditText mAddressEditText;
     private EditText mDescriptionEditText;
     private EditText mPhoneNumberEditText;
     private EditText mCellNumberEditText;
@@ -164,6 +165,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mSendingDataProgressDialog = new ProgressDialog(getActivity());
 
         mNameEditText = (EditText) rootView.findViewById(R.id.event_name_edit_text);
+        mAddressEditText = (EditText) rootView.findViewById(R.id.event_address_edit_text);
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.event_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.event_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.event_cell_number);
@@ -229,6 +231,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mDescriptionEditText.setText("");
             mPhoneNumberEditText.setText("");
             mCellNumberEditText.setText("");
+            mAddressEditText.setText("");
 
             mActive.setChecked(true);
             mPassive.setChecked(false);
@@ -240,6 +243,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mCityEditEext.setText(City.DEFAULT_CITY_NAME);
 
             mNameEditText.setError(null);
+            mAddressEditText.setError(null);
             mDescriptionEditText.setError(null);
             mPhoneNumberEditText.setError(null);
             mCellNumberEditText.setError(null);
@@ -544,6 +548,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             eventObject.setActive(mActive.isChecked());
                             eventObject.setCity(task.getResult());
                             eventObject.setName(mNameEditText.getText().toString().trim());
+                            eventObject.setAddress(mAddressEditText.getText().toString().trim());
                             eventObject.setDescription(mDescriptionEditText.getText().toString().trim());
                             eventObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
                             eventObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
@@ -629,6 +634,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         mPassive.setChecked(!event.getActive());
 
                         mNameEditText.setText(event.getName());
+                        mAddressEditText.setText(event.getAddress());
                         mDescriptionEditText.setText(event.getDescription());
 
                         mPhoneNumberEditText.setText(event.getPhoneNumber());

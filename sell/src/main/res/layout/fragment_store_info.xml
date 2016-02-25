@@ -179,9 +179,17 @@
 
         </RelativeLayout>
 
+        <TextView style="@style/section_title"
+                  android:text="@string/store_info"
+                  android:layout_below="@id/store_not_verified_notif_container"
+                  android:layout_marginTop="20dp"
+                  android:id="@+id/store_info_title"
+                  android:layout_width="match_parent"
+                />
+
         <EditText
                 android:hint="@string/store_name"
-                android:layout_below="@id/store_not_verified_notif_container"
+                android:layout_below="@id/store_info_title"
                 android:layout_marginTop="10dp"
                 android:id="@+id/store_name_edit_text"
                 android:layout_marginRight="16dp"

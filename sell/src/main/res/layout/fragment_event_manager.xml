@@ -127,9 +127,17 @@
 
         </RelativeLayout>
 
+        <TextView style="@style/section_title"
+                  android:text="@string/event_info"
+                  android:layout_below="@id/event_not_verified_notif_container"
+                  android:layout_marginTop="20dp"
+                  android:id="@+id/event_info_title"
+                  android:layout_width="match_parent"
+                />
+
         <EditText
                 android:hint="@string/event_name"
-                android:layout_below="@id/event_not_verified_notif_container"
+                android:layout_below="@id/event_info_title"
                 android:layout_marginTop="10dp"
                 android:id="@+id/event_name_edit_text"
                 android:layout_marginRight="16dp"
@@ -190,9 +198,19 @@
                     />
         </LinearLayout>
 
-
         <EditText
                 android:layout_below="@id/city_container"
+                android:id="@+id/event_address_edit_text"
+                android:hint="@string/event_address"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                style="@style/bordered_edit_text"
+                />
+
+
+        <EditText
+                android:layout_below="@id/event_address_edit_text"
                 android:id="@+id/event_description_edit_text"
                 android:hint="@string/description_hint"
                 android:layout_marginTop="10dp"

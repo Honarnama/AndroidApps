@@ -48,6 +48,7 @@ public class Event extends ParseObject {
     public static String VALIDITY_CHECKED = "validity_checked";
     public static String OBJECT_ID = "objectId";
     public static String ACTIVE = "active";
+    public static String ADDRESS = "address";
 
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
@@ -61,6 +62,14 @@ public class Event extends ParseObject {
 
     public void setName(String value) {
         put(NAME, value);
+    }
+
+    public String getAddress() {
+        return getString(ADDRESS);
+    }
+
+    public void setAddress(String value) {
+        put(ADDRESS, value);
     }
 
     public boolean getActive() {
