@@ -211,7 +211,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onNewIntent(Intent intent) {
         // onResume gets called after this to handle the intent
-        Log.e("inja", "onNewIntent");
         setIntent(intent);
         handleExternalIntent(intent);
     }
@@ -230,6 +229,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     String shopId = segments.get(1).replace("/", "");
                     mMainTabBar.setSelectedTab(TAB_SHOPS);
                     displayShopPage(shopId, true);
+                    return;
+                }
+                if (segments.size() > 1 && segments.get(0).equals("item")) {
+                    String itemId = segments.get(1).replace("/", "");
+                    mMainTabBar.setSelectedTab(TAB_HOME);
+                    displayItemPage(itemId, true);
                 }
             }
         }

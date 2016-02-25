@@ -170,7 +170,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mItemName.getText());
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری رو میخواستم بهت پیشنهاد بدم:" + "\n" + mItemName.getText() + " در هنرنما: " +
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری تو برنامه‌ی هنرنما رو می‌خواستم بهت پیشنهاد بدم." + "\n" + mItemName.getText() +
                     "\n" + "http://www.honarnama.net/item/" + mItemId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
