@@ -11,6 +11,7 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
@@ -55,6 +56,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     private View mBannerFrameLayout;
     private RelativeLayout mShare;
     public String mItemId;
+
+    public RelativeLayout mShopContainer;
+
+    public Store mStore;
 
     @Override
     public String getTitle(Context context) {
@@ -116,6 +121,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mShare = (RelativeLayout) rootView.findViewById(R.id.item_share_container);
         mShare.setOnClickListener(this);
 
+        mShopContainer = (RelativeLayout) rootView.findViewById(R.id.item_shop_container);
+        mShopContainer.setOnClickListener(this);
+
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
@@ -129,13 +137,13 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
-                    Item item = (Item)task.getResult();
+                    Item item = (Item) task.getResult();
                     mNameTextView.setText(item.getName());
-                    mPriceTextView.setText(item.getPrice()+"");
+                    mPriceTextView.setText(item.getPrice() + "");
                     mDescEditText.setText(item.getDescription());
 
-                    Store store = item.getStore();
-                    mPlaceTextView.setText(store.getProvince().getString(Provinces.NAME) +"، "+ store.getCity().getString(City.NAME));
+                    mStore = item.getStore();
+                    mPlaceTextView.setText(mStore.getProvince().getString(Provinces.NAME) + "، " + mStore.getCity().getString(City.NAME));
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
                     mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
@@ -169,6 +177,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     "\n" + "http://www.honarnama.net/item/" + mItemId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        }
+
+        if (v.getId() == R.id.item_shop_container) {
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.displayShopPage(mStore.getObjectId(), false);
         }
 
     }

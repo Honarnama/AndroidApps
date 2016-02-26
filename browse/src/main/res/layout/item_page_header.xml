@@ -125,7 +125,7 @@
                     />
             <TextView
                     style="@style/default_text_view"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginRight="10dp"
                     android:id="@+id/price"
                     />
             <TextView
@@ -171,12 +171,89 @@
                       android:layout_gravity="right|bottom"
                     />
         </LinearLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:id="@+id/item_shop_container"
+                        android:gravity="right|center_vertical"
+                        android:layout_below="@id/place_container"
+                >
+
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/important_bar_background"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="60dp"
+                            android:layout_marginRight="10dp"
+                    >
+
+                <TextView android:id="@+id/shop_name_text_view"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          style="@style/tiny_text_view"
+                          android:text= "محصولی از "
+                          android:singleLine="true"
+                          android:ellipsize="end"
+                          android:textStyle="bold"
+                          android:textSize="14sp"
+                        />
+
+                <TextView android:id="@+id/view_shop_all_items"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@id/shop_name_text_view"
+                          style="@style/tiny_text_view"
+                          android:paddingTop="4dp"
+                          android:text="مشاهده تمامی محصولات این غرفه"
+                          android:singleLine="true"
+                          android:ellipsize="end"
+                        />
+            </RelativeLayout>
+
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/shop_logo_container"
+                            android:layout_alignParentRight="true"
+                    >
+
+                <com.parse.ImageSelector
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/store_logo_image_view"
+                        android:src="@drawable/default_logo_hand"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:scaleType="fitCenter"
+                        app:riv_corner_radius="20dip"
+                        app:riv_border_width="0dip"
+                        app:riv_border_color="@color/gray_extra_light"
+                        app:riv_oval="true"
+                        android:scaleX="1"
+                        android:scaleY="1"
+                        android:layout_centerVertical="true"
+                        />
+
+                <ProgressBar
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        style="@style/GenericProgressIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/logo_progress_bar"
+                        android:visibility="gone"
+                        />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
         <TextView
-                android:layout_below="@id/place_container"
-                android:layout_marginTop="10dp"
+                android:layout_below="@id/item_shop_container"
                 style="@style/section_title"
                 android:layout_centerHorizontal="true"
-                android:paddingBottom="10dp"
+                android:paddingBottom="16dp"
                 android:layout_marginBottom="5dp"
                 android:text="محصولات مشابه"
                 />
