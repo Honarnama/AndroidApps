@@ -311,7 +311,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             } else {
                                 // TODO: check if still we are need this
                                 mItem = item;
-                                mTitleEditText.setText(mItem.getTitle());
+                                mTitleEditText.setText(mItem.getName());
                                 mDescriptionEditText.setText(mItem.getDescription());
                                 mPriceEditText.setText(mItem.getPrice() + "");
                                 mCategoryId = mItem.getCategory().getObjectId();

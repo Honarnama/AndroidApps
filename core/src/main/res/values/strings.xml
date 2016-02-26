@@ -236,4 +236,6 @@
     <string name="active">فعال</string>
     <string name="passive">غیرفعال</string>
     <string name="event_info">مشخصات رویداد</string>
+    <string name="toman">تومان</string>
+    <string name="price_label">قیمت:</string>
 </resources>

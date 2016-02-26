@@ -71,7 +71,7 @@ public class ItemsAdapter extends BaseAdapter {
 
         final Item item = mItems.get(position);
         // Setting all values in listview
-        mViewHolder.title.setText(item.getTitle());
+        mViewHolder.title.setText(item.getName());
 
         if (item.getStatus() == Item.STATUS_CODE_CONFIRMATION_WAITING) {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);

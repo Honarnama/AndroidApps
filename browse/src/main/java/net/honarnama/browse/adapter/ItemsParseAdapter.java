@@ -71,7 +71,7 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
         });
 
         // Setting all values in listview
-        mViewHolder.title.setText(item.getTitle());
+        mViewHolder.title.setText(item.getName());
         mViewHolder.desc.setText(item.getDescription());
 
         Category category = item.getCategory();

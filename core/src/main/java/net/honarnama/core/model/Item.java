@@ -50,7 +50,7 @@ public class Item extends ParseObject {
     public static String OBJECT_NAME = "Item";
 
     //Defining fields
-    public static String TITLE = "title";
+    public static String NAME = "name";
     public static String DESCRIPTION = "description";
     public static String CATEGORY = "category";
     public static String PRICE = "price";
@@ -75,9 +75,9 @@ public class Item extends ParseObject {
         super();
     }
 
-    public Item(ParseUser owner, String title, String description, Category category, Number price, Store store) {
+    public Item(ParseUser owner, String name, String description, Category category, Number price, Store store) {
         super();
-        put(TITLE, title);
+        put(NAME, name);
         put(DESCRIPTION, description);
         put(OWNER, owner);
         put(CATEGORY, category);
@@ -87,8 +87,8 @@ public class Item extends ParseObject {
         }
     }
 
-    private void update(String title, String description, Category category, Number price, Store store) {
-        put(TITLE, title);
+    private void update(String name, String description, Category category, Number price, Store store) {
+        put(NAME, name);
         put(DESCRIPTION, description);
         put(CATEGORY, category);
         put(PRICE, price);
@@ -101,8 +101,8 @@ public class Item extends ParseObject {
         put(OWNER, parseUser);
     }
 
-    public String getTitle() {
-        return getString("title");
+    public String getName() {
+        return getString("name");
     }
 
     public Number getPrice() {
@@ -140,7 +140,7 @@ public class Item extends ParseObject {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String title, final String description,
+    public static Task<Item> saveWithImages(final Item originalItem, final String name, final String description,
                                             final Category category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
         final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
         final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
@@ -197,9 +197,9 @@ public class Item extends ParseObject {
         final Item item;
         if (originalItem != null) {
             item = originalItem;
-            item.update(title, description, category, price, store);
+            item.update(name, description, category, price, store);
         } else {
-            item = new Item(ParseUser.getCurrentUser(), title, description, category, price, store);
+            item = new Item(ParseUser.getCurrentUser(), name, description, category, price, store);
         }
 
         item.remove("image_1");

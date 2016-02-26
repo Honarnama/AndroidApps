@@ -106,11 +106,42 @@
                 android:paddingLeft="5dp"
                 />
 
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/price_container"
+                      android:orientation="horizontal"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginTop="10dp"
+                      android:layout_below="@id/item_name_text_view"
+                >
+            <TextView style="@style/default_text_view"
+                      android:text="@string/price_label"
+                      android:layout_centerVertical="true"
+                      android:editable="false"
+                      android:cursorVisible="false"
+                      android:focusable="false"
+                      android:textStyle="bold"
+                    />
+            <TextView
+                    style="@style/default_text_view"
+                    android:layout_marginRight="16dp"
+                    android:id="@+id/price"
+                    />
+            <TextView
+                    style="@style/default_text_view"
+                    android:layout_marginRight="5dp"
+                    android:text="تومن"
+                    />
+        </LinearLayout>
+
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                   style="@style/default_text_view"
                   android:id="@+id/item_desc_text_view"
-                  android:layout_below="@id/item_name_text_view"
-                  android:layout_margin="10dp"
+                  android:layout_below="@id/price_container"
+                  android:layout_marginRight="16dp"
+                  android:layout_marginLeft="16dp"
+                  android:layout_marginTop="10dp"
                   android:gravity="right"
                 />
 
@@ -120,7 +151,8 @@
                       android:layout_below="@id/item_desc_text_view"
                       android:gravity="right"
                       android:id="@+id/place_container"
-                      android:layout_marginRight="5dp"
+                      android:layout_marginRight="8dp"
+                      android:layout_marginTop="10dp"
                 >
 
             <com.mikepenz.iconics.view.IconicsImageView

@@ -11,15 +11,12 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
-import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Item;
-import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
-import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,14 +27,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -49,15 +42,13 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
-    private ItemsAdapter mAdapter;
-    private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
     public ProgressBar mBannerProgressBar;
-    public ProgressBar mLogoProgressBar;
 
-    public TextView mItemName;
-    public TextView mItemDesc;
-    public TextView mItemPlace;
+    public TextView mNameTextView;
+    public TextView mPriceTextView;
+    public TextView mDescEditText;
+    public TextView mPlaceTextView;
     private ParseUser mOwner;
 
     private ObservableScrollView mScrollView;
@@ -118,9 +109,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
-        mItemName = (TextView) rootView.findViewById(R.id.item_name_text_view);
-        mItemDesc = (TextView) rootView.findViewById(R.id.item_desc_text_view);
-        mItemPlace = (TextView) rootView.findViewById(R.id.item_place_text_view);
+        mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
+        mPriceTextView = (TextView) rootView.findViewById(R.id.price);
+        mDescEditText = (TextView) rootView.findViewById(R.id.item_desc_text_view);
+        mPlaceTextView = (TextView) rootView.findViewById(R.id.item_place_text_view);
         mShare = (RelativeLayout) rootView.findViewById(R.id.item_share_container);
         mShare.setOnClickListener(this);
 
@@ -130,17 +122,20 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Getting Item  with id " + mItemId + " failed. Error: " + task.getError(), "", task.getError());
+                    logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
                     }
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
-                    ParseObject item = task.getResult();
-                    mOwner = item.getParseUser(Item.OWNER);
-                    mItemName.setText(item.getString(Store.NAME));
-                    mItemDesc.setText(item.getString(Store.DESCRIPTION));
+                    Item item = (Item)task.getResult();
+                    mNameTextView.setText(item.getName());
+                    mPriceTextView.setText(item.getPrice()+"");
+                    mDescEditText.setText(item.getDescription());
+
+                    Store store = item.getStore();
+                    mPlaceTextView.setText(store.getProvince().getString(Provinces.NAME) +"، "+ store.getCity().getString(City.NAME));
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
                     mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
@@ -169,8 +164,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         if (v.getId() == R.id.item_share_container) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_SUBJECT, mItemName.getText());
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری تو برنامه‌ی هنرنما رو می‌خواستم بهت پیشنهاد بدم." + "\n" + mItemName.getText() +
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری تو برنامه‌ی هنرنما رو می‌خواستم بهت پیشنهاد بدم." + "\n" + mNameTextView.getText() +
                     "\n" + "http://www.honarnama.net/item/" + mItemId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);

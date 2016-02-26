@@ -10,6 +10,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
@@ -103,6 +104,9 @@ public class Item extends net.honarnama.core.model.Item {
         parseQuery.whereEqualTo(VALIDITY_CHECKED, true);
         parseQuery.whereEqualTo(STATUS, Store.STATUS_CODE_VERIFIED);
         parseQuery.whereEqualTo(OBJECT_ID, itemId);
+        parseQuery.include(STORE);
+        parseQuery.include("store.province");
+        parseQuery.include("store.city");
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.setError(new NetworkErrorException("No network connection."));
