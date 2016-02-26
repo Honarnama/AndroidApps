@@ -11,6 +11,7 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
@@ -49,7 +50,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
-    private ItemsAdapter mAdapter;
+    private ItemsAdapter mItemsAdapter;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
     public ProgressBar mBannerProgressBar;
@@ -205,16 +206,16 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     }
                 } else {
                     List<Item> shopItems = task.getResult();
-                    mAdapter.addAll(shopItems);
-                    mAdapter.notifyDataSetChanged();
+                    mItemsAdapter.addAll(shopItems);
+                    mItemsAdapter.notifyDataSetChanged();
                     WindowUtil.setListViewHeightBasedOnChildren(mListView);
                 }
                 return null;
             }
         });
 
-        mAdapter = new ItemsAdapter(getActivity());
-        mListView.setAdapter(mAdapter);
+        mItemsAdapter = new ItemsAdapter(getActivity());
+        mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;
 
@@ -238,7 +239,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }
 
     @Override

@@ -50,6 +50,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mPriceTextView;
     public TextView mDescEditText;
     public TextView mPlaceTextView;
+    public TextView mShopNameTextView;
+    public ImageSelector mShopLogo;
     private ParseUser mOwner;
 
     private ObservableScrollView mScrollView;
@@ -59,7 +61,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public RelativeLayout mShopContainer;
 
-    public Store mStore;
+    public Store mShop;
+
 
     @Override
     public String getTitle(Context context) {
@@ -123,6 +126,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.item_shop_container);
         mShopContainer.setOnClickListener(this);
+        mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
+        mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
@@ -142,8 +147,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     mPriceTextView.setText(item.getPrice() + "");
                     mDescEditText.setText(item.getDescription());
 
-                    mStore = item.getStore();
-                    mPlaceTextView.setText(mStore.getProvince().getString(Provinces.NAME) + "، " + mStore.getCity().getString(City.NAME));
+                    mShop = item.getStore();
+                    mPlaceTextView.setText(mShop.getProvince().getString(Provinces.NAME) + "، " + mShop.getCity().getString(City.NAME));
+                    mShopNameTextView.append(mShop.getName());
+                    mShopLogo.loadInBackground(mShop.getLogo(), new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                        }
+                    });
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
                     mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
@@ -181,7 +192,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         if (v.getId() == R.id.item_shop_container) {
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-            controlPanelActivity.displayShopPage(mStore.getObjectId(), false);
+            controlPanelActivity.displayShopPage(mShop.getObjectId(), false);
         }
 
     }
