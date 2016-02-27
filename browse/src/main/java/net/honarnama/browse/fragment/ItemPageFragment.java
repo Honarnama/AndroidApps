@@ -6,12 +6,14 @@ import com.google.android.gms.analytics.Tracker;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
+import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
@@ -21,17 +23,24 @@ import net.honarnama.core.utils.ObservableScrollView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -43,7 +52,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
-    private ImageSelector mBannerImageView;
     public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
@@ -53,11 +61,19 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
     private ParseUser mOwner;
+    public List<ParseFile> mImageList;
+    private LinearLayout mDotsLayout;
+
+
+    static TextView mDotsText[];
+    private int mDotsCount;
 
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private RelativeLayout mShare;
     public String mItemId;
+
+    ImageAdapter mImageAdapter;
 
     public RelativeLayout mShopContainer;
 
@@ -113,8 +129,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
 
-        mBannerImageView = (ImageSelector) rootView.findViewById(R.id.item_banner_image_view);
-
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
@@ -128,6 +142,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mShopContainer.setOnClickListener(this);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
+
+        mImageAdapter = new ImageAdapter(HonarnamaBrowseApp.getInstance());
+        mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
@@ -157,22 +174,85 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     });
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
-                    mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-                            mBannerProgressBar.setVisibility(View.GONE);
-                            if (e != null) {
-                                logE("Getting  banner image for item " + mItemId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            }
+//                    mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
+//                        @Override
+//                        public void done(byte[] data, ParseException e) {
+//                            mBannerProgressBar.setVisibility(View.GONE);
+//                            if (e != null) {
+//                                logE("Getting  banner image for item " + mItemId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        }
+//                    });
+
+//                    if (item.has(Item.IMAGE_1)) {
+//                        logE("inja 1");
+////                        mImageList.add(item.getParseFile(Item.IMAGE_1));
+//                    }
+//                    if (item.has(Item.IMAGE_2)) {
+//                        logE("inja 2");
+//                        mImageList.add(item.getParseFile(Item.IMAGE_2));
+//                    }
+//                    if (item.has(Item.IMAGE_3)) {
+//                        mImageList.add(item.getParseFile(Item.IMAGE_3));
+//                    }
+//                    if (item.has(Item.IMAGE_4)) {
+//                        mImageList.add(item.getParseFile(Item.IMAGE_4));
+//                    }
+
+                    ParseFile[] images = item.getImages();
+                    List<ParseFile> nonNullImages = new ArrayList<ParseFile>();
+                    for (int i = 0; i < net.honarnama.core.model.Item.NUMBER_OF_IMAGES; i++) {
+                        if (images[i] != null) {
+                            nonNullImages.add(images[i]);
                         }
-                    });
+                    }
+                    mImageAdapter.addAll(nonNullImages);
+                    logE(mImageAdapter.getCount() + "");
+                    mImageAdapter.notifyDataSetChanged();
+
+                    mDotsCount = mImageAdapter.getCount();
+                    if (mDotsCount > 1) {
+                        mDotsText = new TextView[mDotsCount];
+                        for (int i = 0; i < mDotsCount; i++) {
+                            mDotsText[i] = new TextView(HonarnamaBrowseApp.getInstance());
+                            mDotsText[i].setText(".");
+                            mDotsText[i].setTextSize(25);
+                            mDotsText[i].setTypeface(null, Typeface.BOLD);
+                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_dark));
+                            mDotsLayout.addView(mDotsText[i]);
+                        }
+                    }
                 }
                 return null;
             }
         });
+
+        //here we create the gallery and set our adapter created before
+        Gallery gallery = (Gallery) rootView.findViewById(R.id.gallery);
+        gallery.setAdapter(mImageAdapter);
+
+        //when we scroll the images we have to set the dot that corresponds to the image to White and the others
+        //will be Gray
+        gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView adapterView, View view, int pos, long l) {
+                if (mDotsText != null) {
+                    for (int i = 0; i < mDotsCount; i++) {
+                        mDotsText[i].setTextColor(getResources().getColor(R.color.amber_dark));
+                    }
+                    mDotsText[pos].setTextColor(Color.WHITE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView adapterView) {
+
+            }
+        });
+
         return rootView;
 
     }

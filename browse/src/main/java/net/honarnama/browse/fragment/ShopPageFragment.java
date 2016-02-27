@@ -138,6 +138,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         emptyListContainer.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
 
+        mItemsAdapter = new ItemsAdapter(getActivity());
+
         Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
@@ -214,7 +216,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         });
 
-        mItemsAdapter = new ItemsAdapter(getActivity());
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;
