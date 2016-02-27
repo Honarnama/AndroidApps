@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsTextView;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
@@ -217,11 +218,16 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     if (mDotsCount > 1) {
                         mDotsText = new TextView[mDotsCount];
                         for (int i = 0; i < mDotsCount; i++) {
-                            mDotsText[i] = new TextView(HonarnamaBrowseApp.getInstance());
-                            mDotsText[i].setText(".");
-                            mDotsText[i].setTextSize(25);
+                            mDotsText[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
+                            mDotsText[i].setText("{gmd-brightness-1}");
+                            mDotsText[i].setTextSize(8);
+                            if (i == 0) {
+                                mDotsText[i].setPadding(0, 10, 0, 0);
+                            } else {
+                                mDotsText[i].setPadding(0, 10, 10, 0);
+                            }
                             mDotsText[i].setTypeface(null, Typeface.BOLD);
-                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_dark));
+                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_launcher_color));
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
@@ -241,9 +247,13 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             public void onItemSelected(AdapterView adapterView, View view, int pos, long l) {
                 if (mDotsText != null) {
                     for (int i = 0; i < mDotsCount; i++) {
-                        mDotsText[i].setTextColor(getResources().getColor(R.color.amber_dark));
+                        if (mDotsText[i] != null) {
+                            mDotsText[i].setTextSize(8);
+                        }
                     }
-                    mDotsText[pos].setTextColor(Color.WHITE);
+                    if (mDotsText[pos] != null) {
+                        mDotsText[pos].setTextSize(12);
+                    }
                 }
             }
 
