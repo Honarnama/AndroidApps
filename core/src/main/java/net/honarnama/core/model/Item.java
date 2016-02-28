@@ -105,6 +105,11 @@ public class Item extends ParseObject {
         return getString("name");
     }
 
+    public void setName(String name) {
+        put(NAME, name);
+    }
+
+
     public Number getPrice() {
         return getNumber("price");
     }

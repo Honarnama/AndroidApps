@@ -24,15 +24,20 @@ import net.honarnama.core.utils.ObservableScrollView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Gallery;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -45,6 +50,8 @@ import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
+
+import android.widget.RelativeLayout.LayoutParams;
 
 /**
  * Created by elnaz on 2/15/16.
@@ -62,8 +69,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
     private ParseUser mOwner;
-    public List<ParseFile> mImageList;
     private LinearLayout mDotsLayout;
+    public LinearLayout mInnerLayout;
+    public RelativeLayout mSimilarTitleContainer;
 
 
     static TextView mDotsText[];
@@ -80,6 +88,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public Store mShop;
 
+    LayoutParams mLayoutParams;
+    LinearLayout mNext, mPrev;
+    int mSimilarItemViewWidth;
+    //    GestureDetector mGestureDetector = null;
+    HorizontalScrollView mHorizontalScrollView;
+    ArrayList<View> mSimilarItemsList = new ArrayList<>();
+    int mWidth;
+    int mCurrPosition, mPrevPosition;
 
     @Override
     public String getTitle(Context context) {
@@ -144,8 +160,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
 
+        mSimilarTitleContainer = (RelativeLayout) rootView.findViewById(R.id.similar_title_container);
         mImageAdapter = new ImageAdapter(HonarnamaBrowseApp.getInstance());
         mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
+        mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
@@ -175,33 +193,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     });
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
-//                    mBannerImageView.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//                            mBannerProgressBar.setVisibility(View.GONE);
-//                            if (e != null) {
-//                                logE("Getting  banner image for item " + mItemId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                                if (isVisible()) {
-//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        }
-//                    });
-
-//                    if (item.has(Item.IMAGE_1)) {
-//                        logE("inja 1");
-////                        mImageList.add(item.getParseFile(Item.IMAGE_1));
-//                    }
-//                    if (item.has(Item.IMAGE_2)) {
-//                        logE("inja 2");
-//                        mImageList.add(item.getParseFile(Item.IMAGE_2));
-//                    }
-//                    if (item.has(Item.IMAGE_3)) {
-//                        mImageList.add(item.getParseFile(Item.IMAGE_3));
-//                    }
-//                    if (item.has(Item.IMAGE_4)) {
-//                        mImageList.add(item.getParseFile(Item.IMAGE_4));
-//                    }
 
                     ParseFile[] images = item.getImages();
                     List<ParseFile> nonNullImages = new ArrayList<ParseFile>();
@@ -216,7 +207,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
                     mDotsCount = mImageAdapter.getCount();
                     if (mDotsCount > 1) {
-                        mDotsText = new TextView[mDotsCount];
+                        mDotsText = new IconicsTextView[mDotsCount];
                         for (int i = 0; i < mDotsCount; i++) {
                             mDotsText[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
                             mDotsText[i].setText("{gmd-brightness-1}");
@@ -227,10 +218,26 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                                 mDotsText[i].setPadding(0, 10, 10, 0);
                             }
                             mDotsText[i].setTypeface(null, Typeface.BOLD);
-                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_launcher_color));
+                            mDotsText[i].setTextColor(getResources().getColor(R.color.dirty_pink_dark));
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
+                    Item.getSimilarItemsByCategory(item.getCategory()).continueWith(new Continuation<List<Item>, Object>() {
+                        @Override
+                        public Object then(Task<List<Item>> task) throws Exception {
+
+                            if (task.isFaulted()) {
+                                logE("Finding similar items failed. " + task.getError());
+                            } else {
+                                List<Item> similarItems = task.getResult();
+                                if (similarItems.size() > 0) {
+                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
+                                    addItems(task.getResult());
+                                }
+                            }
+                            return null;
+                        }
+                    });
                 }
                 return null;
             }
@@ -262,6 +269,55 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             }
         });
+
+        mPrev = (LinearLayout) rootView.findViewById(R.id.prev);
+        mNext = (LinearLayout) rootView.findViewById(R.id.next);
+
+        mNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        mHorizontalScrollView.smoothScrollTo(
+                                (int) mHorizontalScrollView.getScrollX()
+                                        + mSimilarItemViewWidth,
+                                (int) mHorizontalScrollView.getScrollY());
+                    }
+                }, 100L);
+            }
+        });
+        mPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        mHorizontalScrollView.smoothScrollTo(
+                                (int) mHorizontalScrollView.getScrollX()
+                                        - mSimilarItemViewWidth,
+                                (int) mHorizontalScrollView.getScrollY());
+                    }
+                }, 100L);
+            }
+        });
+
+        mHorizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.hsv);
+//        mGestureDetector = new GestureDetector(new MyGestureDetector());
+
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        mWidth = display.getWidth(); // deprecated
+        mSimilarItemViewWidth = mWidth / 3;
+
+
+//        mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (mGestureDetector.onTouchEvent(event)) {
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         return rootView;
 
@@ -300,4 +356,77 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     }
 
+//    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+//        @Override
+//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+//                               float velocityY) {
+//            if (e1.getX() < e2.getX()) {
+//                mCurrPosition = getVisibleViews("left");
+//            } else {
+//                mCurrPosition = getVisibleViews("right");
+//            }
+//
+//            mHorizontalScrollView.smoothScrollTo(mSimilarItemsList.get(mCurrPosition)
+//                    .getLeft(), 0);
+//            return true;
+//        }
+//
+//    }
+
+    public int getVisibleViews(String direction) {
+        Rect hitRect = new Rect();
+        int position = 0;
+        int rightCounter = 0;
+        for (int i = 0; i < mSimilarItemsList.size(); i++) {
+            if (mSimilarItemsList.get(i).getLocalVisibleRect(hitRect)) {
+                if (direction.equals("left")) {
+                    position = i;
+                    break;
+                } else if (direction.equals("right")) {
+                    rightCounter++;
+                    position = i;
+                    if (rightCounter == 2)
+                        break;
+                }
+            }
+        }
+        return position;
+    }
+
+
+    public void addItems(List<Item> items) {
+
+        for (int i = 1; i < items.size(); i++) {
+            Item item = items.get(i);
+
+            View similarItemLayout = getActivity().getLayoutInflater().inflate(R.layout.similar_item_layout, null);
+
+            TextView similarItemTitle = (TextView) similarItemLayout.findViewById(R.id.item_title);
+            ImageSelector similarItemImage = (ImageSelector) similarItemLayout.findViewById(R.id.item_image);
+            TextView similarPostPrice = (TextView) similarItemLayout.findViewById(R.id.similar_post_price);
+
+            similarItemImage.loadInBackground(item.getParseFile(Item.IMAGE_1));
+            similarItemTitle.setText(item.getName());
+            similarPostPrice.setText(item.getPrice() + " " + getString(R.string.toman));
+
+            mLayoutParams = new LayoutParams(mSimilarItemViewWidth, LayoutParams.WRAP_CONTENT);
+            if ((i % 3) == 0) {
+                logE("inja", item.getName());
+                similarItemTitle.setPadding(5, 0, 5, 0);
+            }
+            similarItemLayout.setLayoutParams(mLayoutParams);
+            similarItemLayout.requestLayout();
+
+            mSimilarItemsList.add(similarItemLayout);
+            mInnerLayout.addView(similarItemLayout);
+        }
+
+        if (mSimilarItemsList.size() > 3) {
+            mPrev.setVisibility(View.VISIBLE);
+            mNext.setVisibility(View.VISIBLE);
+        }
+
+    }
 }
+
+

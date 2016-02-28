@@ -8,7 +8,9 @@
         android:id="@+id/fragment_scroll_view"
         >
     <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/gray_extra_light"
+            >
 
         <include layout="@layout/item_page_header"
                  android:id="@+id/header_layout"></include>
@@ -38,5 +40,75 @@
             </LinearLayout>
 
         </RelativeLayout>
+
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/similar_title_container"
+                        android:layout_below="@id/header_layout"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                >
+            <TextView
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:text="محصولات مشابه"
+                    />
+            <LinearLayout
+                    android:id="@+id/prev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="16dip"
+                    android:paddingRight="5dip"
+                    android:descendantFocusability="blocksDescendants"
+                    android:visibility="gone"
+                    >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:iiv_color="@color/dirty_pink_dark"
+                        app:iiv_icon="gmd-keyboard-arrow-left"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="5dip"
+                    android:paddingRight="16dip"
+                    android:descendantFocusability="blocksDescendants"
+                    android:visibility="gone"
+                    >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:iiv_color="@color/dirty_pink_dark"
+                        app:iiv_icon="gmd-keyboard-arrow-right"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <HorizontalScrollView
+                android:id="@+id/hsv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:measureAllChildren="false"
+                android:scrollbars="none" xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/similar_title_container"
+                >
+            <LinearLayout
+                    android:id="@+id/innerLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
     </RelativeLayout>
 </net.honarnama.core.utils.ObservableScrollView>

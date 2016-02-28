@@ -3,7 +3,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="0dp"
-                android:background="@color/gray_extra_light"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layoutDirection="rtl"
@@ -247,14 +246,6 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <TextView
-                android:layout_below="@id/item_shop_container"
-                style="@style/section_title"
-                android:layout_centerHorizontal="true"
-                android:paddingBottom="16dp"
-                android:layout_marginBottom="5dp"
-                android:text="محصولات مشابه"
-                />
     </RelativeLayout>
 
 

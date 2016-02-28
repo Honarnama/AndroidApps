@@ -94,7 +94,14 @@
     <style name="HorizontalSeparatorLine">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">#c0c0c0</item>
+        <item name="android:background">@color/gray_light</item>
+    </style>
+
+    <style name="ItemCardViewSeparatorLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/gray_extra_light</item>
+        <item name="android:layout_margin">5dp</item>
     </style>
 
     <style name="DialogTitle">
