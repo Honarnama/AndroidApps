@@ -95,7 +95,7 @@
                     android:visibility="gone"
             >
         <TextView
-                android:layout_marginTop="10dp"
+                android:layout_margin="10dp"
                 android:id="@+id/item_name_text_view"
                 style="@style/section_title"
                 android:layout_centerHorizontal="true"
@@ -128,8 +128,7 @@
                     />
             <TextView
                     style="@style/default_text_view"
-                    android:layout_marginRight="5dp"
-                    android:text="تومن"
+                    android:text="@string/toman"
                     />
         </LinearLayout>
 

@@ -21,6 +21,7 @@ import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -180,7 +181,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     mShare.setVisibility(View.VISIBLE);
                     Item item = (Item) task.getResult();
                     mNameTextView.setText(item.getName());
-                    mPriceTextView.setText(item.getPrice() + "");
+                    mPriceTextView.setText(TextUtil.convertEnNumberToFa(item.getPrice() + " "));
+
                     mDescEditText.setText(item.getDescription());
 
                     mShop = item.getStore();
@@ -222,7 +224,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
-                    Item.getSimilarItemsByCategory(item.getCategory()).continueWith(new Continuation<List<Item>, Object>() {
+                    Item.getSimilarItemsByCategory(item.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
                         @Override
                         public Object then(Task<List<Item>> task) throws Exception {
 
@@ -397,7 +399,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public void addItems(List<Item> items) {
 
         for (int i = 1; i < items.size(); i++) {
-            Item item = items.get(i);
+            final Item item = items.get(i);
 
             View similarItemLayout = getActivity().getLayoutInflater().inflate(R.layout.similar_item_layout, null);
 
@@ -407,7 +409,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             similarItemImage.loadInBackground(item.getParseFile(Item.IMAGE_1));
             similarItemTitle.setText(item.getName());
-            similarPostPrice.setText(item.getPrice() + " " + getString(R.string.toman));
+            similarPostPrice.setText(TextUtil.convertEnNumberToFa(item.getPrice() + " ") + getString(R.string.toman));
 
             mLayoutParams = new LayoutParams(mSimilarItemViewWidth, LayoutParams.WRAP_CONTENT);
             if ((i % 3) == 0) {
@@ -416,6 +418,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             }
             similarItemLayout.setLayoutParams(mLayoutParams);
             similarItemLayout.requestLayout();
+
+            final ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            similarItemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    controlPanelActivity.displayItemPage(item.getObjectId(), false);
+                }
+            });
 
             mSimilarItemsList.add(similarItemLayout);
             mInnerLayout.addView(similarItemLayout);

@@ -66,13 +66,14 @@ public class Item extends net.honarnama.core.model.Item {
         return tcs.getTask();
     }
 
-    public static Task<List<Item>> getSimilarItemsByCategory(final Category category) {
+    public static Task<List<Item>> getSimilarItemsByCategory(final Category category, final String itemId) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
 
         final ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.CATEGORY, category);
         parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+        parseQuery.whereNotEqualTo(Item.OBJECT_ID, itemId);
 
         parseQuery.countInBackground(new CountCallback() {
             @Override
@@ -88,9 +89,15 @@ public class Item extends net.honarnama.core.model.Item {
                     query.whereEqualTo(Item.CATEGORY, category);
                     query.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
                     query.whereEqualTo(Item.VALIDITY_CHECKED, true);
+                    query.whereNotEqualTo(Item.OBJECT_ID, itemId);
                     query.setLimit(6);
                     Random random = new Random();
-                    query.setSkip(random.nextInt(count));
+                    if (count > 6) {
+                        int randNo = random.nextInt(count - 6);
+                        if (randNo > 0) {
+                            query.setSkip(randNo);
+                        }
+                    }
                     query.findInBackground(new FindCallback<Item>() {
                         @Override
                         public void done(List<Item> items, ParseException e) {

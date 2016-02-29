@@ -58,6 +58,8 @@
                 android:layout_toLeftOf="@id/item_row_image_container"
                 style="@style/default_text_view"
                 android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"
                 />
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
