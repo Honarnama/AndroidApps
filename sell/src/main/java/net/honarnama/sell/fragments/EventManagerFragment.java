@@ -100,8 +100,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
 
-    private Spinner mStartDay, mStartMonth, mStartYear;
-    private Spinner mEndDay, mEndMonth, mEndYear;
+    private Spinner mStartDaySpinner, mStartMonthSpinner, mStartYearSpinner;
+    private Spinner mEndDaySpinner, mEndMonthSpinner, mEndYearSpinner;
     public Date mStartDate;
     public Date mEndDate;
 
@@ -127,6 +127,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private Tracker mTracker;
 
     public boolean mIsNew = true;
+    public JalaliCalendar mJalaliCalendar;
 
     @Override
     public String getTitle(Context context) {
@@ -170,6 +171,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         }
 
+        Locale locale = new Locale("fa", "IR");
+        mJalaliCalendar = new JalaliCalendar(locale);
+
         View rootView = inflater.inflate(R.layout.fragment_event_manager, container, false);
         // Inflate the layout for this fragment
 
@@ -183,28 +187,28 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.event_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.event_cell_number);
 
-        mStartDay = (Spinner) rootView.findViewById(R.id.start_day);
-        mStartMonth = (Spinner) rootView.findViewById(R.id.start_month);
-        mStartYear = (Spinner) rootView.findViewById(R.id.start_year);
+        mStartDaySpinner = (Spinner) rootView.findViewById(R.id.start_day);
+        mStartMonthSpinner = (Spinner) rootView.findViewById(R.id.start_month);
+        mStartYearSpinner = (Spinner) rootView.findViewById(R.id.start_year);
 
-        mEndDay = (Spinner) rootView.findViewById(R.id.end_day);
-        mEndMonth = (Spinner) rootView.findViewById(R.id.end_month);
-        mEndYear = (Spinner) rootView.findViewById(R.id.end_year);
+        mEndDaySpinner = (Spinner) rootView.findViewById(R.id.end_day);
+        mEndMonthSpinner = (Spinner) rootView.findViewById(R.id.end_month);
+        mEndYearSpinner = (Spinner) rootView.findViewById(R.id.end_year);
 
         mStartLabelTextView = (TextView) rootView.findViewById(R.id.start_label_text_view);
         mEndLabelTextView = (TextView) rootView.findViewById(R.id.end_label_text_view);
 
         ArrayAdapter<String> daysAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.days));
-        mStartDay.setAdapter(daysAdapter);
-        mEndDay.setAdapter(daysAdapter);
+        mStartDaySpinner.setAdapter(daysAdapter);
+        mEndDaySpinner.setAdapter(daysAdapter);
 
         ArrayAdapter<String> monthsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.months));
-        mStartMonth.setAdapter(monthsAdapter);
-        mEndMonth.setAdapter(monthsAdapter);
+        mStartMonthSpinner.setAdapter(monthsAdapter);
+        mEndMonthSpinner.setAdapter(monthsAdapter);
 
         ArrayAdapter<String> yearsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.years));
-        mStartYear.setAdapter(yearsAdapter);
-        mEndYear.setAdapter(yearsAdapter);
+        mStartYearSpinner.setAdapter(yearsAdapter);
+        mEndYearSpinner.setAdapter(yearsAdapter);
 
 
         mActive = (RadioButton) rootView.findViewById(R.id.active_event);
@@ -477,18 +481,15 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
         }
 
-        Locale locale = new Locale("fa", "IR");
-        JalaliCalendar jalaliCalendar = new JalaliCalendar(locale);
-
-        String fromYearValue = mStartYear.getItemAtPosition(mStartYear.getSelectedItemPosition()).toString();
-        String fromMonthValue = (mStartMonth.getSelectedItemPosition() + 1) + "";
-        String fromDayValue = (mStartDay.getSelectedItemPosition() + 1) + "";
+        String fromYearValue = mStartYearSpinner.getItemAtPosition(mStartYearSpinner.getSelectedItemPosition()).toString();
+        String fromMonthValue = (mStartMonthSpinner.getSelectedItemPosition() + 1) + "";
+        String fromDayValue = (mStartDaySpinner.getSelectedItemPosition() + 1) + "";
 
         String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
-        mStartDate = jalaliCalendar.getGregorianDate(userEnteredStartDate);
-        String checkJalaliDate = jalaliCalendar.getJalaliDate(mStartDate);
+        mStartDate = mJalaliCalendar.getGregorianDate(userEnteredStartDate);
+        String checkJalaliDate = mJalaliCalendar.getJalaliDate(mStartDate);
         if (!checkJalaliDate.equals(userEnteredStartDate)) {
-            mStartDay.requestFocus();
+            mStartDaySpinner.requestFocus();
             mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
             if (isVisible()) {
                 Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
@@ -499,15 +500,15 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
 
 
-        String toYearValue = mEndYear.getItemAtPosition(mEndYear.getSelectedItemPosition()).toString();
-        String toMonthValue = (mEndMonth.getSelectedItemPosition() + 1) + "";
-        String toDayValue = (mEndDay.getSelectedItemPosition() + 1) + "";
+        String toYearValue = mEndYearSpinner.getItemAtPosition(mEndYearSpinner.getSelectedItemPosition()).toString();
+        String toMonthValue = (mEndMonthSpinner.getSelectedItemPosition() + 1) + "";
+        String toDayValue = (mEndDaySpinner.getSelectedItemPosition() + 1) + "";
 
         String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
-        mEndDate = jalaliCalendar.getGregorianDate(userEnteredEndDate);
-        checkJalaliDate = jalaliCalendar.getJalaliDate(mEndDate);
+        mEndDate = mJalaliCalendar.getGregorianDate(userEnteredEndDate);
+        checkJalaliDate = mJalaliCalendar.getJalaliDate(mEndDate);
         if (!checkJalaliDate.equals(userEnteredEndDate)) {
-            mEndDay.requestFocus();
+            mEndDaySpinner.requestFocus();
             mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
             if (isVisible()) {
                 Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
@@ -725,6 +726,28 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 } else {
                     Event event = task.getResult();
                     if (event != null) {
+
+                        Date startDate = event.getStartDate();
+                        String jalaliStartDate = mJalaliCalendar.getJalaliDate(startDate);
+                        String[] separatedJalaliStartDate = jalaliStartDate.split("/");
+                        String startYear = separatedJalaliStartDate[0];
+                        int startMonth = Integer.valueOf(separatedJalaliStartDate[1]);
+                        int startDay = Integer.valueOf(separatedJalaliStartDate[2]);
+                        mStartDaySpinner.setSelection(startDay-1);
+                        mStartMonthSpinner.setSelection(startMonth-1);
+                        ArrayAdapter<String> yearAdapter = (ArrayAdapter<String>) mStartYearSpinner.getAdapter();
+                        mStartYearSpinner.setSelection(yearAdapter.getPosition(startYear));
+
+                        Date endDate = event.getEndDate();
+                        String jalaliEndDate = mJalaliCalendar.getJalaliDate(endDate);
+                        String[] separatedJalaliEndDate = jalaliEndDate.split("/");
+                        String endYear = separatedJalaliEndDate[0];
+                        int endMonth = Integer.valueOf(separatedJalaliEndDate[1]);
+                        int endDay = Integer.valueOf(separatedJalaliEndDate[2]);
+                        mEndDaySpinner.setSelection(endDay-1);
+                        mEndMonthSpinner.setSelection(endMonth-1);
+                        yearAdapter = (ArrayAdapter<String>) mEndYearSpinner.getAdapter();
+                        mEndYearSpinner.setSelection(yearAdapter.getPosition(endYear));
 
                         mActive.setChecked(event.getActive());
                         mPassive.setChecked(!event.getActive());
