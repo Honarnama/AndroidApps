@@ -1,5 +1,10 @@
 package net.honarnama.core.utils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * Created by elnaz on 2/29/16.
  */
@@ -16,5 +21,15 @@ public class TextUtil {
             }
         }
         return builder.toString();
+    }
+
+    public static NumberFormat getPriceNumberFormmat(Locale locale){
+        String lang = locale.getLanguage();
+        String country = locale.getCountry();
+        DecimalFormat format = ((DecimalFormat)NumberFormat.getInstance(locale));
+        format.setGroupingSize(3);
+        if("fa".equalsIgnoreCase(lang) && !"TJ".equalsIgnoreCase(country))
+            format.setDecimalFormatSymbols(new DecimalFormatSymbols());
+        return format;
     }
 }

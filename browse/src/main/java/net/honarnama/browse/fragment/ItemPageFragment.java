@@ -46,8 +46,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -181,7 +184,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     mShare.setVisibility(View.VISIBLE);
                     Item item = (Item) task.getResult();
                     mNameTextView.setText(item.getName());
-                    mPriceTextView.setText(TextUtil.convertEnNumberToFa(item.getPrice() + " "));
+
+                    NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
+                    String formattedPrice = formatter.format(item.getPrice());
+                    String price = TextUtil.convertEnNumberToFa(formattedPrice);
+                    mPriceTextView.setText(price + " ");
 
                     mDescEditText.setText(item.getDescription());
 
@@ -409,7 +416,12 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             similarItemImage.loadInBackground(item.getParseFile(Item.IMAGE_1));
             similarItemTitle.setText(item.getName());
-            similarPostPrice.setText(TextUtil.convertEnNumberToFa(item.getPrice() + " ") + getString(R.string.toman));
+
+            NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
+            String formattedPrice = formatter.format(item.getPrice());
+            String price = TextUtil.convertEnNumberToFa(formattedPrice);
+
+            similarPostPrice.setText(price + " " + getString(R.string.toman));
 
             mLayoutParams = new LayoutParams(mSimilarItemViewWidth, LayoutParams.WRAP_CONTENT);
             if ((i % 3) == 0) {
