@@ -2,6 +2,7 @@ package net.honarnama.browse.adapter;
 
 import net.honarnama.browse.fragment.CatsFragment;
 import net.honarnama.browse.fragment.ChildFragment;
+import net.honarnama.browse.fragment.EventsFragment;
 import net.honarnama.browse.fragment.FavsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
 import net.honarnama.browse.fragment.ShopsFragment;
@@ -55,11 +56,11 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
             case TAB_HOME:
                 return ItemsFragment.getInstance();
 
-            case TAB_EVENTS:
-                return CatsFragment.getInstance();
-
             case TAB_SHOPS:
                 return ShopsFragment.getInstance();
+
+            case TAB_EVENTS:
+                return EventsFragment.getInstance();
 
             case TAB_FAVS:
                 return FavsFragment.getInstance();

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bordered_background"
+                android:id="@+id/event_row_container"
+        >
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/event_image_in_list_container"
+            >
+        <RelativeLayout
+                style="@style/GenericProgressBackground"
+                android:id="@+id/event_image_loading_panel"
+                android:visibility="gone"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="5dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bordered_box"
+                >
+            <ProgressBar
+                    style="@style/GenericProgressIndicator"
+                    android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
+
+        <com.parse.ImageSelector
+                android:id="@+id/event_image_in_list"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:src="@drawable/camera_insta"
+                app:riv_border_width="1dp"
+                app:riv_border_color="@color/gray_light"
+                />
+    </RelativeLayout>
+
+
+    <TextView
+            android:id="@+id/event_title_in_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_alignTop="@android:id/icon"
+            android:layout_toLeftOf="@id/event_image_in_list_container"
+            style="@style/default_text_view"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              style="@style/default_text_view"
+              android:id="@+id/event_desc_in_list"
+              android:layout_below="@id/event_title_in_list"
+              android:layout_marginTop="0dp"
+              android:layout_marginRight="5dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginBottom="5dp"
+              android:layout_toLeftOf="@id/event_image_in_list_container"
+              android:maxLines="3"
+              android:ellipsize="end"
+              android:textSize="14sp"
+            />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            app:iiv_color="@color/extra_dark_green"
+            app:iiv_icon="gmd-place"
+            android:paddingBottom="10dp"
+            android:layout_toLeftOf="@id/event_image_in_list_container"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/event_place_icon_list"
+            />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              style="@style/tiny_text_view"
+              android:id="@+id/event_place_text_view"
+              android:layout_alignParentBottom="true"
+              android:paddingBottom="5dp"
+              android:layout_below="@id/event_desc_in_list"
+              android:layout_toLeftOf="@id/event_place_icon_list"
+            />
+
+</RelativeLayout>

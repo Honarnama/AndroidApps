@@ -9,6 +9,7 @@ import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Shop;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Store;
 
 import android.content.Context;
@@ -54,9 +55,9 @@ public class ShopsParseAdapter extends ParseQueryAdapter {
 
         super.getItemView(shop, convertView, parent);
 
-        mViewHolder.title.setText(shop.getString("name"));
-        mViewHolder.desc.setText(shop.getString("description"));
-        mViewHolder.shopPlace.setText(shop.getParseObject(Store.CITY).getString("name"));
+        mViewHolder.title.setText(shop.getString(Store.NAME));
+        mViewHolder.desc.setText(shop.getString(Store.DESCRIPTION));
+        mViewHolder.shopPlace.setText(shop.getParseObject(Store.CITY).getString(City.NAME));
 
         mViewHolder.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.setVisibility(View.GONE);
