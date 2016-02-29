@@ -71,6 +71,8 @@ public class Item extends net.honarnama.core.model.Item {
 
         final ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.CATEGORY, category);
+        parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
 
         parseQuery.countInBackground(new CountCallback() {
             @Override
@@ -84,6 +86,8 @@ public class Item extends net.honarnama.core.model.Item {
                 } else {
                     final ParseQuery<Item> query = new ParseQuery<Item>(Item.class);
                     query.whereEqualTo(Item.CATEGORY, category);
+                    query.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
+                    query.whereEqualTo(Item.VALIDITY_CHECKED, true);
                     query.setLimit(6);
                     Random random = new Random();
                     query.setSkip(random.nextInt(count));

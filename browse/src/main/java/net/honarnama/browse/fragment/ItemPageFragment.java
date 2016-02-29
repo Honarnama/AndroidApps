@@ -218,7 +218,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                                 mDotsText[i].setPadding(0, 10, 10, 0);
                             }
                             mDotsText[i].setTypeface(null, Typeface.BOLD);
-                            mDotsText[i].setTextColor(getResources().getColor(R.color.dirty_pink_dark));
+                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_launcher_color));
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
@@ -421,10 +421,19 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             mInnerLayout.addView(similarItemLayout);
         }
 
+
+        mHorizontalScrollView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mHorizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+            }
+        }, 10);
+
         if (mSimilarItemsList.size() > 3) {
             mPrev.setVisibility(View.VISIBLE);
             mNext.setVisibility(View.VISIBLE);
         }
+
 
     }
 }

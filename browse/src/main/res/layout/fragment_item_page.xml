@@ -69,7 +69,7 @@
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        app:iiv_color="@color/dirty_pink_dark"
+                        app:iiv_color="@color/amber_launcher_color"
                         app:iiv_icon="gmd-keyboard-arrow-left"/>
             </LinearLayout>
             <LinearLayout
@@ -86,7 +86,7 @@
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        app:iiv_color="@color/dirty_pink_dark"
+                        app:iiv_color="@color/amber_launcher_color"
                         app:iiv_icon="gmd-keyboard-arrow-right"/>
             </LinearLayout>
         </RelativeLayout>
@@ -100,6 +100,7 @@
                 android:scrollbars="none" xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_marginBottom="10dp"
                 android:layout_below="@id/similar_title_container"
+                android:layoutDirection="rtl"
                 >
             <LinearLayout
                     android:id="@+id/innerLayout"

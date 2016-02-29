@@ -111,6 +111,7 @@
                       android:layout_marginLeft="16dp"
                       android:layout_marginTop="10dp"
                       android:layout_below="@id/item_name_text_view"
+                      style="@style/bordered_edit_text"
                 >
             <TextView style="@style/default_text_view"
                       android:text="@string/price_label"
@@ -140,6 +141,8 @@
                   android:layout_marginLeft="16dp"
                   android:layout_marginTop="10dp"
                   android:gravity="right"
+                  android:background="@drawable/bordered_background"
+                  android:padding="10dp"
                 />
 
         <LinearLayout android:layout_width="match_parent"
@@ -148,7 +151,7 @@
                       android:layout_below="@id/item_desc_text_view"
                       android:gravity="right"
                       android:id="@+id/place_container"
-                      android:layout_marginRight="8dp"
+                      android:layout_marginRight="16dp"
                       android:layout_marginTop="10dp"
                 >
 
