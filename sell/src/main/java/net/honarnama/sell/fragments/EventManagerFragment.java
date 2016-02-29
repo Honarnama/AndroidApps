@@ -23,6 +23,7 @@ import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.ParseIO;
@@ -48,20 +49,24 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -94,6 +99,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private EditText mCityEditEext;
     public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
+
+    private Spinner mStartDay, mStartMonth, mStartYear;
+    private Spinner mEndDay, mEndMonth, mEndYear;
+    public Date mStartDate;
+    public Date mEndDate;
+
+    public TextView mStartLabelTextView;
+    public TextView mEndLabelTextView;
 
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileBanner;
@@ -169,6 +182,30 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.event_description_edit_text);
         mPhoneNumberEditText = (EditText) rootView.findViewById(R.id.event_phone_number);
         mCellNumberEditText = (EditText) rootView.findViewById(R.id.event_cell_number);
+
+        mStartDay = (Spinner) rootView.findViewById(R.id.start_day);
+        mStartMonth = (Spinner) rootView.findViewById(R.id.start_month);
+        mStartYear = (Spinner) rootView.findViewById(R.id.start_year);
+
+        mEndDay = (Spinner) rootView.findViewById(R.id.end_day);
+        mEndMonth = (Spinner) rootView.findViewById(R.id.end_month);
+        mEndYear = (Spinner) rootView.findViewById(R.id.end_year);
+
+        mStartLabelTextView = (TextView) rootView.findViewById(R.id.start_label_text_view);
+        mEndLabelTextView = (TextView) rootView.findViewById(R.id.end_label_text_view);
+
+        ArrayAdapter<String> daysAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.days));
+        mStartDay.setAdapter(daysAdapter);
+        mEndDay.setAdapter(daysAdapter);
+
+        ArrayAdapter<String> monthsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.months));
+        mStartMonth.setAdapter(monthsAdapter);
+        mEndMonth.setAdapter(monthsAdapter);
+
+        ArrayAdapter<String> yearsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.years));
+        mStartYear.setAdapter(yearsAdapter);
+        mEndYear.setAdapter(yearsAdapter);
+
 
         mActive = (RadioButton) rootView.findViewById(R.id.active_event);
         mPassive = (RadioButton) rootView.findViewById(R.id.passive_event);
@@ -383,27 +420,38 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_event_name_cant_be_empty));
             return false;
+        } else {
+            mNameEditText.setError(null);
         }
+
         if (mSelectedProvinceId == null) {
             mProvinceEditEext.requestFocus();
             mProvinceEditEext.setError(getString(R.string.error_event_province_not_set));
+        } else {
+            mProvinceEditEext.setError(null);
         }
 
         if (mSelectedCityId == null) {
             mCityEditEext.requestFocus();
             mCityEditEext.setError(getString(R.string.error_event_city_not_set));
+        } else {
+            mCityEditEext.setError(null);
         }
 
         if (mDescriptionEditText.getText().toString().trim().length() == 0) {
             mDescriptionEditText.requestFocus();
             mDescriptionEditText.setError(getString(R.string.error_event_desc_cant_be_empty));
             return false;
+        } else {
+            mDescriptionEditText.setError(null);
         }
 
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
             mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));
             return false;
+        } else {
+            mCellNumberEditText.setError(null);
         }
 
 
@@ -413,6 +461,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mCellNumberEditText.requestFocus();
                 mCellNumberEditText.setError(getString(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
                 return false;
+            } else {
+                mCellNumberEditText.setError(null);
             }
         }
 
@@ -422,7 +472,49 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mPhoneNumberEditText.requestFocus();
                 mPhoneNumberEditText.setError(getString(R.string.error_phone_number_is_not_valid));
                 return false;
+            } else {
+                mPhoneNumberEditText.setError(null);
             }
+        }
+
+        Locale locale = new Locale("fa", "IR");
+        JalaliCalendar jalaliCalendar = new JalaliCalendar(locale);
+
+        String fromYearValue = mStartYear.getItemAtPosition(mStartYear.getSelectedItemPosition()).toString();
+        String fromMonthValue = (mStartMonth.getSelectedItemPosition() + 1) + "";
+        String fromDayValue = (mStartDay.getSelectedItemPosition() + 1) + "";
+
+        String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
+        mStartDate = jalaliCalendar.getGregorianDate(userEnteredStartDate);
+        String checkJalaliDate = jalaliCalendar.getJalaliDate(mStartDate);
+        if (!checkJalaliDate.equals(userEnteredStartDate)) {
+            mStartDay.requestFocus();
+            mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mStartLabelTextView.setError(null);
+        }
+
+
+        String toYearValue = mEndYear.getItemAtPosition(mEndYear.getSelectedItemPosition()).toString();
+        String toMonthValue = (mEndMonth.getSelectedItemPosition() + 1) + "";
+        String toDayValue = (mEndDay.getSelectedItemPosition() + 1) + "";
+
+        String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
+        mEndDate = jalaliCalendar.getGregorianDate(userEnteredEndDate);
+        checkJalaliDate = jalaliCalendar.getJalaliDate(mEndDate);
+        if (!checkJalaliDate.equals(userEnteredEndDate)) {
+            mEndDay.requestFocus();
+            mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mEndLabelTextView.setError(null);
         }
 
         return true;
@@ -545,6 +637,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 Toast.makeText(getActivity(), getString(R.string.error_updating_event_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                             }
                         } else {
+
+
                             eventObject.setActive(mActive.isChecked());
                             eventObject.setCity(task.getResult());
                             eventObject.setName(mNameEditText.getText().toString().trim());
@@ -552,6 +646,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             eventObject.setDescription(mDescriptionEditText.getText().toString().trim());
                             eventObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
                             eventObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
+                            eventObject.setStartDate(mStartDate);
+                            eventObject.setEndtDate(mEndDate);
 
                             if (mBannerImageView.isDeleted()) {
                                 eventObject.remove(Event.BANNER);

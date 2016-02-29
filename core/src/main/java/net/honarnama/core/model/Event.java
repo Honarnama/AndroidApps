@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.Date;
+
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
@@ -49,6 +51,8 @@ public class Event extends ParseObject {
     public static String OBJECT_ID = "objectId";
     public static String ACTIVE = "active";
     public static String ADDRESS = "address";
+    public static String START_DATE = "start_date";
+    public static String END_DATE = "end_date";
 
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
@@ -74,6 +78,23 @@ public class Event extends ParseObject {
 
     public boolean getActive() {
         return getBoolean(ACTIVE);
+    }
+
+    public void setStartDate(Date date) {
+        put(START_DATE, date);
+    }
+
+    public Date getStartDate() {
+        return getDate(START_DATE);
+    }
+
+
+    public void setEndtDate(Date date) {
+        put(END_DATE, date);
+    }
+
+    public Date getEndDate() {
+        return getDate(END_DATE);
     }
 
     public void setActive(boolean value) {
