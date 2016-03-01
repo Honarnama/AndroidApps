@@ -156,8 +156,11 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری تو برنامه‌ی هنرنما رو می‌خواستم بهت پیشنهاد بدم." + "\n" + mNameTextView.getText() +
-                    "\n" + "http://www.honarnama.net/event/" + mEventId);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + mNameTextView.getText().toString() +"\n"+
+ "تو برنامه هنرنما ثبت شده. "
+                     +
+                    "جزئیاتشو اینجا میتونی ببینی:"
+                   + "\n" + "http://www.honarnama.net/event/" + mEventId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

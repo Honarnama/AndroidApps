@@ -237,17 +237,25 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         if (data != null) {
             if (intent.getAction().equals(Intent.ACTION_VIEW)) {
                 List<String> segments = data.getPathSegments();
-                Log.e("inja", segments + "");
                 if (segments.size() > 1 && segments.get(0).equals("shop")) {
                     String shopId = segments.get(1).replace("/", "");
                     mMainTabBar.setSelectedTab(TAB_SHOPS);
                     displayShopPage(shopId, true);
                     return;
                 }
+
+                if (segments.size() > 1 && segments.get(0).equals("event")) {
+                    String eventId = segments.get(1).replace("/", "");
+                    mMainTabBar.setSelectedTab(TAB_EVENTS);
+                    displayEventPage(eventId, true);
+                    return;
+                }
+
                 if (segments.size() > 1 && segments.get(0).equals("item")) {
                     String itemId = segments.get(1).replace("/", "");
                     mMainTabBar.setSelectedTab(TAB_HOME);
                     displayItemPage(itemId, true);
+                    return;
                 }
             }
         }
