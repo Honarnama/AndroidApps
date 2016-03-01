@@ -50,7 +50,7 @@ public class EventsParseAdapter extends ParseQueryAdapter {
         ParseFile eventBanner = event.getParseFile(Event.BANNER);
         if (eventBanner == null) {
             if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithoutImage)) {
-                convertView = View.inflate(getContext(), R.layout.event_row_no_image, null);
+                convertView = View.inflate(getContext(), R.layout.event_row, null);
                 mViewHolderWithoutImage = new ViewHolderWithoutImage(convertView);
                 convertView.setTag(mViewHolderWithoutImage);
             } else {
@@ -59,8 +59,8 @@ public class EventsParseAdapter extends ParseQueryAdapter {
 
             super.getItemView(event, convertView, parent);
 
-            mViewHolderWithoutImage.title.setText(event.getString(Event.NAME));
-            mViewHolderWithoutImage.desc.setText(event.getString(Event.DESCRIPTION));
+            mViewHolderWithoutImage.title.setText(event.getName());
+            mViewHolderWithoutImage.desc.setText(event.getDescription());
             mViewHolderWithoutImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
 
         } else {
@@ -74,8 +74,8 @@ public class EventsParseAdapter extends ParseQueryAdapter {
 
             super.getItemView(event, convertView, parent);
 
-            mViewHolderWithImage.title.setText(event.getString(Event.NAME));
-            mViewHolderWithImage.desc.setText(event.getString(Event.DESCRIPTION));
+            mViewHolderWithImage.title.setText(event.getName());
+            mViewHolderWithImage.desc.setText(event.getDescription());
             mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
 
             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
@@ -96,7 +96,6 @@ public class EventsParseAdapter extends ParseQueryAdapter {
         TextView title;
         TextView desc;
         ImageSelector icon;
-        RelativeLayout eventRowContainer;
         RelativeLayout imageLoadingPanel;
         TextView place;
 
@@ -104,7 +103,6 @@ public class EventsParseAdapter extends ParseQueryAdapter {
             title = (TextView) view.findViewById(R.id.event_title_in_list);
             desc = (TextView) view.findViewById(R.id.event_desc_in_list);
             icon = (ImageSelector) view.findViewById(R.id.event_image_in_list);
-            eventRowContainer = (RelativeLayout) view.findViewById(R.id.event_row_container);
             imageLoadingPanel = (RelativeLayout) view.findViewById(R.id.event_image_loading_panel);
             place = (TextView) view.findViewById(R.id.event_place_text_view);
 
