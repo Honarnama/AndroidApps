@@ -241,4 +241,5 @@
     <string name="event_info">مشخصات رویداد</string>
     <string name="toman">تومان</string>
     <string name="price_label">قیمت:</string>
+    <string name="event_address_label">محل برگزاری:</string>
 </resources>

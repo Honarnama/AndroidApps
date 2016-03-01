@@ -17,6 +17,7 @@
                     android:gravity="right"
                     android:layoutDirection="rtl"
             >
+
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/event_banner_container"
@@ -112,10 +113,36 @@
                     android:paddingLeft="5dp"
                     />
 
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_below="@id/event_name_text_view"
+                          android:gravity="right"
+                          android:id="@+id/place_container"
+                          android:layout_marginRight="16dp"
+                    >
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:iiv_color="@color/extra_dark_green"
+                        app:iiv_icon="gmd-place"
+                        android:paddingBottom="5dp"
+                        android:id="@+id/event_place_icon"
+                        />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          style="@style/tiny_text_view"
+                          android:id="@+id/event_place_text_view"
+                          android:textSize="14sp"
+                          android:textColor="@color/extra_dark_green"
+                          android:layout_gravity="right|bottom"
+                        />
+            </LinearLayout>
+
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                       style="@style/default_text_view"
                       android:id="@+id/event_date_text_view"
-                      android:layout_below="@id/event_name_text_view"
+                      android:layout_below="@id/place_container"
                       android:layout_marginRight="16dp"
                       android:layout_marginLeft="16dp"
                       android:layout_marginTop="10dp"
@@ -138,32 +165,26 @@
                       android:lineSpacingExtra="5dp"
                     />
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:layout_below="@id/event_desc_text_view"
-                          android:gravity="right"
-                          android:id="@+id/place_container"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginTop="10dp"
-                    >
 
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        app:iiv_color="@color/extra_dark_green"
-                        app:iiv_icon="gmd-place"
-                        android:paddingBottom="5dp"
-                        android:id="@+id/event_place_icon"
+                <TextView
+                        style="@style/default_text_view"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_below="@id/event_desc_text_view"
+                        android:background="@drawable/bordered_background"
+                        android:id="@+id/address"
+                        android:text="@string/event_address_label"
+                        android:editable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:lineSpacingExtra="5dp"
+                        android:gravity="center_vertical|right"
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          style="@style/tiny_text_view"
-                          android:id="@+id/event_place_text_view"
-                          android:textSize="14sp"
-                          android:textColor="@color/extra_dark_green"
-                          android:layout_gravity="right|bottom"
-                        />
-            </LinearLayout>
 
         </RelativeLayout>
 

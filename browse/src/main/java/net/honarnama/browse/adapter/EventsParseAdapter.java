@@ -33,6 +33,7 @@ public class EventsParseAdapter extends ParseQueryAdapter {
                 ParseQuery<Event> parseQuery = new ParseQuery<Event>(Event.class);
                 parseQuery.whereEqualTo(Event.STATUS, Event.STATUS_CODE_VERIFIED);
                 parseQuery.whereEqualTo(Event.VALIDITY_CHECKED, true);
+                parseQuery.whereEqualTo(Event.ACTIVE, true);
                 parseQuery.include(Event.CITY);
                 return parseQuery;
             }

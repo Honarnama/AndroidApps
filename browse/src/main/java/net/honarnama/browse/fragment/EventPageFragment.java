@@ -20,6 +20,8 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.TextUtil;
 
+import org.w3c.dom.Text;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -52,6 +54,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public TextView mNameTextView;
     public TextView mDateTextView;
     public TextView mDescTextView;
+    public TextView mAddreddTextView;
     public TextView mPlaceTextView;
     private ParseUser mOwner;
 
@@ -118,6 +121,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mNameTextView = (TextView) rootView.findViewById(R.id.event_name_text_view);
         mDateTextView = (TextView) rootView.findViewById(R.id.event_date_text_view);
         mDescTextView = (TextView) rootView.findViewById(R.id.event_desc_text_view);
+        mAddreddTextView = (TextView) rootView.findViewById(R.id.address);
         mPlaceTextView = (TextView) rootView.findViewById(R.id.event_place_text_view);
         mShare = (RelativeLayout) rootView.findViewById(R.id.event_share_container);
         mShare.setOnClickListener(this);
@@ -175,6 +179,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     );
 
                     mDescTextView.setText(event.getDescription());
+                    mAddreddTextView.append(" "+event.getAddress());
                     mPlaceTextView.setText(event.getProvince().getString(Provinces.NAME) + "، " + event.getCity().getString(City.NAME));
 
                 }

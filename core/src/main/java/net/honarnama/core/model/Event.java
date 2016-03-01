@@ -251,6 +251,7 @@ public class Event extends ParseObject {
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(OBJECT_NAME);
         parseQuery.whereEqualTo(VALIDITY_CHECKED, true);
         parseQuery.whereEqualTo(STATUS, Event.STATUS_CODE_VERIFIED);
+//        parseQuery.whereEqualTo(ACTIVE, activeOnly);
         parseQuery.whereEqualTo(OBJECT_ID, eventId);
         parseQuery.include(PROVINCE);
         parseQuery.include(CITY);
