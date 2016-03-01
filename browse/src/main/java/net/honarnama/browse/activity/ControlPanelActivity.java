@@ -7,6 +7,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
+import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
@@ -49,6 +50,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private int mActiveTab;
     private MainTabBar mMainTabBar;
     private String mShopId;
+    private String mEventId;
     private String mItemId;
     public TextView mTitle;
 
@@ -128,6 +130,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mTitle.setText(R.string.art_shop);
     }
 
+    public void displayEventPage(String eventId, boolean isExternal) {
+        setEventId(eventId);
+//        mMainTabBar.deselectAllTabs();
+        switchFragment(EventPageFragment.getInstance(eventId), isExternal);
+        mTitle.setText(R.string.art_event);
+    }
+
     public void displayItemPage(String itemId, boolean isExternal)
     {
         setItemId(itemId);
@@ -139,6 +148,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void setShopId(String shopId) {
         mShopId = shopId;
+    }
+
+    public void setEventId(String eventId) {
+        mEventId = eventId;
     }
 
     public void setItemId(String itemId) {

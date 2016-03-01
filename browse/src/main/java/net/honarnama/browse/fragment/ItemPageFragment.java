@@ -31,9 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,7 +44,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +65,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public TextView mNameTextView;
     public TextView mPriceTextView;
-    public TextView mDescEditText;
+    public TextView mDescTextView;
     public TextView mPlaceTextView;
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
@@ -154,7 +151,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
         mPriceTextView = (TextView) rootView.findViewById(R.id.price);
-        mDescEditText = (TextView) rootView.findViewById(R.id.item_desc_text_view);
+        mDescTextView = (TextView) rootView.findViewById(R.id.item_desc_text_view);
         mPlaceTextView = (TextView) rootView.findViewById(R.id.item_place_text_view);
         mShare = (RelativeLayout) rootView.findViewById(R.id.item_share_container);
         mShare.setOnClickListener(this);
@@ -190,7 +187,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     String price = TextUtil.convertEnNumberToFa(formattedPrice);
                     mPriceTextView.setText(price + " ");
 
-                    mDescEditText.setText(item.getDescription());
+                    mDescTextView.setText(item.getDescription());
 
                     mShop = item.getStore();
                     mPlaceTextView.setText(mShop.getProvince().getString(Provinces.NAME) + "، " + mShop.getCity().getString(City.NAME));

@@ -244,4 +244,39 @@ public class Event extends ParseObject {
         });
         return tcs.getTask();
     }
+
+    public static Task<ParseObject> getEventById(final String eventId) {
+        final TaskCompletionSource<ParseObject> tcs = new TaskCompletionSource<>();
+
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(OBJECT_NAME);
+        parseQuery.whereEqualTo(VALIDITY_CHECKED, true);
+        parseQuery.whereEqualTo(STATUS, Event.STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(OBJECT_ID, eventId);
+        parseQuery.include(PROVINCE);
+        parseQuery.include(CITY);
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+            tcs.setError(new NetworkErrorException("No network connection."));
+            return tcs.getTask();
+        }
+
+        parseQuery.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject event, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(event);
+                } else {
+                    tcs.trySetError(e);
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG,
+                                "Error getting event info for " + eventId + ". Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error getting event info for " + eventId + ". Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+                    }
+                }
+            }
+        });
+
+        return tcs.getTask();
+    }
 }

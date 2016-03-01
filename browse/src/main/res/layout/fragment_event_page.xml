@@ -1,0 +1,158 @@
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+        android:id="@+id/fragment_scroll_view"
+        >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="0dp"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:layoutDirection="rtl"
+            >
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/event_banner_container"
+                >
+
+            <FrameLayout
+                    android:id="@+id/event_banner_frame_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.parse.ImageSelector
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/event_banner_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentTop="true"
+                        android:src="@drawable/party_flags"
+                        app:riv_corner_radius="0dp"
+                        app:riv_border_width="0dp"
+                        app:riv_oval="false"
+                        app:outputX="640"
+                        app:outputY="640"
+                        app:riv_border_color="@color/gray_super_extra_light"
+                        android:scaleType="centerCrop"
+                        android:adjustViewBounds="true"
+                        app:removable="true"
+                        app:imageSelectorIndex="1"
+                        />
+                <ProgressBar
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        style="@style/GenericProgressIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:id="@+id/banner_progress_bar"
+                        android:visibility="gone"
+                        />
+                <View android:id="@+id/fade_bg"
+                      android:layout_width="fill_parent"
+                      android:layout_height="?attr/actionBarSize"
+                      android:background="@drawable/fade_back"
+                      android:visibility="visible"
+                      android:layout_alignParentTop="true"
+                        />
+
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/event_share_container"
+                                android:visibility="gone"
+                        >
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:iiv_color="@color/white"
+                            app:iiv_icon="gmd-share"
+                            android:layout_gravity="top|right"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="16dp"
+                            android:id="@+id/share_event"
+
+                            />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:text="@string/share_us"
+                              android:textSize="14sp"
+                              android:textColor="@color/white"
+                              android:paddingRight="5dp"
+                              android:layout_toLeftOf="@id/share_event"
+                              android:layout_marginTop="16dp"
+                            />
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/event_banner_container"
+                        android:id="@+id/event_info_container"
+                        android:visibility="gone"
+                >
+            <TextView
+                    android:layout_margin="10dp"
+                    android:id="@+id/event_name_text_view"
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="5dp"
+                    />
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      style="@style/default_text_view"
+                      android:id="@+id/event_desc_text_view"
+                      android:layout_below="@id/event_name_text_view"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginTop="10dp"
+                      android:gravity="right"
+                      android:background="@drawable/bordered_background"
+                      android:padding="10dp"
+                    />
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_below="@id/event_desc_text_view"
+                          android:gravity="right"
+                          android:id="@+id/place_container"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginTop="10dp"
+                    >
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:iiv_color="@color/extra_dark_green"
+                        app:iiv_icon="gmd-place"
+                        android:paddingBottom="5dp"
+                        android:id="@+id/event_place_icon"
+                        />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          style="@style/tiny_text_view"
+                          android:id="@+id/event_place_text_view"
+                          android:textSize="14sp"
+                          android:textColor="@color/extra_dark_green"
+                          android:layout_gravity="right|bottom"
+                        />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</net.honarnama.core.utils.ObservableScrollView>

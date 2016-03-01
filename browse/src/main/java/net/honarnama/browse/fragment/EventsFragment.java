@@ -103,9 +103,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ParseObject selectedStore = (ParseObject) mEventsParseAdapter.getItem(i);
+        ParseObject selectedEvent = (ParseObject) mEventsParseAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayShopPage(selectedStore.getObjectId(), false);
+        controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
     }
 
     @Override
