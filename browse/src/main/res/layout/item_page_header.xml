@@ -120,11 +120,13 @@
                       android:cursorVisible="false"
                       android:focusable="false"
                       android:textStyle="bold"
+                      android:lineSpacingExtra="5dp"
                     />
             <TextView
                     style="@style/default_text_view"
                     android:layout_marginRight="10dp"
                     android:id="@+id/price"
+                    android:lineSpacingExtra="5dp"
                     />
             <TextView
                     style="@style/default_text_view"
@@ -142,6 +144,7 @@
                   android:gravity="right"
                   android:background="@drawable/bordered_background"
                   android:padding="10dp"
+                  android:lineSpacingExtra="5dp"
                 />
 
         <LinearLayout android:layout_width="match_parent"

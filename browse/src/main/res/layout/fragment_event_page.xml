@@ -13,6 +13,7 @@
                     android:layout_height="match_parent"
                     android:padding="0dp"
                     android:layout_gravity="right"
+                    android:background="@color/gray_extra_light"
                     android:gravity="right"
                     android:layoutDirection="rtl"
             >
@@ -113,7 +114,7 @@
 
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                       style="@style/default_text_view"
-                      android:id="@+id/event_desc_text_view"
+                      android:id="@+id/event_date_text_view"
                       android:layout_below="@id/event_name_text_view"
                       android:layout_marginRight="16dp"
                       android:layout_marginLeft="16dp"
@@ -121,6 +122,20 @@
                       android:gravity="right"
                       android:background="@drawable/bordered_background"
                       android:padding="10dp"
+                      android:lineSpacingExtra="5dp"
+                    />
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      style="@style/default_text_view"
+                      android:id="@+id/event_desc_text_view"
+                      android:layout_below="@id/event_date_text_view"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginTop="10dp"
+                      android:gravity="right"
+                      android:background="@drawable/bordered_background"
+                      android:padding="10dp"
+                      android:lineSpacingExtra="5dp"
                     />
 
             <LinearLayout android:layout_width="match_parent"

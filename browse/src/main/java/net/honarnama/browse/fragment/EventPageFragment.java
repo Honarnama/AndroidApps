@@ -12,11 +12,10 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
-import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
-import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.TextUtil;
@@ -35,9 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.Locale;
 
 import bolts.Continuation;
@@ -53,12 +50,15 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
+    public TextView mDateTextView;
     public TextView mDescTextView;
     public TextView mPlaceTextView;
     private ParseUser mOwner;
 
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
+    private ImageSelector mBannerImageView;
+
     private RelativeLayout mShare;
     public String mEventId;
 
@@ -112,10 +112,11 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.event_banner_frame_layout);
-
+        mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.event_name_text_view);
+        mDateTextView = (TextView) rootView.findViewById(R.id.event_date_text_view);
         mDescTextView = (TextView) rootView.findViewById(R.id.event_desc_text_view);
         mPlaceTextView = (TextView) rootView.findViewById(R.id.event_place_text_view);
         mShare = (RelativeLayout) rootView.findViewById(R.id.event_share_container);
@@ -136,7 +137,43 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
                     Event event = (Event) task.getResult();
+
+                    ParseFile eventBanner = event.getParseFile(Event.BANNER);
+                    if (eventBanner != null) {
+                        mBannerProgressBar.setVisibility(View.VISIBLE);
+                        mBannerImageView.loadInBackground(eventBanner, new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+                                mBannerProgressBar.setVisibility(View.GONE);
+                                if (e != null) {
+                                    logE("Getting  banner image for event " + mEventId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+                        });
+                    }
+
                     mNameTextView.setText(event.getName());
+
+                    Locale locale = new Locale("fa", "IR");
+                    JalaliCalendar jalaliCalendar = new JalaliCalendar(locale);
+
+                    Date startDate = event.getStartDate();
+                    String jalaliStartDate = jalaliCalendar.getJalaliDate(startDate);
+
+                    Date endDate = event.getEndDate();
+                    String jalaliEndDate = jalaliCalendar.getJalaliDate(endDate);
+
+                    mDateTextView.setText("تاریخ برگزاری رویداد از " +
+                                    TextUtil.convertEnNumberToFa(jalaliStartDate) +
+                                    " تا " +
+                                    TextUtil.convertEnNumberToFa(jalaliEndDate) +
+                                    " است. "
+
+                    );
+
                     mDescTextView.setText(event.getDescription());
                     mPlaceTextView.setText(event.getProvince().getString(Provinces.NAME) + "، " + event.getCity().getString(City.NAME));
 
@@ -156,11 +193,11 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + mNameTextView.getText().toString() +"\n"+
- "تو برنامه هنرنما ثبت شده. "
-                     +
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + mNameTextView.getText().toString() + "\n" +
+                    "تو برنامه هنرنما ثبت شده. "
+                    +
                     "جزئیاتشو اینجا میتونی ببینی:"
-                   + "\n" + "http://www.honarnama.net/event/" + mEventId);
+                    + "\n" + "http://www.honarnama.net/event/" + mEventId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }
