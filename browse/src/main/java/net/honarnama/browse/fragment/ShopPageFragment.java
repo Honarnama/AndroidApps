@@ -15,6 +15,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
+import net.honarnama.browse.widget.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
@@ -26,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,6 +140,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         emptyListContainer.setVisibility(View.GONE);
         loadingCircle.setVisibility(View.VISIBLE);
 
+        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+
         mItemsAdapter = new ItemsAdapter(getActivity());
 
         Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
@@ -151,10 +155,23 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
-                    ParseObject shop = task.getResult();
+                    final ParseObject shop = task.getResult();
                     mOwner = shop.getParseUser(Store.OWNER);
                     mShopName.setText(shop.getString(Store.NAME));
                     mShopDesc.setText(shop.getString(Store.DESCRIPTION));
+
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ContactDialog contactDialog = new ContactDialog();
+                            contactDialog.showDialog(getActivity(), shop.getString(Store.PHONE_NUMBER), shop.getString(Store.CELL_NUMBER),
+                                    getResources().getString(R.string.item_contact_dialog_warning_msg));
+
+                        }
+                    });
+
+
                     String province = shop.getParseObject(Store.PROVINCE).getString(Provinces.NAME);
                     String city = shop.getParseObject(Store.CITY).getString(City.NAME);
 
