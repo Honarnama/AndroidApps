@@ -45,35 +45,64 @@
                   android:visibility="visible"
                   android:layout_alignParentTop="true"
                     />
+        </FrameLayout>
 
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/item_share_container"
-                            android:visibility="gone"
-                    >
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        app:iiv_color="@color/white"
-                        app:iiv_icon="gmd-share"
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:id="@+id/item_share_container"
+                        android:visibility="gone"
                         android:layout_gravity="top|right"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
-                        android:id="@+id/share_item"
+                >
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-share"
+                    android:id="@+id/share_item"
+                    />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/share_us"
+                      android:textSize="14sp"
+                      android:textColor="@color/white"
+                      android:paddingRight="5dp"
+                      android:layout_toLeftOf="@id/share_item"
+                    />
+        </RelativeLayout>
 
-                        />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:text="@string/share_us"
-                          android:textSize="14sp"
-                          android:textColor="@color/white"
-                          android:paddingRight="5dp"
-                          android:layout_toLeftOf="@id/share_item"
-                          android:layout_marginTop="16dp"
-                        />
-            </RelativeLayout>
 
-        </FrameLayout>
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:id="@+id/item_bookmark_container"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-favorite-border"
+                    android:id="@+id/bookmark"
+                    android:visibility="gone"
+                    />
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-favorite"
+                    android:id="@+id/remove_bookmark"
+                    android:visibility="gone"
+                    />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

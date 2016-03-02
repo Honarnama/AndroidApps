@@ -70,7 +70,6 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         ImageSelector imageView = mViewHolder.imageSelector;
-        Log.e("inja ", "hghjg");
 
         imageView.loadInBackground(mImages.get(position), new GetDataCallback() {
             @Override

@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layoutDirection="rtl"
+        >
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bordered_background"
+            android:padding="10dp"
+            >
+        <TextView
+                style="@style/section_title"
+                android:text="حذف از فهرست محصولات نشان شده"
+                android:textColor="@color/dark_cyan"
+                android:id="@+id/confirm_title"
+                android:layout_marginTop="20dp"
+                />
+
+
+        <TextView
+                style="@style/tiny_text_view"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/confirm_title"
+                android:lineSpacingExtra="10dp"
+                android:id="@+id/contact_warning"
+                android:layout_marginBottom="10dp"
+                android:text="آیا می‌خواهید محصول را از فهرست محصولات نشان شده‌تان حذف کنید؟"
+                />
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@id/contact_warning"
+                      android:orientation="horizontal"
+                      android:layout_centerHorizontal="true"
+                      android:layout_marginBottom="10dp"
+                      android:layout_marginTop="10dp"
+                >
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:text="بله"
+                    android:id="@+id/yes"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/yes_button_back"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    />
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:text="بی‌خیال"
+                    android:id="@+id/close_button"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/no_button_back"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

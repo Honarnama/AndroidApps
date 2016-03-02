@@ -10,6 +10,7 @@ import com.parse.ParseObject;
 
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
@@ -86,6 +87,7 @@ public abstract class HonarnamaBaseApp extends Application {
         ParseObject.registerSubclass(Provinces.class);
         ParseObject.registerSubclass(City.class);
         ParseObject.registerSubclass(Item.class);
+        ParseObject.registerSubclass(Bookmark.class);
 
         Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
 

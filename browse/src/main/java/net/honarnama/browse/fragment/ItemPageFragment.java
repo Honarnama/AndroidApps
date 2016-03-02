@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.mikepenz.iconics.view.IconicsTextView;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
@@ -16,7 +17,9 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.model.Item;
+import net.honarnama.browse.widget.ConfirmationDialog;
 import net.honarnama.browse.widget.ContactDialog;
+import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
@@ -83,14 +86,17 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private RelativeLayout mShare;
+    public IconicsImageView mBookmarkImageView;
+    public IconicsImageView mRemoveBoomarkImageView;
+
     public String mItemId;
 
     ImageAdapter mImageAdapter;
 
     public RelativeLayout mShopContainer;
-
     public Store mShop;
 
+    public Item mItem;
     LayoutParams mLayoutParams;
     LinearLayout mNext, mPrev;
     int mSimilarItemViewWidth;
@@ -158,6 +164,12 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mShare = (RelativeLayout) rootView.findViewById(R.id.item_share_container);
         mShare.setOnClickListener(this);
 
+        mBookmarkImageView = (IconicsImageView) rootView.findViewById(R.id.bookmark);
+        mBookmarkImageView.setOnClickListener(this);
+
+        mRemoveBoomarkImageView = (IconicsImageView) rootView.findViewById(R.id.remove_bookmark);
+        mRemoveBoomarkImageView.setOnClickListener(this);
+
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.item_shop_container);
         mShopContainer.setOnClickListener(this);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
@@ -183,19 +195,39 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
-                    Item item = (Item) task.getResult();
-                    mNameTextView.setText(item.getName());
+                    mItem = (Item) task.getResult();
 
+                    Bookmark.isBookmarkedAlready(mItem).continueWith(new Continuation<Boolean, Object>() {
+                        @Override
+                        public Object then(Task<Boolean> task) throws Exception {
+                            if (task.isFaulted()) {
+
+                            } else {
+                                boolean isBookmarked = task.getResult();
+                                if (isBookmarked) {
+                                    mBookmarkImageView.setVisibility(View.GONE);
+                                    mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+                                } else {
+                                    mBookmarkImageView.setVisibility(View.VISIBLE);
+                                    mRemoveBoomarkImageView.setVisibility(View.GONE);
+                                }
+                            }
+                            return null;
+                        }
+                    });
+
+
+                    mNameTextView.setText(mItem.getName());
                     NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
-                    String formattedPrice = formatter.format(item.getPrice());
+                    String formattedPrice = formatter.format(mItem.getPrice());
                     String price = TextUtil.convertEnNumberToFa(formattedPrice);
 
 
                     mPriceTextView.setText(price + " ");
 
-                    mDescTextView.setText(item.getDescription());
+                    mDescTextView.setText(mItem.getDescription());
 
-                    mShop = item.getStore();
+                    mShop = mItem.getStore();
                     mPlaceTextView.setText(mShop.getProvince().getString(Provinces.NAME) + "، " + mShop.getCity().getString(City.NAME));
                     mShopNameTextView.append(mShop.getName());
                     mShopLogo.loadInBackground(mShop.getLogo(), new GetDataCallback() {
@@ -218,7 +250,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
 
-                    ParseFile[] images = item.getImages();
+                    ParseFile[] images = mItem.getImages();
                     List<ParseFile> nonNullImages = new ArrayList<ParseFile>();
                     for (int i = 0; i < net.honarnama.core.model.Item.NUMBER_OF_IMAGES; i++) {
                         if (images[i] != null) {
@@ -246,7 +278,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
-                    Item.getSimilarItemsByCategory(item.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
+                    Item.getSimilarItemsByCategory(mItem.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
                         @Override
                         public Object then(Task<List<Item>> task) throws Exception {
 
@@ -360,6 +392,45 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             startActivity(sendIntent);
         }
 
+        if (v.getId() == R.id.bookmark) {
+            Bookmark.bookmarkItem(mItem).continueWith(new Continuation<Void, Object>() {
+                @Override
+                public Object then(Task<Void> task) throws Exception {
+                    if (task.isFaulted()) {
+
+                    } else {
+                        mBookmarkImageView.setVisibility(View.GONE);
+                        mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+                    }
+                    return null;
+                }
+            });
+        }
+
+        if (v.getId() == R.id.remove_bookmark) {
+            final ConfirmationDialog confirmationDialog = new ConfirmationDialog(getActivity());
+
+            confirmationDialog.showDialog(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bookmark.removeBookmark(mItem).continueWith(new Continuation<Void, Object>() {
+                        @Override
+                        public Object then(Task<Void> task) throws Exception {
+                            confirmationDialog.dismiss();
+                            if (task.isFaulted()) {
+
+                            } else {
+                                mBookmarkImageView.setVisibility(View.VISIBLE);
+                                mRemoveBoomarkImageView.setVisibility(View.GONE);
+                            }
+                            return null;
+                        }
+                    });
+                }
+            });
+
+        }
+
         if (v.getId() == R.id.item_shop_container) {
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
             controlPanelActivity.displayShopPage(mShop.getObjectId(), false);
@@ -470,9 +541,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             mPrev.setVisibility(View.VISIBLE);
             mNext.setVisibility(View.VISIBLE);
         }
-
-
     }
+
 }
 
 
