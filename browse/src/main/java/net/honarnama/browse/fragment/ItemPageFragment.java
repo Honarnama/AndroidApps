@@ -16,6 +16,7 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.model.Item;
+import net.honarnama.browse.widget.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
@@ -30,6 +31,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,6 +168,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
         mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
+        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
@@ -185,6 +189,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
                     String formattedPrice = formatter.format(item.getPrice());
                     String price = TextUtil.convertEnNumberToFa(formattedPrice);
+
+
                     mPriceTextView.setText(price + " ");
 
                     mDescTextView.setText(item.getDescription());
@@ -197,6 +203,18 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         public void done(byte[] data, ParseException e) {
                         }
                     });
+
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ContactDialog contactDialog = new ContactDialog();
+                            contactDialog.showDialog(getActivity(), mShop.getPhoneNumber(), mShop.getCellNumber(),
+                                    getResources().getString(R.string.item_contact_dialog_warning_msg));
+
+                        }
+                    });
+
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
 

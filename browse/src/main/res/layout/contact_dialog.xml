@@ -1,0 +1,133 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layoutDirection="rtl"
+        >
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/bordered_edit_text"
+            android:id="@+id/contact_container"
+            android:layout_below="@+id/close_button"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            >
+        <TextView
+                style="@style/section_title"
+                android:text="@string/contact_info"
+                android:textColor="@color/dark_cyan"
+                android:id="@+id/contact_title"
+                android:layout_marginTop="10dp"
+                />
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_below="@+id/contact_title"
+                      android:layout_marginTop="16dp"
+                      android:id="@+id/phone_container"
+                >
+
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_icon="gmd-phone"
+                    app:iiv_color="@color/amber_launcher_color"
+                    android:layout_centerInParent="true"
+                    />
+
+            <TextView
+                    style="@style/default_text_view"
+                    android:text="تماس با: "
+                    android:paddingRight="10dp"
+                    />
+
+            <TextView
+                    style="@style/default_text_view"
+                    android:text="-"
+                    android:paddingRight="5dp"
+                    android:clickable="true"
+                    android:id="@+id/phone_text_view"
+                    android:textColor="@color/gray"
+                    />
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_below="@+id/phone_container"
+                      android:layout_marginTop="16dp"
+                      android:id="@+id/cell_container"
+                >
+
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_icon="gmd-phone-android"
+                    app:iiv_color="@color/amber_launcher_color"
+                    android:layout_centerInParent="true"
+                    />
+
+            <TextView
+                    style="@style/default_text_view"
+                    android:text="تماس با: "
+                    android:paddingRight="10dp"
+                    />
+
+            <TextView
+                    style="@style/default_text_view"
+                    android:text="-"
+                    android:paddingRight="5dp"
+                    android:clickable="true"
+                    android:id="@+id/cell_text_view"
+                    android:textColor="@color/gray"
+                    />
+
+        </LinearLayout>
+
+        <TextView
+                style="@style/tiny_text_view"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/cell_container"
+                android:lineSpacingExtra="10dp"
+                android:id="@+id/contact_warning"
+                android:layout_marginBottom="10dp"
+                />
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="-25dp"
+                    android:clickable="true"
+            >
+
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:iiv_icon="gmd-lens"
+                app:iiv_color="@color/super_extra_dark_red"
+                android:layout_centerInParent="true"
+                android:id="@+id/close_button"
+                />
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:iiv_icon="gmd-close"
+                app:iiv_color="@color/white"
+                android:layout_centerInParent="true"
+                android:id="@id/close_button"
+                />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

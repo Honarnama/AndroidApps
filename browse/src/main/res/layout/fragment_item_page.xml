@@ -1,19 +1,18 @@
-
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-<net.honarnama.core.utils.ObservableScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:fadeScrollbars="false"
-        android:layoutDirection="rtl"
-        android:id="@+id/fragment_scroll_view"
-        >
+    <net.honarnama.core.utils.ObservableScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:fadeScrollbars="false"
+            android:layoutDirection="rtl"
+            android:id="@+id/fragment_scroll_view"
+            >
 
 
         <RelativeLayout android:layout_width="match_parent"
@@ -122,7 +121,7 @@
             </HorizontalScrollView>
         </RelativeLayout>
 
-</net.honarnama.core.utils.ObservableScrollView>
+    </net.honarnama.core.utils.ObservableScrollView>
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

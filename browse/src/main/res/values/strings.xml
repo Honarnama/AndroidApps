@@ -28,4 +28,9 @@
     <string name="shop_items">محصولات غرفه</string>
     <string name="art_shop">غرفه هنری</string>
 
+    <string name="item_contact_dialog_warning_msg">
+        پیش از سفارش نهایی و خرید محصول به صورت حضوری از صحت آن مطمئن شوید. چرا که هنرنما هیج‌گونه منفعت و مسئولیتی در قبال معامله شما ندارد.
+
+    </string>
+
 </resources>
