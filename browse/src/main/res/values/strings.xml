@@ -33,4 +33,9 @@
 
     </string>
 
+
+    <string name="event_contact_dialog_warning_msg">
+پیش از شرکت در رویداد، از صحت آن مطمئن شوید. هنرنما هیچ‌گونه منفعت و مسئولیتی در قبال شرکت شما در این رویداد ندارد.
+    </string>
+
 </resources>

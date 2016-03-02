@@ -12,9 +12,11 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.widget.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -26,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,6 +129,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mShare = (RelativeLayout) rootView.findViewById(R.id.event_share_container);
         mShare.setOnClickListener(this);
 
+        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.event_info_container);
 
@@ -140,7 +144,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
-                    Event event = (Event) task.getResult();
+                    final Event event = (Event) task.getResult();
 
                     ParseFile eventBanner = event.getParseFile(Event.BANNER);
                     if (eventBanner != null) {
@@ -179,8 +183,18 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     );
 
                     mDescTextView.setText(event.getDescription());
-                    mAddreddTextView.append(" "+event.getAddress());
+                    mAddreddTextView.append(" " + event.getAddress());
                     mPlaceTextView.setText(event.getProvince().getString(Provinces.NAME) + "، " + event.getCity().getString(City.NAME));
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ContactDialog contactDialog = new ContactDialog();
+                            contactDialog.showDialog(getActivity(), event.getPhoneNumber(), event.getCellNumber(),
+                                    getResources().getString(R.string.event_contact_dialog_warning_msg));
+
+                        }
+                    });
 
                 }
                 return null;
