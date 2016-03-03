@@ -1,6 +1,7 @@
 package net.honarnama.core.model;
 
 import com.crashlytics.android.Crashlytics;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -20,6 +21,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.Date;
+import java.util.List;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -278,6 +280,42 @@ public class Event extends ParseObject {
             }
         });
 
+        return tcs.getTask();
+    }
+
+    public static Task<List<Event>> search(final String searchTerm) {
+        final TaskCompletionSource<List<Event>> tcs = new TaskCompletionSource<>();
+        ParseQuery<Event> parseQuery = new ParseQuery<Event>(Event.class);
+        parseQuery.whereContains(Event.NAME, searchTerm);
+        parseQuery.whereEqualTo(Event.STATUS, STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(Event.VALIDITY_CHECKED, true);
+        parseQuery.whereEqualTo(Event.ACTIVE, true);
+        parseQuery.include(Event.CITY);
+        parseQuery.setLimit(50);
+
+        parseQuery.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(final List<Event> events, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(events);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d(DEBUG_TAG, "Searching events with search term " + searchTerm + " does not have any results.");
+                        }
+                        tcs.trySetResult(null);
+                    } else {
+                        tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG,
+                                    "Searching events with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
+                        } else {
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Searching events with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage() + " // Error: " + e);
+                        }
+                    }
+                }
+            }
+        });
         return tcs.getTask();
     }
 }

@@ -163,6 +163,7 @@ public class Item extends net.honarnama.core.model.Item {
         parseQuery.whereContains(Item.NAME, searchTerm);
         parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+        parseQuery.setLimit(50);
 
         parseQuery.findInBackground(new FindCallback<Item>() {
             @Override

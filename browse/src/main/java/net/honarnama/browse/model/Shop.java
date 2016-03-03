@@ -106,6 +106,8 @@ public class Shop extends Store {
         parseQuery.whereContains(Store.NAME, searchTerm);
         parseQuery.whereEqualTo(Store.STATUS, STATUS_CODE_VERIFIED);
         parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
+        parseQuery.include(Store.CITY);
+        parseQuery.setLimit(50);
 
         parseQuery.findInBackground(new FindCallback<Store>() {
             @Override

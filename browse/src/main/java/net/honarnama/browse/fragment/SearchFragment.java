@@ -1,20 +1,18 @@
 package net.honarnama.browse.fragment;
 
 
-import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseObject;
-import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
+import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
-import net.honarnama.browse.adapter.ItemsParseAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
+import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,12 +35,14 @@ import bolts.Task;
 /**
  * Created by elnaz on 2/11/16.
  */
-public class SearchFragment extends HonarnamaBrowseFragment implements View.OnClickListener {
+public class SearchFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     public static SearchFragment mSearchFragment;
     private ListView mListView;
 
     ItemsAdapter mItemsAdapter;
     ShopsAdapter mShopsAdapter;
+    EventsAdapter mEventsAdapterr;
+
     String msearchTerm;
     public EditText mSearchEditText;
     public View mSearchButton;
@@ -52,6 +51,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     private ToggleButton mItemsToggleButton;
     private ToggleButton mShopsToggleButton;
     private ToggleButton mEventsToggleButton;
+
+    public SearchSegment mSearchSegment;
 
     public synchronized static SearchFragment getInstance() {
         if (mSearchFragment == null) {
@@ -102,6 +103,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
         mShopsAdapter = new ShopsAdapter(HonarnamaBrowseApp.getInstance());
+        mEventsAdapterr = new EventsAdapter(HonarnamaBrowseApp.getInstance());
+
+        mListView.setOnItemClickListener(this);
 
         return rootView;
     }
@@ -126,13 +130,25 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     public void onSelectedTabClick() {
 
     }
-//
-//    @Override
-//    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position);
-//        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-//        controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
-//    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        if (mSearchSegment == SearchSegment.ITEMS) {
+            ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
+            controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+        }
+
+        if (mSearchSegment == SearchSegment.SHOPS) {
+            ParseObject selectedShop = (ParseObject) mShopsAdapter.getItem(position);
+            controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
+        }
+
+        if (mSearchSegment == SearchSegment.EVENTS) {
+            ParseObject selectedEvent = (ParseObject) mEventsAdapterr.getItem(position);
+            controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -141,18 +157,21 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
             if (mItemsToggleButton.isChecked()) {
                 mListView.setAdapter(mItemsAdapter);
+                mSearchSegment = SearchSegment.ITEMS;
                 searchItems();
                 return;
             }
 
             if (mShopsToggleButton.isChecked()) {
                 mListView.setAdapter(mShopsAdapter);
+                mSearchSegment = SearchSegment.SHOPS;
                 searchShops();
                 return;
             }
 
             if (mEventsToggleButton.isChecked()) {
-                mListView.setAdapter(mItemsAdapter);
+                mListView.setAdapter(mEventsAdapterr);
+                mSearchSegment = SearchSegment.EVENTS;
                 searchEvents();
                 return;
             }
@@ -198,22 +217,37 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void searchEvents() {
-        Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
+        Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
             @Override
-            public Object then(Task<List<Item>> task) throws Exception {
+            public Object then(Task<List<Event>> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Searching items with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
+                    logE("Searching events with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    List<Item> foundItems = task.getResult();
-                    mItemsAdapter.setItems(foundItems);
-                    mItemsAdapter.notifyDataSetChanged();
+                    List<Event> foundItems = task.getResult();
+                    mEventsAdapterr.setEvents(foundItems);
+                    mEventsAdapterr.notifyDataSetChanged();
                 }
                 return null;
             }
         });
+    }
+
+    public enum SearchSegment {
+        ITEMS("items", 0),
+        SHOPS("shops", 1),
+        EVENTS("events", 2);
+
+        private String stringValue;
+        private int intValue;
+
+        private SearchSegment(String toString, int value) {
+            stringValue = toString;
+            intValue = value;
+        }
+
     }
 }
 
