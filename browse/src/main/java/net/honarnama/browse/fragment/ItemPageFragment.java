@@ -180,6 +180,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
         mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
+        final IconicsImageView bookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
@@ -211,6 +212,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                                     mBookmarkImageView.setVisibility(View.VISIBLE);
                                     mRemoveBoomarkImageView.setVisibility(View.GONE);
                                 }
+                                bookmarkBack.setVisibility(View.VISIBLE);
                             }
                             return null;
                         }

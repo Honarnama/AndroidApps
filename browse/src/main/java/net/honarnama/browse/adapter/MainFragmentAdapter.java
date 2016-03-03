@@ -1,6 +1,5 @@
 package net.honarnama.browse.adapter;
 
-import net.honarnama.browse.fragment.CatsFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventsFragment;
 import net.honarnama.browse.fragment.FavsFragment;
@@ -16,7 +15,7 @@ import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
+import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 /**
@@ -27,7 +26,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 
     public MainFragmentAdapter(FragmentManager fm) {
         super(fm);
-        fragmentsList.add(ChildFragment.getInstance(TAB_HOME));
+        fragmentsList.add(ChildFragment.getInstance(TAB_ITEMS));
         fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
         fragmentsList.add(ChildFragment.getInstance(TAB_FAVS));
@@ -53,7 +52,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 
     public Fragment getDefaultFragmentForTab(int tabTag) {
         switch (tabTag) {
-            case TAB_HOME:
+            case TAB_ITEMS:
                 return ItemsFragment.getInstance();
 
             case TAB_SHOPS:

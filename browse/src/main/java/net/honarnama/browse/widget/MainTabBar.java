@@ -23,7 +23,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  */
 public class MainTabBar extends LinearLayout {
 
-    public static final int TAB_HOME = 0;
+    public static final int TAB_ITEMS = 0;
 
     public static final int TAB_SHOPS = 1;
 
@@ -64,11 +64,11 @@ public class MainTabBar extends LinearLayout {
         mSelectedTabColor = getContext().getResources().getColor(R.color.amber_launcher_color);
         mNotSelectedTabColor = getContext().getResources().getColor(R.color.gray);
 
-        Tab homeTab = new Tab(Integer.valueOf(TAB_HOME),
+        Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_home)
+                        .icon(GoogleMaterial.Icon.gmd_list)
                         .color(Color.RED)
-                        .sizeDp(20), R.string.main_page);
+                        .sizeDp(20), R.string.items);
         Tab shopsTab = new Tab(Integer.valueOf(TAB_SHOPS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_store)
@@ -81,12 +81,12 @@ public class MainTabBar extends LinearLayout {
                         .sizeDp(20), R.string.events);
         Tab favsTab = new Tab(Integer.valueOf(TAB_FAVS),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_favorite)
+                        .icon(GoogleMaterial.Icon.gmd_stars)
                         .color(Color.RED)
                         .sizeDp(20), R.string.favorites);
         setTabs(new MainTabBar.Tab[]{
                 homeTab, shopsTab, eventsTab, favsTab
-        }, TAB_HOME);
+        }, TAB_ITEMS);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class MainTabBar extends LinearLayout {
 
     public void deselectAllTabs() {
         mSelectedTabTag = null;
-        deselectTabView(findViewWithTag(TAB_HOME));
+        deselectTabView(findViewWithTag(TAB_ITEMS));
         deselectTabView(findViewWithTag(TAB_EVENTS));
         deselectTabView(findViewWithTag(TAB_SHOPS));
         deselectTabView(findViewWithTag(TAB_FAVS));

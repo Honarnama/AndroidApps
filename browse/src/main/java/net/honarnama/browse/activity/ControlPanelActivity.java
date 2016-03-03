@@ -25,7 +25,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -36,7 +35,7 @@ import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_HOME;
+import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
@@ -165,8 +164,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         int tag = (Integer) tabTag;
         mActiveTab = tag;
         switch (tag) {
-            case TAB_HOME:
-                mViewPager.setCurrentItem(TAB_HOME, false);
+            case TAB_ITEMS:
+                mViewPager.setCurrentItem(TAB_ITEMS, false);
                 break;
             case TAB_EVENTS:
                 mViewPager.setCurrentItem(TAB_EVENTS, false);
@@ -178,7 +177,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mViewPager.setCurrentItem(TAB_FAVS, false);
                 break;
             default:
-                mViewPager.setCurrentItem(TAB_HOME, false);
+                mViewPager.setCurrentItem(TAB_ITEMS, false);
                 break;
         }
         mMainFragmentAdapter.getItem(tag).onTabClick();
@@ -193,7 +192,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void setDefaultTab() {
         // Fetch the selected tab index with default
-        int selectedTabIndex = getIntent().getIntExtra(SELECTED_TAB_EXTRA_KEY, TAB_HOME);
+        int selectedTabIndex = getIntent().getIntExtra(SELECTED_TAB_EXTRA_KEY, TAB_ITEMS);
         // Switch to page based on index
         mViewPager.setCurrentItem(selectedTabIndex);
     }
@@ -213,8 +212,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onBackPressed() {
         if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {
-            if (mActiveTab != TAB_HOME) {
-                mMainTabBar.setSelectedTab(TAB_HOME);
+            if (mActiveTab != TAB_ITEMS) {
+                mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
                 finish();
             }
@@ -253,7 +252,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
                 if (segments.size() > 1 && segments.get(0).equals("item")) {
                     String itemId = segments.get(1).replace("/", "");
-                    mMainTabBar.setSelectedTab(TAB_HOME);
+                    mMainTabBar.setSelectedTab(TAB_ITEMS);
                     displayItemPage(itemId, true);
                     return;
                 }
