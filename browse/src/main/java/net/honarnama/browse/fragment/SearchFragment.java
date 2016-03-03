@@ -235,6 +235,20 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSearchEditText.setText("");
+        mItemsToggleButton.setChecked(true);
+        mShopsToggleButton.setChecked(false);
+        mEventsToggleButton.setChecked(false);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     public enum SearchSegment {
         ITEMS("items", 0),
         SHOPS("shops", 1),
