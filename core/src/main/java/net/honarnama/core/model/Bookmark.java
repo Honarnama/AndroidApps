@@ -27,6 +27,12 @@ import bolts.TaskCompletionSource;
 @ParseClassName("Bookmark")
 public class Bookmark extends ParseObject {
 
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/bookmarkModel";
+
+    public static String OBJECT_NAME = "Bookmark";
+
+    public static String ITEM = "item";
+    public static String OBJECT_ID = "objectId";
 
     public Bookmark() {
         super();
@@ -37,13 +43,9 @@ public class Bookmark extends ParseObject {
         put(ITEM, item);
     }
 
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/bookmarkModel";
-
-    public static String OBJECT_NAME = "Bookmark";
-
-    public static String ITEM = "item";
-    public static String OBJECT_ID = "objectId";
-
+    public Item getItem() {
+        return (Item) getParseObject(ITEM);
+    }
 
     public static Task<Void> bookmarkItem(final Item item) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();

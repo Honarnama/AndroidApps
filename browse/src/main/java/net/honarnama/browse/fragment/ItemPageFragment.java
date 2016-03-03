@@ -411,7 +411,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         if (v.getId() == R.id.remove_bookmark) {
             final ConfirmationDialog confirmationDialog = new ConfirmationDialog(getActivity());
-
             confirmationDialog.showDialog(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
