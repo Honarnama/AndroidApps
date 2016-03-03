@@ -71,7 +71,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public String getTitle(Context context) {
-        return "صفحه‌ی اختصاصی غرفه";
+        return getString(R.string.art_shop);
     }
 
     public synchronized static ShopPageFragment getInstance(String shopId) {

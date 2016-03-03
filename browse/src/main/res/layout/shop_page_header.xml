@@ -153,8 +153,8 @@
                   android:layout_below="@id/store_name_text_view"
                   android:layout_marginTop="10dp"
                   android:layout_marginBottom="10dp"
-                  android:layout_marginRight="16dp"
-                  android:layout_marginLeft="16dp"
+                  android:layout_marginRight="5dp"
+                  android:layout_marginLeft="5dp"
                   android:gravity="right"
                   android:background="@drawable/bordered_background"
                   android:padding="10dp"
@@ -167,7 +167,7 @@
                       android:layout_below="@id/store_desc_text_view"
                       android:gravity="right"
                       android:id="@+id/place_container"
-                      android:layout_marginRight="16dp"
+                      android:layout_marginRight="5dp"
                 >
 
             <com.mikepenz.iconics.view.IconicsImageView

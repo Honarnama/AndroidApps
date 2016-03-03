@@ -4,10 +4,12 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
 import net.honarnama.base.BuildConfig;
+import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
+import net.honarnama.browse.fragment.HonarnamaBrowseFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
@@ -25,6 +27,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -74,7 +77,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
-                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position), false);
+                    switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position), false, getResources().getString(R.string.hornama));
+                } else {
+                    FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                            .getChildFragmentManager();
+                    HonarnamaBrowseFragment topFragment = (HonarnamaBrowseFragment) childFragmentManager.getFragments().get(0);
+                    mTitle.setText(topFragment.getTitle(HonarnamaBrowseApp.getInstance()));
                 }
             }
 
@@ -108,15 +116,19 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     }
 
-    public void switchFragment(Fragment fragment, boolean isExternal) {
+    public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         try {
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
-                FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.child_fragment_root, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commitAllowingStateLoss();
+            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.child_fragment_root, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commitAllowingStateLoss();
+
+            if (!TextUtils.isEmpty(toolbarTitle)) {
+                mTitle.setText(toolbarTitle);
+            }
         } catch (Exception e) {
             logE("Exception While Switching Fragments in CPA." + e);
         }
@@ -125,22 +137,18 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void displayShopPage(String shopId, boolean isExternal) {
         setShopId(shopId);
 //        mMainTabBar.deselectAllTabs();
-        switchFragment(ShopPageFragment.getInstance(shopId), isExternal);
-        mTitle.setText(R.string.art_shop);
+        switchFragment(ShopPageFragment.getInstance(shopId), isExternal, getResources().getString(R.string.art_shop));
     }
 
     public void displayEventPage(String eventId, boolean isExternal) {
         setEventId(eventId);
 //        mMainTabBar.deselectAllTabs();
-        switchFragment(EventPageFragment.getInstance(eventId), isExternal);
-        mTitle.setText(R.string.art_event);
+        switchFragment(EventPageFragment.getInstance(eventId), isExternal, getResources().getString(R.string.art_event));
     }
 
-    public void displayItemPage(String itemId, boolean isExternal)
-    {
+    public void displayItemPage(String itemId, boolean isExternal) {
         setItemId(itemId);
-        switchFragment(ItemPageFragment.getInstance(itemId), isExternal);
-
+        switchFragment(ItemPageFragment.getInstance(itemId), isExternal, "مشاهده محصول");
         //TODO SET ITEM CATEGORY AS TITLE
 //        mTitle.setText();
     }

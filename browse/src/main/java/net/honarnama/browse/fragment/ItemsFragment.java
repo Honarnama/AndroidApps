@@ -116,7 +116,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public String getTitle(Context context) {
-        return null;
+        return getString(R.string.hornama);
     }
 
     @Override

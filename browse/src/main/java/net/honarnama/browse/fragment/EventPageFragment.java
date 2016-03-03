@@ -72,7 +72,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
     @Override
     public String getTitle(Context context) {
-        return "رویداد هنری";
+        return getString(R.string.art_event);
     }
 
     public synchronized static EventPageFragment getInstance(String eventId) {

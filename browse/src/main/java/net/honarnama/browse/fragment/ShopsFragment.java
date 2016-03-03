@@ -40,7 +40,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.shops);
+        return getString(R.string.hornama);
     }
 
     public synchronized static ShopsFragment getInstance() {
