@@ -35,7 +35,7 @@ public class ImageAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(mContext);
     }
 
-    public void addAll(List<ParseFile> images) {
+    public void setImages(List<ParseFile> images) {
         mImages = images;
     }
 

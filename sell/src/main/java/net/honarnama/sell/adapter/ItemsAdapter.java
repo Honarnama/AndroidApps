@@ -143,8 +143,8 @@ public class ItemsAdapter extends BaseAdapter {
 
     }
 
-    public void addAll(List<Item> itemList) {
-        mItems.addAll(itemList);
+    public void setItems(List<Item> itemList) {
+        mItems = itemList;
     }
 
     private class MyViewHolder {

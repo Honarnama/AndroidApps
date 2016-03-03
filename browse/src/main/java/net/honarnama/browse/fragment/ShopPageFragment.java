@@ -150,7 +150,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                 if (task.isFaulted()) {
                     logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
@@ -221,11 +221,11 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                 if (task.isFaulted()) {
                     logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     List<Item> shopItems = task.getResult();
-                    mItemsAdapter.addAll(shopItems);
+                    mItemsAdapter.setItems(shopItems);
                     mItemsAdapter.notifyDataSetChanged();
                     WindowUtil.setListViewHeightBasedOnChildren(mListView);
                 }

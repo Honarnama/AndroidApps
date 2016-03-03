@@ -91,9 +91,13 @@ public class ItemsAdapter extends BaseAdapter {
         return convertView;
 
     }
+//
+//    public void setImages(List<Item> itemList) {
+//        mItems=itemList;
+//    }
 
-    public void addAll(List<Item> itemList) {
-        mItems.addAll(itemList);
+    public void setItems(List<Item> itemList) {
+        mItems = itemList;
     }
 
     private class MyViewHolder {

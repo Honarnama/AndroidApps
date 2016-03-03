@@ -191,7 +191,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                 if (task.isFaulted()) {
                     logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
@@ -259,7 +259,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             nonNullImages.add(images[i]);
                         }
                     }
-                    mImageAdapter.addAll(nonNullImages);
+                    mImageAdapter.setImages(nonNullImages);
                     logE(mImageAdapter.getCount() + "");
                     mImageAdapter.notifyDataSetChanged();
 

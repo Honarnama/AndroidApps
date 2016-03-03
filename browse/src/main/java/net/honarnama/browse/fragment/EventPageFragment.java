@@ -139,7 +139,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                 if (task.isFaulted()) {
                     logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);

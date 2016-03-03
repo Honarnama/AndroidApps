@@ -71,7 +71,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //                    }
 //                } else {
 //                    List<Item> items = task.getResult();
-//                    mAdapter.addAll(items);
+//                    mAdapter.setImages(items);
 //                    mAdapter.notifyDataSetChanged();
 //                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
 //                }

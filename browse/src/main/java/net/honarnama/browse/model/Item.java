@@ -155,4 +155,39 @@ public class Item extends net.honarnama.core.model.Item {
 
         return tcs.getTask();
     }
+
+
+    public static Task<List<Item>> search(final String searchTerm) {
+        final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
+        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+        parseQuery.whereContains(Item.NAME, searchTerm);
+        parseQuery.whereEqualTo(Item.STATUS, STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+
+        parseQuery.findInBackground(new FindCallback<Item>() {
+            @Override
+            public void done(final List<Item> items, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(items);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d(DEBUG_TAG, "Searching items with search term " + searchTerm + " does not have any results.");
+                        }
+                        tcs.trySetResult(null);
+                    } else {
+                        tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG,
+                                    "Searching items with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
+                        } else {
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Searching items with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage() + " // Error: " + e);
+                        }
+                    }
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
 }

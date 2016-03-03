@@ -13,6 +13,7 @@ import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Category;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
                 ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
                 parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
                 parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+//                if (!TextUtils.isEmpty(searchTerm)) {
+//                    parseQuery.whereContains(Item.NAME, searchTerm);
+//                }
                 parseQuery.include(Item.CATEGORY);
                 return parseQuery;
             }

@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
@@ -15,12 +14,10 @@ import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -119,7 +116,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     }
                 } else {
                     List<Item> itemList = task.getResult();
-                    mAdapter.addAll(itemList);
+                    mAdapter.setItems(itemList);
                     TextView emptyListTextView = (TextView) rootView.findViewById(R.id.empty_list_view);
                     emptyListTextView.setText(getString(R.string.has_not_registered_any_store));
                     mAdapter.notifyDataSetChanged();

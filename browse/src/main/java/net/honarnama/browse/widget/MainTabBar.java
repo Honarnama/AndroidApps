@@ -29,7 +29,7 @@ public class MainTabBar extends LinearLayout {
 
     public static final int TAB_EVENTS = 2;
 
-    public static final int TAB_FAVS = 3;
+    public static final int TAB_SEARCH = 3;
 
     public static final int DUMMY_TAB_SHOP_PAGE = 4;
 
@@ -67,23 +67,19 @@ public class MainTabBar extends LinearLayout {
         Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_list)
-                        .color(Color.RED)
                         .sizeDp(20), R.string.items);
         Tab shopsTab = new Tab(Integer.valueOf(TAB_SHOPS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_store)
-                        .color(Color.RED)
                         .sizeDp(20), R.string.shops);
         Tab eventsTab = new Tab(Integer.valueOf(TAB_EVENTS),
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_event)
-                        .color(Color.RED)
                         .sizeDp(20), R.string.events);
-        Tab favsTab = new Tab(Integer.valueOf(TAB_FAVS),
+        Tab favsTab = new Tab(Integer.valueOf(TAB_SEARCH),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_stars)
-                        .color(Color.RED)
-                        .sizeDp(20), R.string.favorites);
+                        .icon(GoogleMaterial.Icon.gmd_search)
+                        .sizeDp(20), R.string.search);
         setTabs(new MainTabBar.Tab[]{
                 homeTab, shopsTab, eventsTab, favsTab
         }, TAB_ITEMS);
@@ -187,7 +183,7 @@ public class MainTabBar extends LinearLayout {
         deselectTabView(findViewWithTag(TAB_ITEMS));
         deselectTabView(findViewWithTag(TAB_EVENTS));
         deselectTabView(findViewWithTag(TAB_SHOPS));
-        deselectTabView(findViewWithTag(TAB_FAVS));
+        deselectTabView(findViewWithTag(TAB_SEARCH));
     }
 
     public void setOnTabItemClickListener(@NonNull OnTabItemClickListener onTabItemClickListener) {

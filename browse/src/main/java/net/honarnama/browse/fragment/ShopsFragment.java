@@ -89,7 +89,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //                    }
 //                } else {
 //                    List<ParseObject> shopList = task.getResult();
-//                    mAdapter.addAll(shopList);
+//                    mAdapter.setImages(shopList);
 //                    mAdapter.notifyDataSetChanged();
 //                }
 //                return null;

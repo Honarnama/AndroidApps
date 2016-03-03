@@ -37,7 +37,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_FAVS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
@@ -181,8 +181,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case TAB_SHOPS:
                 mViewPager.setCurrentItem(TAB_SHOPS, false);
                 break;
-            case TAB_FAVS:
-                mViewPager.setCurrentItem(TAB_FAVS, false);
+            case TAB_SEARCH:
+                mViewPager.setCurrentItem(TAB_SEARCH, false);
                 break;
             default:
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
@@ -207,12 +207,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
-                .icon(GoogleMaterial.Icon.gmd_search)
-                .color(Color.WHITE)
-                .sizeDp(20));
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
+//                .icon(GoogleMaterial.Icon.gmd_search)
+//                .color(Color.WHITE)
+//                .sizeDp(20));
         return true;
     }
 

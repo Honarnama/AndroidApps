@@ -99,4 +99,37 @@ public class Shop extends Store {
 
         return tcs.getTask();
     }
+
+    public static Task<List<Store>> search(final String searchTerm) {
+        final TaskCompletionSource<List<Store>> tcs = new TaskCompletionSource<>();
+        ParseQuery<Store> parseQuery = new ParseQuery<Store>(Store.class);
+        parseQuery.whereContains(Store.NAME, searchTerm);
+        parseQuery.whereEqualTo(Store.STATUS, STATUS_CODE_VERIFIED);
+        parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
+
+        parseQuery.findInBackground(new FindCallback<Store>() {
+            @Override
+            public void done(final List<Store> stores, ParseException e) {
+                if (e == null) {
+                    tcs.trySetResult(stores);
+                } else {
+                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d(DEBUG_TAG, "Searching stores with search term " + searchTerm + " does not have any results.");
+                        }
+                        tcs.trySetResult(null);
+                    } else {
+                        tcs.trySetError(e);
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG,
+                                    "Searching stores with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
+                        } else {
+                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Searching stores with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage() + " // Error: " + e);
+                        }
+                    }
+                }
+            }
+        });
+        return tcs.getTask();
+    }
 }

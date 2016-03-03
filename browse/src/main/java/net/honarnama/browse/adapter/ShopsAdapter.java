@@ -6,6 +6,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import net.honarnama.browse.R;
+import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.Store;
 
@@ -26,12 +27,12 @@ import java.util.List;
 public class ShopsAdapter extends BaseAdapter {
 
     Context mContext;
-    List<ParseObject> mShops;
+    List<Store> mShops;
     private static LayoutInflater mInflater = null;
 
     public ShopsAdapter(Context context) {
         mContext = context;
-        mShops = new ArrayList<ParseObject>();
+        mShops = new ArrayList<Store>();
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -81,8 +82,8 @@ public class ShopsAdapter extends BaseAdapter {
 
     }
 
-    public void addAll(List<ParseObject> shopList) {
-        mShops.addAll(shopList);
+    public void setShops(List<Store> shopList) {
+        mShops = shopList;
     }
 
     private class MyViewHolder {
