@@ -147,27 +147,14 @@
                 android:paddingLeft="5dp"
                 />
 
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                  style="@style/default_text_view"
-                  android:id="@+id/store_desc_text_view"
-                  android:layout_below="@id/store_name_text_view"
-                  android:layout_marginTop="10dp"
-                  android:layout_marginBottom="10dp"
-                  android:layout_marginRight="5dp"
-                  android:layout_marginLeft="5dp"
-                  android:gravity="right"
-                  android:background="@drawable/bordered_background"
-                  android:padding="10dp"
-                  android:lineSpacingExtra="5dp"
-                />
-
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
-                      android:layout_below="@id/store_desc_text_view"
+                      android:layout_below="@id/store_name_text_view"
                       android:gravity="right"
                       android:id="@+id/place_container"
                       android:layout_marginRight="5dp"
+                      android:layout_marginTop="10dp"
                 >
 
             <com.mikepenz.iconics.view.IconicsImageView
@@ -186,8 +173,22 @@
                       android:layout_gravity="right|bottom"
                     />
         </LinearLayout>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  style="@style/default_text_view"
+                  android:id="@+id/store_desc_text_view"
+                  android:layout_below="@id/place_container"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginRight="5dp"
+                  android:layout_marginLeft="5dp"
+                  android:gravity="right"
+                  android:background="@drawable/bordered_background"
+                  android:padding="10dp"
+                  android:lineSpacingExtra="5dp"
+                />
+
         <TextView
-                android:layout_below="@id/place_container"
+                android:layout_below="@id/store_desc_text_view"
                 android:layout_marginTop="10dp"
                 style="@style/section_title"
                 android:layout_centerHorizontal="true"

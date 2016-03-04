@@ -157,6 +157,8 @@
         <item name="android:textColor">@color/gray_super_extra_dark</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
 

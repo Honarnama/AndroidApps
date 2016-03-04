@@ -126,7 +126,7 @@
                               android:layout_below="@id/event_name_text_view"
                               android:gravity="right"
                               android:id="@+id/place_container"
-                              android:layout_marginRight="16dp"
+                              android:layout_marginRight="5dp"
                         >
 
                     <com.mikepenz.iconics.view.IconicsImageView
@@ -151,8 +151,8 @@
                           style="@style/default_text_view"
                           android:id="@+id/event_date_text_view"
                           android:layout_below="@id/place_container"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="5dp"
+                          android:layout_marginLeft="5dp"
                           android:layout_marginTop="10dp"
                           android:gravity="right"
                           android:background="@drawable/bordered_background"
@@ -164,8 +164,8 @@
                           style="@style/default_text_view"
                           android:id="@+id/event_desc_text_view"
                           android:layout_below="@id/event_date_text_view"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="5dp"
+                          android:layout_marginLeft="5dp"
                           android:layout_marginTop="10dp"
                           android:gravity="right"
                           android:background="@drawable/bordered_background"
@@ -176,8 +176,8 @@
 
                 <TextView
                         style="@style/default_text_view"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:layout_below="@id/event_desc_text_view"

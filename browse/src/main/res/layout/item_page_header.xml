@@ -152,12 +152,39 @@
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_below="@id/item_name_text_view"
+                      android:gravity="right"
+                      android:id="@+id/place_container"
+                      android:layout_marginRight="5dp"
+                      android:layout_marginTop="10dp"
+                >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    app:iiv_color="@color/extra_dark_green"
+                    app:iiv_icon="gmd-place"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/item_place_icon"
+                    />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      style="@style/tiny_text_view"
+                      android:id="@+id/item_place_text_view"
+                      android:textSize="14sp"
+                      android:textColor="@color/extra_dark_green"
+                      android:layout_gravity="right|bottom"
+                    />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
                       android:id="@+id/price_container"
                       android:orientation="horizontal"
-                      android:layout_marginRight="16dp"
-                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="5dp"
+                      android:layout_marginLeft="5dp"
                       android:layout_marginTop="10dp"
-                      android:layout_below="@id/item_name_text_view"
+                      android:layout_below="@id/place_container"
                       style="@style/bordered_edit_text"
                 >
             <TextView style="@style/default_text_view"
@@ -185,8 +212,8 @@
                   style="@style/default_text_view"
                   android:id="@+id/item_desc_text_view"
                   android:layout_below="@id/price_container"
-                  android:layout_marginRight="16dp"
-                  android:layout_marginLeft="16dp"
+                  android:layout_marginRight="5dp"
+                  android:layout_marginLeft="5dp"
                   android:layout_marginTop="10dp"
                   android:gravity="right"
                   android:background="@drawable/bordered_background"
@@ -194,39 +221,15 @@
                   android:lineSpacingExtra="5dp"
                 />
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@id/item_desc_text_view"
-                      android:gravity="right"
-                      android:id="@+id/place_container"
-                      android:layout_marginRight="16dp"
-                      android:layout_marginTop="10dp"
-                >
-
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    app:iiv_color="@color/extra_dark_green"
-                    app:iiv_icon="gmd-place"
-                    android:paddingBottom="5dp"
-                    android:id="@+id/item_place_icon"
-                    />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      style="@style/tiny_text_view"
-                      android:id="@+id/item_place_text_view"
-                      android:textSize="14sp"
-                      android:textColor="@color/extra_dark_green"
-                      android:layout_gravity="right|bottom"
-                    />
-        </LinearLayout>
-
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
                         android:id="@+id/item_shop_container"
                         android:gravity="right|center_vertical"
-                        android:layout_below="@id/place_container"
+                        android:layout_below="@id/item_desc_text_view"
                 >
 
             <RelativeLayout android:layout_width="match_parent"
