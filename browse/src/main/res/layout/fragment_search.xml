@@ -5,14 +5,13 @@
                 android:layout_height="match_parent"
                 android:layoutDirection="rtl"
                 android:background="@color/gray_extra_light"
-                android:paddingTop="5dp"
         >
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/search_container"
                     android:layout_alignParentTop="true"
-                    android:background="@android:drawable/dialog_holo_light_frame"
+                    android:background="@drawable/bottom_shadow_back"
             >
 
         <LinearLayout android:layout_width="match_parent"
@@ -129,6 +128,8 @@
               android:dividerHeight="5dp"
               android:layout_marginBottom="5dp"
               android:layout_marginTop="10dp"
+              android:layout_marginRight="5dp"
+              android:layout_marginLeft="5dp"
               android:layout_below="@id/search_container"
             />
 
