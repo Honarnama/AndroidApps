@@ -166,13 +166,12 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     mNameTextView.setText(event.getName());
 
                     Locale locale = new Locale("fa", "IR");
-                    JalaliCalendar jalaliCalendar = new JalaliCalendar(locale);
 
                     Date startDate = event.getStartDate();
-                    String jalaliStartDate = jalaliCalendar.getJalaliDate(startDate);
+                    String jalaliStartDate = JalaliCalendar.getJalaliDate(startDate);
 
                     Date endDate = event.getEndDate();
-                    String jalaliEndDate = jalaliCalendar.getJalaliDate(endDate);
+                    String jalaliEndDate = JalaliCalendar.getJalaliDate(endDate);
 
                     mDateTextView.setText("تاریخ برگزاری رویداد از " +
                                     TextUtil.convertEnNumberToFa(jalaliStartDate) +

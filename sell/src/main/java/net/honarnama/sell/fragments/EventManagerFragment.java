@@ -127,7 +127,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private Tracker mTracker;
 
     public boolean mIsNew = true;
-    public JalaliCalendar mJalaliCalendar;
 
     @Override
     public String getTitle(Context context) {
@@ -170,9 +169,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
 
         }
-
-        Locale locale = new Locale("fa", "IR");
-        mJalaliCalendar = new JalaliCalendar(locale);
 
         View rootView = inflater.inflate(R.layout.fragment_event_manager, container, false);
         // Inflate the layout for this fragment
@@ -486,8 +482,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         String fromDayValue = (mStartDaySpinner.getSelectedItemPosition() + 1) + "";
 
         String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
-        mStartDate = mJalaliCalendar.getGregorianDate(userEnteredStartDate);
-        String checkJalaliDate = mJalaliCalendar.getJalaliDate(mStartDate);
+        mStartDate = JalaliCalendar.getGregorianDate(userEnteredStartDate);
+        String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
         if (!checkJalaliDate.equals(userEnteredStartDate)) {
             mStartDaySpinner.requestFocus();
             mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
@@ -505,8 +501,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         String toDayValue = (mEndDaySpinner.getSelectedItemPosition() + 1) + "";
 
         String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
-        mEndDate = mJalaliCalendar.getGregorianDate(userEnteredEndDate);
-        checkJalaliDate = mJalaliCalendar.getJalaliDate(mEndDate);
+        mEndDate = JalaliCalendar.getGregorianDate(userEnteredEndDate);
+        checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
         if (!checkJalaliDate.equals(userEnteredEndDate)) {
             mEndDaySpinner.requestFocus();
             mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
@@ -728,7 +724,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     if (event != null) {
 
                         Date startDate = event.getStartDate();
-                        String jalaliStartDate = mJalaliCalendar.getJalaliDate(startDate);
+                        String jalaliStartDate = JalaliCalendar.getJalaliDate(startDate);
                         String[] separatedJalaliStartDate = jalaliStartDate.split("/");
                         String startYear = separatedJalaliStartDate[0];
                         int startMonth = Integer.valueOf(separatedJalaliStartDate[1]);
@@ -739,7 +735,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         mStartYearSpinner.setSelection(yearAdapter.getPosition(startYear));
 
                         Date endDate = event.getEndDate();
-                        String jalaliEndDate = mJalaliCalendar.getJalaliDate(endDate);
+                        String jalaliEndDate = JalaliCalendar.getJalaliDate(endDate);
                         String[] separatedJalaliEndDate = jalaliEndDate.split("/");
                         String endYear = separatedJalaliEndDate[0];
                         int endMonth = Integer.valueOf(separatedJalaliEndDate[1]);
