@@ -17,6 +17,7 @@ import net.honarnama.core.model.Store;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,6 +156,12 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         if (v.getId() == R.id.search_btn) {
             msearchTerm = mSearchEditText.getText().toString().trim();
 
+            if (TextUtils.isEmpty(msearchTerm)) {
+                if (isVisible()) {
+                    Toast.makeText(getActivity(), "عبارت مورد جستجو را وارد نکردید.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
             if (mItemsToggleButton.isChecked()) {
                 mListView.setAdapter(mItemsAdapter);
                 mSearchSegment = SearchSegment.ITEMS;

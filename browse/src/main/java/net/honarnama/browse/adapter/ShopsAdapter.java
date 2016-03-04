@@ -3,11 +3,14 @@ package net.honarnama.browse.adapter;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
+import net.honarnama.core.model.City;
+import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
 
 import android.content.Context;
@@ -53,31 +56,49 @@ public class ShopsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final MyViewHolder mViewHolder;
-
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.shop_row, parent, false);
-            mViewHolder = new MyViewHolder(convertView);
-            convertView.setTag(mViewHolder);
-        } else {
-            mViewHolder = (MyViewHolder) convertView.getTag();
-        }
+        final ViewHolderWithoutImage mViewHolderWithoutImage;
+        final ViewHolderWithImage mViewHolderWithImage;
 
         final ParseObject store = mShops.get(position);
-        // Setting all values in listview
-        mViewHolder.title.setText(store.getString("name"));
-        mViewHolder.desc.setText(store.getString("description"));
-        mViewHolder.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
+        ParseFile shopLogo = store.getParseFile(Shop.LOGO);
 
-        mViewHolder.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
-        mViewHolder.icon.setVisibility(View.GONE);
-        mViewHolder.icon.loadInBackground(store.getParseFile(Shop.LOGO), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.shopLogoLoadingPanel.setVisibility(View.GONE);
-                mViewHolder.icon.setVisibility(View.VISIBLE);
+        if (shopLogo == null) {
+            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithoutImage)) {
+                convertView = View.inflate(mContext, R.layout.shop_row, null);
+                mViewHolderWithoutImage = new ViewHolderWithoutImage(convertView);
+                convertView.setTag(mViewHolderWithoutImage);
+            } else {
+                mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
             }
-        });
+
+            mViewHolderWithoutImage.title.setText(store.getString("name"));
+            mViewHolderWithoutImage.desc.setText(store.getString("description"));
+            mViewHolderWithoutImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
+
+        } else {
+            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
+                convertView = View.inflate(mContext, R.layout.shop_row, null);
+                mViewHolderWithImage = new ViewHolderWithImage(convertView);
+                convertView.setTag(mViewHolderWithImage);
+            } else {
+                mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
+            }
+
+            mViewHolderWithImage.title.setText(store.getString("name"));
+            mViewHolderWithImage.desc.setText(store.getString("description"));
+            mViewHolderWithImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
+
+            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
+            mViewHolderWithImage.icon.setVisibility(View.GONE);
+            mViewHolderWithImage.icon.loadInBackground(shopLogo, new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                    mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
         return convertView;
 
     }
@@ -86,20 +107,31 @@ public class ShopsAdapter extends BaseAdapter {
         mShops = shopList;
     }
 
-    private class MyViewHolder {
+    private class ViewHolderWithImage {
         TextView title;
         TextView desc;
         ImageSelector icon;
-        RelativeLayout shopRowContainer;
         RelativeLayout shopLogoLoadingPanel;
         TextView shopPlace;
 
-        public MyViewHolder(View view) {
+        public ViewHolderWithImage(View view) {
             title = (TextView) view.findViewById(R.id.shop_title_in_list);
             desc = (TextView) view.findViewById(R.id.shop_desc_in_list);
             icon = (ImageSelector) view.findViewById(R.id.shop_logo_in_list);
-            shopRowContainer = (RelativeLayout) view.findViewById(R.id.shop_row_container);
             shopLogoLoadingPanel = (RelativeLayout) view.findViewById(R.id.shop_logo_loading_panel);
+            shopPlace = (TextView) view.findViewById(R.id.shop_place_text_view);
+
+        }
+    }
+
+    private class ViewHolderWithoutImage {
+        TextView title;
+        TextView desc;
+        TextView shopPlace;
+
+        public ViewHolderWithoutImage(View view) {
+            title = (TextView) view.findViewById(R.id.shop_title_in_list);
+            desc = (TextView) view.findViewById(R.id.shop_desc_in_list);
             shopPlace = (TextView) view.findViewById(R.id.shop_place_text_view);
 
         }

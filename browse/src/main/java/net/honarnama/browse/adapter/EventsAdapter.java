@@ -3,9 +3,11 @@ package net.honarnama.browse.adapter;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Shop;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 
 import android.content.Context;
@@ -51,31 +53,49 @@ public class EventsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final MyViewHolder mViewHolder;
-
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.event_row, parent, false);
-            mViewHolder = new MyViewHolder(convertView);
-            convertView.setTag(mViewHolder);
-        } else {
-            mViewHolder = (MyViewHolder) convertView.getTag();
-        }
 
         final Event event = mEvents.get(position);
-        // Setting all values in listview
-        mViewHolder.title.setText(event.getName());
-        mViewHolder.desc.setText(event.getDescription());
-        mViewHolder.place.setText(event.getParseObject(Event.CITY).getString("name"));
+        final ViewHolderWithoutImage mViewHolderWithoutImage;
+        final ViewHolderWithImage mViewHolderWithImage;
 
-        mViewHolder.imageLoadingPanel.setVisibility(View.VISIBLE);
-        mViewHolder.image.setVisibility(View.GONE);
-        mViewHolder.image.loadInBackground(event.getParseFile(Shop.LOGO), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.imageLoadingPanel.setVisibility(View.GONE);
-                mViewHolder.image.setVisibility(View.VISIBLE);
+        ParseFile eventBanner = event.getParseFile(Event.BANNER);
+        if (eventBanner == null) {
+            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithoutImage)) {
+                convertView = View.inflate(mContext, R.layout.event_row, null);
+                mViewHolderWithoutImage = new ViewHolderWithoutImage(convertView);
+                convertView.setTag(mViewHolderWithoutImage);
+            } else {
+                mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
             }
-        });
+
+            mViewHolderWithoutImage.title.setText(event.getName());
+            mViewHolderWithoutImage.desc.setText(event.getDescription());
+            mViewHolderWithoutImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
+
+        } else {
+            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
+                convertView = View.inflate(mContext, R.layout.event_row, null);
+                mViewHolderWithImage = new ViewHolderWithImage(convertView);
+                convertView.setTag(mViewHolderWithImage);
+            } else {
+                mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
+            }
+
+            mViewHolderWithImage.title.setText(event.getName());
+            mViewHolderWithImage.desc.setText(event.getDescription());
+            mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
+
+            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
+            mViewHolderWithImage.icon.setVisibility(View.GONE);
+            mViewHolderWithImage.icon.loadInBackground(event.getParseFile(Event.BANNER), new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                    mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
         return convertView;
 
     }
@@ -84,18 +104,33 @@ public class EventsAdapter extends BaseAdapter {
         mEvents = eventList;
     }
 
-    private class MyViewHolder {
+    private class ViewHolderWithImage {
         TextView title;
         TextView desc;
-        ImageSelector image;
+        ImageSelector icon;
         RelativeLayout imageLoadingPanel;
         TextView place;
 
-        public MyViewHolder(View view) {
+        public ViewHolderWithImage(View view) {
             title = (TextView) view.findViewById(R.id.event_title_in_list);
             desc = (TextView) view.findViewById(R.id.event_desc_in_list);
-            image = (ImageSelector) view.findViewById(R.id.event_image_in_list);
+            icon = (ImageSelector) view.findViewById(R.id.event_image_in_list);
             imageLoadingPanel = (RelativeLayout) view.findViewById(R.id.event_image_loading_panel);
+            place = (TextView) view.findViewById(R.id.event_place_text_view);
+
+        }
+    }
+
+    private class ViewHolderWithoutImage {
+        TextView title;
+        TextView desc;
+        RelativeLayout eventRowContainer;
+        TextView place;
+
+        public ViewHolderWithoutImage(View view) {
+            title = (TextView) view.findViewById(R.id.event_title_in_list);
+            desc = (TextView) view.findViewById(R.id.event_desc_in_list);
+            eventRowContainer = (RelativeLayout) view.findViewById(R.id.event_row_container);
             place = (TextView) view.findViewById(R.id.event_place_text_view);
 
         }
