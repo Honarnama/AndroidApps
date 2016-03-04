@@ -24,7 +24,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -48,6 +50,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     String msearchTerm;
     public EditText mSearchEditText;
     public View mSearchButton;
+    public RelativeLayout mEmptyListContainer;
+    public LinearLayout mLoadingCircle;
 
 
     private ToggleButton mItemsToggleButton;
@@ -99,8 +103,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             }
         });
 
-
+        mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
+        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
         mListView = (ListView) rootView.findViewById(R.id.listView);
+
         mSearchButton.setOnClickListener(this);
 
         mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
@@ -155,11 +161,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_btn) {
-
             if (isVisible()) {
                 WindowUtil.hideKeyboard(getActivity());
             }
-
             msearchTerm = mSearchEditText.getText().toString().trim();
 
             if (TextUtils.isEmpty(msearchTerm)) {
@@ -168,20 +172,22 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 }
                 return;
             }
+
+            mEmptyListContainer.setVisibility(View.GONE);
+            mLoadingCircle.setVisibility(View.VISIBLE);
+            mListView.setEmptyView(mLoadingCircle);
             if (mItemsToggleButton.isChecked()) {
                 mListView.setAdapter(mItemsAdapter);
                 mSearchSegment = SearchSegment.ITEMS;
                 searchItems();
                 return;
             }
-
             if (mShopsToggleButton.isChecked()) {
                 mListView.setAdapter(mShopsAdapter);
                 mSearchSegment = SearchSegment.SHOPS;
                 searchShops();
                 return;
             }
-
             if (mEventsToggleButton.isChecked()) {
                 mListView.setAdapter(mEventsAdapterr);
                 mSearchSegment = SearchSegment.EVENTS;
@@ -195,6 +201,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
+                mLoadingCircle.setVisibility(View.GONE);
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+                mListView.setEmptyView(mEmptyListContainer);
+
                 if (task.isFaulted()) {
                     logE("Searching items with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
@@ -214,6 +224,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         Shop.search(msearchTerm).continueWith(new Continuation<List<Store>, Object>() {
             @Override
             public Object then(Task<List<Store>> task) throws Exception {
+                mLoadingCircle.setVisibility(View.GONE);
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+                mListView.setEmptyView(mEmptyListContainer);
+
                 if (task.isFaulted()) {
                     logE("Searching shops with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
@@ -233,6 +247,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
             @Override
             public Object then(Task<List<Event>> task) throws Exception {
+                mLoadingCircle.setVisibility(View.GONE);
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+                mListView.setEmptyView(mEmptyListContainer);
+
                 if (task.isFaulted()) {
                     logE("Searching events with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {

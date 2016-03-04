@@ -46,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -490,6 +491,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     public void addItems(List<Item> items) {
 
         for (int i = 1; i < items.size(); i++) {
@@ -512,8 +518,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             mLayoutParams = new LayoutParams(mSimilarItemViewWidth, LayoutParams.WRAP_CONTENT);
             if ((i % 3) == 0) {
-                logE("inja", item.getName());
-                similarItemTitle.setPadding(5, 0, 5, 0);
             }
             similarItemLayout.setLayoutParams(mLayoutParams);
             similarItemLayout.requestLayout();

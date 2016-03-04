@@ -104,6 +104,23 @@
     </RelativeLayout>
 
 
+    <LinearLayout
+            android:id="@+id/loading_circle_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_margin="5dp"
+            >
+        <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"/>
+    </LinearLayout>
+
+
     <ListView android:id="@+id/listView"
               android:orientation="vertical"
               android:layout_width="match_parent"
@@ -114,5 +131,39 @@
               android:layout_marginTop="10dp"
               android:layout_below="@id/search_container"
             />
+
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/empty_list_container"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+            >
+
+        <TextView android:id="@+id/empty_items_text_view"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/tiny_text_view"
+                  android:layout_centerHorizontal="true"
+                  android:layout_centerVertical="true"
+                  android:background="@drawable/important_bar_background"
+                  android:paddingTop="2dp"
+                  android:paddingBottom="2dp"
+                  android:paddingLeft="10dp"
+                  android:paddingRight="30dp"
+                  android:text="موردی یافت نشد."
+                />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:id="@+id/no_item_warning_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:iiv_color="@color/orange"
+                app:iiv_icon="gmd-info"
+                android:layout_toRightOf="@id/empty_items_text_view"
+                android:layout_marginLeft="-24dp"
+                android:layout_centerVertical="true"
+                />
+    </RelativeLayout>
 
 </RelativeLayout>
