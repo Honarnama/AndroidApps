@@ -13,6 +13,7 @@ import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -154,6 +155,11 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_btn) {
+
+            if (isVisible()) {
+                WindowUtil.hideKeyboard(getActivity());
+            }
+
             msearchTerm = mSearchEditText.getText().toString().trim();
 
             if (TextUtils.isEmpty(msearchTerm)) {
@@ -245,6 +251,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+
+    public void resetFields() {
         mSearchEditText.setText("");
         mItemsToggleButton.setChecked(true);
         mShopsToggleButton.setChecked(false);

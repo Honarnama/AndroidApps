@@ -11,6 +11,7 @@ import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.HonarnamaBrowseFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
+import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
@@ -170,6 +171,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onTabSelect(Object tabTag, boolean userTriggered) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
+        if (mActiveTab == Integer.valueOf(TAB_SEARCH) && tag != Integer.valueOf(TAB_SEARCH)) {
+            SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
+            searchFragment.resetFields();
+        }
         mActiveTab = tag;
         switch (tag) {
             case TAB_ITEMS:
