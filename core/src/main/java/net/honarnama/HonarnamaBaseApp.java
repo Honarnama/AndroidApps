@@ -59,7 +59,9 @@ public abstract class HonarnamaBaseApp extends Application {
     public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED = "local_data_store_for_event_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED = "local_data_store_for_item_synced";
 
-    public static String BROWSE_APP_PREF_KEY = "honarnama_browse";
+    public static String SELL_APP_KEY = "honarnama_sell";
+    public static String BROWSE_APP_KEY = "honarnama_browse";
+    public static String INTENT_ORIGIN = "intent_origin";
 
     public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 

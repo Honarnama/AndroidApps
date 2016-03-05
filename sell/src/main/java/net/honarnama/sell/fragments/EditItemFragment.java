@@ -15,7 +15,6 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Category;
-import net.honarnama.core.model.City;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -41,8 +40,6 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -431,6 +428,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 break;
             case R.id.edit_item_category_semi_button:
                 Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
+                intent.putExtra(HonarnamaBaseApp.INTENT_ORIGIN, HonarnamaBaseApp.SELL_APP_KEY);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
             default:
@@ -531,7 +529,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         return Task.forError(task.getError());
                     } else {
                         mStore = task.getResult();
-                        return Category.getCategoryById(catId);
+                        return Category.getCategoryById(catId, HonarnamaBaseApp.SELL_APP_KEY);
                     }
                 }
             }).continueWithTask(new Continuation<Category, Task<Item>>() {

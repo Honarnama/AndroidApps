@@ -26,13 +26,17 @@ public class CategoriesAdapter extends BaseAdapter {
 
     private int mSelectedPosition;
     public ArrayList<String> mNodeCategories = new ArrayList<String>();
+    public HashMap<String, String> mFilterSubCatParentHashMap = new HashMap<String, String>();
 
-    public CategoriesAdapter(Context context, HashMap<Number, String> artCategoriesObjectIds, HashMap<Number, String> artCategoriesName, ArrayList<String> nodeCategories) {
+
+    public CategoriesAdapter(Context context, HashMap<Number, String> artCategoriesObjectIds, HashMap<Number,
+            String> artCategoriesName, ArrayList<String> nodeCategories, HashMap<String, String> filterSubCatParentHashMap) {
         super();
         mContext = context;
         mArtCategoriesObjectIds = artCategoriesObjectIds;
         mArtCategoriesName = artCategoriesName;
         mNodeCategories = nodeCategories;
+        mFilterSubCatParentHashMap = filterSubCatParentHashMap;
     }
 
     @Override
@@ -52,7 +56,6 @@ public class CategoriesAdapter extends BaseAdapter {
 
     public void refreshArtCategories(HashMap<Number, String> artCategoriesObjectIds, HashMap<Number, String> artCategoriesName) {
 
-
         mArtCategoriesObjectIds = artCategoriesObjectIds;
         mArtCategoriesName = artCategoriesName;
 
@@ -70,8 +73,14 @@ public class CategoriesAdapter extends BaseAdapter {
         View rowView = layoutInflater.inflate(R.layout.category_row, parent, false);
 
         TextView categoryNameTextView = (TextView) rowView.findViewById(R.id.category_name_text_view);
+
+        if (mFilterSubCatParentHashMap.containsKey(mArtCategoriesObjectIds.get(position))) {
+            categoryNameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
+        }
+
         ImageView categoryDrillDownArrowImageView = (ImageView) rowView.findViewById(R.id.category_drill_down_arrow_image_view);
-        if (!mNodeCategories.contains(mArtCategoriesObjectIds.get(position))) {
+
+        if (!mNodeCategories.contains(mArtCategoriesObjectIds.get(position)) && !mFilterSubCatParentHashMap.containsKey(mArtCategoriesObjectIds.get(position))) {
             categoryDrillDownArrowImageView.setVisibility(View.VISIBLE);
             categoryDrillDownArrowImageView.setImageDrawable(new IconicsDrawable(mContext)
                     .icon(GoogleMaterial.Icon.gmd_arrow_back)

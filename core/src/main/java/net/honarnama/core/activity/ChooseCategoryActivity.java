@@ -42,14 +42,28 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
     public HashMap<String, Number> mCategoriesOrderHashMap = new HashMap<String, Number>();
 
     public ArrayList<String> mNodeCategories = new ArrayList<String>();
+    public HashMap<String, String> mFilterSubCatParentHashMap = new HashMap<String, String>();
+
+    public String mCallingApp = HonarnamaBaseApp.SELL_APP_KEY;
+
+    public String mAllCategoriesFilterObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_category);
-
         mCategoriesListView = (ListView) findViewById(R.id.art_categories_list_view);
         getArtCategoriesList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.INTENT_ORIGIN)) {
+            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.INTENT_ORIGIN);
+        }
+        setIntent(intent);
     }
 
     private void getArtCategoriesList() {
@@ -72,13 +86,12 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
-        String sharedPrefKey = "";
-        boolean fromBrowseApp = false;
-        if (HonarnamaUser.getCurrentUser() == null) {
-            fromBrowseApp = true;
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_PREF_KEY;
+        String sharedPrefKey;
+        if (HonarnamaUser.getCurrentUser() == null || mCallingApp == HonarnamaBaseApp.BROWSE_APP_KEY) {
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
         } else {
             sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+            parseQuery.whereEqualTo(Category.ALL_SUB_CAT_FILTER_TYPE, false);
         }
 
         final SharedPreferences sharedPref = getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
@@ -129,6 +142,14 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
                         Category artCategory = artCategories.get(i);
 
+                        if (artCategory.getAllSubCatFilterType() == true) {
+                            mFilterSubCatParentHashMap.put(artCategory.getObjectId(), artCategory.getParentId());
+                        }
+
+                        if ((artCategory.getParentId() != null) && artCategory.getParentId().equals("ALL")) {
+                            mAllCategoriesFilterObjectId = artCategory.getObjectId();
+                        }
+
                         if (artCategory.getString("parentId") == null) {//first level category
                             if (!mCategoriesHierarchyHashMap.containsKey(artCategory.getObjectId())) {
                                 mCategoriesHierarchyHashMap.put(artCategory.getObjectId(), null);
@@ -168,16 +189,24 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         if (mSelectedCategoryObjectId == null) {
             //nothing is selected yet
             for (String key : mCategoriesHierarchyHashMap.keySet()) {
-                mCurrentArtCategoriesObjectIds.put(mCategoriesOrderHashMap.get(key).intValue() - 1, key);
-                mCurrentArtCategoriesName.put(mCategoriesOrderHashMap.get(key).intValue() - 1, mCategoriesNameHashMap.get(key));
+                int index = mCategoriesOrderHashMap.get(key).intValue();
+                if (mCallingApp.equals(HonarnamaBaseApp.SELL_APP_KEY)) {
+                    index = index - 1;
+                }
+                mCurrentArtCategoriesObjectIds.put(index, key);
+                mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(key));
             }
 
         } else {
             ArrayList<String> notSortedCurrentCategoryObjectIds = mCategoriesHierarchyHashMap.get(mSelectedCategoryObjectId);
             for (int i = 0; i < notSortedCurrentCategoryObjectIds.size(); i++) {
                 String objectId = notSortedCurrentCategoryObjectIds.get(i);
-                mCurrentArtCategoriesObjectIds.put((mCategoriesOrderHashMap.get(objectId).intValue()) - 1, objectId);
-                mCurrentArtCategoriesName.put((mCategoriesOrderHashMap.get(objectId).intValue()) - 1, mCategoriesNameHashMap.get(objectId));
+                int index = mCategoriesOrderHashMap.get(objectId).intValue();
+                if (mCallingApp.equals(HonarnamaBaseApp.SELL_APP_KEY)) {
+                    index = index - 1;
+                }
+                mCurrentArtCategoriesObjectIds.put(index, objectId);
+                mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(objectId));
             }
         }
 
@@ -186,10 +215,10 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedCategoryObjectId = mCurrentArtCategoriesObjectIds.get(position);
                 mCategoriesAdapter.setSelectedPosition(position);
-                if (!isNodeCategory(mSelectedCategoryObjectId)) {
-                    getArtCategoriesList();
-                } else {
+                if (isNodeCategory(mSelectedCategoryObjectId) || isFilterSubCategoryRowSelected(mSelectedCategoryObjectId)) {
                     returnSelectedCategory();
+                } else {
+                    getArtCategoriesList();
                 }
             }
         });
@@ -197,7 +226,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         if (mCategoriesAdapter != null) {
             mCategoriesAdapter.refreshArtCategories(mCurrentArtCategoriesObjectIds, mCurrentArtCategoriesName);
         } else {
-            mCategoriesAdapter = new CategoriesAdapter(ChooseCategoryActivity.this, mCurrentArtCategoriesObjectIds, mCurrentArtCategoriesName, mNodeCategories);
+            mCategoriesAdapter = new CategoriesAdapter(ChooseCategoryActivity.this, mCurrentArtCategoriesObjectIds, mCurrentArtCategoriesName, mNodeCategories, mFilterSubCatParentHashMap);
             mCategoriesListView.setAdapter(mCategoriesAdapter);
         }
 
@@ -231,8 +260,28 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         return false;
     }
 
+    public boolean isFilterSubCategoryRowSelected(String categoryObjectId) {
+
+        if (mFilterSubCatParentHashMap.containsKey(categoryObjectId)) {
+            return true;
+        }
+        return false;
+    }
+
+
     public void returnSelectedCategory() {
         Intent data = new Intent();
+        if (isFilterSubCategoryRowSelected(mSelectedCategoryObjectId)) {
+            ArrayList<String> subCats = new ArrayList<>();
+            data.putExtra("isFilterSubCategoryRowSelected", true);
+            if (mSelectedCategoryObjectId.equals(mAllCategoriesFilterObjectId)) {
+                data.putStringArrayListExtra("subCats", subCats);
+            } else {
+                subCats = mCategoriesHierarchyHashMap.get(mFilterSubCatParentHashMap.get(mSelectedCategoryObjectId));
+                data.putStringArrayListExtra("subCats", subCats);
+            }
+        }
+
         data.putExtra("selectedCategoryName", mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
         data.putExtra("selectedCategoryObjectId", mSelectedCategoryObjectId);
         setResult(RESULT_OK, data);

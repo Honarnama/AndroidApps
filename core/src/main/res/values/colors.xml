@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="amber_super_extra_light_">#FFF8E1</color>
+    <color name="amber_super_extra_light">#FFF8E1</color>
     <color name="amber_extra_light">#FFECB3</color>
     <color name="amber_light">#FFE082</color>
     <color name="amber">#FFC107</color>
