@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <Button style="@style/button_wrap_content_width"
+            android:background="@color/dark_cyan"
+            android:text="انتخاب دسته‌بندی"
+            android:textColor="@color/white"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="0dp"
+            android:id="@+id/category_filter_btn"
+            />
+
+</LinearLayout>

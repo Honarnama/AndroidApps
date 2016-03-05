@@ -66,7 +66,7 @@ public class MainTabBar extends LinearLayout {
 
         Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_list)
+                        .icon(GoogleMaterial.Icon.gmd_toc)
                         .sizeDp(20), R.string.items);
         Tab shopsTab = new Tab(Integer.valueOf(TAB_SHOPS),
                 new IconicsDrawable(mContext)

@@ -79,7 +79,17 @@ public class Category extends ParseObject {
 
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
         parseQuery.whereEqualTo(OBJECT_ID, catId);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+
+        String sharedPrefKey = "";
+        boolean fromBrowseApp = false;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            fromBrowseApp = true;
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_PREF_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Getting category by id from local datastore");

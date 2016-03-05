@@ -29,22 +29,15 @@ import bolts.TaskCompletionSource;
  * Created by elnaz on 2/23/16.
  */
 public class ItemsParseAdapter extends ParseQueryAdapter {
-    public ItemsParseAdapter(Context context) {
+    public ItemsParseAdapter(Context context, QueryFactory<ParseObject> queryFactory) {
         // Use the QueryFactory to construct a PQA that will only show
         // Todos marked as high-pri
+        super(context, queryFactory);
+    }
 
-        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-            public ParseQuery create() {
-                ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-                parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
-                parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-//                if (!TextUtils.isEmpty(searchTerm)) {
-//                    parseQuery.whereContains(Item.NAME, searchTerm);
-//                }
-                parseQuery.include(Item.CATEGORY);
-                return parseQuery;
-            }
-        });
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     // Customize the layout by overriding getItemView

@@ -72,7 +72,16 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         ParseQuery<Category> parseQuery = ParseQuery.getQuery(Category.class);
 
 //        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ChooseCategoryActivity.this);
-        final SharedPreferences sharedPref = getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        String sharedPrefKey = "";
+        boolean fromBrowseApp = false;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            fromBrowseApp = true;
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_PREF_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+        final SharedPreferences sharedPref = getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
@@ -90,6 +99,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         }
         parseQuery.findInBackground(new FindCallback<Category>() {
             public void done(final List<Category> artCategories, ParseException e) {
+
                 if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false)) {
                     receivingDataProgressDialog.dismiss();
                 }

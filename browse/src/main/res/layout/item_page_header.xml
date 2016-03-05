@@ -280,7 +280,7 @@
                         android:scaleType="fitCenter"
                         app:riv_corner_radius="20dip"
                         app:riv_border_width="0dip"
-                        app:riv_border_color="@color/gray_extra_light"
+                        app:riv_border_color="@color/gray_super_extra_light"
                         app:riv_oval="true"
                         android:scaleX="1"
                         android:scaleY="1"

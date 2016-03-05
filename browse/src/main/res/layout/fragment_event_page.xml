@@ -20,7 +20,7 @@
                         android:layout_gravity="right"
                         android:gravity="right"
                         android:layoutDirection="rtl"
-                        android:background="@color/gray_extra_light"
+                        android:background="@color/gray_super_extra_light"
                         android:paddingBottom="66dp"
                 >
 
@@ -192,6 +192,7 @@
                         android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:singleLine="false"
                         />
 
             </RelativeLayout>
