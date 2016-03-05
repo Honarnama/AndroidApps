@@ -8,8 +8,6 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.BookmarksParseAdapter;
-import net.honarnama.browse.adapter.ItemsParseAdapter;
-import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Bookmark;
 
 import android.content.Context;
@@ -46,7 +44,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
-        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
+        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mListView.setEmptyView(emptyListContainer);
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);

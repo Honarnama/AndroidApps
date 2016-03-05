@@ -116,7 +116,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
-        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
+        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);

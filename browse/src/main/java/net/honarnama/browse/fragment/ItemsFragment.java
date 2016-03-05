@@ -42,6 +42,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     ItemsParseAdapter mItemsParseAdapter;
     public Button mCategoryFilterButton;
+    public LinearLayout mLoadingCircle;
 
     public RelativeLayout mEmptyListContainer;
 
@@ -58,7 +59,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
-        mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_items_warning_container);
+        mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 //        mListView.setEmptyView(emptyListContainer);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
@@ -67,7 +68,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView.addHeaderView(header);
 
-        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
 //        Item.getRandomItems().continueWith(new Continuation<List<Item>, Object>() {
 //            @Override
@@ -185,22 +186,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         };
 
                 mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
-                mItemsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
-                    @Override
-                    public void onLoading() {
-                    }
-
-                    @Override
-                    public void onLoaded(List objects, Exception e) {
-
-                        if (objects.size() == 0) {
-                            mEmptyListContainer.setVisibility(View.VISIBLE);
-                        } else {
-                            mEmptyListContainer.setVisibility(View.GONE);
-                        }
-
-                    }
-                });
+                mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
                 mListView.setAdapter(mItemsParseAdapter);
                 return null;
             }
@@ -221,23 +207,27 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 };
 
         mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
-        mItemsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
-            @Override
-            public void onLoading() {
-            }
-
-            @Override
-            public void onLoaded(List objects, Exception e) {
-
-                if (objects.size() == 0) {
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
-                } else {
-                    mEmptyListContainer.setVisibility(View.GONE);
-                }
-
-            }
-        });
+        mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
         mListView.setAdapter(mItemsParseAdapter);
+    }
+
+    class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
+        @Override
+        public void onLoading() {
+            mEmptyListContainer.setVisibility(View.GONE);
+            mLoadingCircle.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onLoaded(List objects, Exception e) {
+            mLoadingCircle.setVisibility(View.GONE);
+            if (objects.size() == 0) {
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyListContainer.setVisibility(View.GONE);
+            }
+
+        }
     }
 }
 
