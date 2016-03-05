@@ -15,7 +15,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.browse.widget.ContactDialog;
+import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;

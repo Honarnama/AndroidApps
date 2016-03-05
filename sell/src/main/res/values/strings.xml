@@ -89,7 +89,6 @@
     <string name="event_not_confirmed">رویداد هنری شما تایید نشد.</string>
     <string name="store_name">نام فروشگاه</string>
     <string name="event_name">نام رویداد</string>
-    <string name="provine_label">استان:</string>
     <string name="description_hint">توضیحات</string>
     <string name="phone_hint">شماره تلفن ثابت - مثال 34567890-021</string>
     <string name="apply_changes">اعمال تغییرات</string>

@@ -1,4 +1,4 @@
-package net.honarnama.browse.widget;
+package net.honarnama.browse.dialog;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 
@@ -26,7 +26,7 @@ public class ConfirmationDialog extends Dialog {
     public ConfirmationDialog(Context context) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setCancelable(false);
+        setCancelable(true);
         setContentView(R.layout.confirmation_dilaog);
     }
 

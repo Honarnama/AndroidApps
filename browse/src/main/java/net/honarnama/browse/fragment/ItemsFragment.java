@@ -10,10 +10,13 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsParseAdapter;
+import net.honarnama.browse.dialog.ContactDialog;
+import net.honarnama.browse.dialog.ItemFilterDialog;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.model.Category;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +48,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public LinearLayout mLoadingCircle;
 
     public RelativeLayout mEmptyListContainer;
+    public RelativeLayout mFilterContainer;
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -60,7 +64,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
-//        mListView.setEmptyView(emptyListContainer);
+        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
+        mFilterContainer.setOnClickListener(this);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
@@ -70,29 +75,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
-//        Item.getRandomItems().continueWith(new Continuation<List<Item>, Object>() {
-//            @Override
-//            public Object then(Task<List<Item>> task) throws Exception {
-//                loadingCircle.setVisibility(View.GONE);
-//                emptyListTextVie.setVisibility(View.VISIBLE);
-//                emptyListTextVie.setText(HonarnamaBrowseApp.getInstance().getString(R.string.no_item_found));
-//                if (task.isFaulted()) {
-//                    logE("Getting random items failed. Error: " + task.getError(), "", task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
-//                    }
-//                } else {
-//                    List<Item> items = task.getResult();
-//                    mAdapter.setImages(items);
-//                    mAdapter.notifyDataSetChanged();
-//                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
-//                }
-//                return null;
-//            }
-//        });
-//
-//        mAdapter = new ItemsAdapter(getActivity());
-//        mListView.setAdapter(mAdapter);
         listAllItems();
         mListView.setOnItemClickListener(this);
 
@@ -129,7 +111,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             intent.putExtra(HonarnamaBaseApp.INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
-
+        }
+        if (v.getId() == R.id.filter_container) {
+            ItemFilterDialog itemFilterDialog = new ItemFilterDialog();
+            itemFilterDialog.showDialog(getActivity());
         }
     }
 
@@ -229,5 +214,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         }
     }
+
+
 }
 

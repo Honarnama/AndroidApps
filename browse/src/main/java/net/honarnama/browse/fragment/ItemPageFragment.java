@@ -17,8 +17,8 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.model.Item;
-import net.honarnama.browse.widget.ConfirmationDialog;
-import net.honarnama.browse.widget.ContactDialog;
+import net.honarnama.browse.dialog.ConfirmationDialog;
+import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
@@ -46,7 +46,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 

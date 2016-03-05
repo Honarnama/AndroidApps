@@ -12,17 +12,14 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
-import net.honarnama.browse.widget.ContactDialog;
+import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.TextUtil;
-
-import org.w3c.dom.Text;
 
 import android.content.Context;
 import android.content.Intent;

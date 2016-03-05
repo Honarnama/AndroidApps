@@ -1,4 +1,4 @@
-package net.honarnama.browse.widget;
+package net.honarnama.browse.dialog;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ImageSelector;
@@ -27,7 +27,7 @@ public class ContactDialog {
     public void showDialog(final Activity activity, String phoneNumber, String cellNumber, String warnMsg) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setContentView(R.layout.contact_dialog);
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
