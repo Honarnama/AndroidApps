@@ -184,6 +184,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
 
+        final RelativeLayout similarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
+        similarItemsContainer.setVisibility(View.GONE);
+
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
@@ -193,6 +196,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
+
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
                     mItem = (Item) task.getResult();
@@ -296,6 +300,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     });
                 }
+                similarItemsContainer.setVisibility(View.VISIBLE);
                 return null;
             }
         });
@@ -357,7 +362,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         });
 
-        mHorizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.hsv);
+        mHorizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.similar_items_hsv);
 //        mGestureDetector = new GestureDetector(new MyGestureDetector());
 
 
