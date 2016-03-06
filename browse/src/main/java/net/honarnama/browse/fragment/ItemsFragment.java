@@ -119,8 +119,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }
         if (v.getId() == R.id.filter_container) {
-
             Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
+            intent.putExtra("selectedProvinceId", mSelectedProvinceId);
+            intent.putExtra("selectedCityId", mSelectedCityId);
             startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
     }
@@ -143,7 +144,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mEmptyListContainer.setVisibility(View.VISIBLE);
                 }
             } else {
-                logE("Error getting item list, Error: " + e);
                 mEmptyListContainer.setVisibility(View.VISIBLE);
                 if (isVisible()) {
                     Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();

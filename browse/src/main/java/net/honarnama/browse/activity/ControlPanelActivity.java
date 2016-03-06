@@ -108,10 +108,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-        getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
-                .icon(GoogleMaterial.Icon.gmd_menu)
-                .color(Color.WHITE)
-                .sizeDp(20));
+//        getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
+//                .icon(GoogleMaterial.Icon.gmd_menu)
+//                .color(Color.WHITE)
+//                .sizeDp(20));
 
         handleExternalIntent(getIntent());
 

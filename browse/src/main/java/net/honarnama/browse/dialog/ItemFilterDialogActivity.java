@@ -9,15 +9,14 @@ import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.PriceTextWatcher;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -54,7 +53,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
     private Provinces mSelectedProvince;
 
-
     public EditText mFromEditText;
     public EditText mToEditText;
 
@@ -75,10 +73,24 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mCityEditEext.setOnClickListener(this);
         mCityEditEext.setKeyListener(null);
 
-        mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-        mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
+        Intent intent = getIntent();
+        if (intent.hasExtra("selectedProvinceId")) {
+            mSelectedProvinceId = intent.getStringExtra("selectedProvinceId");
+        }
 
-        mSelectedCityId = City.DEFAULT_CITY_ID;
+        if (intent.hasExtra("selectedCityId")) {
+            mSelectedCityId = intent.getStringExtra("selectedCityId");
+        }
+
+        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+            mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
+        }
+
+        if (TextUtils.isEmpty(mSelectedCityId)) {
+            mSelectedCityId = City.DEFAULT_CITY_ID;
+        }
+
+        mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
 
 ////        mFromEditText = (EditText) findViewById(R.id.from);
@@ -87,6 +99,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 //        mToEditText = (EditText) findViewById(R.id.to);
 
         findViewById(R.id.apply_filter).setOnClickListener(this);
+        findViewById(R.id.remove_filter).setOnClickListener(this);
 
         final Provinces provinces = new Provinces();
         final City city = new City();
@@ -144,13 +157,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener()
-
         {
             @Override
             public void onClick(View v) {
-//                if (dialog.isShowing()) {
-//                    dialog.dismiss();
-//                }
+               finish();
             }
         });
 
@@ -176,7 +186,11 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 break;
 
             case R.id.apply_filter:
-                returnFilterFields();
+                setFilters();
+                break;
+
+            case R.id.remove_filter:
+                removeFilters();
                 break;
 
         }
@@ -276,12 +290,23 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     }
 
 
-    public void returnFilterFields() {
+    public void setFilters() {
         Intent data = new Intent();
         data.putExtra("selectedProvinceId", mSelectedProvinceId);
         data.putExtra("selectedProvinceName", mSelectedProvinceName);
         data.putExtra("selectedCityId", mSelectedCityId);
         data.putExtra("selectedCityName", mSelectedCityName);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    public void removeFilters()
+    {
+        Intent data = new Intent();
+        data.putExtra("selectedProvinceId", "");
+        data.putExtra("selectedProvinceName", "");
+        data.putExtra("selectedCityId", "");
+        data.putExtra("selectedCityName", "");
         setResult(RESULT_OK, data);
         finish();
     }
