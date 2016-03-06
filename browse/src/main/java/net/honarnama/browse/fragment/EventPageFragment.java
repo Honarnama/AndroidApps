@@ -61,6 +61,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private ImageSelector mBannerImageView;
+    private ProgressBar mEventInfoProgressBar;
 
     private RelativeLayout mShare;
     public String mEventId;
@@ -118,6 +119,8 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
+        mEventInfoProgressBar = (ProgressBar) rootView.findViewById(R.id.event_info_progress_bar);
+
         mNameTextView = (TextView) rootView.findViewById(R.id.event_name_text_view);
         mDateTextView = (TextView) rootView.findViewById(R.id.event_date_text_view);
         mDescTextView = (TextView) rootView.findViewById(R.id.event_desc_text_view);
@@ -129,10 +132,11 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.event_info_container);
-
+        mEventInfoProgressBar.setVisibility(View.VISIBLE);
         Event.getEventById(mEventId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
+                mEventInfoProgressBar.setVisibility(View.GONE);
                 if (task.isFaulted()) {
                     logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
