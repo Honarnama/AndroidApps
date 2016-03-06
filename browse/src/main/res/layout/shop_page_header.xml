@@ -49,6 +49,7 @@
                     android:id="@+id/banner_progress_bar"
                     android:visibility="gone"
                     />
+
             <View android:id="@+id/fade_bg"
                   android:layout_width="fill_parent"
                   android:layout_height="?attr/actionBarSize"

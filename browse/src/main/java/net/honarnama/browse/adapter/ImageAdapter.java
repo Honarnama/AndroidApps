@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,10 +72,11 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageSelector imageView = mViewHolder.imageSelector;
 
+        mViewHolder.imageProgressBar.setVisibility(View.VISIBLE);
         imageView.loadInBackground(mImages.get(position), new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
-
+                mViewHolder.imageProgressBar.setVisibility(View.GONE);
             }
         });
         imageView.setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -84,9 +86,12 @@ public class ImageAdapter extends BaseAdapter {
 
     private class MyViewHolder {
         ImageSelector imageSelector;
+        ProgressBar imageProgressBar;
 
         public MyViewHolder(View view) {
-            imageSelector = (ImageSelector) view.findViewById(R.id.item_image);
+            imageSelector = (ImageSelector) view.findViewById(R.id.gallery_item_image);
+            imageProgressBar = (ProgressBar) view.findViewById(R.id.gallery_item_image_progress_bar);
         }
+
     }
 }

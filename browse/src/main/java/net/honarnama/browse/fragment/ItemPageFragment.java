@@ -16,9 +16,9 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
-import net.honarnama.browse.model.Item;
 import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.dialog.ContactDialog;
+import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
@@ -46,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,8 +58,6 @@ import java.util.Locale;
 import bolts.Continuation;
 import bolts.Task;
 
-import android.widget.RelativeLayout.LayoutParams;
-
 /**
  * Created by elnaz on 2/15/16.
  */
@@ -66,7 +65,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public static ShopPageFragment mShopPageFragment;
     public ImageView mRetryIcon;
     private Tracker mTracker;
-    public ProgressBar mBannerProgressBar;
+//    public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
     public TextView mPriceTextView;
@@ -155,7 +154,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
 
-        mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
+//        mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
         mPriceTextView = (TextView) rootView.findViewById(R.id.price);
@@ -250,7 +249,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     });
 
 
-                    mBannerProgressBar.setVisibility(View.VISIBLE);
+//                    mBannerProgressBar.setVisibility(View.VISIBLE);
 
                     ParseFile[] images = mItem.getImages();
                     List<ParseFile> nonNullImages = new ArrayList<ParseFile>();

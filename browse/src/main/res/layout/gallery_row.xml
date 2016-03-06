@@ -5,7 +5,7 @@
               android:layout_height="match_parent">
     <com.parse.ImageSelector
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/item_image"
+            android:id="@+id/gallery_item_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -19,5 +19,18 @@
             app:riv_border_color="@color/gray_super_extra_light"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
+            />
+
+    <ProgressBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            style="@style/GenericProgressIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:id="@+id/gallery_item_image_progress_bar"
+            android:visibility="gone"
             />
 </LinearLayout>
