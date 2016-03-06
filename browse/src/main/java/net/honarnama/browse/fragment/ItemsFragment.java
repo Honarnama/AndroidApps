@@ -68,7 +68,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
-        mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
+        mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
@@ -105,7 +105,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position);
+        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position-1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }

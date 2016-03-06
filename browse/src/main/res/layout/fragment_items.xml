@@ -56,7 +56,7 @@
                 android:layout_gravity="center_vertical|center_horizontal"/>
     </LinearLayout>
 
-    <ListView android:id="@+id/shop_items_listView"
+    <ListView android:id="@+id/items_listView"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

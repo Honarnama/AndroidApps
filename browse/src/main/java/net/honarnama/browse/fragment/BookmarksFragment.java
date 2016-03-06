@@ -43,7 +43,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
-        mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
+        mListView = (ListView) rootView.findViewById(R.id.items_listView);
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mListView.setEmptyView(emptyListContainer);
 

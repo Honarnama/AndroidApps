@@ -107,6 +107,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public ImageSelector mDefaultImageView;
 
+    public LinearLayout mInfoProgreeBarContainer;
+    public ProgressBar mSimilarItemsProgressBar;
+
     @Override
     public String getTitle(Context context) {
         return "مشاهده محصول";
@@ -182,6 +185,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
         mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
+        mInfoProgreeBarContainer = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
+        mSimilarItemsProgressBar = (ProgressBar) rootView.findViewById(R.id.similar_items_progress_bar);
+
         final IconicsImageView bookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
@@ -189,12 +195,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         final RelativeLayout similarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
         similarItemsContainer.setVisibility(View.GONE);
+        mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
         mDefaultImageView.setVisibility(View.VISIBLE);
-
+        mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
                 mDefaultImageView.setVisibility(View.GONE);
+                mInfoProgreeBarContainer.setVisibility(View.GONE);
                 if (task.isFaulted()) {
                     logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
@@ -295,6 +303,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                                 logE("Finding similar items failed. " + task.getError());
                             } else {
                                 List<Item> similarItems = task.getResult();
+                                similarItemsContainer.setVisibility(View.GONE);
                                 if (similarItems.size() > 0) {
                                     mSimilarTitleContainer.setVisibility(View.VISIBLE);
                                     addItems(task.getResult());

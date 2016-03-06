@@ -36,7 +36,7 @@
                             android:layout_below="@id/header_layout"
                     >
                 <LinearLayout
-                        android:id="@+id/loading_circle_container"
+                        android:id="@+id/item_info_progress_bar_container"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:gravity="center"
