@@ -30,6 +30,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
@@ -123,7 +124,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.child_fragment_root, fragment);
+
+                fragmentTransaction.add(R.id.child_fragment_root, fragment);
+
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commitAllowingStateLoss();
 
