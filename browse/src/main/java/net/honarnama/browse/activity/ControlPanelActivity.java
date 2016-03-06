@@ -125,7 +125,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     .getChildFragmentManager();
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
 
-                fragmentTransaction.add(R.id.child_fragment_root, fragment);
+
+            fragmentTransaction.add(R.id.child_fragment_root, fragment);
 
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commitAllowingStateLoss();

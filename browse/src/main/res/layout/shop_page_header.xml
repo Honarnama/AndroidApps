@@ -34,8 +34,6 @@
                     app:riv_border_color="@color/gray_super_extra_light"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
-                    app:removable="true"
-                    app:imageSelectorIndex="1"
                     />
             <ProgressBar
                     xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -31,6 +31,5 @@
             android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:id="@+id/gallery_item_image_progress_bar"
-            android:visibility="gone"
             />
 </LinearLayout>

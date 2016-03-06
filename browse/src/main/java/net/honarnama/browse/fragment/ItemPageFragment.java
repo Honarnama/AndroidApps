@@ -105,6 +105,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     int mWidth;
     int mCurrPosition, mPrevPosition;
 
+    public ImageSelector mDefaultImageView;
+
     @Override
     public String getTitle(Context context) {
         return "مشاهده محصول";
@@ -153,6 +155,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
+        mDefaultImageView = (ImageSelector) rootView.findViewById(R.id.item_default_image_view);
 
 //        mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
@@ -186,17 +189,18 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         final RelativeLayout similarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
         similarItemsContainer.setVisibility(View.GONE);
+        mDefaultImageView.setVisibility(View.VISIBLE);
 
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
+                mDefaultImageView.setVisibility(View.GONE);
                 if (task.isFaulted()) {
                     logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
-
                     infoContainer.setVisibility(View.VISIBLE);
                     mShare.setVisibility(View.VISIBLE);
                     mItem = (Item) task.getResult();
