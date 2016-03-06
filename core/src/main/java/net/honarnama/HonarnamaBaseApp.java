@@ -35,6 +35,8 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 10000;
     public static final int INTENT_TELEGRAM_CODE = 1003;
     public static final int INTENT_CHOOSE_CATEGORY_CODE = 1004;
+    public static final int INTENT_FILTER_ITEMS_CODE = 1005;
+
 
     public static final int INTENT_REGISTER_CODE = 3000;
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";

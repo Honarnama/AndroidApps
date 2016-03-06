@@ -2,6 +2,7 @@ package net.honarnama.core.adapter;
 
 
 import net.honarnama.base.R;
+import net.honarnama.core.model.Provinces;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,22 +21,20 @@ import java.util.TreeMap;
  */
 public class ProvincesAdapter extends BaseAdapter {
     private final Context mContext;
-    public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap;
+    public TreeMap<Number, Provinces> mProvinceObjectsTreeMap;
     public List<String> mProvincesNameList = new ArrayList<String>();
     public List<String> mProvincesIdsList = new ArrayList<String>();
-    ;
 
-    public ProvincesAdapter(Context context, TreeMap<Number, HashMap<String, String>> provincesTreeMap) {
+
+    public ProvincesAdapter(Context context, TreeMap<Number, Provinces> provincesTreeMap) {
         super();
         mContext = context;
-        mProvincesTreeMap = provincesTreeMap;
+        mProvinceObjectsTreeMap = provincesTreeMap;
 
-        if (mProvincesTreeMap != null) {
-            for (HashMap<String, String> provinceHashMap : mProvincesTreeMap.values()) {
-                for (HashMap.Entry<String, String> province : provinceHashMap.entrySet()) {
-                    mProvincesNameList.add(province.getValue());
-                    mProvincesIdsList.add(province.getKey());
-                }
+        if (mProvinceObjectsTreeMap != null) {
+            for (Provinces province : mProvinceObjectsTreeMap.values()) {
+                mProvincesIdsList.add(province.getObjectId());
+                mProvincesNameList.add(province.getName());
             }
         }
 
@@ -43,8 +42,8 @@ public class ProvincesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mProvincesTreeMap != null) {
-            return mProvincesTreeMap.size();
+        if (mProvinceObjectsTreeMap != null) {
+            return mProvinceObjectsTreeMap.size();
         }
         return 0;
     }

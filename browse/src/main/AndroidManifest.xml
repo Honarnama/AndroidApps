@@ -4,7 +4,9 @@
           package="net.honarnama.browse">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-sdk tools:overrideLibrary="net.honarnama.base"/>
+    <uses-sdk tools:overrideLibrary="net.honarnama.base"
+            />
+
 
     <application
             android:allowBackup="true"
@@ -74,6 +76,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+                android:name="net.honarnama.browse.dialog.ItemFilterDialogActivity"
+                android:label="@string/item_filter"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Holo.Dialog.NoActionBar"
+                android:launchMode="standard"
+                >
+        </activity>
 
     </application>
 

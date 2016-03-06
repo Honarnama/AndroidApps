@@ -43,6 +43,9 @@ public class Provinces extends ParseObject {
     public static String DEFAULT_PROVINCE_NAME = "آذربایجان شرقی";
 
     public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap = new TreeMap<Number, HashMap<String, String>>();
+    public TreeMap<Number, Provinces> mProvincesObjectTreeMap = new TreeMap<Number, Provinces>();
+
+
     public Context mContext;
 //    ProgressDialog mReceivingDataProgressDialog;
 
@@ -58,7 +61,7 @@ public class Provinces extends ParseObject {
         return getNumber(ORDER);
     }
 
-    public Task<TreeMap<Number, HashMap<String, String>>> getOrderedProvinces(Context context) {
+    public Task<TreeMap<Number, HashMap<String, String>>> getOrderedProvinceHashMap(Context context) {
 
         mContext = context;
 
@@ -90,13 +93,49 @@ public class Provinces extends ParseObject {
     }
 
 
+    public Task<TreeMap<Number, Provinces>> getOrderedProvinceObjects(Context context) {
+
+        mContext = context;
+
+        final TaskCompletionSource<TreeMap<Number, Provinces>> tcs = new TaskCompletionSource<>();
+
+        findProvincesAsync().continueWith(new Continuation<List<Provinces>, Object>() {
+            @Override
+            public Object then(Task<List<Provinces>> task) throws Exception {
+                if (task.isFaulted()) {
+                    tcs.trySetError(task.getError());
+                } else {
+
+                    List<Provinces> provinces = task.getResult();
+                    for (int i = 0; i < provinces.size(); i++) {
+
+                        Provinces province = provinces.get(i);
+                        mProvincesObjectTreeMap.put(province.getOrder(), province);
+                    }
+                    tcs.trySetResult(mProvincesObjectTreeMap);
+                }
+
+                return null;
+            }
+        });
+
+        return tcs.getTask();
+    }
+
     public Task<List<Provinces>> findProvincesAsync() {
         final TaskCompletionSource<List<Provinces>> tcs = new TaskCompletionSource<>();
 
         ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
         parseQuery.orderByAscending(Provinces.ORDER);
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+
+        String sharedPrefKey;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Getting provinces list from Local datastore");
@@ -161,7 +200,16 @@ public class Provinces extends ParseObject {
 
         ParseQuery<Provinces> parseQuery = ParseQuery.getQuery(Provinces.class);
         parseQuery.whereEqualTo(OBJECT_ID, provinceId);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+
+        String sharedPrefKey;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Getting province by id from local datastore");

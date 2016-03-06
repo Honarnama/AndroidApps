@@ -243,4 +243,7 @@
     <string name="toman">تومان</string>
     <string name="price_label">قیمت:</string>
     <string name="event_address_label">محل برگزاری:</string>
+    <string name="error_getting_city_list">خطا در نمایش فهرست شهرها. لطفا اینترنت دستگاه خود را
+        بررسی کنید.
+    </string>
 </resources>

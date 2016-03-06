@@ -85,7 +85,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private View mBannerFrameLayout;
 
     private EditText mProvinceEditEext;
-    public TreeMap<Number, HashMap<String, String>> mProvincesOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
+    public TreeMap<Number, Provinces> mProvinceObjectsTreeMap = new TreeMap<Number, Provinces>();
     public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
 
     private EditText mCityEditEext;
@@ -304,19 +304,15 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         provinceDialog.setContentView(R.layout.choose_province);
 
         provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-        provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesOrderedTreeMap);
+        provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
         provincesListView.setAdapter(provincesAdapter);
         provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> selectedProvince = mProvincesOrderedTreeMap.get(position + 1);
-                for (String key : selectedProvince.keySet()) {
-                    mSelectedProvinceId = key;
-                }
-                for (String value : selectedProvince.values()) {
-                    mSelectedProvinceName = value;
-                    mProvinceEditEext.setText(mSelectedProvinceName);
-                }
+                Provinces selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
+                mSelectedProvinceId = selectedProvince.getObjectId();
+                mSelectedProvinceName = selectedProvince.getName();
+                mProvinceEditEext.setText(mSelectedProvinceName);
                 rePopulateCityList();
                 provinceDialog.dismiss();
             }
@@ -759,9 +755,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
                 return null;
             }
-        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, HashMap<String, String>>>>() {
+        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Provinces>>>() {
             @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Void> task) throws Exception {
+            public Task<TreeMap<Number, Provinces>> then(Task<Void> task) throws Exception {
                 if (mSelectedProvinceId == null) {
                     mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
 
@@ -769,11 +765,11 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 if (mSelectedCityId == null) {
                     mSelectedCityId = City.DEFAULT_CITY_ID;
                 }
-                return provinces.getOrderedProvinces(HonarnamaBaseApp.getInstance());
+                return provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance());
             }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        }).continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                 if (task.isFaulted()) {
                     mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
                     logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
@@ -785,11 +781,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                         Toast.makeText(getActivity(), getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    mProvincesOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> provinceMap : mProvincesOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> provinceSet : provinceMap.entrySet()) {
-                            mProvincesHashMap.put(provinceSet.getKey(), provinceSet.getValue());
-                        }
+                    mProvinceObjectsTreeMap = task.getResult();
+                    for (Provinces province : mProvinceObjectsTreeMap.values()) {
+                        mProvincesHashMap.put(province.getObjectId(), province.getName());
                     }
                     mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
                 }

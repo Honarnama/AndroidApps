@@ -180,7 +180,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:textAppearance">@style/TextAppearance_DialogWindowTitle</item>
-        <item name="android:background">@color/cyan</item>
+        <item name="android:background">@color/dark_cyan</item>
     </style>
 
     <style name="TextAppearance_DialogWindowTitle"
@@ -205,6 +205,11 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="numberPickerTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
 </resources>

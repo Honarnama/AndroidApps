@@ -4,10 +4,9 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:fadeScrollbars="false"
-        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
         android:layoutDirection="rtl"
-        android:id="@+id/store_fragment_scroll_view"
         >
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
@@ -17,28 +16,42 @@
             >
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 style="@style/bordered_edit_text"
-                android:id="@+id/contact_container"
                 android:layout_below="@+id/close_button_container"
                 android:layout_margin="10dp"
-                android:padding="10dp"
+                android:id="@+id/filter_fields_container"
+                android:padding="0dp"
                 >
             <TextView
                     style="@style/section_title"
                     android:text="فیلتر محصولات"
                     android:textColor="@color/dark_cyan"
                     android:id="@+id/item_filter_title"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
                     />
 
+            <TextView
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/geo_limit_title"
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="5dp"
+                    android:text="محدوده جغرافیایی"
+                    android:layout_below="@id/item_filter_title"
+                    android:textColor="@color/gray_light"
+                    />
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:id="@+id/provinces_container"
                           android:orientation="horizontal"
-                          android:layout_marginTop="16dp"
-                          android:layout_below="@id/item_filter_title"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="10dp"
+                          android:layout_marginLeft="10dp"
+                          android:layout_below="@id/geo_limit_title"
                     >
                 <TextView style="@style/default_text_view"
                           android:text="@string/provine_label"
@@ -53,7 +66,7 @@
                         />
                 <EditText
                         android:hint="@string/province"
-                        android:id="@+id/store_province_edit_text"
+                        android:id="@+id/province_edit_text"
                         style="@style/bordered_edit_text"
                         android:layout_marginRight="16dp"
                         />
@@ -64,6 +77,8 @@
                           android:id="@+id/city_container"
                           android:orientation="horizontal"
                           android:layout_marginTop="10dp"
+                          android:layout_marginRight="10dp"
+                          android:layout_marginLeft="10dp"
                           android:layout_below="@id/provinces_container"
                     >
                 <TextView style="@style/default_text_view"
@@ -79,14 +94,135 @@
                         />
                 <EditText
                         android:hint="@string/city"
-                        android:id="@+id/store_city_edit_text"
+                        android:id="@+id/city_edit_text"
                         style="@style/bordered_edit_text"
                         android:layout_marginRight="16dp"
                         />
             </LinearLayout>
 
+            <!--<TextView-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:id="@+id/price_limit_title"-->
+            <!--style="@style/section_title"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:paddingRight="5dp"-->
+            <!--android:paddingLeft="5dp"-->
+            <!--android:text="محدوده قیمت"-->
+            <!--android:layout_below="@id/city_container"-->
+            <!--android:textColor="@color/gray_light"-->
+            <!--/>-->
+
+
+            <!--<LinearLayout android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/price_limit_title"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:id="@+id/from_container"-->
+            <!-->-->
+            <!--<TextView style="@style/default_text_view"-->
+            <!--android:text="از:"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:id="@+id/from_label"-->
+            <!--android:editable="false"-->
+            <!--android:cursorVisible="false"-->
+            <!--android:focusable="false"-->
+            <!--android:clickable="true"-->
+            <!--android:textStyle="bold"-->
+            <!--android:layout_width="45dp"-->
+            <!--/>-->
+            <!--<EditText-->
+            <!--android:hint="۱۰۰ تومان"-->
+            <!--style="@style/bordered_edit_text"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:id="@+id/from"-->
+            <!--android:inputType="number"-->
+            <!--/>-->
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/from_container"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:id="@+id/to_price_container"-->
+            <!-->-->
+            <!--<TextView style="@style/default_text_view"-->
+            <!--android:text="تا:"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:id="@+id/to_label"-->
+            <!--android:editable="false"-->
+            <!--android:cursorVisible="false"-->
+            <!--android:focusable="false"-->
+            <!--android:clickable="true"-->
+            <!--android:textStyle="bold"-->
+            <!--android:layout_width="45dp"-->
+            <!--/>-->
+            <!--<EditText-->
+            <!--android:hint="۱۰۰۰۰۰۰۰ تومان"-->
+            <!--style="@style/bordered_edit_text"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:id="@+id/to"-->
+            <!--android:inputType="number"-->
+            <!--/>-->
+            <!--</LinearLayout>-->
+
+            <View style="@style/HorizontalSeparatorLine"
+                  android:layout_below="@id/city_container"
+                  android:layout_marginTop="20dp"
+                  android:background="@color/gray_extra_light"
+                  android:id="@+id/separator_line"
+                    >
+            </View>
+
+
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/separator_line"
+                            android:layout_margin="5dp"
+                            android:id="@+id/filter_buttons_container"
+                            android:gravity="center"
+                    >
+                <TextView style="@style/default_text_view"
+                          android:text="حذف فیلتر"
+                          android:layout_centerVertical="true"
+                          android:id="@+id/remove_filter"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                          android:textColor="@color/amber_launcher_color"
+                          android:gravity="center_vertical"
+                          android:layout_height="45dp"
+                          android:paddingRight="20dp"
+                          android:paddingLeft="20dp"
+
+                        />
+                <TextView style="@style/default_text_view"
+                          android:text="اعمال"
+                          android:layout_centerVertical="true"
+                          android:id="@+id/apply_filter"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                          android:textStyle="bold"
+                          android:textColor="@color/amber_launcher_color"
+                          android:gravity="center_vertical"
+                          android:layout_height="45dp"
+                          android:layout_toLeftOf="@id/remove_filter"
+                          android:paddingRight="20dp"
+                          android:paddingLeft="20dp"
+                        />
+            </RelativeLayout>
 
         </RelativeLayout>
+
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

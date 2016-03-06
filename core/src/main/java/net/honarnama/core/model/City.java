@@ -99,8 +99,14 @@ public class City extends ParseObject {
         parseQuery.whereEqualTo(PARENT_ID, parentId);
         parseQuery.orderByAscending(ORDER);
 
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+        String sharedPrefKey;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
 
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
@@ -143,7 +149,15 @@ public class City extends ParseObject {
 
         ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
         parseQuery.whereEqualTo(OBJECT_ID, cityId);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+
+        String sharedPrefKey;
+        if (HonarnamaUser.getCurrentUser() == null) {
+            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
+        } else {
+            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
+        }
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Getting city by id from local datastore");

@@ -46,7 +46,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
     public String mCallingApp = HonarnamaBaseApp.SELL_APP_KEY;
 
-    public String mAllCategoriesFilterObjectId;
+    public String mAllSubCategoriesFilterObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,15 +142,18 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
                         Category artCategory = artCategories.get(i);
 
+                        mCategoriesNameHashMap.put(artCategories.get(i).getObjectId(), artCategories.get(i).getString("name"));
+                        mCategoriesOrderHashMap.put(artCategories.get(i).getObjectId(), artCategories.get(i).getNumber("order"));
+
                         if (artCategory.getAllSubCatFilterType() == true) {
                             mFilterSubCatParentHashMap.put(artCategory.getObjectId(), artCategory.getParentId());
                         }
 
                         if ((artCategory.getParentId() != null) && artCategory.getParentId().equals("ALL")) {
-                            mAllCategoriesFilterObjectId = artCategory.getObjectId();
+                            mAllSubCategoriesFilterObjectId = artCategory.getObjectId();
                         }
 
-                        if (artCategory.getString("parentId") == null) {//first level category
+                        if (artCategory.getString("parentId") == null || artCategory.getParentId().equals("ALL")) {//first level category
                             if (!mCategoriesHierarchyHashMap.containsKey(artCategory.getObjectId())) {
                                 mCategoriesHierarchyHashMap.put(artCategory.getObjectId(), null);
                             }
@@ -165,8 +168,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
                             }
                             mCategoriesHierarchyHashMap.put(artCategory.getString("parentId"), tempArrayList);
                         }
-                        mCategoriesNameHashMap.put(artCategories.get(i).getObjectId(), artCategories.get(i).getString("name"));
-                        mCategoriesOrderHashMap.put(artCategories.get(i).getObjectId(), artCategories.get(i).getNumber("order"));
+
                     }
 
                     setNodeCategories();
@@ -189,6 +191,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         if (mSelectedCategoryObjectId == null) {
             //nothing is selected yet
             for (String key : mCategoriesHierarchyHashMap.keySet()) {
+
                 int index = mCategoriesOrderHashMap.get(key).intValue();
                 if (mCallingApp.equals(HonarnamaBaseApp.SELL_APP_KEY)) {
                     index = index - 1;
@@ -274,7 +277,7 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         if (isFilterSubCategoryRowSelected(mSelectedCategoryObjectId)) {
             ArrayList<String> subCats = new ArrayList<>();
             data.putExtra("isFilterSubCategoryRowSelected", true);
-            if (mSelectedCategoryObjectId.equals(mAllCategoriesFilterObjectId)) {
+            if (mSelectedCategoryObjectId.equals(mAllSubCategoriesFilterObjectId)) {
                 data.putStringArrayListExtra("subCats", subCats);
             } else {
                 subCats = mCategoriesHierarchyHashMap.get(mFilterSubCatParentHashMap.get(mSelectedCategoryObjectId));
@@ -284,6 +287,8 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
 
         data.putExtra("selectedCategoryName", mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
         data.putExtra("selectedCategoryObjectId", mSelectedCategoryObjectId);
+
+
         setResult(RESULT_OK, data);
         finish();
     }

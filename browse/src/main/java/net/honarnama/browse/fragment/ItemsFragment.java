@@ -10,16 +10,18 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsParseAdapter;
-import net.honarnama.browse.dialog.ContactDialog;
-import net.honarnama.browse.dialog.ItemFilterDialog;
+import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.activity.ChooseCategoryActivity;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.model.City;
+import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Store;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +30,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by elnaz on 2/11/16.
@@ -41,7 +41,7 @@ import bolts.Task;
 public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
-    public String mCategoryId;
+    public String mSelectedCategoryId;
 
     ItemsParseAdapter mItemsParseAdapter;
     public Button mCategoryFilterButton;
@@ -49,6 +49,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     public RelativeLayout mEmptyListContainer;
     public RelativeLayout mFilterContainer;
+    private Provinces mSelectedProvince;
+    private String mSelectedProvinceId;
+    private String mSelectedCityId;
+    private String mSelectedProvinceName;
+    private ArrayList<String> mSubCatList = new ArrayList<>();
+    private boolean mIsFilterSubCategoryRowSelected = false;
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -75,7 +81,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
-        listAllItems();
+        listItems();
         mListView.setOnItemClickListener(this);
 
         return rootView;
@@ -113,87 +119,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }
         if (v.getId() == R.id.filter_container) {
-            ItemFilterDialog itemFilterDialog = new ItemFilterDialog();
-            itemFilterDialog.showDialog(getActivity());
+
+            Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
+            startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case HonarnamaBaseApp.INTENT_CHOOSE_CATEGORY_CODE:
-
-                if (resultCode == getActivity().RESULT_OK) {
-
-                    boolean isFilterSubCategoryRowSelected = data.getBooleanExtra("isFilterSubCategoryRowSelected", false);
-                    ArrayList<String> subCatsList = data.getStringArrayListExtra("subCats");
-
-                    mCategoryFilterButton.setText(data.getStringExtra("selectedCategoryName"));
-                    mCategoryId = data.getStringExtra("selectedCategoryObjectId");
-                    filterListByCategory(isFilterSubCategoryRowSelected, subCatsList);
-                }
-                break;
-        }
-    }
-
-    public void filterListByCategory(boolean isFilterSubCategoryRowSelected, ArrayList<String> subCatsList) {
-        if (isFilterSubCategoryRowSelected == true) {
-            if (subCatsList == null) {
-                listAllItems();
-                return;
-            }
-        }
-
-        ArrayList<String> querySubCatIds = new ArrayList<>();
-        if (subCatsList == null) {
-            querySubCatIds.add(mCategoryId);
-        } else {
-            querySubCatIds = subCatsList;
-        }
-        Category.getCategoriesById(querySubCatIds, HonarnamaBaseApp.BROWSE_APP_KEY).continueWith(new Continuation<List<Category>, Object>() {
-            @Override
-            public Object then(final Task<List<Category>> task) throws Exception {
-                if (task.isFaulted()) {
-                    return null;
-                }
-                ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-                        new ParseQueryAdapter.QueryFactory<ParseObject>() {
-                            public ParseQuery create() {
-                                ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-                                parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
-                                parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-                                parseQuery.whereContainedIn(Item.CATEGORY, task.getResult());
-                                parseQuery.include(Item.CATEGORY);
-                                return parseQuery;
-                            }
-                        };
-
-                mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
-                mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
-                mListView.setAdapter(mItemsParseAdapter);
-                return null;
-            }
-        });
-
-    }
-
-    public void listAllItems() {
-        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-                new ParseQueryAdapter.QueryFactory<ParseObject>() {
-                    public ParseQuery create() {
-                        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-                        parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
-                        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-                        parseQuery.include(Item.CATEGORY);
-                        return parseQuery;
-                    }
-                };
-
-        mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
-        mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
-        mListView.setAdapter(mItemsParseAdapter);
     }
 
     class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
@@ -205,13 +134,116 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         @Override
         public void onLoaded(List objects, Exception e) {
+
             mLoadingCircle.setVisibility(View.GONE);
-            if (objects.size() == 0) {
-                mEmptyListContainer.setVisibility(View.VISIBLE);
+            if (e == null) {
+                if ((objects != null) && objects.size() > 0) {
+                    mEmptyListContainer.setVisibility(View.GONE);
+                } else {
+                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                }
             } else {
-                mEmptyListContainer.setVisibility(View.GONE);
+                logE("Error getting item list, Error: " + e);
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+                if (isVisible()) {
+                    Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    public void listItems() {
+
+        final ParseQuery<Store> storeQuery = new ParseQuery<Store>(Store.class);
+        storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
+        storeQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
+
+        if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+            Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+            storeQuery.whereEqualTo(Store.PROVINCE, province);
+        }
+
+        if (!TextUtils.isEmpty(mSelectedCityId)) {
+            City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+            storeQuery.whereEqualTo(Store.CITY, city);
+        }
+
+        ArrayList<Category> queryCategoryIds = new ArrayList<>();
+        if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
+
+            ArrayList<String> querySubCatIds = new ArrayList<>();
+            if (mSubCatList == null || mSubCatList.isEmpty()) {
+                if (!TextUtils.isEmpty(mSelectedCategoryId)) {
+                    querySubCatIds.add(mSelectedCategoryId);
+                }
+            } else {
+                querySubCatIds = mSubCatList;
             }
 
+            for (int i = 0; i < querySubCatIds.size(); i++) {
+                Category category = ParseObject.createWithoutData(Category.class, querySubCatIds.get(i));
+                queryCategoryIds.add(category);
+            }
+
+        }
+
+        final ArrayList<Category> finalQueryCategoryIds = queryCategoryIds;
+
+
+        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
+                new ParseQueryAdapter.QueryFactory<ParseObject>() {
+                    public ParseQuery create() {
+                        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+                        parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
+                        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+                        parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
+
+                        if (finalQueryCategoryIds != null && !(finalQueryCategoryIds.isEmpty())) {
+                            parseQuery.whereContainedIn(Item.CATEGORY, finalQueryCategoryIds);
+                        }
+                        parseQuery.include(Item.CATEGORY);
+                        return parseQuery;
+                    }
+                };
+
+        mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
+        mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
+        mListView.setAdapter(mItemsParseAdapter);
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case HonarnamaBaseApp.INTENT_CHOOSE_CATEGORY_CODE:
+
+                if (resultCode == getActivity().RESULT_OK) {
+
+                    boolean isFilterSubCategoryRowSelected = data.getBooleanExtra("isFilterSubCategoryRowSelected", false);
+                    ArrayList<String> subCatList = data.getStringArrayListExtra("subCats");
+
+                    mCategoryFilterButton.setText(data.getStringExtra("selectedCategoryName"));
+                    mSelectedCategoryId = data.getStringExtra("selectedCategoryObjectId");
+                    mSubCatList = subCatList;
+                    mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
+                    listItems();
+                }
+                break;
+
+            case HonarnamaBaseApp.INTENT_FILTER_ITEMS_CODE:
+
+                if (resultCode == getActivity().RESULT_OK) {
+                    mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
+                    mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
+                    Toast.makeText(getActivity(), mSelectedProvinceId + "//" + mSelectedProvinceName, Toast.LENGTH_SHORT).show();
+
+                    mSelectedCityId = data.getStringExtra("selectedCityId");
+                    listItems();
+                }
+                break;
         }
     }
 
