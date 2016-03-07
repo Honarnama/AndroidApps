@@ -47,7 +47,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mListView.setEmptyView(emptyListContainer);
 
-        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
 
         mBookmarksParseAdapter = new BookmarksParseAdapter(HonarnamaBrowseApp.getInstance());
         mBookmarksParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {

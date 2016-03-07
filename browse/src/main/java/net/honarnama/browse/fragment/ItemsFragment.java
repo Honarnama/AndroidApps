@@ -238,7 +238,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
                     mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-                    Toast.makeText(getActivity(), mSelectedProvinceId + "//" + mSelectedProvinceName, Toast.LENGTH_SHORT).show();
 
                     mSelectedCityId = data.getStringExtra("selectedCityId");
                     listItems();
