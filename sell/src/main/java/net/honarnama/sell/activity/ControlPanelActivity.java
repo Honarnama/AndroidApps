@@ -70,7 +70,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
     public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
     public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER= 5;
+    public static final int DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER = 5;
 
     public static final int DRAWER_ITEM_IDENTIFIER_CONTACT = 6;
     public static final int DRAWER_ITEM_IDENTIFIER_RULES = 7;
@@ -351,14 +351,18 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 break;
 
             case DRAWER_ITEM_IDENTIFIER_SWITCH_APP:
-                if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
-                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
-                    startActivity(launchIntent);
-                } else {
-                    Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
-                    browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
-                    browseAppIntent.setPackage("com.farsitel.bazaar");
-                    startActivity(browseAppIntent);
+                try {
+                    if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
+                        startActivity(launchIntent);
+                    } else {
+                        Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
+                        browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
+                        browseAppIntent.setPackage("com.farsitel.bazaar");
+                        startActivity(browseAppIntent);
+                    }
+                } catch (Exception e) {
+                    logE("Error switching from sell app to browse. Error: " + e);
                 }
                 break;
 
