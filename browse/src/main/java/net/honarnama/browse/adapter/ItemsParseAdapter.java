@@ -7,6 +7,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
@@ -103,9 +104,22 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
 //            mViewHolder.icon.setImageResource(android.R.color.transparent);
 //        }
 
+        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
         if (image != null) {
             Uri imageUri = Uri.parse(image.getUrl());
-            Picasso.with(mContext).load(imageUri.toString()).into(mViewHolder.icon);
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         } else {
             mViewHolder.icon.setImageResource(android.R.color.transparent);
         }
