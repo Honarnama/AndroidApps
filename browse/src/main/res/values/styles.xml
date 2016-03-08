@@ -59,7 +59,6 @@
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingRight">10dp</item>
     </style>
 
 </resources>

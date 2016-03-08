@@ -23,13 +23,20 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -57,6 +64,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private String mEventId;
     private String mItemId;
     public TextView mTitle;
+    private DrawerLayout mDrawer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,18 +113,48 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         setDefaultTab();
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setHomeButtonEnabled(false);
 //        getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
 //                .icon(GoogleMaterial.Icon.gmd_menu)
 //                .color(Color.WHITE)
 //                .sizeDp(20));
 
+        mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
+                    .icon(GoogleMaterial.Icon.gmd_menu)
+                    .color(Color.WHITE)
+                    .sizeDp(20));
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
+        setupDrawerContent(navView);
+
         handleExternalIntent(getIntent());
 
     }
+
+    public void setupDrawerContent(NavigationView navigationView) {
+        Menu menu = navigationView.getMenu();
+
+        IconicsDrawable contactDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .sizeDp(16)
+                        .color(getResources().getColor(R.color.gray))
+                        .icon(GoogleMaterial.Icon.gmd_email);
+        menu.getItem(0).setIcon(contactDrawable);
+
+        IconicsDrawable gavelDrawable = new IconicsDrawable(ControlPanelActivity.this).sizeDp(56).icon(GoogleMaterial.Icon.gmd_gavel);
+        menu.getItem(1).setIcon(gavelDrawable);
+    }
+
+
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
@@ -293,6 +331,18 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         processIntent(intent);
                     }
                 });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.openDrawer(Gravity.RIGHT);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
