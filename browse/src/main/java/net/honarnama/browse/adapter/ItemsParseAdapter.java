@@ -117,11 +117,23 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
 
                         @Override
                         public void onError() {
-
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
                     });
         } else {
-            mViewHolder.icon.setImageResource(android.R.color.transparent);
+            Picasso.with(mContext).load(R.drawable.camera_insta)
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
         }
 
         // Setting all values in listview
