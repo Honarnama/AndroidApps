@@ -100,7 +100,7 @@ public class ItemsAdapter extends BaseAdapter {
 
                 new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle))
                         .setTitle("تایید حذف")
-                        .setMessage("این آگهی را حذف میکنید؟")
+                        .setMessage("آگهی " + item.getName() + " را حذف میکنید؟")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -108,7 +108,9 @@ public class ItemsAdapter extends BaseAdapter {
                                 progressDialog.setCancelable(false);
                                 progressDialog.setMessage(mContext.getString(R.string.please_wait));
                                 progressDialog.show();
-                                Item.deleteItem(mContext, mItems.get(position).getObjectId()).continueWith(new Continuation<Void, Object>() {
+
+
+                                Item.deleteItem(mContext, item.getObjectId()).continueWith(new Continuation<Void, Object>() {
                                     @Override
                                     public Object then(Task<Void> task) throws Exception {
                                         progressDialog.dismiss();

@@ -365,6 +365,7 @@ public class Item extends ParseObject {
 
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereEqualTo(Item.OWNER, HonarnamaUser.getCurrentUser());
+        parseQuery.whereEqualTo(Item.OBJECT_ID, itemId);
         parseQuery.getFirstInBackground(new GetCallback<Item>() {
             @Override
             public void done(final Item item, ParseException e) {
