@@ -27,4 +27,5 @@ dependencies {
     releaseCompile project(path: ':core', configuration: 'release')
     compile 'com.android.support:design:23.0.+'
     compile 'com.mikepenz:community-material-typeface:+@aar'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

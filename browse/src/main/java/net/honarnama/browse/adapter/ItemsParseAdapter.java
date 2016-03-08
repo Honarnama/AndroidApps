@@ -7,12 +7,16 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Category;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,10 +33,14 @@ import bolts.TaskCompletionSource;
  * Created by elnaz on 2/23/16.
  */
 public class ItemsParseAdapter extends ParseQueryAdapter {
+
+    public Context mContext;
+
     public ItemsParseAdapter(Context context, QueryFactory<ParseObject> queryFactory) {
         // Use the QueryFactory to construct a PQA that will only show
         // Todos marked as high-pri
         super(context, queryFactory);
+        mContext = context;
     }
 
     @Override
@@ -57,15 +65,50 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
 
         super.getItemView(item, convertView, parent);
 
-        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-        mViewHolder.icon.setVisibility(View.GONE);
-        mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                mViewHolder.icon.setVisibility(View.VISIBLE);
-            }
-        });
+        ParseFile image = item.getParseFile(Item.IMAGE_1);
+//        if (image != null) {
+//            mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
+//            mViewHolder.icon.setVisibility(View.GONE);
+//            mViewHolder.icon.loadInBackground(image, new GetDataCallback() {
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                    mViewHolder.icon.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        } else {
+//            mViewHolder.icon.setImageResource(android.R.color.transparent);
+//        }
+
+
+//        if (image != null) {
+//            image.getDataInBackground(new GetDataCallback() {
+//
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                    mViewHolder.icon.setVisibility(View.VISIBLE);
+//                    if (data != null && e == null) {
+//                        Bitmap bitmap = BitmapFactory
+//                                .decodeByteArray(data, 0,
+//                                        data.length);
+//                        mViewHolder.icon.setImageBitmap(bitmap);
+//                    } else {
+//                        mViewHolder.icon.setImageResource(android.R.color.transparent);
+//                    }
+//                }
+//            });
+//        } else {
+//            Log.e("inja", "aks nadarad");
+//            mViewHolder.icon.setImageResource(android.R.color.transparent);
+//        }
+
+        if (image != null) {
+            Uri imageUri = Uri.parse(image.getUrl());
+            Picasso.with(mContext).load(imageUri.toString()).into(mViewHolder.icon);
+        } else {
+            mViewHolder.icon.setImageResource(android.R.color.transparent);
+        }
 
         // Setting all values in listview
         mViewHolder.title.setText(item.getName());
