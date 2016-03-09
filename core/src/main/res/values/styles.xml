@@ -212,4 +212,9 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <style name="NavDrawerTextStyle" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

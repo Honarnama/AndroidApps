@@ -24,25 +24,27 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
@@ -133,7 +135,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
+        NavigationView navView = (NavigationView) findViewById(R.id.navView);
         setupDrawerContent(navView);
 
         handleExternalIntent(getIntent());
@@ -145,16 +147,93 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
-                        .sizeDp(16)
-                        .color(getResources().getColor(R.color.gray))
+                        .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_email);
         menu.getItem(0).setIcon(contactDrawable);
 
-        IconicsDrawable gavelDrawable = new IconicsDrawable(ControlPanelActivity.this).sizeDp(56).icon(GoogleMaterial.Icon.gmd_gavel);
+        IconicsDrawable gavelDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_gavel);
         menu.getItem(1).setIcon(gavelDrawable);
+
+        IconicsDrawable aboutDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_info_outline);
+        menu.getItem(2).setIcon(aboutDrawable);
+
+        IconicsDrawable shareDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_share);
+        menu.getItem(3).setIcon(shareDrawable);
+
+        IconicsDrawable supportDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_stars);
+        menu.getItem(4).setIcon(supportDrawable);
+
+        IconicsDrawable swapDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_swap_horiz);
+        menu.getItem(5).setIcon(swapDrawable);
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+
     }
 
+    public void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment = null;
 
+        Class fragmentClass;
+        switch (menuItem.getItemId()) {
+            case R.id.item_contact_us:
+                menuItem.setChecked(true);
+                IconicsDrawable contactDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_email);
+                menuItem.setIcon(contactDrawable);
+                break;
+            case R.id.item_rules:
+                menuItem.setChecked(true);
+                break;
+            case R.id.item_about_us:
+                menuItem.setChecked(true);
+                break;
+
+            case R.id.item_share_us:
+                menuItem.setChecked(true);
+                break;
+
+            case R.id.item_support_us:
+                menuItem.setChecked(true);
+                break;
+
+            case R.id.item_switch_app:
+                menuItem.setChecked(true);
+                break;
+
+        }
+//
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        mDrawer.closeDrawer(Gravity.RIGHT);
+    }
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
@@ -338,7 +417,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawer.openDrawer(Gravity.RIGHT);
+                if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+                    mDrawer.closeDrawer(Gravity.RIGHT);
+                } else {
+                    mDrawer.openDrawer(Gravity.RIGHT);
+                }
                 return true;
         }
 

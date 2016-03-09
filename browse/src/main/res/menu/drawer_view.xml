@@ -2,31 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
-                android:id="@+id/nav_first_fragment"
-                android:title="First"
+                android:id="@+id/item_contact_us"
+                android:title="@string/contact_us"
                 />
+
         <item
-                android:id="@+id/nav_second_fragment"
-                android:title="Second" />
+                android:id="@+id/item_rules"
+                android:title="@string/rules"/>
+
         <item
-                android:id="@+id/nav_third_fragment"
-                android:title="Third" />
+                android:id="@+id/item_about_us"
+                android:title="@string/about_us"/>
+
+        <item
+                android:id="@+id/item_share_us"
+                android:title="@string/share_us"/>
+
+        <item
+                android:id="@+id/item_support_us"
+                android:title="@string/support_us"/>
+
+        <item
+                android:id="@+id/item_switch_app"
+                android:title="@string/switch_app"/>
+
     </group>
 
-
-    <!--new SecondaryDrawerItem().withName(R.string.contact_us).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(GoogleMaterial.Icon.gmd_email),-->
-    <!--new SecondaryDrawerItem().withName(R.string.rules).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(GoogleMaterial.Icon.gmd_gavel).withSelectable(false),-->
-    <!--new SecondaryDrawerItem().withName(R.string.about_us).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),-->
-    <!--new SecondaryDrawerItem().withName(R.string.share_us).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),-->
-    <!--new SecondaryDrawerItem().withName(R.string.support_us).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_stars).withSelectable(false),-->
-    <!--new SecondaryDrawerItem().withName(R.string.switch_app).withSelectable(false).-->
-    <!--withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap_horiz),-->
-    <!--new DividerDrawerItem().withSelectable(false),-->
-    <!--new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).-->
 </menu>

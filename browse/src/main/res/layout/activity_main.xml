@@ -1,56 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layoutDirection="rtl"
-        >
-
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layoutDirection="rtl">
-
-        <include
-                layout="@layout/toolbar_main"
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
-
-        <net.honarnama.browse.widget.LockableViewPager
-                android:id="@+id/view_pager"
-                android:layout_below="@id/toolbar"
-                android:layout_above="@+id/tab_bar_divider"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layoutDirection="rtl"
-                />
+                android:layoutDirection="rtl">
 
-        <net.honarnama.browse.widget.MainTabBar
-                android:id="@+id/tab_bar"
-                android:background="@color/white"
-                android:layout_alignParentBottom="true"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/home_tab_bar_height"
-                android:layoutDirection="ltr"/>
+    <include
+            layout="@layout/toolbar_main"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
 
-        <View
-                android:id="@+id/tab_bar_divider"
-                android:layout_width="match_parent"
-                android:layout_above="@+id/tab_bar"
-                android:layout_height="1dp"
-                android:background="@color/home_tab_bar_divider"/>
-
-    </RelativeLayout>
-    <android.support.design.widget.NavigationView
-            android:id="@+id/nvView"
-            android:layout_width="wrap_content"
+    <android.support.v4.widget.DrawerLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:background="@android:color/white"
-            app:menu="@menu/drawer_view"/>
-</android.support.v4.widget.DrawerLayout>
+            android:layoutDirection="rtl"
+            android:layout_below="@id/toolbar"
+            android:background="@color/red"
+
+            >
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+            <net.honarnama.browse.widget.LockableViewPager
+                    android:id="@+id/view_pager"
+                    android:layout_above="@+id/tab_bar_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    />
+
+            <net.honarnama.browse.widget.MainTabBar
+                    android:id="@+id/tab_bar"
+                    android:background="@color/white"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/home_tab_bar_height"
+                    android:layoutDirection="ltr"/>
+
+            <View
+                    android:id="@+id/tab_bar_divider"
+                    android:layout_width="match_parent"
+                    android:layout_above="@+id/tab_bar"
+                    android:layout_height="1dp"
+                    android:background="@color/home_tab_bar_divider"/>
+        </RelativeLayout>
+
+        <android.support.design.widget.NavigationView
+                android:id="@+id/navView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="@color/white"
+                app:itemTextAppearance="@style/NavDrawerTextStyle"
+                app:itemTextColor="@color/nav_item_text_selector"
+                app:itemIconTint="@color/nav_item_text_selector"
+                app:itemBackground="@drawable/nav_item_back_selector"
+                app:menu="@menu/drawer_view">
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:clipToPadding="false"
+                         android:paddingBottom="96dp">
+
+
+                <include layout="@layout/footer"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="bottom"
+                         android:layout_marginBottom="-96dp"
+                        ></include>
+
+            </FrameLayout>
+        </android.support.design.widget.NavigationView>
+    </android.support.v4.widget.DrawerLayout>
+
+</RelativeLayout>
