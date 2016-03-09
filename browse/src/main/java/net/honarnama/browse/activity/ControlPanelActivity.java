@@ -33,18 +33,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
@@ -136,15 +131,29 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navView = (NavigationView) findViewById(R.id.navView);
+        resetMenuIcons(navView);
         setupDrawerContent(navView);
 
         handleExternalIntent(getIntent());
 
     }
 
-    public void setupDrawerContent(NavigationView navigationView) {
-        Menu menu = navigationView.getMenu();
 
+    private void setupDrawerContent(final NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        resetMenuIcons(navigationView);
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+
+    public void resetMenuIcons(NavigationView navigationView) {
+        Menu menu = navigationView.getMenu();
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
@@ -180,19 +189,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_swap_horiz);
         menu.getItem(5).setIcon(swapDrawable);
-
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
+
         Fragment fragment = null;
 
         Class fragmentClass;
@@ -205,23 +205,50 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                 .icon(GoogleMaterial.Icon.gmd_email);
                 menuItem.setIcon(contactDrawable);
                 break;
+
             case R.id.item_rules:
                 menuItem.setChecked(true);
+                IconicsDrawable rulesDawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_gavel);
+                menuItem.setIcon(rulesDawable);
                 break;
+
             case R.id.item_about_us:
                 menuItem.setChecked(true);
+                IconicsDrawable aboutDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_info_outline);
+                menuItem.setIcon(aboutDrawable);
                 break;
 
             case R.id.item_share_us:
                 menuItem.setChecked(true);
+                IconicsDrawable shareDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_share);
+                menuItem.setIcon(shareDrawable);
                 break;
 
             case R.id.item_support_us:
                 menuItem.setChecked(true);
+                IconicsDrawable supportDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_stars);
+                menuItem.setIcon(supportDrawable);
                 break;
 
             case R.id.item_switch_app:
                 menuItem.setChecked(true);
+                IconicsDrawable swapDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_swap_horiz);
+                menuItem.setIcon(swapDrawable);
                 break;
 
         }
