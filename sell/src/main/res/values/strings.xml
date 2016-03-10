@@ -92,7 +92,7 @@
     <string name="apply_changes">اعمال تغییرات</string>
     <string name="edit_ad">ویرایش آگهی</string>
     <string name="delete_ad">حذف آگهی</string>
-    <string name="send_device_info">ارسال مشخصات دستگاه</string>
+
     <string name="switch_app">برنامه‌ی خریداران</string>
     <string name="password_is_short">رمز عبور بایستی بیشتر از ۶ حرف باشد.</string>
     <string name="store_desc_cant_be_empty">توضیحات فروشگاه نمی‌تواند خالی باشد.</string>

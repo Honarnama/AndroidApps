@@ -4,7 +4,6 @@ package net.honarnama.sell.fragments;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class DefaultFragment extends HonarnamaBaseFragment {
 
     public static DefaultFragment mDefaultFragment;

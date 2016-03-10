@@ -17,7 +17,6 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,9 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class UserAccountFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     public static UserAccountFragment mUserAccountFragment;

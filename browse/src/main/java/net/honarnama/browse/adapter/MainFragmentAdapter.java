@@ -1,11 +1,13 @@
 package net.honarnama.browse.adapter;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
 import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopsFragment;
+import net.honarnama.core.fragment.ContactFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,12 +27,16 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 public class MainFragmentAdapter extends FragmentPagerAdapter {
     public List<ChildFragment> fragmentsList = new ArrayList<>();
 
+    public static final int TAB_CONTACT = 4;
+
     public MainFragmentAdapter(FragmentManager fm) {
         super(fm);
         fragmentsList.add(ChildFragment.getInstance(TAB_ITEMS));
         fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SEARCH));
+
+        fragmentsList.add(ChildFragment.getInstance(TAB_CONTACT));
     }
 
     @Override
@@ -64,6 +70,9 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 
             case TAB_SEARCH:
                 return SearchFragment.getInstance();
+
+            case TAB_CONTACT:
+                return ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
         }
         return null;
     }

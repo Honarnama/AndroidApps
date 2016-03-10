@@ -8,7 +8,6 @@ import net.honarnama.core.utils.FileUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -22,9 +21,7 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class AboutFragment extends HonarnamaBaseFragment {
 
     public static AboutFragment mAboutFragment;

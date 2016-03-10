@@ -25,6 +25,8 @@
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@color/amber</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="edit_text_default" parent="Widget.AppCompat.EditText">

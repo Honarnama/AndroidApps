@@ -31,8 +31,6 @@ public class MainTabBar extends LinearLayout {
 
     public static final int TAB_SEARCH = 3;
 
-    public static final int DUMMY_TAB_SHOP_PAGE = 4;
-
 
     private int mSelectedTabColor;
 

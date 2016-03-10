@@ -246,4 +246,5 @@
     <string name="error_getting_city_list">خطا در نمایش فهرست شهرها. لطفا اینترنت دستگاه خود را
         بررسی کنید.
     </string>
+    <string name="send_device_info">ارسال مشخصات دستگاه</string>
 </resources>

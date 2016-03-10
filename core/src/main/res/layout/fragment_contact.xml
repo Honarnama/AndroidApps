@@ -4,7 +4,6 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:fadeScrollbars="false"
-        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
         android:layoutDirection="rtl"
         android:id="@+id/store_fragment_scroll_view"
         >
@@ -82,7 +81,7 @@
                 android:id="@+id/contact_butoon"
                 android:text="@string/send"
                 android:layout_below="@id/send_device_info_check_box"
-                style="@style/sell_full_width_button"
+                style="@style/full_width_button"
                 />
 
 

@@ -18,6 +18,7 @@ import com.parse.ParseException;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
+import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
 import net.honarnama.core.utils.CommonUtil;
@@ -27,7 +28,6 @@ import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.AboutFragment;
-import net.honarnama.sell.fragments.ContactFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
@@ -36,9 +36,6 @@ import net.honarnama.sell.fragments.StoreInfoFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,6 +44,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -335,7 +333,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 fragment = AboutFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_CONTACT:
-                fragment = ContactFragment.getInstance();
+                fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
                 break;
             case DRAWER_ITEM_IDENTIFIER_RULES:
                 String url = "http://www.honarnama.net/terms";
@@ -447,8 +445,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mFragment = fragment;
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_container, fragment);
         fragmentTransaction.commit();
 

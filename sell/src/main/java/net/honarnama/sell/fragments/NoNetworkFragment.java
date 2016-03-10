@@ -10,7 +10,6 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     public static NoNetworkFragment mNoNetworkFragment;

@@ -1,38 +1,30 @@
-package net.honarnama.sell.fragments;
+package net.honarnama.core.fragment;
 
 
-import com.crashlytics.android.Crashlytics;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.utils.FileUtil;
+import net.honarnama.base.R;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.sell.R;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +43,12 @@ public class ContactFragment extends HonarnamaBaseFragment {
     private Button mContactButton;
     private CheckBox mSendDeviceInfo;
 
-    public synchronized static ContactFragment getInstance() {
+    public synchronized static ContactFragment getInstance(String appKey) {
         if (mContactFragment == null) {
             mContactFragment = new ContactFragment();
+            Bundle args = new Bundle();
+            args.putString("appKey", appKey);
+            mContactFragment.setArguments(args);
         }
         return mContactFragment;
     }
@@ -82,8 +77,13 @@ public class ContactFragment extends HonarnamaBaseFragment {
         mSubject.setError(null);
         mBody.setError(null);
 
-        mEmail.setText(HonarnamaUser.getUserEnteredEmailAddress());
+        if (HonarnamaUser.getCurrentUser() != null && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+            mEmail.setText(HonarnamaUser.getUserEnteredEmailAddress());
+        }
 
+        if (getArguments().getString("appKey") == HonarnamaBaseApp.BROWSE_APP_KEY) {
+            mContactButton.setBackgroundColor(getResources().getColor(R.color.dark_cyan));
+        }
         mContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,9 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("text", body + "\n \n Phone: " + phone);
                 params.put("subject", subject);
                 params.put("fromEmail", email);
-                params.put("fromName", HonarnamaUser.getName());
+                if (HonarnamaUser.getCurrentUser() != null && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+                    params.put("fromName", HonarnamaUser.getName());
+                }
 
                 ParseCloud.callFunctionInBackground("sendMail", params, new FunctionCallback<Object>() {
                     @Override
@@ -163,14 +165,14 @@ public class ContactFragment extends HonarnamaBaseFragment {
                         mPhone.setEnabled(true);
                         mEmail.setEnabled(true);
 
-                        mSubject.setText("");
-                        mBody.setText("");
                         if (parseException != null) {
                             logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
                             if (isVisible()) {
                                 Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                             }
                         } else {
+                            mSubject.setText("");
+                            mBody.setText("");
                             if (isVisible()) {
                                 Toast.makeText(getActivity(), getString(R.string.contact_sent_successfully), Toast.LENGTH_LONG).show();
                             }

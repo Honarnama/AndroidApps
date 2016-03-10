@@ -3,6 +3,7 @@ package net.honarnama.browse.activity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
@@ -15,11 +16,14 @@ import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
+import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,7 +72,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         mMainFragmentAdapter =
                 new MainFragmentAdapter(
@@ -159,7 +162,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_email);
         menu.getItem(0).setIcon(contactDrawable);
-
         IconicsDrawable gavelDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
@@ -204,6 +206,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                 .color(getResources().getColor(R.color.dark_cyan))
                                 .icon(GoogleMaterial.Icon.gmd_email);
                 menuItem.setIcon(contactDrawable);
+                ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
                 break;
 
             case R.id.item_rules:
