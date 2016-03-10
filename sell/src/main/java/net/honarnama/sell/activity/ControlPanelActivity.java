@@ -233,6 +233,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         });
 
         mResult.openDrawer();
+
+        mResult.getRecyclerView().setVerticalScrollBarEnabled(true);
+        mResult.getRecyclerView().setScrollbarFadingEnabled(false);
+
     }
 
     @Override

@@ -14,7 +14,6 @@
               android:padding="16dp"
               android:id="@+id/footer_text_view"
               android:textStyle="italic"
-
             />
 
 </RelativeLayout>
