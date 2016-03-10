@@ -20,15 +20,21 @@
 
         <item
                 android:id="@+id/item_share_us"
-                android:title="@string/share_us"/>
+                android:title="@string/share_us"
+                android:checkable="false"
+                />
 
         <item
                 android:id="@+id/item_support_us"
-                android:title="@string/support_us"/>
+                android:title="@string/support_us"
+                android:checkable="false"
+                />
 
         <item
                 android:id="@+id/item_switch_app"
-                android:title="@string/switch_app"/>
+                android:title="@string/switch_app"
+                android:checkable="false"
+                />
 
     </group>
 

@@ -18,6 +18,7 @@ import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
@@ -38,8 +39,10 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -50,7 +53,7 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
-public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
+public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener, View.OnClickListener {
 
     public static Button btnRed; // Works as a badge
     //Declared static; so it can be accessed from all other Activities
@@ -69,6 +72,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public ContactFragment mContactFragment;
     public AboutFragment mAboutFragment;
+
+    public RelativeLayout mNavFooter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +147,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mNavigationView = (NavigationView) findViewById(R.id.navView);
         resetMenuIcons();
         setupDrawerContent();
+
+        mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
+        mNavFooter.setOnClickListener(this);
 
         handleExternalIntent(getIntent());
 
@@ -239,30 +247,35 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_share_us:
-                menuItem.setChecked(true);
-                IconicsDrawable shareDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_share);
-                menuItem.setIcon(shareDrawable);
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "برای خرید محصولات دست‌ساز و دیدن رویدادهای هنری برنامه هنرنما رو از کافه بازار دانلود کن. اینم لینکش:" +
+                        "\n" + "http://cafebazaar.ir/app/" + HonarnamaBrowseApp.getInstance().getPackageName() + "/");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 break;
 
             case R.id.item_support_us:
-                menuItem.setChecked(true);
-                IconicsDrawable supportDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_stars);
-                menuItem.setIcon(supportDrawable);
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBrowseApp.getInstance().getPackageName()));
+                intent.setPackage("com.farsitel.bazaar");
+                startActivity(intent);
                 break;
 
             case R.id.item_switch_app:
-                menuItem.setChecked(true);
-                IconicsDrawable swapDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_swap_horiz);
-                menuItem.setIcon(swapDrawable);
+                try {
+                    if (CommonUtil.isPackageInstalled("net.honarnama.sell", ControlPanelActivity.this)) {
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.sell");
+                        startActivity(launchIntent);
+                    } else {
+                        Intent sellAppIntent = new Intent(Intent.ACTION_VIEW);
+                        sellAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.sell"));
+                        sellAppIntent.setPackage("com.farsitel.bazaar");
+                        startActivity(sellAppIntent);
+                    }
+                } catch (Exception e) {
+                    logE("Error switching from browse app to sell. Error: " + e);
+                }
                 break;
 
         }
@@ -417,6 +430,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onBackPressed() {
+
+        if(mDrawer.isDrawerOpen(Gravity.RIGHT))
+        {
+            mDrawer.closeDrawer(Gravity.RIGHT);
+            return;
+        }
         mMainTabBar.selectTabViewWithTabTag(mActiveTab);
         resetMenuIcons();
         if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {
@@ -504,4 +523,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.footer_container:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
+                break;
+        }
+    }
 }
