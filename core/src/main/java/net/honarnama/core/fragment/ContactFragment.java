@@ -41,10 +41,10 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
     public synchronized static ContactFragment getInstance(String appKey) {
 //        if (mContactFragment == null) {
-            mContactFragment = new ContactFragment();
-            Bundle args = new Bundle();
-            args.putString("appKey", appKey);
-            mContactFragment.setArguments(args);
+        mContactFragment = new ContactFragment();
+        Bundle args = new Bundle();
+        args.putString("appKey", appKey);
+        mContactFragment.setArguments(args);
 //        }
         return mContactFragment;
     }

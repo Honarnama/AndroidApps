@@ -15,6 +15,7 @@ import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
+import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.WindowUtil;
@@ -66,12 +67,17 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
 
+    public ContactFragment mContactFragment;
+    public AboutFragment mAboutFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+        mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
 
         mMainFragmentAdapter =
                 new MainFragmentAdapter(
@@ -201,10 +207,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-
+        mMainTabBar.deselectAllTabs();
         switch (menuItem.getItemId()) {
             case R.id.item_contact_us:
-                mMainTabBar.deselectAllTabs();
                 menuItem.setChecked(true);
                 IconicsDrawable contactDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
@@ -217,11 +222,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_rules:
                 menuItem.setChecked(true);
-                IconicsDrawable rulesDawable =
+                IconicsDrawable rulesDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
                                 .color(getResources().getColor(R.color.dark_cyan))
                                 .icon(GoogleMaterial.Icon.gmd_gavel);
-                menuItem.setIcon(rulesDawable);
+                menuItem.setIcon(rulesDrawable);
                 break;
 
             case R.id.item_about_us:
@@ -231,6 +236,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                 .color(getResources().getColor(R.color.dark_cyan))
                                 .icon(GoogleMaterial.Icon.gmd_info_outline);
                 menuItem.setIcon(aboutDrawable);
+                AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
                 break;
 
             case R.id.item_share_us:
@@ -265,20 +272,17 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void removeActiveTabTopNavMenuFragment() {
-
-        logE("inja mActiveTab " + mActiveTab);
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
 
         if (childFragmentManager.getBackStackEntryCount() > 0) {
             List<Fragment> fragments = childFragmentManager.getFragments();
-            logE("inja fragments.size() "+ fragments.size());
             Fragment topFragment = fragments.get(fragments.size() - 1);
 //            Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
             if (topFragment != null) {
-                ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
-                if (topFragment.getClass().getName() == contactFragment.getClass().getName()) {
-                    logE("inja, removing contact frag");
+
+                if (topFragment.getClass().getName() == mContactFragment.getClass().getName() ||
+                        topFragment.getClass().getName() == mAboutFragment.getClass().getName()) {
                     FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
                     fragmentTransaction.remove(topFragment);
                     fragmentTransaction.commit();

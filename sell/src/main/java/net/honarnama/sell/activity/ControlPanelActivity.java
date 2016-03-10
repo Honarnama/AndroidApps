@@ -27,7 +27,7 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
-import net.honarnama.sell.fragments.AboutFragment;
+import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
@@ -330,7 +330,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 fragment = EventManagerFragment.getInstance();
                 break;
             case DRAWER_ITEM_IDENTIFIER_ABOUT:
-                fragment = AboutFragment.getInstance();
+                fragment = AboutFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
                 break;
             case DRAWER_ITEM_IDENTIFIER_CONTACT:
                 fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
