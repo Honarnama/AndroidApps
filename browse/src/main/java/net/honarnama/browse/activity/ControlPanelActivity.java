@@ -84,7 +84,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                removeActiveTabTopNavMenuFragment();
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
@@ -358,6 +357,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onTabSelect(Object tabTag, boolean userTriggered) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
+        removeActiveTabTopNavMenuFragment();
         if (mActiveTab == Integer.valueOf(TAB_SEARCH) && tag != Integer.valueOf(TAB_SEARCH)) {
             SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
             searchFragment.resetFields();
@@ -389,6 +389,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (int) tabTag;
         mMainFragmentAdapter.getItem(tag).onSelectedTabClick();
+        removeActiveTabTopNavMenuFragment();
     }
 
     public void setDefaultTab() {
