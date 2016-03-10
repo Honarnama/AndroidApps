@@ -221,12 +221,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_rules:
-                menuItem.setChecked(true);
-                IconicsDrawable rulesDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_gavel);
-                menuItem.setIcon(rulesDrawable);
+                String url = "http://www.honarnama.net/terms";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 break;
 
             case R.id.item_about_us:
