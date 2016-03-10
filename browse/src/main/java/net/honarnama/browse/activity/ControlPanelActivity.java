@@ -51,6 +51,9 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
+import static net.honarnama.browse.adapter.MainFragmentAdapter.TAB_CONTACT;
+
+
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
 
     public static Button btnRed; // Works as a badge
@@ -66,6 +69,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private String mItemId;
     public TextView mTitle;
     private DrawerLayout mDrawer;
+    public NavigationView mNavigationView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
@@ -133,21 +138,21 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView navView = (NavigationView) findViewById(R.id.navView);
-        resetMenuIcons(navView);
-        setupDrawerContent(navView);
+        mNavigationView = (NavigationView) findViewById(R.id.navView);
+        resetMenuIcons();
+        setupDrawerContent();
 
         handleExternalIntent(getIntent());
 
     }
 
 
-    private void setupDrawerContent(final NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
+    private void setupDrawerContent() {
+        mNavigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        resetMenuIcons(navigationView);
+                        resetMenuIcons();
                         selectDrawerItem(menuItem);
                         return true;
                     }
@@ -155,42 +160,49 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
 
-    public void resetMenuIcons(NavigationView navigationView) {
-        Menu menu = navigationView.getMenu();
+    public void resetMenuIcons() {
+        Menu menu = mNavigationView.getMenu();
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_email);
         menu.getItem(0).setIcon(contactDrawable);
+        menu.getItem(0).setChecked(false);
+
         IconicsDrawable gavelDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_gavel);
         menu.getItem(1).setIcon(gavelDrawable);
+        menu.getItem(1).setChecked(false);
 
         IconicsDrawable aboutDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_info_outline);
         menu.getItem(2).setIcon(aboutDrawable);
+        menu.getItem(2).setChecked(false);
 
         IconicsDrawable shareDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_share);
         menu.getItem(3).setIcon(shareDrawable);
+        menu.getItem(3).setChecked(false);
 
         IconicsDrawable supportDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_stars);
         menu.getItem(4).setIcon(supportDrawable);
+        menu.getItem(4).setChecked(false);
 
         IconicsDrawable swapDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_swap_horiz);
         menu.getItem(5).setIcon(swapDrawable);
+        menu.getItem(5).setChecked(false);
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
@@ -200,6 +212,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         Class fragmentClass;
         switch (menuItem.getItemId()) {
             case R.id.item_contact_us:
+                mMainTabBar.deselectAllTabs();
                 menuItem.setChecked(true);
                 IconicsDrawable contactDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
@@ -272,8 +285,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-
-
             fragmentTransaction.add(R.id.child_fragment_root, fragment);
 
             fragmentTransaction.addToBackStack(null);
@@ -327,6 +338,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
             searchFragment.resetFields();
         }
+        resetMenuIcons();
         mActiveTab = tag;
         switch (tag) {
             case TAB_ITEMS:
@@ -345,7 +357,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
                 break;
         }
-        mMainFragmentAdapter.getItem(tag).onTabClick();
+        if (tag < 3) {
+            mMainFragmentAdapter.getItem(tag).onTabClick();
+        }
     }
 
     @Override
@@ -375,6 +389,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onBackPressed() {
+        logE("inja", "onBackPressed mActiveTab is " + mActiveTab + "");
+        mMainTabBar.selectTabViewWithTabTag(mActiveTab);
+        resetMenuIcons();
         if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {
             if (mActiveTab != TAB_ITEMS) {
                 mMainTabBar.setSelectedTab(TAB_ITEMS);

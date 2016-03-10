@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -148,6 +149,11 @@ public class MainTabBar extends LinearLayout {
         }
     }
 
+    public void selectTabViewWithTabTag(Object tabTag)
+    {
+        selectTabView(findViewWithTag(tabTag));
+    }
+
     /**
      * called to select tab, and change its view to selected mode
      *
@@ -177,7 +183,6 @@ public class MainTabBar extends LinearLayout {
     }
 
     public void deselectAllTabs() {
-        mSelectedTabTag = null;
         deselectTabView(findViewWithTag(TAB_ITEMS));
         deselectTabView(findViewWithTag(TAB_EVENTS));
         deselectTabView(findViewWithTag(TAB_SHOPS));
