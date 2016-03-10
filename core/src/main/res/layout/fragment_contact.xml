@@ -6,14 +6,15 @@
         android:fadeScrollbars="false"
         android:layoutDirection="rtl"
         android:id="@+id/store_fragment_scroll_view"
+        android:background="@color/gray_super_extra_light"
         >
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="0dp"
-                    android:background="@color/gray_extra_light"
                     android:layout_gravity="right"
                     android:gravity="right"
                     android:layoutDirection="rtl"
+                    android:background="@drawable/black_orib_back"
             >
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
