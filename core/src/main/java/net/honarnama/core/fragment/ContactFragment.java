@@ -11,7 +11,6 @@ import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,9 +27,6 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ContactFragment extends HonarnamaBaseFragment {
 
     public static ContactFragment mContactFragment;
@@ -44,14 +40,15 @@ public class ContactFragment extends HonarnamaBaseFragment {
     private CheckBox mSendDeviceInfo;
 
     public synchronized static ContactFragment getInstance(String appKey) {
-        if (mContactFragment == null) {
+//        if (mContactFragment == null) {
             mContactFragment = new ContactFragment();
             Bundle args = new Bundle();
             args.putString("appKey", appKey);
             mContactFragment.setArguments(args);
-        }
+//        }
         return mContactFragment;
     }
+
 
     @Override
     public String getTitle(Context context) {

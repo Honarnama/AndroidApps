@@ -10,20 +10,18 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
-import net.honarnama.browse.fragment.HonarnamaBrowseFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.core.fragment.ContactFragment;
+import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,9 +49,6 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
-import static net.honarnama.browse.adapter.MainFragmentAdapter.TAB_CONTACT;
-
-
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener {
 
     public static Button btnRed; // Works as a badge
@@ -70,6 +65,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public TextView mTitle;
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +84,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                removeActiveTabTopNavMenuFragment();
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
@@ -96,7 +92,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 } else {
                     FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                             .getChildFragmentManager();
-                    HonarnamaBrowseFragment topFragment = (HonarnamaBrowseFragment) childFragmentManager.getFragments().get(0);
+                    HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                     mTitle.setText(topFragment.getTitle(HonarnamaBrowseApp.getInstance()));
                 }
             }
@@ -207,9 +203,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void selectDrawerItem(MenuItem menuItem) {
 
-        Fragment fragment = null;
-
-        Class fragmentClass;
         switch (menuItem.getItemId()) {
             case R.id.item_contact_us:
                 mMainTabBar.deselectAllTabs();
@@ -269,26 +262,57 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
         }
-//
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         mDrawer.closeDrawer(Gravity.RIGHT);
+    }
+
+    public void removeActiveTabTopNavMenuFragment() {
+
+        logE("inja mActiveTab " + mActiveTab);
+        FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                .getChildFragmentManager();
+
+        if (childFragmentManager.getBackStackEntryCount() > 0) {
+            List<Fragment> fragments = childFragmentManager.getFragments();
+            logE("inja fragments.size() "+ fragments.size());
+            Fragment topFragment = fragments.get(fragments.size() - 1);
+//            Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
+            if (topFragment != null) {
+                ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                if (topFragment.getClass().getName() == contactFragment.getClass().getName()) {
+                    logE("inja, removing contact frag");
+                    FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+                    fragmentTransaction.remove(topFragment);
+                    fragmentTransaction.commit();
+                    childFragmentManager.popBackStackImmediate();
+                    childFragmentManager.executePendingTransactions();
+                }
+            }
+        }
     }
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         try {
+            logE("inja mActiveTab in switchFragment " + mActiveTab);
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
+            childFragmentManager.executePendingTransactions();
+            removeActiveTabTopNavMenuFragment();
+
+            if (fragment.isAdded()) {
+                logE("inja fragment.isAdded");
+                return;
+            }
+
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+
             fragmentTransaction.add(R.id.child_fragment_root, fragment);
 
             fragmentTransaction.addToBackStack(null);
+
             fragmentTransaction.commitAllowingStateLoss();
+
+            childFragmentManager.executePendingTransactions();
 
             if (!TextUtils.isEmpty(toolbarTitle)) {
                 mTitle.setText(toolbarTitle);
@@ -357,9 +381,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
                 break;
         }
-        if (tag < 3) {
-            mMainFragmentAdapter.getItem(tag).onTabClick();
-        }
+        mMainFragmentAdapter.getItem(tag).onTabClick();
     }
 
     @Override
@@ -389,7 +411,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onBackPressed() {
-        logE("inja", "onBackPressed mActiveTab is " + mActiveTab + "");
         mMainTabBar.selectTabViewWithTabTag(mActiveTab);
         resetMenuIcons();
         if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {

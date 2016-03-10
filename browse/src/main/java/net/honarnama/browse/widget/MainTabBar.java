@@ -176,7 +176,9 @@ public class MainTabBar extends LinearLayout {
      * @param tabView tab view to be deselected
      */
     private void deselectTabView(@NonNull View tabView) {
+
         TextView label = (TextView) tabView.findViewById(R.id.label);
+
         label.setTextColor(mNotSelectedTabColor);
         ImageView icon = (ImageView) tabView.findViewById(R.id.icon);
         icon.setColorFilter(mNotSelectedTabColor);

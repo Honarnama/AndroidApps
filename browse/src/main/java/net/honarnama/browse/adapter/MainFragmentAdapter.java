@@ -27,16 +27,12 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 public class MainFragmentAdapter extends FragmentPagerAdapter {
     public List<ChildFragment> fragmentsList = new ArrayList<>();
 
-    public static final int TAB_CONTACT = 4;
-
     public MainFragmentAdapter(FragmentManager fm) {
         super(fm);
         fragmentsList.add(ChildFragment.getInstance(TAB_ITEMS));
         fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SEARCH));
-
-        fragmentsList.add(ChildFragment.getInstance(TAB_CONTACT));
     }
 
     @Override
@@ -71,8 +67,6 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
             case TAB_SEARCH:
                 return SearchFragment.getInstance();
 
-            case TAB_CONTACT:
-                return ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
         }
         return null;
     }

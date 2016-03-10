@@ -32,6 +32,9 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
     // uncaught exception handler variable
     private Thread.UncaughtExceptionHandler defaultUEH;
 
+    public static final String PRODUCTION_TAG = "HonarnamaSell";
+
+
 
     // handler listener
     private Thread.UncaughtExceptionHandler _unCaughtExceptionHandler =
