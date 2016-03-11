@@ -5,19 +5,15 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.crashlytics.android.Crashlytics;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
+import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
@@ -27,7 +23,6 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
-import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
@@ -42,11 +37,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenuView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -54,6 +53,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,32 +62,37 @@ import java.io.InputStream;
 import bolts.Continuation;
 import bolts.Task;
 
-public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawer.OnDrawerItemClickListener {
+public class ControlPanelActivity extends HonarnamaBaseActivity implements View.OnClickListener {
 
-    public static final int DRAWER_ITEM_IDENTIFIER_ACCOUNT = 1;
-    public static final int DRAWER_ITEM_IDENTIFIER_STORE_INFO = 2;
-    public static final int DRAWER_ITEM_IDENTIFIER_ITEMS = 3;
-    public static final int DRAWER_ITEM_IDENTIFIER_ADD_ITEM = 4;
-    public static final int DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER = 5;
+    public static final int ITEM_IDENTIFIER_ACCOUNT = 0;
 
-    public static final int DRAWER_ITEM_IDENTIFIER_CONTACT = 6;
-    public static final int DRAWER_ITEM_IDENTIFIER_RULES = 7;
-    public static final int DRAWER_ITEM_IDENTIFIER_ABOUT = 8;
-    public static final int DRAWER_ITEM_IDENTIFIER_SUPPORT = 9;
-    public static final int DRAWER_ITEM_IDENTIFIER_SHARE = 10;
-    public static final int DRAWER_ITEM_IDENTIFIER_SWITCH_APP = 11;
-    public static final int DRAWER_ITEM_IDENTIFIER_EXIT = 12;
+    public static final int ITEM_IDENTIFIER_STORE_INFO = 1;
+    public static final int ITEM_IDENTIFIER_ITEMS = 2;
+    public static final int ITEM_IDENTIFIER_ADD_ITEM = 3;
+    public static final int ITEM_IDENTIFIER_EVENT_MANAGER = 4;
+
+    public static final int ITEM_IDENTIFIER_CONTACT = 5;
+    public static final int ITEM_IDENTIFIER_RULES = 6;
+    public static final int ITEM_IDENTIFIER_ABOUT = 7;
+    public static final int ITEM_IDENTIFIER_SUPPORT = 8;
+    public static final int ITEM_IDENTIFIER_SHARE = 9;
+    public static final int ITEM_IDENTIFIER_SWITCH_APP = 10;
+
+    public static final int ITEM_IDENTIFIER_EXIT = 11;
 
 
     private Toolbar mToolbar;
-    private ActionBarDrawerToggle mDrawerToggle;
     private Fragment mFragment;
     private EditItemFragment mEditItemFragment;
     private ProgressDialog mWaitingProgressDialog;
 
     Tracker mTracker;
-    Drawer mResult;
     TextView mAboutTextView;
+
+    private DrawerLayout mDrawer;
+    public NavigationView mNavigationView;
+    public RelativeLayout mNavFooter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,79 +130,25 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
             Crashlytics.log(Log.ERROR, HonarnamaBaseApp.PRODUCTION_TAG, "Error setting about us text in main page: " + e);
         }
 
-
-        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.toolbar_title);
         setSupportActionBar(mToolbar);
 
-        mResult = new DrawerBuilder().withActivity(this)
-                .withDrawerGravity(Gravity.RIGHT)
-                .withRootView(R.id.drawer_container)
-                .withToolbar(mToolbar)
-                .withActionBarDrawerToggleAnimated(true)
-                .withSelectedItem(-1)
-                .withTranslucentStatusBar(false)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.nav_title_seller_account).
-                                withIcon(GoogleMaterial.Icon.gmd_account_circle).withIdentifier(DRAWER_ITEM_IDENTIFIER_ACCOUNT),
-                        new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_store_info).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_STORE_INFO).withIcon(GoogleMaterial.Icon.gmd_store),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_items).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ITEMS).withIcon(GoogleMaterial.Icon.gmd_view_list),
-                        new SecondaryDrawerItem().withName(R.string.register_new_item).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ADD_ITEM).withIcon(GoogleMaterial.Icon.gmd_edit),
-                        new SecondaryDrawerItem().withName(R.string.art_event).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER).withIcon(GoogleMaterial.Icon.gmd_event),
-                        new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.contact_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_CONTACT).withIcon(GoogleMaterial.Icon.gmd_email),
-                        new SecondaryDrawerItem().withName(R.string.rules).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_RULES).withIcon(GoogleMaterial.Icon.gmd_gavel).withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.about_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_ABOUT).withIcon(GoogleMaterial.Icon.gmd_info_outline),
-                        new SecondaryDrawerItem().withName(R.string.share_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.support_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.switch_app).withSelectable(false).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap_horiz),
-                        new DividerDrawerItem().withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.nav_title_exit_app).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_EXIT).withIcon(GoogleMaterial.Icon.gmd_exit_to_app)
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
+                    .icon(GoogleMaterial.Icon.gmd_menu)
+                    .color(Color.WHITE)
+                    .sizeDp(20));
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.navView);
 
-                ).withFooter(R.layout.footer)
-                .withOnDrawerItemClickListener(this)
-                .withShowDrawerOnFirstLaunch(true)
-                .build();
-        mDrawerToggle = new ActionBarDrawerToggle(this, mResult.getDrawerLayout(), null, R.string.drawer_open, R.string.drawer_close) {
-        };
-
-        mResult.getDrawerLayout().post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-            }
-        });
-
-        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                if (mResult.isDrawerOpen()) {
-//                    mResult.closeDrawer();
-//                } else {
-//                    mResult.openDrawer();
-//                }
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mResult.setActionBarDrawerToggle(mDrawerToggle);
-//        mResult.addStickyFooterItem(new SecondaryDrawerItem().withName("StickyFooterItem").with);
-        this.mDrawerToggle.syncState();
+        resetMenuIcons();
+        setupDrawerContent();
+//        mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
+//        mNavFooter.setOnClickListener(this);
 
         mEditItemFragment = EditItemFragment.getInstance();
 
@@ -224,20 +175,21 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 }
             });
         }
-
-        mResult.getFooter().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
-            }
-        });
-
-        mResult.openDrawer();
-
-        mResult.getRecyclerView().setVerticalScrollBarEnabled(true);
-        mResult.getRecyclerView().setScrollbarFadingEnabled(false);
-
+        mDrawer.openDrawer(Gravity.RIGHT);
     }
+
+    private void setupDrawerContent() {
+        mNavigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        resetMenuIcons();
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -284,15 +236,15 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            if (mResult.isDrawerOpen()) {
-                mResult.closeDrawer();
+            if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+                mDrawer.closeDrawer(Gravity.RIGHT);
             } else {
-                mResult.openDrawer();
+                mDrawer.openDrawer(Gravity.RIGHT);
             }
         }
         if (id == R.id.add_item_action) {
             mEditItemFragment.reset(ControlPanelActivity.this, true);
-            mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ADD_ITEM);
+            mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM).setChecked(true);
             switchFragment(mEditItemFragment);
 
             mTracker.send(new HitBuilders.EventBuilder()
@@ -310,119 +262,17 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
         }
     }
 
-    private interface OnAcceptedListener {
-        public void onAccepted();
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.footer_container:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
+                break;
+        }
     }
 
-    @Override
-    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        HonarnamaBaseFragment fragment = null;
-        switch (drawerItem.getIdentifier()) {
-            case DRAWER_ITEM_IDENTIFIER_ACCOUNT:
-                fragment = UserAccountFragment.getInstance();
-                break;
-            case DRAWER_ITEM_IDENTIFIER_STORE_INFO:
-                fragment = StoreInfoFragment.getInstance();
-                break;
-            case DRAWER_ITEM_IDENTIFIER_ITEMS:
-                fragment = ItemsFragment.getInstance();
-                break;
-            case DRAWER_ITEM_IDENTIFIER_ADD_ITEM:
-                fragment = EditItemFragment.getInstance();
-                break;
-            case DRAWER_ITEM_IDENTIFIER_EVENT_MANAGER:
-                fragment = EventManagerFragment.getInstance();
-                break;
-            case DRAWER_ITEM_IDENTIFIER_ABOUT:
-                fragment = AboutFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
-                break;
-            case DRAWER_ITEM_IDENTIFIER_CONTACT:
-                fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
-                break;
-            case DRAWER_ITEM_IDENTIFIER_RULES:
-                String url = "http://www.honarnama.net/terms";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-                break;
-            case DRAWER_ITEM_IDENTIFIER_SUPPORT:
-                Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
-                intent.setPackage("com.farsitel.bazaar");
-                startActivity(intent);
-                break;
-
-            case DRAWER_ITEM_IDENTIFIER_SWITCH_APP:
-                try {
-                    if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
-                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
-                        startActivity(launchIntent);
-                    } else {
-                        Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
-                        browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
-                        browseAppIntent.setPackage("com.farsitel.bazaar");
-                        startActivity(browseAppIntent);
-                    }
-                } catch (Exception e) {
-                    logE("Error switching from sell app to browse. Error: " + e);
-                }
-                break;
-
-            case DRAWER_ITEM_IDENTIFIER_SHARE:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "برنامه‌ٔ هنرنما برای فروشندگان رو از کافه بازار دانلود کن. اینم لینکش:" +
-                        "\n" + "http://cafebazaar.ir/app/" + HonarnamaSellApp.getInstance().getPackageName() + "/");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-                break;
-            case DRAWER_ITEM_IDENTIFIER_EXIT:
-                //sign user out
-                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
-                mWaitingProgressDialog.setCancelable(false);
-                mWaitingProgressDialog.show();
-                HonarnamaUser.logOutInBackground(new LogOutCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                        }
-                        if (mWaitingProgressDialog.isShowing()) {
-                            mWaitingProgressDialog.dismiss();
-                        }
-
-                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-                        finish();
-                        startActivity(intent);
-                    }
-                });
-
-                break;
-        }
-        // Not null && (Another section || Maybe editing but wants to create new item_row)
-//        if ((fragment != null) && ((fragment != mFragment) || (fragment == mEditItemFragment))) {
-        if ((fragment != null)) {
-            if (mFragment == mEditItemFragment) {
-                if (mEditItemFragment.isDirty()) {
-                    final HonarnamaBaseFragment finalFragment = fragment;
-                    switchFragmentFromEdittingItem(new OnAcceptedListener() {
-                        @Override
-                        public void onAccepted() {
-                            mEditItemFragment.reset(ControlPanelActivity.this, true);
-                            switchFragment(finalFragment);
-                        }
-                    });
-                } else {
-                    mEditItemFragment.reset(ControlPanelActivity.this, true);
-                    switchFragment(fragment);
-                }
-            } else {
-                mEditItemFragment.reset(ControlPanelActivity.this, true);
-                switchFragment(fragment);
-            }
-        }
-
-        return false;
+    private interface OnAcceptedListener {
+        public void onAccepted();
     }
 
     private void switchFragmentFromEdittingItem(final OnAcceptedListener onAcceptedListener) {
@@ -459,7 +309,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                 .setAction("SwitchFragment")
                 .build());
 
-        getSupportActionBar().setTitle(fragment.getTitle(this));
+        mToolbar.setTitle(fragment.getTitle(this));
 
     }
 
@@ -480,8 +330,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
 
     @Override
     public void onBackPressed() {
-        if (mResult.isDrawerOpen()) {
-            mResult.closeDrawer();
+        if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+            mDrawer.closeDrawer(Gravity.RIGHT);
         } else if (mFragment == mEditItemFragment) {
             if (mEditItemFragment.isDirty()) {
                 switchFragmentFromEdittingItem(new OnAcceptedListener() {
@@ -489,12 +339,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                     public void onAccepted() {
                         mEditItemFragment.reset(ControlPanelActivity.this, true);
                         switchFragment(ItemsFragment.getInstance());
-                        mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ITEMS);
+                        mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS).setChecked(true);
                     }
                 });
             } else {
                 switchFragment(ItemsFragment.getInstance());
-                mResult.setSelection(DRAWER_ITEM_IDENTIFIER_ITEMS);
+                mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS).setChecked(true);
             }
         } else {
             super.onBackPressed();
@@ -505,6 +355,270 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
     protected void onDestroy() {
         super.onDestroy();
 
+    }
+
+    public void resetMenuIcons() {
+        Menu menu = mNavigationView.getMenu();
+
+        IconicsDrawable accountDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_account_circle);
+        menu.getItem(ITEM_IDENTIFIER_ACCOUNT).setIcon(accountDrawable);
+        menu.getItem(ITEM_IDENTIFIER_ACCOUNT).setChecked(false);
+
+        IconicsDrawable storeDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_store);
+        menu.getItem(ITEM_IDENTIFIER_STORE_INFO).setIcon(storeDrawable);
+        menu.getItem(ITEM_IDENTIFIER_STORE_INFO).setChecked(false);
+
+        IconicsDrawable itemsDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_toc);
+        menu.getItem(ITEM_IDENTIFIER_ITEMS).setIcon(itemsDrawable);
+        menu.getItem(ITEM_IDENTIFIER_ITEMS).setChecked(false);
+
+        IconicsDrawable newItemDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_edit);
+        menu.getItem(ITEM_IDENTIFIER_ADD_ITEM).setIcon(newItemDrawable);
+        menu.getItem(ITEM_IDENTIFIER_ADD_ITEM).setChecked(false);
+
+        IconicsDrawable eventDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_event);
+        menu.getItem(ITEM_IDENTIFIER_EVENT_MANAGER).setIcon(eventDrawable);
+        menu.getItem(ITEM_IDENTIFIER_EVENT_MANAGER).setChecked(false);
+
+        IconicsDrawable contactDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_email);
+        menu.getItem(ITEM_IDENTIFIER_CONTACT).setIcon(contactDrawable);
+        menu.getItem(ITEM_IDENTIFIER_CONTACT).setChecked(false);
+
+        IconicsDrawable rulesDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_gavel);
+        menu.getItem(ITEM_IDENTIFIER_RULES).setIcon(rulesDrawable);
+        menu.getItem(ITEM_IDENTIFIER_RULES).setChecked(false);
+
+        IconicsDrawable aboutDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_info_outline);
+        menu.getItem(ITEM_IDENTIFIER_ABOUT).setIcon(aboutDrawable);
+        menu.getItem(ITEM_IDENTIFIER_ABOUT).setChecked(false);
+
+        IconicsDrawable supportDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_stars);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setIcon(supportDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setChecked(false);
+
+        IconicsDrawable shareDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_share);
+        menu.getItem(ITEM_IDENTIFIER_SHARE).setIcon(shareDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SHARE).setChecked(false);
+
+
+        IconicsDrawable swapDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_swap_horiz);
+        menu.getItem(ITEM_IDENTIFIER_SWITCH_APP).setIcon(swapDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SWITCH_APP).setChecked(false);
+
+        IconicsDrawable exitDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_exit_to_app);
+        menu.getItem(ITEM_IDENTIFIER_EXIT).setIcon(exitDrawable);
+        menu.getItem(ITEM_IDENTIFIER_EXIT).setChecked(false);
+
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+
+        HonarnamaBaseFragment fragment = null;
+
+        switch (menuItem.getItemId()) {
+            case R.id.item_account:
+                menuItem.setChecked(true);
+                IconicsDrawable accountDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_account_circle);
+                menuItem.setIcon(accountDrawable);
+                fragment = UserAccountFragment.getInstance();
+                break;
+
+
+            case R.id.item_store_info:
+                menuItem.setChecked(true);
+                IconicsDrawable storeDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_store);
+                menuItem.setIcon(storeDrawable);
+                fragment = StoreInfoFragment.getInstance();
+                break;
+
+            case R.id.item_items:
+                menuItem.setChecked(true);
+                IconicsDrawable itemsDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_view_list);
+                menuItem.setIcon(itemsDrawable);
+                fragment = ItemsFragment.getInstance();
+                break;
+
+            case R.id.item_new_item:
+                menuItem.setChecked(true);
+                IconicsDrawable newItemDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_edit);
+                menuItem.setIcon(newItemDrawable);
+                fragment = EditItemFragment.getInstance();
+                break;
+
+            case R.id.item_art_event:
+                menuItem.setChecked(true);
+                IconicsDrawable eventDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_event);
+                menuItem.setIcon(eventDrawable);
+                fragment = EventManagerFragment.getInstance();
+                break;
+
+            case R.id.item_about_us:
+                menuItem.setChecked(true);
+                IconicsDrawable aboutDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_info_outline);
+                menuItem.setIcon(aboutDrawable);
+                fragment = AboutFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
+                break;
+
+            case R.id.item_contact_us:
+                menuItem.setChecked(true);
+                IconicsDrawable contactDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .icon(GoogleMaterial.Icon.gmd_email);
+                menuItem.setIcon(contactDrawable);
+                fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
+                break;
+
+            case R.id.item_rules:
+                String url = "http://www.honarnama.net/terms";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                break;
+
+
+            case R.id.item_share_us:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "برنامه‌ٔ هنرنما برای فروشندگان رو از کافه بازار دانلود کن. اینم لینکش:" +
+                        "\n" + "http://cafebazaar.ir/app/" + HonarnamaSellApp.getInstance().getPackageName() + "/");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+                break;
+
+            case R.id.item_support_us:
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
+                intent.setPackage("com.farsitel.bazaar");
+                startActivity(intent);
+                break;
+
+            case R.id.item_switch_app:
+                try {
+                    if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
+                        startActivity(launchIntent);
+                    } else {
+                        Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
+                        browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
+                        browseAppIntent.setPackage("com.farsitel.bazaar");
+                        startActivity(browseAppIntent);
+                    }
+                } catch (Exception e) {
+                    logE("Error switching from sell app to browse. Error: " + e);
+                }
+                break;
+
+            case R.id.item_nav_title_exit_app:
+                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
+                mWaitingProgressDialog.setCancelable(false);
+                mWaitingProgressDialog.show();
+                HonarnamaUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+                        }
+                        if (mWaitingProgressDialog.isShowing()) {
+                            mWaitingProgressDialog.dismiss();
+                        }
+
+                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+                break;
+
+        }
+
+        if ((fragment != null)) {
+            if (mFragment == mEditItemFragment) {
+                if (mEditItemFragment.isDirty()) {
+                    final HonarnamaBaseFragment finalFragment = fragment;
+                    switchFragmentFromEdittingItem(new OnAcceptedListener() {
+                        @Override
+                        public void onAccepted() {
+                            mEditItemFragment.reset(ControlPanelActivity.this, true);
+                            switchFragment(finalFragment);
+                        }
+                    });
+                } else {
+                    mEditItemFragment.reset(ControlPanelActivity.this, true);
+                    switchFragment(fragment);
+                }
+            } else {
+                mEditItemFragment.reset(ControlPanelActivity.this, true);
+                switchFragment(fragment);
+            }
+        }
+        mDrawer.closeDrawer(Gravity.RIGHT);
     }
 
 }

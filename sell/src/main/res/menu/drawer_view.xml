@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+           android:id="@+id/grp1"
+            >
+
+        <item
+                android:id="@+id/item_account"
+                android:title="@string/nav_title_seller_account"
+                />
+    </group>
+
+    <group android:checkableBehavior="single"
+           android:id="@+id/grp2"
+            >
+
+        <item
+                android:id="@+id/item_store_info"
+                android:title="@string/nav_title_store_info"
+                />
+
+        <item
+                android:id="@+id/item_items"
+                android:title="@string/nav_title_items"
+                />
+
+        <item
+                android:id="@+id/item_new_item"
+                android:title="@string/register_new_item"/>
+
+        <item
+                android:id="@+id/item_art_event"
+                android:title="@string/art_event"
+                />
+    </group>
+
+    <group android:checkableBehavior="single"
+           android:id="@+id/grp3"
+            >
+
+        <item
+                android:id="@+id/item_contact_us"
+                android:title="@string/contact_us"
+                />
+
+        <item
+                android:id="@+id/item_rules"
+                android:title="@string/rules"
+                android:checkable="false"
+                />
+
+        <item
+                android:id="@+id/item_about_us"
+                android:title="@string/about_us"/>
+
+        <item
+                android:id="@+id/item_share_us"
+                android:title="@string/share_us"
+                android:checkable="false"
+                />
+
+        <item
+                android:id="@+id/item_support_us"
+                android:title="@string/support_us"
+                android:checkable="false"
+                />
+
+        <item
+                android:id="@+id/item_switch_app"
+                android:title="@string/switch_app"
+                android:checkable="false"
+                />
+
+    </group>
+
+
+    <group android:checkableBehavior="single"
+           android:id="@+id/grp4"
+            >
+
+        <item
+                android:id="@+id/item_nav_title_exit_app"
+                android:title="@string/nav_title_exit_app"
+                android:checkable="false"
+                />
+    </group>
+
+
+</menu>

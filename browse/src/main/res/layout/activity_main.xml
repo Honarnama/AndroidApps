@@ -19,8 +19,6 @@
             android:layout_height="match_parent"
             android:layoutDirection="rtl"
             android:layout_below="@id/toolbar"
-            android:background="@color/red"
-
             >
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="match_parent">

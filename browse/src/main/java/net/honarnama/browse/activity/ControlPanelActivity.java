@@ -68,6 +68,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private String mEventId;
     private String mItemId;
     public TextView mTitle;
+
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
 
@@ -146,18 +147,15 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         mNavigationView = (NavigationView) findViewById(R.id.navView);
         resetMenuIcons();
         setupDrawerContent();
-
         mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
         mNavFooter.setOnClickListener(this);
 
         handleExternalIntent(getIntent());
 
     }
-
 
     private void setupDrawerContent() {
         mNavigationView.setNavigationItemSelectedListener(
@@ -170,7 +168,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     }
                 });
     }
-
 
     public void resetMenuIcons() {
         Menu menu = mNavigationView.getMenu();
