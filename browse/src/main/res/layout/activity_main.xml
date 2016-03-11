@@ -57,21 +57,29 @@
                 app:itemIconTint="@color/nav_item_text_selector"
                 app:itemBackground="@drawable/nav_item_back_selector"
                 app:menu="@menu/drawer_view">
-            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent"
-                         android:clipToPadding="false"
-                         android:paddingBottom="96dp">
 
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:layout_gravity="bottom"
+                          android:orientation="vertical"
+                    >
+
+                <TextView
+                        android:id="@+id/empty_spacer"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:clickable="false"
+                        />
 
                 <include layout="@layout/footer"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
-                         android:layout_gravity="bottom"
-                         android:layout_marginBottom="-96dp"
                         ></include>
 
-            </FrameLayout>
+            </LinearLayout>
+
         </android.support.design.widget.NavigationView>
     </android.support.v4.widget.DrawerLayout>
 

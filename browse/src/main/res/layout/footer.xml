@@ -6,7 +6,7 @@
                 android:id="@+id/footer_container"
         >
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+    <TextView android:layout_width="match_parent" android:layout_height="56dp"
               android:text="@string/site_url"
               android:gravity="center"
               android:layout_centerInParent="true"
