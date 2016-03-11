@@ -8,6 +8,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
+import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
@@ -72,6 +73,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public ContactFragment mContactFragment;
     public AboutFragment mAboutFragment;
+    public BookmarksFragment mBookmarksFragment;
 
     public RelativeLayout mNavFooter;
 
@@ -83,6 +85,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
         mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+        mBookmarksFragment = BookmarksFragment.getInstance();
 
         mMainFragmentAdapter =
                 new MainFragmentAdapter(
@@ -171,52 +174,73 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void resetMenuIcons() {
         Menu menu = mNavigationView.getMenu();
+
+        IconicsDrawable bookmarksDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .icon(GoogleMaterial.Icon.gmd_stars);
+        menu.getItem(0).setIcon(bookmarksDrawable);
+        menu.getItem(0).setChecked(false);
+
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_email);
-        menu.getItem(0).setIcon(contactDrawable);
-        menu.getItem(0).setChecked(false);
+        menu.getItem(1).setIcon(contactDrawable);
+        menu.getItem(1).setChecked(false);
 
         IconicsDrawable gavelDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_gavel);
-        menu.getItem(1).setIcon(gavelDrawable);
-        menu.getItem(1).setChecked(false);
+        menu.getItem(2).setIcon(gavelDrawable);
+        menu.getItem(2).setChecked(false);
 
         IconicsDrawable aboutDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_info_outline);
-        menu.getItem(2).setIcon(aboutDrawable);
-        menu.getItem(2).setChecked(false);
+        menu.getItem(3).setIcon(aboutDrawable);
+        menu.getItem(3).setChecked(false);
 
         IconicsDrawable shareDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_share);
-        menu.getItem(3).setIcon(shareDrawable);
-        menu.getItem(3).setChecked(false);
+        menu.getItem(4).setIcon(shareDrawable);
+        menu.getItem(4).setChecked(false);
 
         IconicsDrawable supportDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
-                        .icon(GoogleMaterial.Icon.gmd_stars);
-        menu.getItem(4).setIcon(supportDrawable);
-        menu.getItem(4).setChecked(false);
+                        .icon(GoogleMaterial.Icon.gmd_star);
+        menu.getItem(5).setIcon(supportDrawable);
+        menu.getItem(5).setChecked(false);
 
         IconicsDrawable swapDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_swap_horiz);
-        menu.getItem(5).setIcon(swapDrawable);
-        menu.getItem(5).setChecked(false);
+        menu.getItem(6).setIcon(swapDrawable);
+        menu.getItem(6).setChecked(false);
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
         mMainTabBar.deselectAllTabs();
         switch (menuItem.getItemId()) {
+
+            case R.id.item_bookmarks:
+                menuItem.setChecked(true);
+                IconicsDrawable bookmarksDrawable =
+                        new IconicsDrawable(ControlPanelActivity.this)
+                                .color(getResources().getColor(R.color.dark_cyan))
+                                .icon(GoogleMaterial.Icon.gmd_stars);
+                menuItem.setIcon(bookmarksDrawable);
+                BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
+                switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
+                break;
+
+
             case R.id.item_contact_us:
                 menuItem.setChecked(true);
                 IconicsDrawable contactDrawable =
@@ -293,12 +317,15 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (topFragment != null) {
 
                 if (topFragment.getClass().getName() == mContactFragment.getClass().getName() ||
-                        topFragment.getClass().getName() == mAboutFragment.getClass().getName()) {
+                        topFragment.getClass().getName() == mAboutFragment.getClass().getName() ||
+                        topFragment.getClass().getName() == mBookmarksFragment.getClass().getName()
+                        ) {
                     FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
                     fragmentTransaction.remove(topFragment);
                     fragmentTransaction.commit();
                     childFragmentManager.popBackStackImmediate();
                     childFragmentManager.executePendingTransactions();
+                    mTitle.setText(getString(R.string.hornama));
                 }
             }
         }
@@ -307,14 +334,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         try {
-            logE("inja mActiveTab in switchFragment " + mActiveTab);
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
             childFragmentManager.executePendingTransactions();
             removeActiveTabTopNavMenuFragment();
 
             if (fragment.isAdded()) {
-                logE("inja fragment.isAdded");
                 return;
             }
 
@@ -370,7 +395,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {
-        logE("inja onTabSelect");
+
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         removeActiveTabTopNavMenuFragment();
@@ -402,12 +427,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onSelectedTabClick(Object tabTag, boolean byUser) {
-        logE("inja onSelectedTabClick");
+        removeActiveTabTopNavMenuFragment();
+        resetMenuIcons();
+
         mMainTabBar.selectTabViewWithTabTag(tabTag);
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (int) tabTag;
         mMainFragmentAdapter.getItem(tag).onSelectedTabClick();
-        removeActiveTabTopNavMenuFragment();
     }
 
     public void setDefaultTab() {
@@ -419,11 +445,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 //        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
 //                .icon(GoogleMaterial.Icon.gmd_search)
 //                .color(Color.WHITE)
-//                .sizeDp(20));
+//                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
         return true;
     }
 
@@ -431,8 +457,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onBackPressed() {
 
-        if(mDrawer.isDrawerOpen(Gravity.RIGHT))
-        {
+        if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
             mDrawer.closeDrawer(Gravity.RIGHT);
             return;
         }

@@ -33,21 +33,21 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     BookmarksParseAdapter mBookmarksParseAdapter;
 
     public synchronized static BookmarksFragment getInstance() {
-        if (mBookmarksFragment == null) {
-            mBookmarksFragment = new BookmarksFragment();
-        }
+//        if (mBookmarksFragment == null) {
+        mBookmarksFragment = new BookmarksFragment();
+//        }
         return mBookmarksFragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_items, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mListView.setEmptyView(emptyListContainer);
 
-        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
+        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mBookmarksParseAdapter = new BookmarksParseAdapter(HonarnamaBrowseApp.getInstance());
         mBookmarksParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
@@ -84,7 +84,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     @Override
     public String getTitle(Context context) {
-        return getString(R.string.hornama);
+        return context.getString(R.string.bookmarks);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Bookmark selectedBookmark = (Bookmark) mBookmarksParseAdapter.getItem(position);
-        ParseObject selectedItem = (ParseObject) selectedBookmark.getItem();
+        ParseObject selectedItem = selectedBookmark.getItem();
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }

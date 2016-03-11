@@ -22,7 +22,7 @@
 
     <string name="events">"رویدادهای هنری"</string>
     <string name="shops">"غرفه‌ها"</string>
-    <string name="favorites">"نشان شده‌ها"</string>
+    <string name="bookmarks">"نشان شده‌ها"</string>
     <string name="search">"جستجو"</string>
     <string name="no_shop_found">غرفه‌ای یافت نشد.</string>
     <string name="error_getting_shop_lsit">خطا در گرفتن فهرست غرفه‌ها.</string>
@@ -41,5 +41,9 @@
     </string>
     <string name="item_filter">فیلتر محصولات</string>
     <string name="switch_app">برنامه فروشندگان</string>
+    <string name="how_to_bookmark">برای نشان کردن محصول از دکمه
+    {gmd-stars}
+        در صفحه مشاهده محصول (واقع در سمت چپ بالای تصویر محصول) استفاده کنید.
+    </string>
 
 </resources>

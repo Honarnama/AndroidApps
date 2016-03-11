@@ -275,7 +275,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     }
                     mImageAdapter.setImages(nonNullImages);
-                    logE(mImageAdapter.getCount() + "");
                     mImageAdapter.notifyDataSetChanged();
 
                     mDotsCount = mImageAdapter.getCount();
@@ -412,14 +411,20 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (v.getId() == R.id.bookmark) {
-            Bookmark.bookmarkItem(mItem).continueWith(new Continuation<Void, Object>() {
+            Bookmark.bookmarkItem(mItem).continueWith(new Continuation<Boolean, Object>() {
                 @Override
-                public Object then(Task<Void> task) throws Exception {
+                public Object then(Task<Boolean> task) throws Exception {
                     if (task.isFaulted()) {
 
                     } else {
-                        mBookmarkImageView.setVisibility(View.GONE);
-                        mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+
+                        if (task.getResult() == true) {
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), "محصول نشان شد.", Toast.LENGTH_SHORT).show();
+                            }
+                            mBookmarkImageView.setVisibility(View.GONE);
+                            mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+                        }
                     }
                     return null;
                 }
@@ -431,15 +436,20 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             confirmationDialog.showDialog(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bookmark.removeBookmark(mItem).continueWith(new Continuation<Void, Object>() {
+                    Bookmark.removeBookmark(mItem).continueWith(new Continuation<Boolean, Object>() {
                         @Override
-                        public Object then(Task<Void> task) throws Exception {
+                        public Object then(Task<Boolean> task) throws Exception {
                             confirmationDialog.dismiss();
                             if (task.isFaulted()) {
 
                             } else {
-                                mBookmarkImageView.setVisibility(View.VISIBLE);
-                                mRemoveBoomarkImageView.setVisibility(View.GONE);
+                                if (task.getResult() == true) {
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), "نشان محصول حذف شد.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    mBookmarkImageView.setVisibility(View.VISIBLE);
+                                    mRemoveBoomarkImageView.setVisibility(View.GONE);
+                                }
                             }
                             return null;
                         }

@@ -47,8 +47,8 @@ public class Bookmark extends ParseObject {
         return (Item) getParseObject(ITEM);
     }
 
-    public static Task<Void> bookmarkItem(final Item item) {
-        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+    public static Task<Boolean> bookmarkItem(final Item item) {
+        final TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
 
         isBookmarkedAlready(item).continueWith(new Continuation<Boolean, Object>() {
             @Override
@@ -58,14 +58,14 @@ public class Bookmark extends ParseObject {
                 } else {
                     if (task.getResult()) {
                         //item already is bookmarked
-                        tcs.trySetResult(null);
+                        tcs.trySetResult(false);
                     }
                     Bookmark bookmark = new Bookmark(item);
                     bookmark.pinInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
-                                tcs.trySetResult(null);
+                                tcs.trySetResult(true);
                             } else {
                                 if (BuildConfig.DEBUG) {
                                     Log.e(DEBUG_TAG, "Saving bookmark failed. Item: " + item + " // Error: " + e);
@@ -84,8 +84,8 @@ public class Bookmark extends ParseObject {
     }
 
 
-    public static Task<Void> removeBookmark(final Item item) {
-        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+    public static Task<Boolean> removeBookmark(final Item item) {
+        final TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
 
         isBookmarkedAlready(item).continueWith(new Continuation<Boolean, Object>() {
             @Override
@@ -95,7 +95,7 @@ public class Bookmark extends ParseObject {
                 } else {
                     if (!task.getResult()) {
                         //item is not bookmarked
-                        tcs.trySetResult(null);
+                        tcs.trySetResult(false);
                     }
 
                     ParseQuery<Bookmark> parseQuery = new ParseQuery<Bookmark>(Bookmark.class);
@@ -109,7 +109,7 @@ public class Bookmark extends ParseObject {
                                     @Override
                                     public void done(ParseException e) {
                                         if (e == null) {
-                                            tcs.trySetResult(null);
+                                            tcs.trySetResult(true);
                                         } else {
                                             if (BuildConfig.DEBUG) {
                                                 Log.e(DEBUG_TAG, "Removing bookmark failed. Item: " + item + " // Error: " + e);
@@ -122,7 +122,7 @@ public class Bookmark extends ParseObject {
                                 });
                             } else {
                                 if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                                    tcs.trySetResult(null);
+                                    tcs.trySetResult(false);
                                 } else {
                                     if (BuildConfig.DEBUG) {
                                         Log.e(DEBUG_TAG, "Removing bookmark failed. Item: " + item + " // Error: " + e);

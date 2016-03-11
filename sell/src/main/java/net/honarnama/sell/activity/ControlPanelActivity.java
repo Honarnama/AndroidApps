@@ -161,7 +161,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements Drawe
                         new SecondaryDrawerItem().withName(R.string.share_us).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SHARE).withIcon(GoogleMaterial.Icon.gmd_share).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.support_us).
-                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_stars).withSelectable(false),
+                                withIdentifier(DRAWER_ITEM_IDENTIFIER_SUPPORT).withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false),
                         new SecondaryDrawerItem().withName(R.string.switch_app).withSelectable(false).
                                 withIdentifier(DRAWER_ITEM_IDENTIFIER_SWITCH_APP).withIcon(GoogleMaterial.Icon.gmd_swap_horiz),
                         new DividerDrawerItem().withSelectable(false),
