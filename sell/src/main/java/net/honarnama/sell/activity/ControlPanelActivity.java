@@ -53,6 +53,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,8 +75,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     public static final int ITEM_IDENTIFIER_CONTACT = 5;
     public static final int ITEM_IDENTIFIER_RULES = 6;
     public static final int ITEM_IDENTIFIER_ABOUT = 7;
-    public static final int ITEM_IDENTIFIER_SUPPORT = 8;
-    public static final int ITEM_IDENTIFIER_SHARE = 9;
+    public static final int ITEM_IDENTIFIER_SHARE = 8;
+    public static final int ITEM_IDENTIFIER_SUPPORT = 9;
     public static final int ITEM_IDENTIFIER_SWITCH_APP = 10;
 
     public static final int ITEM_IDENTIFIER_EXIT = 11;
@@ -139,7 +140,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     .icon(GoogleMaterial.Icon.gmd_menu)
                     .color(Color.WHITE)
                     .sizeDp(20));
-            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -147,8 +148,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
         resetMenuIcons();
         setupDrawerContent();
-//        mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
-//        mNavFooter.setOnClickListener(this);
+        mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
+        mNavFooter.setOnClickListener(this);
 
         mEditItemFragment = EditItemFragment.getInstance();
 
@@ -243,8 +244,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             }
         }
         if (id == R.id.add_item_action) {
+            if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+                mDrawer.closeDrawer(Gravity.RIGHT);
+            }
             mEditItemFragment.reset(ControlPanelActivity.this, true);
-            mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM).setChecked(true);
+            resetMenuIcons();
+            selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM));
             switchFragment(mEditItemFragment);
 
             mTracker.send(new HitBuilders.EventBuilder()
@@ -339,12 +344,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     public void onAccepted() {
                         mEditItemFragment.reset(ControlPanelActivity.this, true);
                         switchFragment(ItemsFragment.getInstance());
-                        mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS).setChecked(true);
+                        resetMenuIcons();
+                        selectDrawerItem( mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
                     }
                 });
             } else {
                 switchFragment(ItemsFragment.getInstance());
-                mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS).setChecked(true);
+                resetMenuIcons();
+                selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
             }
         } else {
             super.onBackPressed();
@@ -424,14 +431,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         menu.getItem(ITEM_IDENTIFIER_ABOUT).setIcon(aboutDrawable);
         menu.getItem(ITEM_IDENTIFIER_ABOUT).setChecked(false);
 
-        IconicsDrawable supportDrawable =
-                new IconicsDrawable(ControlPanelActivity.this)
-                        .color(getResources().getColor(R.color.gray_extra_dark))
-                        .sizeDp(20)
-                        .icon(GoogleMaterial.Icon.gmd_stars);
-        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setIcon(supportDrawable);
-        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setChecked(false);
-
         IconicsDrawable shareDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
@@ -440,6 +439,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         menu.getItem(ITEM_IDENTIFIER_SHARE).setIcon(shareDrawable);
         menu.getItem(ITEM_IDENTIFIER_SHARE).setChecked(false);
 
+        IconicsDrawable supportDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_stars);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setIcon(supportDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setChecked(false);
 
         IconicsDrawable swapDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
