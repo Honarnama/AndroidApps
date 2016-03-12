@@ -4,7 +4,7 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:fadeScrollbars="false"
-        android:scrollbarThumbVertical="@drawable/custom_scrollbar"
+
         android:layoutDirection="rtl"
         android:id="@+id/event_manager_scroll_view"
         >
@@ -144,6 +144,40 @@
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
                 />
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/event_cat_container"
+                      android:orientation="horizontal"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginTop="10dp"
+                      android:layout_below="@id/event_name_edit_text"
+                >
+            <TextView style="@style/default_text_view"
+                      android:text="@string/category_label"
+                      android:layout_centerVertical="true"
+                      android:id="@+id/event_cat_label"
+                      android:editable="false"
+                      android:cursorVisible="false"
+                      android:focusable="false"
+                      android:clickable="true"
+                      android:textStyle="bold"
+                      android:layout_width="90dp"
+                      android:layout_gravity="center_vertical"
+                    />
+
+            <Button android:layout_width="wrap_content" android:layout_height="40dp"
+                    android:id="@+id/event_cat_button"
+                    android:text="@string/select"
+                    android:layout_gravity="right"
+                    android:background="@color/extra_dark_green"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    />
+        </LinearLayout>
+
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:id="@+id/provinces_container"
@@ -151,7 +185,7 @@
                       android:layout_marginRight="16dp"
                       android:layout_marginLeft="16dp"
                       android:layout_marginTop="10dp"
-                      android:layout_below="@id/event_name_edit_text"
+                      android:layout_below="@id/event_cat_container"
                 >
             <TextView style="@style/default_text_view"
                       android:text="@string/provine_label"
@@ -162,11 +196,12 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
-                      android:layout_width="60dp"
+                      android:layout_width="90dp"
                     />
             <EditText
                     android:hint="@string/province"
                     android:id="@+id/event_province_edit_text"
+                    android:text="@string/select"
                     style="@style/bordered_edit_text"
                     />
         </LinearLayout>
@@ -189,11 +224,12 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
-                      android:layout_width="60dp"
+                      android:layout_width="90dp"
                     />
             <EditText
                     android:hint="@string/city"
                     android:id="@+id/event_city_edit_text"
+                    android:text="@string/select"
                     style="@style/bordered_edit_text"
                     />
         </LinearLayout>
@@ -226,7 +262,7 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
-                      android:layout_width="60dp"
+                      android:layout_width="90dp"
                     />
             <Spinner android:layout_width="48dp"
                      android:layout_height="wrap_content"
@@ -274,7 +310,7 @@
                       android:focusable="false"
                       android:clickable="true"
                       android:textStyle="bold"
-                      android:layout_width="60dp"
+                      android:layout_width="90dp"
                       android:id="@+id/end_label_text_view"
                     />
             <Spinner android:layout_width="48dp"
@@ -333,7 +369,7 @@
                       android:focusable="false"
                       android:clickable="false"
                       android:textStyle="bold"
-                      android:layout_width="60dp"
+                      android:layout_width="90dp"
                     />
 
             <RadioGroup android:layout_width="wrap_content"

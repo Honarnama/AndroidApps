@@ -55,7 +55,24 @@ public class CacheData extends HonarnamaBaseModel {
         receivingDataProgressDialog.setMessage(mContext.getResources().getString(R.string.syncing_data));
         receivingDataProgressDialog.show();
 
-        cacheCategories().continueWith(new Continuation<Void, Object>() {
+        cacheEventCategories().continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                if (task.isFaulted()) {
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false);
+//                    editor.commit();
+                    logE("Caching event categories task failed. Error Msg : " + task.getError().getMessage() + " // task error: " + task.getError(), "", task.getError());
+                } else {
+                    mPrefEditor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, true);
+                }
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Object> task) throws Exception {
+                return cacheCategories();
+            }
+        }).continueWith(new Continuation<Void, Object>() {
             @Override
             public Object then(Task<Void> task) throws Exception {
                 if (task.isFaulted()) {
@@ -153,6 +170,7 @@ public class CacheData extends HonarnamaBaseModel {
                 mPrefEditor.commit();
                 receivingDataProgressDialog.dismiss();
                 if (mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED, false) &&
+                        mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false) &&
                         mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false) &&
@@ -182,6 +200,18 @@ public class CacheData extends HonarnamaBaseModel {
             public Task<Void> then(Task<List<ParseObject>> task) throws Exception {
                 List<ParseObject> categories = task.getResult();
                 return recacheCategoryAsync(categories);
+            }
+        });
+    }
+
+
+    public Task<Void> cacheEventCategories() {
+        ParseQuery<EventCategory> parseQuery = ParseQuery.getQuery(EventCategory.class);
+        return findAsync(parseQuery).onSuccessTask(new Continuation<List<ParseObject>, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<List<ParseObject>> task) throws Exception {
+                List<ParseObject> categories = task.getResult();
+                return recacheEventCategoryAsync(categories);
             }
         });
     }
@@ -219,6 +249,34 @@ public class CacheData extends HonarnamaBaseModel {
                                 public void done(ParseException e) {
                                     if (e != null) {
                                         logE("Recaching category failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error:" + e, "", e);
+                                        tcs.trySetError(e);
+                                    } else {
+                                        tcs.trySetResult(null);
+                                    }
+                                }
+                            }
+                    );
+                } else {
+                    tcs.trySetError(e);
+                }
+            }
+        });
+        return tcs.getTask();
+    }
+
+
+    public Task<Void> recacheEventCategoryAsync(final List<ParseObject> categories) {
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+
+        ParseObject.unpinAllInBackground(EventCategory.OBJECT_NAME, new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    ParseObject.pinAllInBackground(EventCategory.OBJECT_NAME, categories, new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        logE("Recaching event category failed. Error Code: " + e.getCode() + " // Error Msg: " + e.getMessage() + " // Error:" + e, "", e);
                                         tcs.trySetError(e);
                                     } else {
                                         tcs.trySetResult(null);
@@ -376,7 +434,6 @@ public class CacheData extends HonarnamaBaseModel {
         });
         return tcs.getTask();
     }
-
 
 
     public Task<Event> cacheUserEvent() {

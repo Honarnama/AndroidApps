@@ -14,6 +14,7 @@ import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
+import net.honarnama.core.model.EventCategory;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
@@ -55,6 +56,8 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int GENDER_CODE_NOT_SAID = 2;
 
     public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
+    public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED = "local_data_store_for_event_categories_synced";
+
     public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED = "local_data_store_for_city_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED = "local_data_store_for_store_synced";
@@ -87,6 +90,7 @@ public abstract class HonarnamaBaseApp extends Application {
 
         Parse.enableLocalDatastore(this);
         ParseObject.registerSubclass(Category.class);
+        ParseObject.registerSubclass(EventCategory.class);
         ParseObject.registerSubclass(Store.class);
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Provinces.class);

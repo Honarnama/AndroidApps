@@ -26,7 +26,7 @@
 مدیریت فروشگاه
     </string>
     <string name="store_info">مشخصات فروشگاه</string>
-    <string name="nav_title_event_manager">مدیریت رویداد هنری</string>
+    <string name="nav_title_event_manager">مدیریت رویداد</string>
     <string name="nav_title_items">محصولات</string>
     <string name="register_new_item">ثبت محصول جدید</string>
     <string name="nav_title_edit_item">ویرایش محصول</string>
@@ -127,6 +127,8 @@
     <string name="successfully_changed_event_info">
         اطلاعات رویداد با موفقیت ویرایش شد.
     </string>
+    <string name="error_event_cat_is_not_selected">دسته‌بندی رویداد مشخص نشده است.</string>
+    <string name="error_event_address_is_not_specified">آدرس رویداد مشخص نشده است.</string>
     <!-- navigation drawer item_row labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_title_seller_account</item>

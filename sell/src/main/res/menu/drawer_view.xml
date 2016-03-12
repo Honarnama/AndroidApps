@@ -84,10 +84,6 @@
                 android:title="@string/nav_title_exit_app"
                 android:checkable="false"
                 />
-    </group>
-
-
-    <group>
         <item
                 android:title=""
                 android:orderInCategory="200"/>

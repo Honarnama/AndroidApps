@@ -147,6 +147,7 @@
     <string name="alter_name">تغییر نام</string>
     <string name="successfully_changed_user_name">نام شما با موفقیت تغییر یافت.</string>
     <string name="choose_category_dialog_title">انتخاب دسته‌ی آگهی</string>
+    <string name="choose_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="syncing_data_failed">خطا در به‌روزرسانی اطلاعات. لطفا اینترنت دستگاه خود را بررسی
         کنید.
     </string>
@@ -232,7 +233,7 @@
         خطا در نمایش رویداد هنری.
     </string>
     <string name="error_displaying_item">خطا در نمایش محصول.</string>
-    <string name="art_event">رویداد هنری</string>
+    <string name="art_event">رویداد هنری/فرهنگی </string>
     <string name="event_address">
         آدرس رویداد
     </string>
@@ -247,4 +248,7 @@
         بررسی کنید.
     </string>
     <string name="send_device_info">ارسال مشخصات دستگاه</string>
+    <string name="error_getting_event_cat_list">خطا در گرفتن فهرست دسته‌بندی رویداد‌ها.</string>
+    <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
+    <string name="category_label">دسته‌بندی:</string>
 </resources>

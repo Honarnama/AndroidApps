@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
      <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
 
@@ -40,7 +40,7 @@
         <item name="android:textColor">@color/default_edit_text_text_color</item>
         <item name="colorControlNormal">#c5c5c5</item>
         <item name="android:padding">10dp</item>
-        <item name="android:textDirection">rtl</item>
+        <item name="android:textDirection" tools:targetApi="jelly_bean_mr1">rtl</item>
     </style>
 
     <style name="bordered_edit_text" parent="edit_text_default">
@@ -69,6 +69,8 @@
     <style name="Theme.Holo.Dialog.NoActionBar" parent="@style/Theme.AppCompat.Dialog">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowFixedHeightMajor">90%</item>
+        <item name="windowFixedHeightMinor">90%</item>
     </style>
     <!--
         <style name="DialogStyle" parent="@android:style/Theme.Dialog">
@@ -175,7 +177,7 @@
 
     <style name="DialogStyle" parent="android:Theme.Holo.Dialog">
         <item name="android:windowTitleStyle">@style/DialogWindowTitle_Custom</item>
-        <item name="android:layoutDirection">rtl</item>
+        <item name="android:layoutDirection" tools:targetApi="jelly_bean_mr1">rtl</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
     <style name="DialogWindowTitle_Custom">
@@ -186,7 +188,7 @@
     </style>
 
     <style name="TextAppearance_DialogWindowTitle"
-           parent="@android:style/TextAppearance.Holo.DialogWindowTitle">
+           parent="@android:style/TextAppearance.DialogWindowTitle">
         <item name="android:textColor">@color/white</item>
         <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
     </style>
@@ -195,7 +197,7 @@
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:layoutDirection">rtl</item>
+        <item name="android:layoutDirection" tools:targetApi="jelly_bean_mr1">rtl</item>
         <item name="android:windowTitleStyle">@style/DialogWindowTitle_Custom</item>
     </style>
 

@@ -46,6 +46,7 @@ public class Event extends ParseObject {
     public static String CELL_NUMBER = "cellNumber";
     public static String BANNER = "banner";
     public static String OWNER = "owner";
+    public static String CATEGORY = "category";
     public static String PROVINCE = "province";
     public static String CITY = "city";
     public static String STATUS = "status";
@@ -165,6 +166,14 @@ public class Event extends ParseObject {
 
     public void setCity(City city) {
         put(CITY, city);
+    }
+
+    public ParseObject getCategory() {
+        return getParseObject(CATEGORY);
+    }
+
+    public void setCategory(EventCategory eventCategory) {
+        put(CATEGORY, eventCategory);
     }
 
     public static Task<Boolean> checkIfUserHaveEvent(Context context) {

@@ -132,6 +132,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(getString(R.string.toolbar_title));
         setSupportActionBar(mToolbar);
 
         final ActionBar actionBar = getSupportActionBar();
