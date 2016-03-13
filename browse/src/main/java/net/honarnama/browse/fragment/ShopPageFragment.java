@@ -23,6 +23,7 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.WindowUtil;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.acl.NotOwnerException;
 import java.util.List;
 
 import bolts.Continuation;
@@ -203,24 +205,32 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         }).continueWithTask(new Continuation<Object, Task<List<Item>>>() {
             @Override
             public Task<List<Item>> then(Task<Object> task) throws Exception {
-                return Item.getItemsByOwner(mOwner);
+                if (mOwner != null) {
+                    return Item.getItemsByOwner(mOwner);
+                } else {
+                    return Task.forError(new NetworkErrorException());
+                }
             }
         }).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
-                loadingCircle.setVisibility(View.GONE);
-                mListView.setEmptyView(emptyListContainer);
-                emptyListContainer.setVisibility(View.VISIBLE);
                 if (task.isFaulted()) {
-                    logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
+                    logD("Error getting shop items.");
                 } else {
-                    List<Item> shopItems = task.getResult();
-                    mItemsAdapter.setItems(shopItems);
-                    mItemsAdapter.notifyDataSetChanged();
-                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
+                    loadingCircle.setVisibility(View.GONE);
+                    mListView.setEmptyView(emptyListContainer);
+                    emptyListContainer.setVisibility(View.VISIBLE);
+                    if (task.isFaulted()) {
+                        logE("Getting Shop items for owner " + mOwner.getObjectId() + " failed. Error: " + task.getError(), "", task.getError());
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        List<Item> shopItems = task.getResult();
+                        mItemsAdapter.setItems(shopItems);
+                        mItemsAdapter.notifyDataSetChanged();
+                        WindowUtil.setListViewHeightBasedOnChildren(mListView);
+                    }
                 }
                 return null;
             }

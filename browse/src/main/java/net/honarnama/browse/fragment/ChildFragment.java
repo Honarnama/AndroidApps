@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,19 +92,29 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         if (childFragmentManager.getBackStackEntryCount() > 1) {
             HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
             if (topFragment != null) {
-                childFragmentManager.popBackStackImmediate();
-                childFragmentManager.executePendingTransactions();
-
-                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+//                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 if (topFragment instanceof NoNetFragment) {
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
                         controlPanelActivity.refreshNoNetFragment();
-                    }
-                }
+                    } else {
 
-                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
-                toolbarTitle.setText(getString(R.string.hornama));
+//                        childFragmentManager.popBackStackImmediate();
+//                        childFragmentManager.executePendingTransactions();
+                        FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+                        fragmentTransaction.remove(topFragment);
+                        fragmentTransaction.commitAllowingStateLoss();
+
+                        topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+                        logE("inja onback top frag is "+ topFragment.getClass().getName());
+                        controlPanelActivity.switchFragment(topFragment, false, topFragment.getTitle(controlPanelActivity));
+                    }
+                } else {
+                    childFragmentManager.popBackStackImmediate();
+                    childFragmentManager.executePendingTransactions();
+                }
+//                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
+//                toolbarTitle.setText(getString(R.string.hornama));
 
 //                MainTabBar mainTabBar = (MainTabBar) ((ControlPanelActivity) getActivity()).findViewById(R.id.tab_bar);
                 return true;
