@@ -37,6 +37,7 @@ public class BookmarksParseAdapter extends ParseQueryAdapter {
             public ParseQuery create() {
                 ParseQuery<Bookmark> parseQuery = new ParseQuery<Bookmark>(Bookmark.class);
                 parseQuery.include(Bookmark.ITEM);
+                parseQuery.include("item.category");
                 parseQuery.fromLocalDatastore();
                 return parseQuery;
             }

@@ -12,14 +12,16 @@ import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
+import net.honarnama.browse.fragment.NoNetFragment;
 import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
-import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.browse.widget.LockableViewPager;
+import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.CommonUtil;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
@@ -46,12 +48,11 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener, View.OnClickListener {
@@ -100,13 +101,29 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mActiveTab = position;
+                logE("inja onPageScrolled to tab " + mActiveTab);
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
                     switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position), false, getResources().getString(R.string.hornama));
                 } else {
                     FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                             .getChildFragmentManager();
+                    childFragmentManager.executePendingTransactions();
                     HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+
+                    logE("inja getBackStackEntryCount is " + childFragmentManager.getBackStackEntryCount());
+                    if (topFragment != null) {
+                        logE("inja topFragment in onPageScrolled is  " + topFragment.getClass().getName());
+                    }
+
+                    if (topFragment instanceof NoNetFragment) {
+                        if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                            logE("inja onPageScrolled refreshNoNetFragment");
+                            refreshNoNetFragment();
+                            return;
+                        }
+                    }
+
                     mTitle.setText(topFragment.getTitle(HonarnamaBrowseApp.getInstance()));
                 }
             }
@@ -227,28 +244,35 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         switch (menuItem.getItemId()) {
 
             case R.id.item_bookmarks:
-                menuItem.setChecked(true);
-                IconicsDrawable bookmarksDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_stars);
-                menuItem.setIcon(bookmarksDrawable);
-                BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
-                switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    menuItem.setChecked(true);
+                    IconicsDrawable bookmarksDrawable =
+                            new IconicsDrawable(ControlPanelActivity.this)
+                                    .color(getResources().getColor(R.color.dark_cyan))
+                                    .icon(GoogleMaterial.Icon.gmd_stars);
+                    menuItem.setIcon(bookmarksDrawable);
+                    BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
+                    switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
+                } else {
+                    menuItem.setChecked(false);
+                }
                 break;
 
 
             case R.id.item_contact_us:
-                menuItem.setChecked(true);
-                IconicsDrawable contactDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_email);
-                menuItem.setIcon(contactDrawable);
-                ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
-                switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
-                break;
-
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    menuItem.setChecked(true);
+                    IconicsDrawable contactDrawable =
+                            new IconicsDrawable(ControlPanelActivity.this)
+                                    .color(getResources().getColor(R.color.dark_cyan))
+                                    .icon(GoogleMaterial.Icon.gmd_email);
+                    menuItem.setIcon(contactDrawable);
+                    ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                    switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
+                    break;
+                } else {
+                    menuItem.setChecked(false);
+                }
             case R.id.item_rules:
                 String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
@@ -257,15 +281,19 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_about_us:
-                menuItem.setChecked(true);
-                IconicsDrawable aboutDrawable =
-                        new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.dark_cyan))
-                                .icon(GoogleMaterial.Icon.gmd_info_outline);
-                menuItem.setIcon(aboutDrawable);
-                AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
-                switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
-                break;
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    menuItem.setChecked(true);
+                    IconicsDrawable aboutDrawable =
+                            new IconicsDrawable(ControlPanelActivity.this)
+                                    .color(getResources().getColor(R.color.dark_cyan))
+                                    .icon(GoogleMaterial.Icon.gmd_info_outline);
+                    menuItem.setIcon(aboutDrawable);
+                    AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                    switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
+                    break;
+                } else {
+                    menuItem.setChecked(false);
+                }
 
             case R.id.item_share_us:
                 Intent sendIntent = new Intent();
@@ -306,11 +334,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void removeActiveTabTopNavMenuFragment() {
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
+        Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
+
+        if (topFragment instanceof NoNetFragment) {
+            return;
+        }
 
         if (childFragmentManager.getBackStackEntryCount() > 0) {
             List<Fragment> fragments = childFragmentManager.getFragments();
-            Fragment topFragment = fragments.get(fragments.size() - 1);
-//            Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
+//            Fragment topFragment = fragments.get(fragments.size() - 1);
+
             if (topFragment != null) {
 
                 if (topFragment.getClass().getName() == mContactFragment.getClass().getName() ||
@@ -319,7 +352,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         ) {
                     FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
                     fragmentTransaction.remove(topFragment);
-                    fragmentTransaction.commit();
+                    fragmentTransaction.commitAllowingStateLoss();
                     childFragmentManager.popBackStackImmediate();
                     childFragmentManager.executePendingTransactions();
                     mTitle.setText(getString(R.string.hornama));
@@ -328,12 +361,36 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
     }
 
+    public boolean isNavMenuFragment(Fragment fragment) {
+        if (fragment.getClass().getName() == mContactFragment.getClass().getName() ||
+                fragment.getClass().getName() == mAboutFragment.getClass().getName() ||
+                fragment.getClass().getName() == mBookmarksFragment.getClass().getName()) {
+            return true;
+        }
+        return false;
+    }
+
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
+        logE("inja switchFragment in tab " + mActiveTab);
+
         try {
+
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
-            childFragmentManager.executePendingTransactions();
+            if (childFragmentManager != null) {
+                childFragmentManager.executePendingTransactions();
+            }
+            Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
+
+
+            if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
+                if (topFragment instanceof NoNetFragment) {
+                    logE("no net , top frag is no net");
+                    resetMenuIcons();
+                    return;
+                }
+            }
             removeActiveTabTopNavMenuFragment();
 
             if (fragment.isAdded()) {
@@ -341,21 +398,28 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
 
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-
             fragmentTransaction.add(R.id.child_fragment_root, fragment);
-
             fragmentTransaction.addToBackStack(null);
-
             fragmentTransaction.commitAllowingStateLoss();
-
-            childFragmentManager.executePendingTransactions();
-
+            if (childFragmentManager != null) {
+                childFragmentManager.executePendingTransactions();
+            }
             if (!TextUtils.isEmpty(toolbarTitle)) {
                 mTitle.setText(toolbarTitle);
             }
+
+
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                if (!(fragment instanceof NoNetFragment)) {
+                    switchToNoNetFragment();
+                }
+
+            }
+
         } catch (Exception e) {
             logE("Exception While Switching Fragments in CPA." + e);
         }
+
     }
 
     public void displayShopPage(String shopId, boolean isExternal) {
@@ -402,6 +466,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
         resetMenuIcons();
         mActiveTab = tag;
+
+        logE("inja onTabSelect");
+
+
         switch (tag) {
             case TAB_ITEMS:
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
@@ -422,8 +490,26 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mMainFragmentAdapter.getItem(tag).onTabClick();
     }
 
+
     @Override
     public void onSelectedTabClick(Object tabTag, boolean byUser) {
+        logE("inja onSelectedTabClick");
+
+        FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                .getChildFragmentManager();
+        if (childFragmentManager.getBackStackEntryCount() > 0) {
+            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+            if (topFragment instanceof NoNetFragment) {
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    refreshNoNetFragment();
+                    return;
+                } else {
+                    return;
+                }
+            }
+
+        }
+
         removeActiveTabTopNavMenuFragment();
         resetMenuIcons();
 
@@ -458,6 +544,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             mDrawer.closeDrawer(Gravity.RIGHT);
             return;
         }
+
         mMainTabBar.selectTabViewWithTabTag(mActiveTab);
         resetMenuIcons();
         if (!mMainFragmentAdapter.getItem(mActiveTab).back()) {
@@ -553,4 +640,61 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
         }
     }
+
+    public void switchToNoNetFragment() {
+        logE("inja switchToNoNetFragment");
+        NoNetFragment noNetFragment = NoNetFragment.getInstance();
+        switchFragment(noNetFragment, false, noNetFragment.getTitle(ControlPanelActivity.this));
+    }
+
+    public void refreshNoNetFragment() {
+
+        FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                .getChildFragmentManager();
+        if (childFragmentManager != null) {
+            childFragmentManager.executePendingTransactions();
+        }
+
+        FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+//        List<Fragment> fragments = childFragmentManager.getFragments();
+//        HonarnamaBaseFragment noNetFragment = (HonarnamaBaseFragment) fragments.get(0);
+
+        HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+
+        if (childFragmentManager.getBackStackEntryCount() > 0) {
+//            fragmentTransaction.remove(noNetFragment);
+//            fragmentTransaction.commit();
+            if (topFragment instanceof NoNetFragment) {
+                try {
+                    logE("inja remove top no net frag");
+//                    childFragmentManager.popBackStackImmediate();
+                    fragmentTransaction.remove(topFragment);
+                    fragmentTransaction.commitAllowingStateLoss();
+
+                    if (childFragmentManager != null) {
+                        childFragmentManager.executePendingTransactions();
+                    }
+                } catch (Exception e) {
+                    logE("inja " + e);
+                }
+
+            }
+        }
+
+        fragmentTransaction = childFragmentManager.beginTransaction();
+        topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+        if (topFragment != null) {
+            logE("inja Detaching top frag frag: " + topFragment.getClass().getName());
+            fragmentTransaction.detach(topFragment);
+            fragmentTransaction.attach(topFragment);
+            fragmentTransaction.commitAllowingStateLoss();
+            mTitle.setText(topFragment.getTitle(ControlPanelActivity.this));
+            if (childFragmentManager != null) {
+                childFragmentManager.executePendingTransactions();
+            }
+        }
+
+    }
+
+
 }

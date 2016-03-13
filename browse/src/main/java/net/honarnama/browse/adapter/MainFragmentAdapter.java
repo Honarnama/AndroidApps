@@ -28,6 +28,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
     public List<ChildFragment> fragmentsList = new ArrayList<>();
 
     public MainFragmentAdapter(FragmentManager fm) {
+
         super(fm);
         fragmentsList.add(ChildFragment.getInstance(TAB_ITEMS));
         fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));

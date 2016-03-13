@@ -30,10 +30,9 @@ import java.util.List;
 
 public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
-//    ShopsAdapter mAdapter;
+    //    ShopsAdapter mAdapter;
     public static ShopsFragment mShopsFragment;
     private Tracker mTracker;
-    public ImageView mRetryIcon;
     private FragmentActivity mFragmentActivity;
     ShopsParseAdapter mShopsParseAdapter;
 
@@ -62,13 +61,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            final View rootView = inflater.inflate(R.layout.fragment_no_network, container, false);
-            mRetryIcon = (ImageView) rootView.findViewById(R.id.no_network_fragment_retry_icon);
-            mRetryIcon.setOnClickListener(this);
-            return rootView;
-        }
 
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.shops_listView);
@@ -119,6 +111,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         });
         listView.setAdapter(mShopsParseAdapter);
         listView.setOnItemClickListener(this);
+
         return rootView;
     }
 

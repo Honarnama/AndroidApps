@@ -17,6 +17,7 @@ import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -66,6 +68,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
@@ -84,13 +88,14 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         listItems();
         mListView.setOnItemClickListener(this);
 
+
         return rootView;
     }
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+
     }
 
     @Override
@@ -105,7 +110,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position-1);
+        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }

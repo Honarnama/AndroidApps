@@ -3,11 +3,14 @@ package net.honarnama.browse.fragment;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.widget.MainTabBar;
+import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,8 +65,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //Save the fragment's state here
     }
 
     @Override
@@ -86,15 +87,25 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
 
     public boolean back() {
-        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
-            Fragment fragment = getChildFragmentManager().getFragments()
-                    .get(getChildFragmentManager().getBackStackEntryCount() - 1);
-            if (fragment != null) {
-                getChildFragmentManager().popBackStackImmediate();
-                TextView toolbarTitle = (TextView) ((ControlPanelActivity) getActivity()).findViewById(R.id.toolbar_title);
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        if (childFragmentManager.getBackStackEntryCount() > 1) {
+            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+            if (topFragment != null) {
+                childFragmentManager.popBackStackImmediate();
+                childFragmentManager.executePendingTransactions();
+
+                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                if (topFragment instanceof NoNetFragment) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        controlPanelActivity.refreshNoNetFragment();
+                    }
+                }
+
+                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
                 toolbarTitle.setText(getString(R.string.hornama));
 
-                MainTabBar mainTabBar = (MainTabBar) ((ControlPanelActivity) getActivity()).findViewById(R.id.tab_bar);
+//                MainTabBar mainTabBar = (MainTabBar) ((ControlPanelActivity) getActivity()).findViewById(R.id.tab_bar);
                 return true;
             }
 
@@ -119,9 +130,9 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {
-           logE("NoSuchFieldException"+ e);
+            logE("NoSuchFieldException" + e);
         } catch (IllegalAccessException e) {
-            logE("IllegalAccessException"+ e);
+            logE("IllegalAccessException" + e);
         }
 
     }

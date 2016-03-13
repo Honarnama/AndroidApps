@@ -13,6 +13,7 @@ import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -70,7 +72,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
         mSearchEditText = (EditText) rootView.findViewById(R.id.serach_term);
         mSearchButton = rootView.findViewById(R.id.search_btn);
 
@@ -115,6 +119,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mListView.setOnItemClickListener(this);
 
+
         return rootView;
     }
 
@@ -126,7 +131,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -273,10 +278,12 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void resetFields() {
-        mSearchEditText.setText("");
-        mItemsToggleButton.setChecked(true);
-        mShopsToggleButton.setChecked(false);
-        mEventsToggleButton.setChecked(false);
+        if (mSearchEditText != null) {
+            mSearchEditText.setText("");
+            mItemsToggleButton.setChecked(true);
+            mShopsToggleButton.setChecked(false);
+            mEventsToggleButton.setChecked(false);
+        }
     }
 
     @Override

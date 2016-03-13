@@ -12,6 +12,7 @@ import com.parse.ParseUser;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
@@ -47,7 +48,6 @@ import bolts.Task;
  */
 public class EventPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static EventPageFragment mEventPageFragment;
-    public ImageView mRetryIcon;
     private Tracker mTracker;
     public ProgressBar mBannerProgressBar;
 
@@ -103,12 +103,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            final View rootView = inflater.inflate(R.layout.fragment_no_network, container, false);
-            mRetryIcon = (ImageView) rootView.findViewById(R.id.no_network_fragment_retry_icon);
-            mRetryIcon.setOnClickListener(this);
-            return rootView;
-        }
         final View rootView = inflater.inflate(R.layout.fragment_event_page, container, false);
         mEventId = getArguments().getString("eventId");
 

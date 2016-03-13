@@ -50,7 +50,6 @@ import bolts.Task;
  */
 public class ShopPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static ShopPageFragment mShopPageFragment;
-    public ImageView mRetryIcon;
     private Tracker mTracker;
     private ItemsAdapter mItemsAdapter;
     private ImageSelector mLogoImageView;
@@ -104,12 +103,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            final View rootView = inflater.inflate(R.layout.fragment_no_network, container, false);
-            mRetryIcon = (ImageView) rootView.findViewById(R.id.no_network_fragment_retry_icon);
-            mRetryIcon.setOnClickListener(this);
-            return rootView;
-        }
         final View rootView = inflater.inflate(R.layout.fragment_shop_page, container, false);
         mShopId = getArguments().getString("shopId");
 
@@ -235,6 +228,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
+
+
         return rootView;
 
     }

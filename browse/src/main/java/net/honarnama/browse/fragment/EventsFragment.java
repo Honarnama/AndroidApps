@@ -29,12 +29,11 @@ import android.widget.RelativeLayout;
 import java.util.List;
 
 
-public class EventsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class EventsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener {
 
     //    ShopsAdapter mAdapter;
     public static EventsFragment mEventsFragment;
     private Tracker mTracker;
-    public ImageView mRetryIcon;
     private FragmentActivity mFragmentActivity;
     EventsParseAdapter mEventsParseAdapter;
 
@@ -64,13 +63,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            final View rootView = inflater.inflate(R.layout.fragment_no_network, container, false);
-            mRetryIcon = (ImageView) rootView.findViewById(R.id.no_network_fragment_retry_icon);
-            mRetryIcon.setOnClickListener(this);
-            return rootView;
-        }
-
         final View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.events_listView);
 
@@ -98,6 +90,12 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         });
         listView.setAdapter(mEventsParseAdapter);
         listView.setOnItemClickListener(this);
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            final View noNetView = inflater.inflate(R.layout.fragment_no_network, container, false);
+//            return noNetView;
+//        }
+
         return rootView;
     }
 
@@ -125,20 +123,20 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         }
     }
 
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-
-            case R.id.no_network_fragment_retry_icon:
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    FragmentTransaction ft = mFragmentActivity.getSupportFragmentManager().beginTransaction();
-                    ft.detach(this).attach(this).commit();
-                }
-                break;
-        }
-    }
-
     public void onSelectedTabClick() {
     }
+
+//    @Override
+//    public void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.no_network_fragment_retry_icon:
+//                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                    return;
+//                }
+//                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+//                controlPanelActivity.refreshNoNetFragment();
+//                break;
+//        }
+//    }
+
 }

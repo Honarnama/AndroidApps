@@ -9,6 +9,7 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.BookmarksParseAdapter;
 import net.honarnama.core.model.Bookmark;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
@@ -79,7 +81,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -99,5 +100,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
     }
+
 }
 
