@@ -217,7 +217,7 @@
 
             <RelativeLayout android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/event_info_container"
+                            android:layout_below="@id/event_banner_container"
                             android:id="@+id/on_error_retry_container"
                             android:visibility="gone"
                     >

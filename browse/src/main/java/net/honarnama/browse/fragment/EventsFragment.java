@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,7 +39,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     private FragmentActivity mFragmentActivity;
     EventsParseAdapter mEventsParseAdapter;
     public RelativeLayout mOnErrorRetry;
-
+    public Button mCategoryFilterButton;
 
     @Override
     public String getTitle(Context context) {
@@ -67,6 +68,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
         final View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.events_listView);
+
+
+        View header = inflater.inflate(R.layout.item_list_header, null);
+        mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
+        mCategoryFilterButton.setOnClickListener(this);
+
+        listView.addHeaderView(header);
 
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_events_warning_container);
         listView.setEmptyView(emptyListContainer);
@@ -116,9 +124,11 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ParseObject selectedEvent = (ParseObject) mEventsParseAdapter.getItem(i);
+        ParseObject selectedEvent = (ParseObject) mEventsParseAdapter.getItem(i - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+        if (selectedEvent != null) {
+            controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+        }
     }
 
     @Override

@@ -456,6 +456,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {
 
+        logE("inja onTabSelect");
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         removeActiveTabTopNavMenuFragment();
@@ -490,6 +491,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onSelectedTabClick(Object tabTag, boolean byUser) {
 
+        logE("inja onSelectedTabClick");
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
         if (childFragmentManager.getBackStackEntryCount() > 0) {
@@ -512,6 +514,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (int) tabTag;
         mMainFragmentAdapter.getItem(tag).onSelectedTabClick();
+
     }
 
     public void setDefaultTab() {
@@ -694,6 +697,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 childFragmentManager.executePendingTransactions();
             }
         }
+    }
+
+    public void setTitle(String title)
+    {
+        mTitle.setText(title);
     }
 
 

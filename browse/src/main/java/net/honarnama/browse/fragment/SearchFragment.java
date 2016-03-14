@@ -145,17 +145,23 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (mSearchSegment == SearchSegment.ITEMS) {
             ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
-            controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+            if (selectedItem != null) {
+                controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+            }
         }
 
         if (mSearchSegment == SearchSegment.SHOPS) {
             ParseObject selectedShop = (ParseObject) mShopsAdapter.getItem(position);
-            controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
+            if (selectedShop != null) {
+                controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
+            }
         }
 
         if (mSearchSegment == SearchSegment.EVENTS) {
             ParseObject selectedEvent = (ParseObject) mEventsAdapterr.getItem(position);
-            controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+            if (selectedEvent != null) {
+                controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+            }
         }
     }
 

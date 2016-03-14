@@ -168,9 +168,16 @@ public class ChildFragment extends HonarnamaBrowseFragment {
      * pop all fragment and keep first one only
      */
     public void popAllFragment() {
-        while (getChildFragmentManager().getBackStackEntryCount() > 1) {
-            getChildFragmentManager().popBackStackImmediate();
+        try {
+            while (getChildFragmentManager().getBackStackEntryCount() > 1) {
+                getChildFragmentManager().popBackStackImmediate();
+            }
+        } catch (Exception e) {
+            logE("Exception while popping all fragments: " + e);
         }
+        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+        HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) getChildFragmentManager().findFragmentById(R.id.child_fragment_root);
+        controlPanelActivity.setTitle(topFragment.getTitle(controlPanelActivity));
     }
 
     @Override
@@ -191,6 +198,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
     public void onSelectedTabClick() {
         if (getChildFragmentManager().getBackStackEntryCount() > 1) {
             popAllFragment();
+
         } else {
             if (getChildFragmentManager().getFragments() != null
                     && getChildFragmentManager().getFragments().size() > 0) {
