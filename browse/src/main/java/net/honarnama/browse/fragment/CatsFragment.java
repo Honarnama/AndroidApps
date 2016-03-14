@@ -36,10 +36,6 @@ public class CatsFragment extends HonarnamaBrowseFragment {
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-    }
 
     @Override
     public String getTitle(Context context) {

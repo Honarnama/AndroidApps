@@ -129,10 +129,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-    }
 
     @Override
     public String getTitle(Context context) {

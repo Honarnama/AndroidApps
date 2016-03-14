@@ -80,10 +80,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-    }
-
-    @Override
     public String getTitle(Context context) {
         return context.getString(R.string.bookmarks);
     }

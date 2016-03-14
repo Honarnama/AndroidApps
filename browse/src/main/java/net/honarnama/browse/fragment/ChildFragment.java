@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 
 /**
@@ -64,9 +65,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-    }
 
     @Override
     public String getTitle(Context context) {
@@ -89,25 +87,51 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
     public boolean back() {
         FragmentManager childFragmentManager = getChildFragmentManager();
+
+        logE("inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
+
+
         if (childFragmentManager.getBackStackEntryCount() > 1) {
             HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
             if (topFragment != null) {
 //                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 if (topFragment instanceof NoNetFragment) {
-                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(false)) {
                         controlPanelActivity.refreshNoNetFragment();
+                        return true;
                     } else {
 
-//                        childFragmentManager.popBackStackImmediate();
-//                        childFragmentManager.executePendingTransactions();
+                        logE("inja removing topfrag " + topFragment.getClass().getName());
                         FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-                        fragmentTransaction.remove(topFragment);
-                        fragmentTransaction.commitAllowingStateLoss();
+//                        fragmentTransaction.remove(topFragment);
+//                        fragmentTransaction.commitAllowingStateLoss();
 
+                        if (childFragmentManager != null) {
+                            childFragmentManager.popBackStack();
+                            childFragmentManager.executePendingTransactions();
+                        }
+
+                        fragmentTransaction = childFragmentManager.beginTransaction();
                         topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-                        logE("inja onback top frag is "+ topFragment.getClass().getName());
-                        controlPanelActivity.switchFragment(topFragment, false, topFragment.getTitle(controlPanelActivity));
+
+                        if (topFragment != null) {
+                            logE("inja removing pre nonet frag " + topFragment.getClass().getName());
+//                            fragmentTransaction.remove(topFragment);
+//                            fragmentTransaction.commitAllowingStateLoss();
+                            childFragmentManager.popBackStack();
+                            if (childFragmentManager != null) {
+                                childFragmentManager.executePendingTransactions();
+                            }
+                        }
+
+                        logE("2 inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
+
+                        if (childFragmentManager.getBackStackEntryCount() > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 } else {
                     childFragmentManager.popBackStackImmediate();

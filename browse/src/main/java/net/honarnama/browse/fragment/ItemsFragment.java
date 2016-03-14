@@ -94,11 +94,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-    }
-
-    @Override
     public String getTitle(Context context) {
         return getString(R.string.hornama);
     }

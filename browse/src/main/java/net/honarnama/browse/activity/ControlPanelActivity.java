@@ -117,7 +117,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     }
 
                     if (topFragment instanceof NoNetFragment) {
-                        if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        if (NetworkManager.getInstance().isNetworkEnabled(false)) {
                             logE("inja onPageScrolled refreshNoNetFragment");
                             refreshNoNetFragment();
                             return;
@@ -378,9 +378,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
-            if (childFragmentManager != null) {
-                childFragmentManager.executePendingTransactions();
-            }
             Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
 
 
@@ -500,7 +497,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         if (childFragmentManager.getBackStackEntryCount() > 0) {
             HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
             if (topFragment instanceof NoNetFragment) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                if (NetworkManager.getInstance().isNetworkEnabled(false)) {
                     refreshNoNetFragment();
                     return;
                 } else {
