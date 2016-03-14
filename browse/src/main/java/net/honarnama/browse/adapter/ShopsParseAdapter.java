@@ -29,19 +29,10 @@ import android.widget.TextView;
 public class ShopsParseAdapter extends ParseQueryAdapter {
     public Context mContext;
 
-    public ShopsParseAdapter(Context context) {
+    public ShopsParseAdapter(Context context, QueryFactory<ParseObject> queryFactory) {
         // Use the QueryFactory to construct a PQA that will only show
         // Todos marked as high-pri
-
-        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-            public ParseQuery create() {
-                ParseQuery<Store> parseQuery = new ParseQuery<Store>(Store.class);
-                parseQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
-                parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
-                parseQuery.include(Store.CITY);
-                return parseQuery;
-            }
-        });
+        super(context, queryFactory);
         mContext = context;
     }
 

@@ -110,7 +110,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position - 1);
+
+        Toast.makeText(getActivity(), "inja "+position, Toast.LENGTH_SHORT).show();
+
+
+        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position-1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedItem != null) {
             controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);

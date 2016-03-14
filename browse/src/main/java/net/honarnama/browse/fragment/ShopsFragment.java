@@ -4,12 +4,15 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsParseAdapter;
+import net.honarnama.browse.model.Item;
+import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
@@ -20,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -66,6 +70,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.shops_listView);
 
+
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_shops_warning_container);
         listView.setEmptyView(emptyListContainer);
 
@@ -96,7 +101,19 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //        listView.setAdapter(mAdapter);
 //        listView.setOnItemClickListener(this);
 
-        mShopsParseAdapter = new ShopsParseAdapter(HonarnamaBrowseApp.getInstance());
+
+        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
+                new ParseQueryAdapter.QueryFactory<ParseObject>() {
+                    public ParseQuery create() {
+                        ParseQuery<Store> parseQuery = new ParseQuery<Store>(Store.class);
+                        parseQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
+                        parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
+                        parseQuery.include(Store.CITY);
+                        return parseQuery;
+                    }
+                };
+
+        mShopsParseAdapter = new ShopsParseAdapter(getContext(), filterFactory);
         mShopsParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
             @Override
             public void onLoading() {
@@ -131,6 +148,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Toast.makeText(getActivity(), "inja " + i, Toast.LENGTH_SHORT).show();
         ParseObject selectedStore = (ParseObject) mShopsParseAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedStore != null) {
