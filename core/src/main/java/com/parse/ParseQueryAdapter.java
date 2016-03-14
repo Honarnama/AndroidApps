@@ -21,6 +21,7 @@
 
 package com.parse;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
@@ -32,14 +33,14 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.parse.widget.util.ParseQueryPager;
+import com.parse.ParseQuery.CachePolicy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import bolts.CancellationTokenSource;
+import bolts.Capture;
 
 /**
  * A {@code ParseQueryAdapter} handles the fetching of objects by page, and displaying objects as
@@ -95,36 +96,28 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   /**
    * Implement to construct your own custom {@link ParseQuery} for fetching objects.
    */
-  public interface QueryFactory<T extends ParseObject> {
-    ParseQuery<T> create();
+  public static interface QueryFactory<T extends ParseObject> {
+    public ParseQuery<T> create();
   }
 
   /**
    * Implement with logic that is called before and after objects are fetched from Parse by the
    * adapter.
    */
-  public interface OnQueryLoadListener<T extends ParseObject> {
-    void onLoading();
+  public static interface OnQueryLoadListener<T extends ParseObject> {
+    public void onLoading();
 
-    void onLoaded(List<T> objects, Exception e);
+    public void onLoaded(List<T> objects, Exception e);
   }
-
-  private final Object lock = new Object();
-  private ParseQueryPager<T> pager;
-  private CancellationTokenSource cts;
-
-  //region Backwards compatibility
-  private ParseQuery<T> query;
-  private int objectsPerPage = 25;
-  //endregion
-
-  private Integer itemResourceId;
 
   // The key to use to display on the cell text label.
   private String textKey;
 
   // The key to use to fetch an image for display in the cell's image view.
   private String imageKey;
+
+  // The number of objects to show per page (default: 25)
+  private int objectsPerPage = 25;
 
   // Whether the table should use the built-in pagination feature (default:
   // true)
@@ -146,6 +139,20 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   private boolean autoload = true;
 
   private Context context;
+
+  private List<T> objects = new ArrayList<>();
+
+  // Used to keep track of the pages of objects when using CACHE_THEN_NETWORK. When using this,
+  // the data will be flattened and put into the objects list.
+  private List<List<T>> objectPages = new ArrayList<>();
+
+  private int currentPage = 0;
+
+  private Integer itemResourceId;
+
+  private boolean hasNextPage = true;
+
+  private QueryFactory<T> queryFactory;
 
   private List<OnQueryLoadListener<T>> onQueryLoadListeners =
           new ArrayList<>();
@@ -264,8 +271,8 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   private ParseQueryAdapter(Context context, QueryFactory<T> queryFactory, Integer itemViewResource) {
     super();
     this.context = context;
-    query = queryFactory.create();
-    itemResourceId = itemViewResource;
+    this.queryFactory = queryFactory;
+    this.itemResourceId = itemViewResource;
   }
 
   /**
@@ -274,41 +281,16 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    * @return The activity utilizing this adapter.
    */
   public Context getContext() {
-    return context;
-  }
-
-  private ParseQueryPager<T> getPager() {
-    synchronized (lock) {
-      if (pager == null) {
-        pager = new ParseQueryPager<T>(query, objectsPerPage) {
-          @Override
-          protected ParseQuery<T> createQuery(int page) {
-            // Workaround for backwards compatibility
-            ParseQuery<T> query = new ParseQuery<>(getQuery());
-            if (paginationEnabled) {
-              setPageOnQuery(page, query);
-            }
-            return query;
-          }
-        };
-        cts = new CancellationTokenSource();
-      }
-
-      return pager;
-    }
-  }
-
-  private List<T> getObjects() {
-    return getPager().getObjects();
+    return this.context;
   }
 
   /** {@inheritDoc} **/
   @Override
   public T getItem(int index) {
-    if (index == getPaginationCellRow()) {
+    if (index == this.getPaginationCellRow()) {
       return null;
     }
-    return getObjects().get(index);
+    return this.objects.get(index);
   }
 
   /** {@inheritDoc} **/
@@ -319,7 +301,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
 
   @Override
   public int getItemViewType(int position) {
-    if (position == getPaginationCellRow()) {
+    if (position == this.getPaginationCellRow()) {
       return VIEW_TYPE_NEXT_PAGE;
     }
     return VIEW_TYPE_ITEM;
@@ -333,31 +315,26 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   @Override
   public void registerDataSetObserver(DataSetObserver observer) {
     super.registerDataSetObserver(observer);
-    dataSetObservers.put(observer, null);
-    if (autoload) {
-      loadObjects();
+    this.dataSetObservers.put(observer, null);
+    if (this.autoload) {
+      this.loadObjects();
     }
   }
 
   @Override
   public void unregisterDataSetObserver(DataSetObserver observer) {
     super.unregisterDataSetObserver(observer);
-    dataSetObservers.remove(observer);
+    this.dataSetObservers.remove(observer);
   }
 
   /**
    * Remove all elements from the list.
    */
   public void clear() {
-    synchronized (lock) {
-      if (cts != null) {
-        cts.cancel();
-      }
-      pager = null;
-      cts = null;
-    }
-
-    notifyDataSetChanged();
+    this.objectPages.clear();
+    syncObjectsWithPages();
+    this.notifyDataSetChanged();
+    this.currentPage = 0;
   }
 
   /**
@@ -368,39 +345,86 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    * {@code false}.
    */
   public void loadObjects() {
-    loadNextPage(true);
+    this.loadObjects(0, true);
   }
 
-  private void loadNextPage(final boolean shouldClear) {
-    synchronized (lock) {
-      if (shouldClear && pager != null) {
-        cts.cancel();
-        pager = null;
-      }
+  private void loadObjects(final int page, final boolean shouldClear) {
+    final ParseQuery<T> query = this.queryFactory.create();
+
+    if (this.objectsPerPage > 0 && this.paginationEnabled) {
+      this.setPageOnQuery(page, query);
     }
 
-    notifyOnLoadingListeners();
+    this.notifyOnLoadingListeners();
 
-    getPager().loadNextPage(new FindCallback<T>() {
+    // Create a new page
+    if (page >= objectPages.size()) {
+      objectPages.add(page, new ArrayList<T>());
+    }
+
+    // In the case of CACHE_THEN_NETWORK, two callbacks will be called. Using this flag to keep track,
+    final Capture<Boolean> firstCallBack = new Capture<>(true);
+
+    query.findInBackground(new FindCallback<T>() {
+      @SuppressLint("ShowToast")
       @Override
-      public void done(List<T> results, ParseException e) {
-        if (results == null && e == null) { // cancelled
-          return;
-        }
-
-        // Backwards compatibility
+      public void done(List<T> foundObjects, ParseException e) {
         if ((!Parse.isLocalDatastoreEnabled() &&
-                query.getCachePolicy() == ParseQuery.CachePolicy.CACHE_ONLY) &&
-                (e != null) && e.getCode() == ParseException.CACHE_MISS) {
+                query.getCachePolicy() == CachePolicy.CACHE_ONLY)
+                && (e != null) && e.getCode() == ParseException.CACHE_MISS) {
           // no-op on cache miss
           return;
         }
 
-        notifyDataSetChanged();
+        if ((e != null)
+                && ((e.getCode() == ParseException.CONNECTION_FAILED) || (e.getCode() != ParseException.CACHE_MISS))) {
+          hasNextPage = true;
+        } else if (foundObjects != null) {
+          if (shouldClear && firstCallBack.get()) {
+            objectPages.clear();
+            objectPages.add(new ArrayList<T>());
+            currentPage = page;
+            firstCallBack.set(false);
+          }
 
-        notifyOnLoadedListeners(results, e);
+          // Only advance the page, this prevents second call back from CACHE_THEN_NETWORK to
+          // reset the page.
+          if (page >= currentPage) {
+            currentPage = page;
+
+            // since we set limit == objectsPerPage + 1
+            hasNextPage = (foundObjects.size() > objectsPerPage);
+          }
+
+          if (paginationEnabled && foundObjects.size() > objectsPerPage) {
+            // Remove the last object, fetched in order to tell us whether there was a "next page"
+            foundObjects.remove(objectsPerPage);
+          }
+
+          List<T> currentPage = objectPages.get(page);
+          currentPage.clear();
+          currentPage.addAll(foundObjects);
+
+          syncObjectsWithPages();
+
+          // executes on the UI thread
+          notifyDataSetChanged();
+        }
+
+        notifyOnLoadedListeners(foundObjects, e);
       }
-    }, cts.getToken());
+    });
+  }
+
+  /**
+   * This is a helper function to sync the objects with objectPages. This is only used with the
+   * CACHE_THEN_NETWORK option.
+   */
+  private void syncObjectsWithPages() {
+    objects.clear();
+    for (List<T> pageOfObjects : objectPages) {
+      objects.addAll(pageOfObjects);
+    }
   }
 
   /**
@@ -408,7 +432,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    * changed.
    */
   public void loadNextPage() {
-    loadNextPage(false);
+    this.loadObjects(currentPage + 1, false);
   }
 
   /**
@@ -420,9 +444,9 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    */
   @Override
   public int getCount() {
-    int count = getObjects().size();
+    int count = this.objects.size();
 
-    if (shouldShowPaginationCell()) {
+    if (this.shouldShowPaginationCell()) {
       count++;
     }
 
@@ -455,7 +479,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    */
   public View getItemView(T object, View v, ViewGroup parent) {
     if (v == null) {
-      v = getDefaultView(parent.getContext());
+      v = this.getDefaultView(this.context);
     }
 
     TextView textView;
@@ -467,16 +491,16 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
     }
 
     if (textView != null) {
-      if (textKey == null) {
+      if (this.textKey == null) {
         textView.setText(object.getObjectId());
-      } else if (object.get(textKey) != null) {
-        textView.setText(object.get(textKey).toString());
+      } else if (object.get(this.textKey) != null) {
+        textView.setText(object.get(this.textKey).toString());
       } else {
         textView.setText(null);
       }
     }
 
-    if (imageKey != null) {
+    if (this.imageKey != null) {
       ParseImageView imageView;
       try {
         imageView = (ParseImageView) v.findViewById(android.R.id.icon);
@@ -489,11 +513,11 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
         throw new IllegalStateException(
                 "Your object views must have a ParseImageView whose id attribute is 'android.R.id.icon' if an imageKey is specified");
       }
-      if (!imageViewSet.containsKey(imageView)) {
-        imageViewSet.put(imageView, null);
+      if (!this.imageViewSet.containsKey(imageView)) {
+        this.imageViewSet.put(imageView, null);
       }
-      imageView.setPlaceholder(placeholder);
-      imageView.setParseFile((ParseFile) object.get(imageKey));
+      imageView.setPlaceholder(this.placeholder);
+      imageView.setParseFile((ParseFile) object.get(this.imageKey));
       imageView.loadInBackground();
     }
 
@@ -515,7 +539,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    */
   public View getNextPageView(View v, ViewGroup parent) {
     if (v == null) {
-      v = getDefaultView(parent.getContext());
+      v = this.getDefaultView(this.context);
     }
     TextView textView = (TextView) v.findViewById(android.R.id.text1);
     textView.setText("Load more...");
@@ -531,8 +555,8 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    */
   @Override
   public final View getView(int position, View convertView, ViewGroup parent) {
-    if (getItemViewType(position) == VIEW_TYPE_NEXT_PAGE) {
-      View nextPageView = getNextPageView(convertView, parent);
+    if (this.getItemViewType(position) == VIEW_TYPE_NEXT_PAGE) {
+      View nextPageView = this.getNextPageView(convertView, parent);
       nextPageView.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -541,7 +565,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
       });
       return nextPageView;
     }
-    return getItemView(getItem(position), convertView, parent);
+    return this.getItemView(this.getItem(position), convertView, parent);
   }
 
   /**
@@ -558,8 +582,8 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
    *          used in its mutated form.
    */
   protected void setPageOnQuery(int page, ParseQuery<T> query) {
-    query.setLimit(objectsPerPage + 1);
-    query.setSkip(page * objectsPerPage);
+    query.setLimit(this.objectsPerPage + 1);
+    query.setSkip(page * this.objectsPerPage);
   }
 
   public void setTextKey(String textKey) {
@@ -575,7 +599,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   }
 
   public int getObjectsPerPage() {
-    return objectsPerPage;
+    return this.objectsPerPage;
   }
 
   /**
@@ -603,7 +627,7 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
       return;
     }
     this.placeholder = placeholder;
-    Iterator<ParseImageView> iter = imageViewSet.keySet().iterator();
+    Iterator<ParseImageView> iter = this.imageViewSet.keySet().iterator();
     ParseImageView imageView;
     while (iter.hasNext()) {
       imageView = iter.next();
@@ -627,22 +651,22 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
       return;
     }
     this.autoload = autoload;
-    if (this.autoload && !dataSetObservers.isEmpty() && getObjects().isEmpty()) {
-      loadObjects();
+    if (this.autoload && !this.dataSetObservers.isEmpty() && this.objects.isEmpty()) {
+      this.loadObjects();
     }
   }
 
   public void addOnQueryLoadListener(OnQueryLoadListener<T> listener) {
-    onQueryLoadListeners.add(listener);
+    this.onQueryLoadListeners.add(listener);
   }
 
   public void removeOnQueryLoadListener(OnQueryLoadListener<T> listener) {
-    onQueryLoadListeners.remove(listener);
+    this.onQueryLoadListeners.remove(listener);
   }
 
   private View getDefaultView(Context context) {
-    if (itemResourceId != null) {
-      return View.inflate(context, itemResourceId, null);
+    if (this.itemResourceId != null) {
+      return View.inflate(context, this.itemResourceId, null);
     }
     LinearLayout view = new LinearLayout(context);
     view.setPadding(8, 4, 8, 4);
@@ -663,22 +687,21 @@ public class ParseQueryAdapter<T extends ParseObject> extends BaseAdapter {
   }
 
   private int getPaginationCellRow() {
-    return getObjects().size();
+    return this.objects.size();
   }
 
   private boolean shouldShowPaginationCell() {
-    ParseQueryPager<T> pager = getPager();
-    return paginationEnabled && pager.getObjects().size() > 0 && pager.hasNextPage();
+    return this.paginationEnabled && this.objects.size() > 0 && this.hasNextPage;
   }
 
   private void notifyOnLoadingListeners() {
-    for (OnQueryLoadListener<T> listener : onQueryLoadListeners) {
+    for (OnQueryLoadListener<T> listener : this.onQueryLoadListeners) {
       listener.onLoading();
     }
   }
 
   private void notifyOnLoadedListeners(List<T> objects, Exception e) {
-    for (OnQueryLoadListener<T> listener : onQueryLoadListeners) {
+    for (OnQueryLoadListener<T> listener : this.onQueryLoadListeners) {
       listener.onLoaded(objects, e);
     }
   }
