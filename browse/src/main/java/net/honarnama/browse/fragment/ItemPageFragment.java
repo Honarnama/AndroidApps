@@ -109,6 +109,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public LinearLayout mInfoProgreeBarContainer;
     public ProgressBar mSimilarItemsProgressBar;
 
+    public RelativeLayout mOnErrorRetry;
+
     @Override
     public String getTitle(Context context) {
         return "مشاهده محصول";
@@ -181,6 +183,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mInfoProgreeBarContainer = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
         mSimilarItemsProgressBar = (ProgressBar) rootView.findViewById(R.id.similar_items_progress_bar);
 
+
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
+
+
         final IconicsImageView bookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
@@ -191,6 +198,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
         mDefaultImageView.setVisibility(View.VISIBLE);
         mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
+        mOnErrorRetry.setVisibility(View.GONE);
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
@@ -201,8 +209,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
+                    mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
                     mItem = (Item) task.getResult();
 
@@ -456,6 +466,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         if (v.getId() == R.id.item_shop_container) {
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
             controlPanelActivity.displayShopPage(mShop.getObjectId(), false);
+        }
+
+        if (v.getId() == R.id.on_error_retry_container) {
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.refreshTopFragment();
         }
 
     }

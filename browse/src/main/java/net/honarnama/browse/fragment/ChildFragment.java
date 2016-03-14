@@ -198,6 +198,8 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                         .onSelectedTabClick();
             }
         }
+//        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+//        controlPanelActivity.refreshTopFragment();
     }
 
     public void onTabClick() {

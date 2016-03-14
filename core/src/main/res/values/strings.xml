@@ -251,4 +251,5 @@
     <string name="error_getting_event_cat_list">خطا در گرفتن فهرست دسته‌بندی رویداد‌ها.</string>
     <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="category_label">دسته‌بندی:</string>
+    <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
 </resources>

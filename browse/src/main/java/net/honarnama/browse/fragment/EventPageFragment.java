@@ -67,6 +67,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public String mEventId;
 
     public RelativeLayout mShopContainer;
+    public RelativeLayout mOnErrorRetry;
 
     @Override
     public String getTitle(Context context) {
@@ -123,10 +124,14 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mShare = (RelativeLayout) rootView.findViewById(R.id.event_share_container);
         mShare.setOnClickListener(this);
 
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
+
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.event_info_container);
         mEventInfoProgressBar.setVisibility(View.VISIBLE);
+        mOnErrorRetry.setVisibility(View.GONE);
         Event.getEventById(mEventId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
@@ -136,8 +141,10 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
+                    mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
                     final Event event = (Event) task.getResult();
 
@@ -206,13 +213,20 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + mNameTextView.getText().toString() + "\n" +
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n"
+                    + "رویداد "
+                    + mNameTextView.getText().toString() + "\n" +
                     "تو برنامه هنرنما ثبت شده. "
                     +
                     "جزئیاتشو اینجا میتونی ببینی:"
                     + "\n" + "http://www.honarnama.net/event/" + mEventId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        }
+
+        if (v.getId() == R.id.on_error_retry_container) {
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.refreshTopFragment();
         }
 
     }

@@ -25,17 +25,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.List;
 
 
-public class EventsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener {
+public class EventsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     //    ShopsAdapter mAdapter;
     public static EventsFragment mEventsFragment;
     private Tracker mTracker;
     private FragmentActivity mFragmentActivity;
     EventsParseAdapter mEventsParseAdapter;
+    public RelativeLayout mOnErrorRetry;
 
 
     @Override
@@ -69,6 +71,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_events_warning_container);
         listView.setEmptyView(emptyListContainer);
 
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
+
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mEventsParseAdapter = new EventsParseAdapter(HonarnamaBrowseApp.getInstance());
@@ -77,14 +82,24 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             public void onLoading() {
                 loadingCircle.setVisibility(View.VISIBLE);
                 emptyListContainer.setVisibility(View.GONE);
+                mOnErrorRetry.setVisibility(View.GONE);
             }
 
             @Override
             public void onLoaded(List objects, Exception e) {
                 loadingCircle.setVisibility(View.GONE);
-
-                if (mEventsParseAdapter.isEmpty()) {
+                if (e == null) {
+                    if ((objects != null) && objects.size() > 0) {
+                        emptyListContainer.setVisibility(View.GONE);
+                    } else {
+                        emptyListContainer.setVisibility(View.VISIBLE);
+                    }
+                } else {
                     emptyListContainer.setVisibility(View.VISIBLE);
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -126,17 +141,16 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public void onSelectedTabClick() {
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.no_network_fragment_retry_icon:
-//                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//                    return;
-//                }
-//                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-//                controlPanelActivity.refreshNoNetFragment();
-//                break;
-//        }
-//    }
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.on_error_retry_container:
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                controlPanelActivity.refreshTopFragment();
+                break;
+        }
+    }
+
 
 }

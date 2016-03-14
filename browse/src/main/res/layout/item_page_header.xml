@@ -311,4 +311,30 @@
     </RelativeLayout>
 
 
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_info_container"
+                    android:id="@+id/on_error_retry_container"
+                    android:visibility="gone"
+            >
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:id="@+id/on_error_retry_icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:iiv_icon="gmd-sync"
+                app:iiv_color="@color/gray_dark"
+                />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  style="@style/tiny_text_view"
+                  android:text="@string/error_connection_retry"
+                  android:id="@+id/on_error_retry_text_view"
+                  android:layout_below="@id/on_error_retry_icon"
+                  android:layout_centerHorizontal="true"
+                />
+    </RelativeLayout>
+
+
 </RelativeLayout>

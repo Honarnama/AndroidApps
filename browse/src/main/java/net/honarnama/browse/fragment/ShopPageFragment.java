@@ -70,6 +70,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     private RelativeLayout mShare;
     public String mShopId;
 
+    public RelativeLayout mOnErrorRetry;
+
     @Override
     public String getTitle(Context context) {
         return getString(R.string.art_shop);
@@ -129,6 +131,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mShare = (RelativeLayout) rootView.findViewById(R.id.shop_share_container);
         mShare.setOnClickListener(this);
 
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
+
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
@@ -138,7 +143,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         mItemsAdapter = new ItemsAdapter(getActivity());
-
+        mOnErrorRetry.setVisibility(View.GONE);
         Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
@@ -147,8 +152,10 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 } else {
                     infoContainer.setVisibility(View.VISIBLE);
+                    mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
                     final ParseObject shop = task.getResult();
                     mOwner = shop.getParseUser(Store.OWNER);
@@ -256,6 +263,11 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     "\n" + "http://www.honarnama.net/shop/" + mShopId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        }
+
+        if (v.getId() == R.id.on_error_retry_container) {
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.refreshTopFragment();
         }
 
     }

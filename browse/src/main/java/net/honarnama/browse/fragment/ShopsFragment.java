@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private Tracker mTracker;
     private FragmentActivity mFragmentActivity;
     ShopsParseAdapter mShopsParseAdapter;
-
+    public RelativeLayout mOnErrorRetry;
 
     @Override
     public String getTitle(Context context) {
@@ -70,6 +71,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
+
 //        Shop.getShopList(getActivity()).continueWith(new Continuation<List<ParseObject>, Object>() {
 //            @Override
 //            public Object then(Task<List<ParseObject>> task) throws Exception {
@@ -98,14 +102,24 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             public void onLoading() {
                 loadingCircle.setVisibility(View.VISIBLE);
                 emptyListContainer.setVisibility(View.GONE);
+                mOnErrorRetry.setVisibility(View.GONE);
             }
 
             @Override
             public void onLoaded(List objects, Exception e) {
                 loadingCircle.setVisibility(View.GONE);
-
-                if (mShopsParseAdapter.isEmpty()) {
+                if (e == null) {
+                    if ((objects != null) && objects.size() > 0) {
+                        emptyListContainer.setVisibility(View.GONE);
+                    } else {
+                        emptyListContainer.setVisibility(View.VISIBLE);
+                    }
+                } else {
                     emptyListContainer.setVisibility(View.VISIBLE);
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -144,11 +158,16 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onClick(View view) {
         switch (view.getId()) {
 
-            case R.id.no_network_fragment_retry_icon:
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    FragmentTransaction ft = mFragmentActivity.getSupportFragmentManager().beginTransaction();
-                    ft.detach(this).attach(this).commit();
-                }
+//            case R.id.no_network_fragment_retry_icon:
+//                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                    FragmentTransaction ft = mFragmentActivity.getSupportFragmentManager().beginTransaction();
+//                    ft.detach(this).attach(this).commit();
+//                }
+//                break;
+
+            case R.id.on_error_retry_container:
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                controlPanelActivity.refreshTopFragment();
                 break;
         }
     }

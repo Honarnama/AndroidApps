@@ -245,6 +245,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_bookmarks:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    refreshNoNetFragment();
                     menuItem.setChecked(true);
                     IconicsDrawable bookmarksDrawable =
                             new IconicsDrawable(ControlPanelActivity.this)
@@ -261,6 +262,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_contact_us:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    refreshNoNetFragment();
                     menuItem.setChecked(true);
                     IconicsDrawable contactDrawable =
                             new IconicsDrawable(ControlPanelActivity.this)
@@ -282,6 +284,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_about_us:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    refreshNoNetFragment();
                     menuItem.setChecked(true);
                     IconicsDrawable aboutDrawable =
                             new IconicsDrawable(ControlPanelActivity.this)
@@ -463,9 +466,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         resetMenuIcons();
         mActiveTab = tag;
 
-        logE("inja onTabSelect");
-
-
         switch (tag) {
             case TAB_ITEMS:
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
@@ -489,7 +489,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onSelectedTabClick(Object tabTag, boolean byUser) {
-        logE("inja onSelectedTabClick");
 
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
@@ -651,7 +650,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             childFragmentManager.executePendingTransactions();
         }
 
-        FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
 //        List<Fragment> fragments = childFragmentManager.getFragments();
 //        HonarnamaBaseFragment noNetFragment = (HonarnamaBaseFragment) fragments.get(0);
 
@@ -677,9 +675,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         }
 
-        fragmentTransaction = childFragmentManager.beginTransaction();
-        topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-        if (topFragment != null) {
+        refreshTopFragment();
+    }
+
+    public void refreshTopFragment() {
+        FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
+                .getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+        HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+
+        if (topFragment != null && !(topFragment instanceof NoNetFragment)) {
             logE("inja Detaching top frag frag: " + topFragment.getClass().getName());
             fragmentTransaction.detach(topFragment);
             fragmentTransaction.attach(topFragment);
@@ -689,7 +694,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 childFragmentManager.executePendingTransactions();
             }
         }
-
     }
 
 

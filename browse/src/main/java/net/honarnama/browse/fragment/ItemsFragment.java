@@ -58,6 +58,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
 
+    public RelativeLayout mOnErrorRetry;
+
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();
@@ -76,6 +78,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
+
+        mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
+        mOnErrorRetry.setOnClickListener(this);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
@@ -124,12 +129,18 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             intent.putExtra("selectedCityId", mSelectedCityId);
             startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
+
+        if (v.getId() == R.id.on_error_retry_container) {
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.refreshTopFragment();
+        }
     }
 
     class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
         @Override
         public void onLoading() {
             mEmptyListContainer.setVisibility(View.GONE);
+            mOnErrorRetry.setVisibility(View.GONE);
             mLoadingCircle.setVisibility(View.VISIBLE);
         }
 
@@ -146,8 +157,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             } else {
                 mEmptyListContainer.setVisibility(View.VISIBLE);
                 if (isVisible()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                 }
+                mOnErrorRetry.setVisibility(View.VISIBLE);
             }
         }
     }
