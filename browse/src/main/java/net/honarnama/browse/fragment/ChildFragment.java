@@ -88,6 +88,14 @@ public class ChildFragment extends HonarnamaBrowseFragment {
     public boolean back() {
         FragmentManager childFragmentManager = getChildFragmentManager();
 
+        List<Fragment> fragments = childFragmentManager.getFragments();
+        if (fragments != null) {
+            for (int i = 0; i < fragments.size(); i++) {
+                if (fragments.get(i) != null)
+                    logE("inja fragment " + i + " is " + fragments.get(i).getClass().getName());
+            }
+        }
+
         logE("inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
 
 
@@ -128,7 +136,11 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                         logE("2 inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
 
                         if (childFragmentManager.getBackStackEntryCount() > 0) {
+                            topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+                            TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
+                            toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
                             return true;
+
                         } else {
                             return false;
                         }
@@ -136,6 +148,10 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                 } else {
                     childFragmentManager.popBackStackImmediate();
                     childFragmentManager.executePendingTransactions();
+                    topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+                    TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
+                    toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
+
                 }
 //                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
 //                toolbarTitle.setText(getString(R.string.hornama));

@@ -405,7 +405,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mTitle.setText(toolbarTitle);
             }
 
-
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 if (!(fragment instanceof NoNetFragment)) {
                     switchToNoNetFragment();
@@ -664,9 +663,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (topFragment instanceof NoNetFragment) {
                 try {
                     logE("inja remove top no net frag");
-//                    childFragmentManager.popBackStackImmediate();
-                    fragmentTransaction.remove(topFragment);
-                    fragmentTransaction.commitAllowingStateLoss();
+                    childFragmentManager.popBackStack();
+//                    fragmentTransaction.remove(topFragment);
+//                    fragmentTransaction.commitAllowingStateLoss();
 
                     if (childFragmentManager != null) {
                         childFragmentManager.executePendingTransactions();
