@@ -180,6 +180,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 return;
             }
 
+            if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                return;
+            }
             mEmptyListContainer.setVisibility(View.GONE);
             mLoadingCircle.setVisibility(View.VISIBLE);
             mListView.setEmptyView(mLoadingCircle);

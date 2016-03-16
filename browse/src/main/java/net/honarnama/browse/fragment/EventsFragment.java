@@ -7,16 +7,23 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsParseAdapter;
+import net.honarnama.browse.dialog.EventFilterDialogActivity;
 import net.honarnama.core.adapter.EventCategoriesAdapter;
+import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.EventCategory;
+import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -30,6 +37,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -52,6 +60,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public HashMap<String, String> mEventCategoriesHashMap = new HashMap<>();
     public String mSelectedCatId;
     public String mSelectedCatName;
+
+    private String mSelectedProvinceId;
+    private String mSelectedProvinceName;
+    private String mSelectedCityId;
 
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mLoadingCircle;
@@ -90,6 +102,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
+        if (!TextUtils.isEmpty(mSelectedCatName)) {
+            mCategoryFilterButton.setText(mSelectedCatName);
+        }
         mCategoryFilterButton.setOnClickListener(this);
 
         mListView.addHeaderView(header);
@@ -162,20 +177,24 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
         switch (view.getId()) {
             case R.id.on_error_retry_container:
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    return;
+                }
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 controlPanelActivity.refreshTopFragment();
+
                 break;
 
             case R.id.category_filter_btn:
                 displayChooseEventCategoryDialog();
                 break;
 
-//            case R.id.filter_container:
-//                Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
-//                intent.putExtra("selectedProvinceId", mSelectedProvinceId);
-//                intent.putExtra("selectedCityId", mSelectedCityId);
-//                startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
-//                break;
+            case R.id.filter_container:
+                Intent intent = new Intent(getActivity(), EventFilterDialogActivity.class);
+                intent.putExtra("selectedProvinceId", mSelectedProvinceId);
+                intent.putExtra("selectedCityId", mSelectedCityId);
+                getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_EVENT_CODE);
+                break;
 
         }
     }
@@ -221,6 +240,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             eventCategory = ParseObject.createWithoutData(EventCategory.class, mSelectedCatId);
         }
 
+
         final EventCategory finalEventCategory = eventCategory;
         ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
                 new ParseQueryAdapter.QueryFactory<ParseObject>() {
@@ -232,6 +252,17 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                         if (finalEventCategory != null) {
                             parseQuery.whereEqualTo(Event.CATEGORY, finalEventCategory);
                         }
+
+                        if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+                            Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                            parseQuery.whereEqualTo(Event.PROVINCE, province);
+                        }
+
+                        if (!TextUtils.isEmpty(mSelectedCityId)) {
+                            City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+                            parseQuery.whereEqualTo(Store.CITY, city);
+                        }
+
                         parseQuery.include(Event.CITY);
                         return parseQuery;
                     }
@@ -271,4 +302,23 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(getActivity(), "inja  onActivityResult of EventFrag", Toast.LENGTH_SHORT).show();
+        switch (requestCode) {
+            case HonarnamaBaseApp.INTENT_FILTER_EVENT_CODE:
+                Toast.makeText(getActivity(), "inja ", Toast.LENGTH_SHORT).show();
+                if (resultCode == getActivity().RESULT_OK) {
+                    mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
+                    mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
+                    Toast.makeText(getActivity(), "inja " + mSelectedProvinceName, Toast.LENGTH_SHORT).show();
+                    mSelectedCityId = data.getStringExtra("selectedCityId");
+                    listEvents();
+                }
+                break;
+        }
+
+
+    }
 }

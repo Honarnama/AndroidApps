@@ -39,7 +39,8 @@
     <string name="event_contact_dialog_warning_msg">
 پیش از شرکت در رویداد، از صحت آن مطمئن شوید. هنرنما هیچ‌گونه منفعت و مسئولیتی در قبال شرکت شما در این رویداد ندارد.
     </string>
-    <string name="item_filter">فیلتر محصولات</string>
+    <string name="item_filter">فیلتر کردن محصولات</string>
+    <string name="event_filter">فیلتر کردن رویدادها</string>
     <string name="switch_app">برنامه فروشندگان</string>
     <string name="how_to_bookmark">برای نشان کردن محصول از دکمه
     {gmd-stars}

@@ -47,6 +47,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -699,9 +700,15 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
     }
 
-    public void setTitle(String title)
-    {
+
+    public void setTitle(String title) {
         mTitle.setText(title);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
 

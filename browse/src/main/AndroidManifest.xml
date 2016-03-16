@@ -25,8 +25,8 @@
                   android:uiOptions="splitActionBarWhenNarrow"
                 >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
             <intent-filter>
@@ -87,6 +87,14 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 android:launchMode="standard"
+                >
+        </activity>
+
+        <activity
+                android:name="net.honarnama.browse.dialog.EventFilterDialogActivity"
+                android:label="@string/event_filter"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 >
         </activity>
 

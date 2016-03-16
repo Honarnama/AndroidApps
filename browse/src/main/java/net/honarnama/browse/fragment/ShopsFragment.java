@@ -186,6 +186,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //                break;
 
             case R.id.on_error_retry_container:
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    return;
+                }
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 controlPanelActivity.refreshTopFragment();
                 break;

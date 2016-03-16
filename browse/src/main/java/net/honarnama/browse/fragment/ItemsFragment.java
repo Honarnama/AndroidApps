@@ -44,6 +44,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
     public String mSelectedCategoryId;
+    public String mSelectedCategoryName;
 
     ItemsParseAdapter mItemsParseAdapter;
     public Button mCategoryFilterButton;
@@ -83,6 +84,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
+        if (!TextUtils.isEmpty(mSelectedCategoryName)) {
+            mCategoryFilterButton.setText(mSelectedCategoryName);
+        }
         mCategoryFilterButton.setOnClickListener(this);
 
         mListView.addHeaderView(header);
@@ -110,10 +114,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-        Toast.makeText(getActivity(), "inja "+position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "inja " + position, Toast.LENGTH_SHORT).show();
 
 
-        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position-1);
+        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedItem != null) {
             controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
@@ -126,16 +130,19 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
             intent.putExtra(HonarnamaBaseApp.INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
+            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }
         if (v.getId() == R.id.filter_container) {
             Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
             intent.putExtra("selectedProvinceId", mSelectedProvinceId);
             intent.putExtra("selectedCityId", mSelectedCityId);
-            startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
+            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                return;
+            }
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
             controlPanelActivity.refreshTopFragment();
         }
@@ -241,8 +248,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     boolean isFilterSubCategoryRowSelected = data.getBooleanExtra("isFilterSubCategoryRowSelected", false);
                     ArrayList<String> subCatList = data.getStringArrayListExtra("subCats");
 
-                    mCategoryFilterButton.setText(data.getStringExtra("selectedCategoryName"));
+                    mSelectedCategoryName = data.getStringExtra("selectedCategoryName");
+                    mCategoryFilterButton.setText(mSelectedCategoryName);
                     mSelectedCategoryId = data.getStringExtra("selectedCategoryObjectId");
+
                     mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
                     listItems();
@@ -254,14 +263,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
                     mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-
                     mSelectedCityId = data.getStringExtra("selectedCityId");
                     listItems();
                 }
                 break;
         }
     }
-
 
 }
 

@@ -266,6 +266,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                return;
+            }
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
             controlPanelActivity.refreshTopFragment();
         }

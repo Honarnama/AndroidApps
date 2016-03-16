@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -228,12 +229,33 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (getChildFragmentManager() != null
-                && getChildFragmentManager().getBackStackEntryCount() > 0) {
-            getChildFragmentManager().getFragments()
-                    .get(getChildFragmentManager().getBackStackEntryCount() - 1).onActivityResult(
-                    requestCode, resultCode, data);
+
+        Toast.makeText(getActivity(), "inja requestCode in ChildFrag is " + requestCode, Toast.LENGTH_SHORT).show();
+
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        if (childFragmentManager != null
+                && childFragmentManager.getBackStackEntryCount() > 0) {
+
+            List<Fragment> fragments = childFragmentManager.getFragments();
+            if (fragments != null) {
+                for (Fragment fragment : fragments) {
+                    Toast.makeText(getActivity(), "inja Calling onActivityResult of " + fragment.getClass().getName(), Toast.LENGTH_SHORT).show();
+
+                    fragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+
+//            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.getFragments().get(childFragmentManager.getBackStackEntryCount()-1);
+//
+//            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+//
+//            Toast.makeText(getActivity(), "inja topFragment is " + topFragment.getClass().getName(), Toast.LENGTH_SHORT).show();
+//
+//
+//            topFragment.onActivityResult(requestCode, resultCode, data);
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 }
