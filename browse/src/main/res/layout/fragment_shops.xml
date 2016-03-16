@@ -8,6 +8,36 @@
                 android:gravity="right"
                 android:layoutDirection="rtl"
         >
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/filter_container"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/bottom_shadow_back"
+            >
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:iiv_color="@color/dark_cyan"
+                app:iiv_icon="cmd-filter"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/filter_icon"
+                android:layout_centerVertical="true"
+                />
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  android:text="فیلتر کردن محدوده جغرافیایی"
+                  android:textColor="@color/dark_cyan"
+                  android:textSize="16dp"
+                  android:layout_toLeftOf="@id/filter_icon"
+                  android:layout_centerVertical="true"
+                  android:gravity="center_vertical"
+                />
+    </RelativeLayout>
+
     <LinearLayout
             android:id="@+id/loading_circle_container"
             android:layout_width="fill_parent"
@@ -16,6 +46,7 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_margin="5dp"
+            android:layout_below="@id/filter_container"
             >
         <ProgressBar
                 style="?android:attr/progressBarStyle"
@@ -32,6 +63,7 @@
               android:dividerHeight="5dp"
               android:clipToPadding="false"
               android:padding="5dip"
+              android:layout_below="@id/filter_container"
             />
 
     <RelativeLayout android:layout_width="wrap_content"

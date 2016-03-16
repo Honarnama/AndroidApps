@@ -260,7 +260,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
                         if (!TextUtils.isEmpty(mSelectedCityId)) {
                             City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                            parseQuery.whereEqualTo(Store.CITY, city);
+                            parseQuery.whereEqualTo(Event.CITY, city);
                         }
 
                         parseQuery.include(Event.CITY);
@@ -318,7 +318,5 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 }
                 break;
         }
-
-
     }
 }
