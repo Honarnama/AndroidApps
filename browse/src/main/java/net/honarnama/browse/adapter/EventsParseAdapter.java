@@ -1,11 +1,8 @@
 package net.honarnama.browse.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -16,7 +13,6 @@ import net.honarnama.core.model.Event;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -29,21 +25,11 @@ public class EventsParseAdapter extends ParseQueryAdapter {
 
     public Context mContext;
 
-    public EventsParseAdapter(Context context) {
+    public EventsParseAdapter(Context context, QueryFactory<ParseObject> queryFactory) {
         // Use the QueryFactory to construct a PQA that will only show
         // Todos marked as high-pri
 
-        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-            public ParseQuery create() {
-                ParseQuery<Event> parseQuery = new ParseQuery<Event>(Event.class);
-                parseQuery.whereEqualTo(Event.STATUS, Event.STATUS_CODE_VERIFIED);
-                parseQuery.whereEqualTo(Event.VALIDITY_CHECKED, true);
-                parseQuery.whereEqualTo(Event.ACTIVE, true);
-                parseQuery.include(Event.CITY);
-                return parseQuery;
-            }
-        });
-
+        super(context, queryFactory);
         mContext = context;
     }
 

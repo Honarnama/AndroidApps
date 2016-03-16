@@ -71,7 +71,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View rootView = inflater.inflate(R.layout.fragment_items, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
@@ -206,7 +205,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
 
         final ArrayList<Category> finalQueryCategoryIds = queryCategoryIds;
-
 
         ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
                 new ParseQueryAdapter.QueryFactory<ParseObject>() {

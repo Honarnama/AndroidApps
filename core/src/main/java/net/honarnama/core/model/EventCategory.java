@@ -31,7 +31,7 @@ import bolts.TaskCompletionSource;
 
 @ParseClassName("event_category")
 public class EventCategory extends ParseObject {
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventCategoryModel";
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventCatModel";
 
     public static String OBJECT_NAME = "event_category";
     public static String NAME = "name";

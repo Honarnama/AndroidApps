@@ -65,6 +65,9 @@ public class EventCategoriesAdapter extends BaseAdapter {
         View rowView = layoutInflater.inflate(R.layout.province_row, parent, false);
 
         TextView provinceNameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
+        if (position == 0) {
+            provinceNameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
+        }
 
         provinceNameTextView.setText(mCategoryNameList.get(position));
         return rowView;

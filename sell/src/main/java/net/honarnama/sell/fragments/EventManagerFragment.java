@@ -126,10 +126,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public String mSelectedCityId;
     public String mSelectedCityName;
 
-
     public String mSelectedCatId;
     public String mSelectedCatName;
-
 
     public ProgressBar mBannerProgressBar;
 
@@ -937,7 +935,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             @Override
             public Object then(Task<TreeMap<Number, EventCategory>> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+                    logE("Getting Event Cat Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
 
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
