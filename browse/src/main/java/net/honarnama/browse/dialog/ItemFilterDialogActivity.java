@@ -5,11 +5,13 @@ import com.mikepenz.iconics.view.IconicsImageView;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
+import net.honarnama.browse.widget.HorizontalNumberPicker;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.TextUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,7 +25,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -93,10 +97,24 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
 
-////        mFromEditText = (EditText) findViewById(R.id.from);
-////        mFromEditText.addTextChangedListener(new PriceTextWatcher(mFromEditText));
-//
-//        mToEditText = (EditText) findViewById(R.id.to);
+
+        HorizontalNumberPicker horizontalNumberPicker;
+        horizontalNumberPicker = (HorizontalNumberPicker) this
+                .findViewById(R.id.price_from);
+
+        String priceList[] = getResources().getStringArray(R.array.price_values);
+        String perisanPriceList[] = new String[priceList.length];
+
+        NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
+        for (int i = 0; i < priceList.length; i++) {
+            long rawPrice = Long.valueOf(priceList[i]);
+            String formattedPrice = formatter.format(rawPrice);
+            String price = TextUtil.convertEnNumberToFa(formattedPrice);
+            perisanPriceList[i] = price;
+        }
+        horizontalNumberPicker.setValues(perisanPriceList);
+        horizontalNumberPicker.setSelectedIndex(0);
+
 
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);
@@ -156,11 +174,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
 
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener()
-        {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               finish();
+                finish();
             }
         });
 
@@ -300,8 +317,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         finish();
     }
 
-    public void removeFilters()
-    {
+    public void removeFilters() {
         Intent data = new Intent();
         data.putExtra("selectedProvinceId", "");
         data.putExtra("selectedProvinceName", "");

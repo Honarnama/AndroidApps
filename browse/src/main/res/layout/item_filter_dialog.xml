@@ -33,7 +33,7 @@
                     />
 
             <TextView
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:id="@+id/geo_limit_title"
                     style="@style/section_title"
                     android:layout_centerHorizontal="true"
@@ -100,80 +100,53 @@
                         />
             </LinearLayout>
 
-            <!--<TextView-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:id="@+id/price_limit_title"-->
-            <!--style="@style/section_title"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:paddingRight="5dp"-->
-            <!--android:paddingLeft="5dp"-->
-            <!--android:text="محدوده قیمت"-->
-            <!--android:layout_below="@id/city_container"-->
-            <!--android:textColor="@color/gray_light"-->
-            <!--/>-->
+
+            <TextView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/price_limit_title"
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="5dp"
+                    android:text="محدوده قیمت (تومان)"
+                    android:layout_below="@id/city_container"
+                    android:textColor="@color/gray_light"
+                    />
 
 
-            <!--<LinearLayout android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/price_limit_title"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:id="@+id/from_container"-->
-            <!-->-->
-            <!--<TextView style="@style/default_text_view"-->
-            <!--android:text="از:"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:id="@+id/from_label"-->
-            <!--android:editable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:clickable="true"-->
-            <!--android:textStyle="bold"-->
-            <!--android:layout_width="45dp"-->
-            <!--/>-->
-            <!--<EditText-->
-            <!--android:hint="۱۰۰ تومان"-->
-            <!--style="@style/bordered_edit_text"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:id="@+id/from"-->
-            <!--android:inputType="number"-->
-            <!--/>-->
-            <!--</LinearLayout>-->
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/price_from_container"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="10dp"
+                          android:layout_marginLeft="10dp"
+                          android:layout_below="@id/price_limit_title"
+                          android:gravity="center_vertical"
+                    >
+                <TextView style="@style/default_text_view"
+                          android:text="@string/from_label"
+                          android:layout_centerVertical="true"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                          android:textStyle="bold"
+                          android:layout_width="45dp"
+                        />
 
+                <net.honarnama.browse.widget.HorizontalNumberPicker
+                        android:id="@+id/price_from"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        >
 
-            <!--<LinearLayout android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/from_container"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:id="@+id/to_price_container"-->
-            <!-->-->
-            <!--<TextView style="@style/default_text_view"-->
-            <!--android:text="تا:"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:id="@+id/to_label"-->
-            <!--android:editable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:clickable="true"-->
-            <!--android:textStyle="bold"-->
-            <!--android:layout_width="45dp"-->
-            <!--/>-->
-            <!--<EditText-->
-            <!--android:hint="۱۰۰۰۰۰۰۰ تومان"-->
-            <!--style="@style/bordered_edit_text"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:id="@+id/to"-->
-            <!--android:inputType="number"-->
-            <!--/>-->
-            <!--</LinearLayout>-->
+                </net.honarnama.browse.widget.HorizontalNumberPicker>
+            </LinearLayout>
 
             <View style="@style/HorizontalSeparatorLine"
-                  android:layout_below="@id/city_container"
+                  android:layout_below="@id/price_from_container"
                   android:layout_marginTop="20dp"
                   android:background="@color/gray_extra_light"
                   android:id="@+id/separator_line"

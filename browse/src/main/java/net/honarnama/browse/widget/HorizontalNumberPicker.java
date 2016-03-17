@@ -3,242 +3,157 @@ package net.honarnama.browse.widget;
 import net.honarnama.browse.R;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-/**
- * Created by elnaz on 3/6/16.
- */
 public class HorizontalNumberPicker extends LinearLayout {
-    public static final int NUMBER = 0;
-    public static final int TEXT = 1;
 
-    private int style = 0;
-    private TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-    private int min = 100;
-    private int max = 10000000;
+    private Button mMinusButton;
+    private Button mPlusButton;
+    private TextView mTextView;
+    public Context mContext;
 
-    private ArrayList<String> valueString = new ArrayList<String>();
-    private int value = 0;
-
-
-    //---
-    Button incButton;
-    Button decButton;
-    TextView valueView;
+    private CharSequence[] mSpinnerValues = null;
+    private int mSelectedIndex = -1;
 
     public HorizontalNumberPicker(Context context) {
         super(context);
-        init();
+        initializeViews(context);
+        mContext = context;
     }
 
     public HorizontalNumberPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        initializeViews(context);
+        mContext = context;
     }
 
-    public HorizontalNumberPicker(Context context, AttributeSet attrs, int defStyle) {
+    public HorizontalNumberPicker(Context context,
+                                  AttributeSet attrs,
+                                  int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        initializeViews(context);
+        mContext = context;
     }
 
-    private void init() {
 
-        decButton = new Button(getContext());
-        valueView = new TextView(getContext());
-        incButton = new Button(getContext());
-        this.addView(decButton, new MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        this.addView(valueView, new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        this.addView(incButton, new MarginLayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    public void initializeViews(Context context) {
 
-        valueView.setText(getValueString());
-        valueView.setTextSize(20);
-        valueView.setGravity(Gravity.CENTER);
-        paint.setTextSize(valueView.getTextSize());
-        reCalculateWidthAndCaption();
-
-        decButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    touchSet(0);
-                }
-                return false;
-            }
-        });
-        incButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    touchSet(1);
-                }
-                return false;
-            }
-        });
-
-    }
-
-    protected void touchSet(int i) {
-        int p = i ^ getOrientation();
-        switch (p) {
-            case 0:
-                value--;
-                break;
-            case 1:
-                value++;
-                break;
-        }
-        value = value < min ? min : value > max ? max : value;
-        valueView.setText(getValueString());
-        invalidate();
+        LayoutInflater layoutInflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater.inflate(R.layout.horizontal_number_picker, this);
     }
 
     @Override
-    public void setOrientation(int orientation) {
-        super.setOrientation(orientation);
-        reCalculateWidthAndCaption();
-    }
+    protected void onFinishInflate() {
+        super.onFinishInflate();
 
-    private String getValueString() {
-        String ret = "";
-        switch (style) {
-            case NUMBER:
-                ret = String.valueOf(value);
-                break;
-            case TEXT:
-                try {
-                    ret = valueString.get(value) == null ? "" : valueString.get(value);
-                } catch (Exception e) {
-                    ret = "";
+        // Sets the images for the previous and next buttons. Uses
+        // built-in images so you don't need to add images, but in
+        // a real application your images should be in the
+        // application package so they are always available.
+        mMinusButton = (Button) this.findViewById(R.id.btn_minus);
+        mPlusButton = (Button) this.findViewById(R.id.btn_plus);
+        mTextView = (TextView) this.findViewById(R.id.text_view);
+
+
+        mMinusButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                if (mSelectedIndex > 0) {
+                    int newSelectedIndex = mSelectedIndex - 1;
+                    setSelectedIndex(newSelectedIndex);
                 }
-
-                break;
-        }
-        return ret;
-    }
-
-    public int getStyle() {
-        return style;
-    }
-
-    private void reCalculateWidthAndCaption() {
-        MarginLayoutParams lp = (MarginLayoutParams) valueView.getLayoutParams();
-        lp.width = (int) StaticLayout.getDesiredWidth(" WWW ", paint);
-        if (valueString.size() > 0) {
-            String s = "";
-            for (int i = 0; i < valueString.size(); i++) {
-                s = s.length() > valueString.get(i).length() ? s : valueString.get(i);
             }
-            int w = (int) StaticLayout.getDesiredWidth(s, paint);
-            lp.width = w > lp.width ? w : lp.width;
+        });
+
+        mPlusButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                if (mSpinnerValues != null
+                        && mSelectedIndex < mSpinnerValues.length - 1) {
+                    int newSelectedIndex = mSelectedIndex + 1;
+                    setSelectedIndex(newSelectedIndex);
+                }
+            }
+        });
+
+        // Select the first value by default.
+        setSelectedIndex(0);
+
+    }
+
+    /**
+     * Sets the list of value in the spinner, selecting the first value
+     * by default.
+     *
+     * @param values the values to set in the spinner.
+     */
+    public void setValues(CharSequence[] values) {
+        mSpinnerValues = values;
+
+        // Select the first item of the string array by default since
+        // the list of value has changed.
+        setSelectedIndex(0);
+    }
+
+    /**
+     * Sets the selected index of the spinner.
+     *
+     * @param index the index of the value to select.
+     */
+    public void setSelectedIndex(int index) {
+        // If no values are set for the spinner, do nothing.
+        if (mSpinnerValues == null || mSpinnerValues.length == 0)
+            return;
+
+        // If the index value is invalid, do nothing.
+        if (index < 0 || index >= mSpinnerValues.length)
+            return;
+
+        // Set the current index and display the value.
+        mSelectedIndex = index;
+        mTextView.setText(mSpinnerValues[index]);
+
+        // If the first value is shown, hide the previous button.
+        if (mSelectedIndex == 0) {
+            mMinusButton.setBackgroundColor(mContext.getResources().getColor(R.color.cyan_extra_light));
+        } else {
+            mMinusButton.setBackgroundColor(mContext.getResources().getColor(R.color.dark_cyan));
         }
-        switch (getOrientation()) {
-            case LinearLayout.HORIZONTAL:
-                decButton.setText("-");
-                incButton.setText("+");
-                lp.width += 10;
-                lp.leftMargin = 5;
-                lp.rightMargin = 5;
-                break;
-            case LinearLayout.VERTICAL:
-                decButton.setText("+");
-                incButton.setText("-");
-                lp.height = 60;
-                lp.topMargin = 5;
-                lp.bottomMargin = 5;
-                break;
-        }
-
-        valueView.setText(getValueString());
+        // If the last value is shown, hide the next button.
+        if (mSelectedIndex == mSpinnerValues.length - 1)
+            mPlusButton.setBackgroundColor(mContext.getResources().getColor(R.color.cyan_extra_light));
+        else
+            mPlusButton.setBackgroundColor(mContext.getResources().getColor(R.color.dark_cyan));
     }
 
-    public void setStyle(int style) {
-        this.style = style;
-        reCalculateWidthAndCaption();
+    /**
+     * Gets the selected value of the spinner, or null if no valid
+     * selected index is set yet.
+     *
+     * @return the selected value of the spinner.
+     */
+    public CharSequence getSelectedValue() {
+        // If no values are set for the spinner, return an empty string.
+        if (mSpinnerValues == null || mSpinnerValues.length == 0)
+            return "";
+
+        // If the current index is invalid, return an empty string.
+        if (mSelectedIndex < 0 || mSelectedIndex >= mSpinnerValues.length)
+            return "";
+
+        return mSpinnerValues[mSelectedIndex];
     }
 
-    public int getMin() {
-        return min;
+    /**
+     * Gets the selected index of the spinner.
+     *
+     * @return the selected index of the spinner.
+     */
+    public int getSelectedIndex() {
+        return mSelectedIndex;
     }
-
-    public void setMin(int min) {
-        this.min = min;
-        value = value < min ? min : value;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-        value = value > max ? max : value;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-        valueView.setText(getValueString());
-    }
-
-    public void setValueString(String[] valueString) {
-        if (valueString == null)
-            return;
-        if (valueString.length == 0)
-            return;
-        this.valueString.clear();
-        for (int i = 0; i < valueString.length; i++)
-            this.valueString.add(valueString[i]);
-
-        this.min = 0;
-        this.max = this.valueString.size() - 1;
-        this.value = 0;
-        this.style = TEXT;
-        reCalculateWidthAndCaption();
-    }
-
-    public void setValueString(ArrayList<String> valueString) {
-        if (valueString == null)
-            return;
-        if (valueString.size() == 0)
-            return;
-        this.valueString = valueString;
-
-        this.min = 0;
-        this.max = this.valueString.size() - 1;
-        this.value = 0;
-        this.style = TEXT;
-        reCalculateWidthAndCaption();
-    }
-
-    public void setNextBackgroundResource(int background) {
-        incButton.setBackgroundResource(background);
-        MarginLayoutParams lp = (MarginLayoutParams) incButton.getLayoutParams();
-        incButton.setText("");
-        lp.width = 50;
-        lp.height = 50;
-    }
-
-    public void setPrevBackgroundResource(int background) {
-        decButton.setBackgroundResource(background);
-        MarginLayoutParams lp = (MarginLayoutParams) decButton.getLayoutParams();
-        decButton.setText("");
-        lp.width = 50;
-        lp.height = 50;
-    }
-
 }
