@@ -3,8 +3,10 @@ package net.honarnama.browse.widget;
 import net.honarnama.browse.R;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -77,6 +79,40 @@ public class HorizontalNumberPicker extends LinearLayout {
                     int newSelectedIndex = mSelectedIndex + 1;
                     setSelectedIndex(newSelectedIndex);
                 }
+            }
+        });
+
+        mMinusButton.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mMinusStartTime = System.currentTimeMillis();
+                    mMinusTimerHandler.postDelayed(mMinusTimerRunnable, 0);
+                }
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mMinusTimerHandler.removeCallbacks(mMinusTimerRunnable);
+                }
+
+                return false;
+            }
+        });
+
+        mPlusButton.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mPlusStartTime = System.currentTimeMillis();
+                    mPlusTimerHandler.postDelayed(mPlusTimerRunnable, 0);
+                }
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mPlusTimerHandler.removeCallbacks(mPlusTimerRunnable);
+                }
+
+                return false;
             }
         });
 
@@ -156,4 +192,41 @@ public class HorizontalNumberPicker extends LinearLayout {
     public int getSelectedIndex() {
         return mSelectedIndex;
     }
+
+
+    long mMinusStartTime = 0;
+    Handler mMinusTimerHandler = new Handler();
+    Runnable mMinusTimerRunnable = new Runnable() {
+        @Override
+        public void run() {
+//            long millis = System.currentTimeMillis() - mMinusStartTime;
+//            int seconds = (int) (millis / 1000);
+//            int minutes = seconds / 60;
+//            seconds = seconds % 60;
+
+            int newSelectedIndex = mSelectedIndex - 1;
+            setSelectedIndex(newSelectedIndex);
+
+            mMinusTimerHandler.postDelayed(this, 250);
+        }
+    };
+
+
+    long mPlusStartTime = 0;
+    Handler mPlusTimerHandler = new Handler();
+    Runnable mPlusTimerRunnable = new Runnable() {
+        @Override
+        public void run() {
+//            long millis = System.currentTimeMillis() - mMinusStartTime;
+//            int seconds = (int) (millis / 1000);
+//            int minutes = seconds / 60;
+//            seconds = seconds % 60;
+
+            int newSelectedIndex = mSelectedIndex + 1;
+            setSelectedIndex(newSelectedIndex);
+
+            mPlusTimerHandler.postDelayed(this, 250);
+        }
+    };
+
 }
