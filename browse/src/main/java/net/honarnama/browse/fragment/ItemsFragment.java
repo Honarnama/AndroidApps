@@ -64,6 +64,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
 
+    private boolean mIsAllIranChecked = true;
+
     public RelativeLayout mOnErrorRetry;
 
     public synchronized static ItemsFragment getInstance() {
@@ -137,6 +139,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
             intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
             intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
             if (mMinPriceIndex > -1) {
                 intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, mMinPriceIndex);
             }
@@ -193,18 +196,19 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
         storeQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
 
-        if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-            Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
-            storeQuery.whereEqualTo(Store.PROVINCE, province);
-        }
+        if (!mIsAllIranChecked) {
+            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                storeQuery.whereEqualTo(Store.PROVINCE, province);
+            }
 
-        if (!TextUtils.isEmpty(mSelectedCityId)) {
-            if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
-                City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                storeQuery.whereEqualTo(Store.CITY, city);
+            if (!TextUtils.isEmpty(mSelectedCityId)) {
+                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
+                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+                    storeQuery.whereEqualTo(Store.CITY, city);
+                }
             }
         }
-
         ArrayList<Category> queryCategoryIds = new ArrayList<>();
         if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
 
@@ -232,7 +236,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
                         parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
                         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-                        parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
+
+                        if (!mIsAllIranChecked) {
+                            parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
+                        }
 
                         if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
                             parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
@@ -289,8 +296,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mMinPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE);
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
+                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
 
-                    logE("inja mSelectedCityId in onActivityResult is " + mSelectedCityId);
                     listItems();
                 }
                 break;

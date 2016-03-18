@@ -118,6 +118,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
         }
 
+        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
+            mAllIranCheckBox.setChecked(intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true));
+        }
+
         if (TextUtils.isEmpty(mSelectedProvinceId)) {
             mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
         }
@@ -296,6 +300,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 mSelectedProvinceId = mSelectedProvince.getObjectId();
                 mSelectedProvinceName = mSelectedProvince.getName();
                 mProvinceEditEext.setText(mSelectedProvinceName);
+
+                mAllIranCheckBox.setChecked(false);
+
                 rePopulateCityList();
                 if (provinceDialog.isShowing()) {
                     provinceDialog.dismiss();
@@ -364,6 +371,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                     mCityEditEext.setText(mSelectedCityName);
                 }
 
+                mAllIranCheckBox.setChecked(false);
+
                 if (cityDialog.isShowing()) {
                     cityDialog.dismiss();
                 }
@@ -385,6 +394,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, mMinPriceHorizontalPicker.getActualSelectedValue());
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceHorizontalPicker.getSelectedIndex());
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, mMaxPriceHorizontalPicker.getActualSelectedValue());
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
         setResult(RESULT_OK, data);
         finish();
     }
@@ -399,6 +409,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, "");
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+
         setResult(RESULT_OK, data);
         finish();
     }
