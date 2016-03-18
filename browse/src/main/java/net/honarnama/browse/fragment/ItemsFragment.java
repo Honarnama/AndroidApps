@@ -270,8 +270,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
                 if (resultCode == getActivity().RESULT_OK) {
 
-                    boolean isFilterSubCategoryRowSelected = data.getBooleanExtra("isFilterSubCategoryRowSelected", false);
-                    ArrayList<String> subCatList = data.getStringArrayListExtra("subCats");
+                    boolean isFilterSubCategoryRowSelected = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED, false);
+                    ArrayList<String> subCatList = data.getStringArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS);
 
                     mSelectedCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryFilterButton.setText(mSelectedCategoryName);

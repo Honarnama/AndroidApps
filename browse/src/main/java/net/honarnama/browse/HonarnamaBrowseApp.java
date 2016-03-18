@@ -19,10 +19,6 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
 
     public static final String PRODUCTION_TAG = "HonarnamaBrowse";
 
-    public static final String EXTRA_KEY_PROVINCE_ID = "selectedProvinceId";
-    public static final String EXTRA_KEY_PROVINCE_NAME = "selectedProvinceName";
-    public static final String EXTRA_KEY_CITY_ID = "selectedCityId";
-    public static final String EXTRA_KEY_CITY_NAME = "selectedCityName";
     public static final String EXTRA_KEY_MIN_PRICE_INDEX = "minPriceIndex";
     public static final String EXTRA_KEY_MIN_PRICE_VALUE = "minPriceValue";
     public static final String EXTRA_KEY_MAX_PRICE_INDEX = "maxPriceIndex";

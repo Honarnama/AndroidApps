@@ -276,12 +276,12 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         Intent data = new Intent();
         if (isFilterSubCategoryRowSelected(mSelectedCategoryObjectId)) {
             ArrayList<String> subCats = new ArrayList<>();
-            data.putExtra("isFilterSubCategoryRowSelected", true);
+            data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED, true);
             if (mSelectedCategoryObjectId.equals(mAllSubCategoriesFilterObjectId)) {
-                data.putStringArrayListExtra("subCats", subCats);
+                data.putStringArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
             } else {
                 subCats = mCategoriesHierarchyHashMap.get(mFilterSubCatParentHashMap.get(mSelectedCategoryObjectId));
-                data.putStringArrayListExtra("subCats", subCats);
+                data.putStringArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
             }
         }
 

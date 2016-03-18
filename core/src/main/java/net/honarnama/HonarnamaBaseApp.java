@@ -46,6 +46,12 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
     public static final String EXTRA_KEY_UNCAUGHT_EXCEPTION = "EXTRA_KEY_UNCAUGHT_EXCEPTION";
     public static final String EXTRA_KEY_INTENT_ORIGIN = "intent_origin";
+    public static final String EXTRA_KEY_PROVINCE_ID = "selectedProvinceId";
+    public static final String EXTRA_KEY_PROVINCE_NAME = "selectedProvinceName";
+    public static final String EXTRA_KEY_CITY_ID = "selectedCityId";
+    public static final String EXTRA_KEY_CITY_NAME = "selectedCityName";
+    public static final String EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED = "isFilterSubCategoryRowSelected";
+    public static final String EXTRA_KEY_SUB_CATS = "subCats";
 
     public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
     public static final String EXTRA_KEY_CATEGORY_NAME = "selectedCategoryName";

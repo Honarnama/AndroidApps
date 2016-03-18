@@ -74,12 +74,12 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         mCityEditEext.setKeyListener(null);
 
         Intent intent = getIntent();
-        if (intent.hasExtra("selectedProvinceId")) {
-            mSelectedProvinceId = intent.getStringExtra("selectedProvinceId");
+        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID)) {
+            mSelectedProvinceId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
         }
 
-        if (intent.hasExtra("selectedCityId")) {
-            mSelectedCityId = intent.getStringExtra("selectedCityId");
+        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID)) {
+            mSelectedCityId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
         }
 
         if (TextUtils.isEmpty(mSelectedProvinceId)) {
@@ -292,20 +292,20 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
     public void setFilters() {
 
         Intent data = new Intent();
-        data.putExtra("selectedProvinceId", mSelectedProvinceId);
-        data.putExtra("selectedProvinceName", mSelectedProvinceName);
-        data.putExtra("selectedCityId", mSelectedCityId);
-        data.putExtra("selectedCityName", mSelectedCityName);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, mSelectedProvinceName);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
         setResult(RESULT_OK, data);
         finish();
     }
 
     public void removeFilters() {
         Intent data = new Intent();
-        data.putExtra("selectedProvinceId", "");
-        data.putExtra("selectedProvinceName", "");
-        data.putExtra("selectedCityId", "");
-        data.putExtra("selectedCityName", "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, "");
         setResult(RESULT_OK, data);
         finish();
     }

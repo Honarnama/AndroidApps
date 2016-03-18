@@ -162,8 +162,8 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
             case R.id.filter_container:
                 Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
-                intent.putExtra("selectedProvinceId", mSelectedProvinceId);
-                intent.putExtra("selectedCityId", mSelectedCityId);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
                 getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
                 break;
         }
@@ -234,9 +234,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
-                    mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-                    mSelectedCityId = data.getStringExtra("selectedCityId");
+                    mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
+                    mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
+                    mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
                     listShops();
                 }
                 break;
