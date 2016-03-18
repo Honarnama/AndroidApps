@@ -98,23 +98,33 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
 
 
-        HorizontalNumberPicker horizontalNumberPicker;
-        horizontalNumberPicker = (HorizontalNumberPicker) this
-                .findViewById(R.id.price_from);
+        HorizontalNumberPicker fromPriceHorizontalPicker;
+        fromPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.price_from);
+
+        HorizontalNumberPicker toPriceHorizontalPicker;
+        toPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.price_to);
 
         String priceList[] = getResources().getStringArray(R.array.price_values);
-        String perisanPriceList[] = new String[priceList.length];
+        int priceListSize = priceList.length;
+        String perisanPriceList[] = new String[priceListSize];
 
         NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
-        for (int i = 0; i < priceList.length; i++) {
-            long rawPrice = Long.valueOf(priceList[i]);
-            String formattedPrice = formatter.format(rawPrice);
-            String price = TextUtil.convertEnNumberToFa(formattedPrice);
-            perisanPriceList[i] = price;
+        for (int i = 0; i < priceListSize; i++) {
+            if (i == priceListSize - 1) {
+                perisanPriceList[i] = "بیشترین قیمت";
+            } else {
+                long rawPrice = Long.valueOf(priceList[i]);
+                String formattedPrice = formatter.format(rawPrice);
+                String price = TextUtil.convertEnNumberToFa(formattedPrice);
+                perisanPriceList[i] = price;
+            }
         }
-        horizontalNumberPicker.setValues(perisanPriceList);
-        horizontalNumberPicker.setSelectedIndex(0);
 
+        fromPriceHorizontalPicker.setValues(perisanPriceList);
+        fromPriceHorizontalPicker.setSelectedIndex(0);
+
+        toPriceHorizontalPicker.setValues(perisanPriceList);
+        toPriceHorizontalPicker.setSelectedIndex(priceListSize - 1);
 
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);

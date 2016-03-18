@@ -47,5 +47,6 @@
         در صفحه مشاهده محصول (واقع در سمت چپ بالای تصویر محصول) استفاده کنید.
     </string>
     <string name="from_label">از:</string>
+    <string name="to_label">تا:</string>
 
 </resources>

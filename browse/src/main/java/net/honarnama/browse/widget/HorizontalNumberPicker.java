@@ -5,6 +5,7 @@ import net.honarnama.browse.R;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,24 +64,24 @@ public class HorizontalNumberPicker extends LinearLayout {
         mTextView = (TextView) this.findViewById(R.id.text_view);
 
 
-        mMinusButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-                if (mSelectedIndex > 0) {
-                    int newSelectedIndex = mSelectedIndex - 1;
-                    setSelectedIndex(newSelectedIndex);
-                }
-            }
-        });
-
-        mPlusButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-                if (mSpinnerValues != null
-                        && mSelectedIndex < mSpinnerValues.length - 1) {
-                    int newSelectedIndex = mSelectedIndex + 1;
-                    setSelectedIndex(newSelectedIndex);
-                }
-            }
-        });
+//        mMinusButton.setOnClickListener(new OnClickListener() {
+//            public void onClick(View view) {
+//                if (mSelectedIndex > 0) {
+//                    int newSelectedIndex = mSelectedIndex - 1;
+//                    setSelectedIndex(newSelectedIndex);
+//                }
+//            }
+//        });
+//
+//        mPlusButton.setOnClickListener(new OnClickListener() {
+//            public void onClick(View view) {
+//                if (mSpinnerValues != null
+//                        && mSelectedIndex < mSpinnerValues.length - 1) {
+//                    int newSelectedIndex = mSelectedIndex + 1;
+//                    setSelectedIndex(newSelectedIndex);
+//                }
+//            }
+//        });
 
         mMinusButton.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -153,17 +154,20 @@ public class HorizontalNumberPicker extends LinearLayout {
         mSelectedIndex = index;
         mTextView.setText(mSpinnerValues[index]);
 
-        // If the first value is shown, hide the previous button.
+
         if (mSelectedIndex == 0) {
             mMinusButton.setBackgroundColor(mContext.getResources().getColor(R.color.cyan_extra_light));
         } else {
             mMinusButton.setBackgroundColor(mContext.getResources().getColor(R.color.dark_cyan));
         }
         // If the last value is shown, hide the next button.
-        if (mSelectedIndex == mSpinnerValues.length - 1)
+        if (mSelectedIndex == mSpinnerValues.length - 1) {
             mPlusButton.setBackgroundColor(mContext.getResources().getColor(R.color.cyan_extra_light));
-        else
+            mTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        } else {
             mPlusButton.setBackgroundColor(mContext.getResources().getColor(R.color.dark_cyan));
+            mTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        }
     }
 
     /**
