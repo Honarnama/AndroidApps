@@ -199,8 +199,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
 
         if (!TextUtils.isEmpty(mSelectedCityId)) {
-            City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-            storeQuery.whereEqualTo(Store.CITY, city);
+            if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
+                City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+                storeQuery.whereEqualTo(Store.CITY, city);
+            }
         }
 
         ArrayList<Category> queryCategoryIds = new ArrayList<>();
@@ -231,12 +233,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
                         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
                         parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
-
-                        logE("inja mMinPriceIndex " + mMinPriceIndex);
-                        logE("inja mMinPriceValue " + mMinPriceValue);
-
-                        logE("inja mMaxPriceIndex " + mMaxPriceIndex);
-                        logE("inja mMaxPriceValue " + mMaxPriceValue);
 
                         if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
                             parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
@@ -293,6 +289,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mMinPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE);
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
+
+                    logE("inja mSelectedCityId in onActivityResult is " + mSelectedCityId);
                     listItems();
                 }
                 break;

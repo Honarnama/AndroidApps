@@ -1,7 +1,9 @@
 package net.honarnama.core.adapter;
 
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
+import net.honarnama.core.model.City;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,7 +25,6 @@ public class CityAdapter extends BaseAdapter {
     public TreeMap<Number, HashMap<String, String>> mCityTreeMap;
     public List<String> mCityNameList = new ArrayList<String>();
     public List<String> mCityIdsList = new ArrayList<String>();
-    ;
 
     public CityAdapter(Context context, TreeMap<Number, HashMap<String, String>> cityTreeMap) {
         super();
@@ -33,12 +34,11 @@ public class CityAdapter extends BaseAdapter {
         if (mCityTreeMap != null) {
             for (HashMap<String, String> cityHashMap : mCityTreeMap.values()) {
                 for (HashMap.Entry<String, String> city : cityHashMap.entrySet()) {
-                    mCityNameList.add(city.getValue());
                     mCityIdsList.add(city.getKey());
+                    mCityNameList.add(city.getValue());
                 }
             }
         }
-
     }
 
     @Override

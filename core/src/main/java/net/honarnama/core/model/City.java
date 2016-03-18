@@ -43,6 +43,9 @@ public class City extends ParseObject {
     public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
     public static String DEFAULT_CITY_NAME = "آذرشهر";
 
+    public static String ALL_CITY_ID = "ALL";
+    public static String ALL_CITY_NAME = "تمام شهرها";
+
     public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
 
 

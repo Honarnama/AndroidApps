@@ -94,11 +94,13 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         }
 
         if (TextUtils.isEmpty(mSelectedCityId)) {
-            mSelectedCityId = City.DEFAULT_CITY_ID;
+            mSelectedCityId = City.ALL_CITY_ID;
+
+            logE("inja mSelectedCityId at calling time is " + mSelectedCityId);
         }
 
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
-        mSelectedCityName = City.DEFAULT_CITY_NAME;
+        mSelectedCityName = City.ALL_CITY_NAME;
 
         mMinPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.min_price);
         mMaxPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.max_price);
@@ -181,11 +183,18 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                     Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
+
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
+
+                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    HashMap<String, String> allCitiesHashMap = new HashMap<String, String>();
+                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    mCityOrderedTreeMap.put(0, allCitiesHashMap);
+
                     mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
 
                 }
@@ -287,7 +296,12 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                         }
                     }
 
-                    Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    HashMap<String, String> allCitiesHashMap = new HashMap<>();
+                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    mCityOrderedTreeMap.put(0, allCitiesHashMap);
+
+                    Set<String> tempSet = mCityOrderedTreeMap.get(0).keySet();
                     for (String key : tempSet) {
                         mSelectedCityId = key;
                         mCityEditEext.setText(mCityHashMap.get(key));
@@ -311,7 +325,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+
+                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position);
                 for (String key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }
