@@ -1,5 +1,7 @@
 package net.honarnama.browse.dialog;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -16,12 +18,15 @@ import net.honarnama.core.utils.TextUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -63,6 +68,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     public int mMinPriceIndex;
     public int mMaxPriceIndex;
 
+    public CheckBox mAllIranCheckBox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +86,28 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mCityEditEext = (EditText) findViewById(R.id.city_edit_text);
         mCityEditEext.setOnClickListener(this);
         mCityEditEext.setKeyListener(null);
+
+        final IconicsDrawable unCheckedDrawable = new IconicsDrawable(ItemFilterDialogActivity.this)
+                .icon(GoogleMaterial.Icon.gmd_check_box_outline_blank)
+                .color(getResources().getColor(R.color.dark_cyan))
+                .sizeDp(20);
+        mAllIranCheckBox = (CheckBox) findViewById(R.id.all_iran_checkbox);
+        mAllIranCheckBox.setButtonDrawable(unCheckedDrawable);
+        mAllIranCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mAllIranCheckBox.setButtonDrawable(
+                            new IconicsDrawable(ItemFilterDialogActivity.this)
+                                    .icon(GoogleMaterial.Icon.gmd_check_box)
+                                    .color(getResources().getColor(R.color.dark_cyan))
+                                    .sizeDp(20)
+                    );
+                } else {
+                    mAllIranCheckBox.setButtonDrawable(unCheckedDrawable);
+                }
+            }
+        });
 
         Intent intent = getIntent();
         if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID)) {

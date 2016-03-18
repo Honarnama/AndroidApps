@@ -224,7 +224,9 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             List<Fragment> fragments = childFragmentManager.getFragments();
             if (fragments != null) {
                 for (Fragment fragment : fragments) {
-                    fragment.onActivityResult(requestCode, resultCode, data);
+                    if (fragment != null) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
                 }
             }
 
