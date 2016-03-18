@@ -102,7 +102,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mActiveTab = position;
-                logE("inja onPageScrolled to tab " + mActiveTab);
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
                     switchFragment(mMainFragmentAdapter.getDefaultFragmentForTab(position), false, getResources().getString(R.string.hornama));
@@ -112,14 +111,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     childFragmentManager.executePendingTransactions();
                     HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
 
-                    logE("inja getBackStackEntryCount is " + childFragmentManager.getBackStackEntryCount());
-                    if (topFragment != null) {
-                        logE("inja topFragment in onPageScrolled is  " + topFragment.getClass().getName());
-                    }
-
                     if (topFragment instanceof NoNetFragment) {
                         if (NetworkManager.getInstance().isNetworkEnabled(false)) {
-                            logE("inja onPageScrolled refreshNoNetFragment");
                             refreshNoNetFragment();
                             return;
                         }
@@ -376,8 +369,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
-        logE("inja switchFragment in tab " + mActiveTab);
-
         try {
 
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
@@ -456,8 +447,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onTabSelect(Object tabTag, boolean userTriggered) {
-
-        logE("inja onTabSelect");
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         removeActiveTabTopNavMenuFragment();
@@ -491,8 +480,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     @Override
     public void onSelectedTabClick(Object tabTag, boolean byUser) {
-
-        logE("inja onSelectedTabClick");
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
         if (childFragmentManager.getBackStackEntryCount() > 0) {
@@ -641,7 +628,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void switchToNoNetFragment() {
-        logE("inja switchToNoNetFragment");
         NoNetFragment noNetFragment = NoNetFragment.getInstance();
         switchFragment(noNetFragment, false, noNetFragment.getTitle(ControlPanelActivity.this));
     }
@@ -664,7 +650,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 //            fragmentTransaction.commit();
             if (topFragment instanceof NoNetFragment) {
                 try {
-                    logE("inja remove top no net frag");
                     childFragmentManager.popBackStack();
 //                    fragmentTransaction.remove(topFragment);
 //                    fragmentTransaction.commitAllowingStateLoss();
@@ -689,7 +674,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
 
         if (topFragment != null && !(topFragment instanceof NoNetFragment)) {
-            logE("inja Detaching top frag frag: " + topFragment.getClass().getName());
             fragmentTransaction.detach(topFragment);
             fragmentTransaction.attach(topFragment);
             fragmentTransaction.commitAllowingStateLoss();

@@ -60,8 +60,8 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.INTENT_ORIGIN)) {
-            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.INTENT_ORIGIN);
+        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN)) {
+            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN);
         }
         setIntent(intent);
     }
@@ -285,8 +285,8 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
             }
         }
 
-        data.putExtra("selectedCategoryName", mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
-        data.putExtra("selectedCategoryObjectId", mSelectedCategoryObjectId);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME, mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, mSelectedCategoryObjectId);
 
 
         setResult(RESULT_OK, data);

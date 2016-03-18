@@ -21,6 +21,7 @@ public class HorizontalNumberPicker extends LinearLayout {
     public Context mContext;
 
     private CharSequence[] mSpinnerValues = null;
+    private CharSequence[] mActualValues = null;
     private int mSelectedIndex = -1;
 
     public HorizontalNumberPicker(Context context) {
@@ -128,13 +129,19 @@ public class HorizontalNumberPicker extends LinearLayout {
      *
      * @param values the values to set in the spinner.
      */
-    public void setValues(CharSequence[] values) {
+    public void setSpinnerValues(CharSequence[] values) {
         mSpinnerValues = values;
 
         // Select the first item of the string array by default since
         // the list of value has changed.
         setSelectedIndex(0);
     }
+
+
+    public void setActualValues(CharSequence[] values) {
+        mActualValues = values;
+    }
+
 
     /**
      * Sets the selected index of the spinner.
@@ -186,6 +193,19 @@ public class HorizontalNumberPicker extends LinearLayout {
             return "";
 
         return mSpinnerValues[mSelectedIndex];
+    }
+
+
+    public CharSequence getActualSelectedValue() {
+        // If no values are set for the spinner, return an empty string.
+        if (mSpinnerValues == null || mSpinnerValues.length == 0)
+            return "";
+
+        // If the current index is invalid, return an empty string.
+        if (mSelectedIndex < 0 || mSelectedIndex >= mSpinnerValues.length)
+            return "";
+
+        return mActualValues[mSelectedIndex];
     }
 
     /**

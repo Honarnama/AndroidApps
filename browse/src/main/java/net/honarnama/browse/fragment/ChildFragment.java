@@ -90,15 +90,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         FragmentManager childFragmentManager = getChildFragmentManager();
 
         List<Fragment> fragments = childFragmentManager.getFragments();
-        if (fragments != null) {
-            for (int i = 0; i < fragments.size(); i++) {
-                if (fragments.get(i) != null)
-                    logE("inja fragment " + i + " is " + fragments.get(i).getClass().getName());
-            }
-        }
-
-        logE("inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
-
 
         if (childFragmentManager.getBackStackEntryCount() > 1) {
             HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
@@ -111,7 +102,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                         return true;
                     } else {
 
-                        logE("inja removing topfrag " + topFragment.getClass().getName());
                         FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
 //                        fragmentTransaction.remove(topFragment);
 //                        fragmentTransaction.commitAllowingStateLoss();
@@ -125,7 +115,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                         topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
 
                         if (topFragment != null) {
-                            logE("inja removing pre nonet frag " + topFragment.getClass().getName());
 //                            fragmentTransaction.remove(topFragment);
 //                            fragmentTransaction.commitAllowingStateLoss();
                             childFragmentManager.popBackStack();
@@ -133,8 +122,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                                 childFragmentManager.executePendingTransactions();
                             }
                         }
-
-                        logE("2 inja backStackEntryCount() " + childFragmentManager.getBackStackEntryCount());
 
                         if (childFragmentManager.getBackStackEntryCount() > 0) {
                             topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
@@ -230,8 +217,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Toast.makeText(getActivity(), "inja requestCode in ChildFrag is " + requestCode, Toast.LENGTH_SHORT).show();
-
         FragmentManager childFragmentManager = getChildFragmentManager();
         if (childFragmentManager != null
                 && childFragmentManager.getBackStackEntryCount() > 0) {
@@ -239,8 +224,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             List<Fragment> fragments = childFragmentManager.getFragments();
             if (fragments != null) {
                 for (Fragment fragment : fragments) {
-                    Toast.makeText(getActivity(), "inja Calling onActivityResult of " + fragment.getClass().getName(), Toast.LENGTH_SHORT).show();
-
                     fragment.onActivityResult(requestCode, resultCode, data);
                 }
             }

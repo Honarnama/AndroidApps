@@ -116,7 +116,7 @@
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:id="@+id/price_from_container"
+                          android:id="@+id/price_min_container"
                           android:orientation="horizontal"
                           android:layout_marginTop="10dp"
                           android:layout_marginRight="10dp"
@@ -136,7 +136,7 @@
                         />
 
                 <net.honarnama.browse.widget.HorizontalNumberPicker
-                        android:id="@+id/price_from"
+                        android:id="@+id/min_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
@@ -148,12 +148,12 @@
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:id="@+id/price_to_container"
+                          android:id="@+id/price_max_container"
                           android:orientation="horizontal"
                           android:layout_marginTop="10dp"
                           android:layout_marginRight="10dp"
                           android:layout_marginLeft="10dp"
-                          android:layout_below="@id/price_from_container"
+                          android:layout_below="@id/price_min_container"
                           android:gravity="center_vertical"
                     >
                 <TextView style="@style/default_text_view"
@@ -168,7 +168,7 @@
                         />
 
                 <net.honarnama.browse.widget.HorizontalNumberPicker
-                        android:id="@+id/price_to"
+                        android:id="@+id/max_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
@@ -178,7 +178,7 @@
             </LinearLayout>
 
             <View style="@style/HorizontalSeparatorLine"
-                  android:layout_below="@id/price_to_container"
+                  android:layout_below="@id/price_max_container"
                   android:layout_marginTop="30dp"
                   android:background="@color/gray_extra_light"
                   android:id="@+id/separator_line"

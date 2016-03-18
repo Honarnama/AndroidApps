@@ -305,14 +305,11 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(getActivity(), "inja  onActivityResult of EventFrag", Toast.LENGTH_SHORT).show();
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_FILTER_EVENT_CODE:
-                Toast.makeText(getActivity(), "inja ", Toast.LENGTH_SHORT).show();
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
                     mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-                    Toast.makeText(getActivity(), "inja " + mSelectedProvinceName, Toast.LENGTH_SHORT).show();
                     mSelectedCityId = data.getStringExtra("selectedCityId");
                     listEvents();
                 }

@@ -123,7 +123,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getActivity(), "inja " + i, Toast.LENGTH_SHORT).show();
         ParseObject selectedStore = (ParseObject) mShopsParseAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedStore != null) {
@@ -234,11 +233,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
-                Toast.makeText(getActivity(), "inja ", Toast.LENGTH_SHORT).show();
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
                     mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-                    Toast.makeText(getActivity(), "inja " + mSelectedProvinceName, Toast.LENGTH_SHORT).show();
                     mSelectedCityId = data.getStringExtra("selectedCityId");
                     listShops();
                 }

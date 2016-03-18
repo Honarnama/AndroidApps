@@ -3,6 +3,7 @@ package net.honarnama.browse.dialog;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
 import net.honarnama.browse.widget.HorizontalNumberPicker;
@@ -57,8 +58,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
     private Provinces mSelectedProvince;
 
-    public EditText mFromEditText;
-    public EditText mToEditText;
+    HorizontalNumberPicker mMinPriceHorizontalPicker;
+    HorizontalNumberPicker mMaxPriceHorizontalPicker;
+    public int mMinPriceIndex;
+    public int mMaxPriceIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +81,12 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mCityEditEext.setKeyListener(null);
 
         Intent intent = getIntent();
-        if (intent.hasExtra("selectedProvinceId")) {
-            mSelectedProvinceId = intent.getStringExtra("selectedProvinceId");
+        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID)) {
+            mSelectedProvinceId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
         }
 
-        if (intent.hasExtra("selectedCityId")) {
-            mSelectedCityId = intent.getStringExtra("selectedCityId");
+        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID)) {
+            mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
         }
 
         if (TextUtils.isEmpty(mSelectedProvinceId)) {
@@ -95,14 +98,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         }
 
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
-        mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
+        mSelectedCityName = City.DEFAULT_CITY_NAME;
 
-
-        HorizontalNumberPicker fromPriceHorizontalPicker;
-        fromPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.price_from);
-
-        HorizontalNumberPicker toPriceHorizontalPicker;
-        toPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.price_to);
+        mMinPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.min_price);
+        mMaxPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.max_price);
 
         String priceList[] = getResources().getStringArray(R.array.price_values);
         int priceListSize = priceList.length;
@@ -120,11 +119,26 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             }
         }
 
-        fromPriceHorizontalPicker.setValues(perisanPriceList);
-        fromPriceHorizontalPicker.setSelectedIndex(0);
 
-        toPriceHorizontalPicker.setValues(perisanPriceList);
-        toPriceHorizontalPicker.setSelectedIndex(priceListSize - 1);
+        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX)) {
+            mMinPriceIndex = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, 0);
+        } else {
+            mMinPriceIndex = 0;
+        }
+
+        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX)) {
+            mMaxPriceIndex = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, priceListSize - 1);
+        } else {
+            mMaxPriceIndex = priceListSize - 1;
+        }
+
+        mMinPriceHorizontalPicker.setSpinnerValues(perisanPriceList);
+        mMinPriceHorizontalPicker.setActualValues(priceList);
+        mMinPriceHorizontalPicker.setSelectedIndex(mMinPriceIndex);
+
+        mMaxPriceHorizontalPicker.setSpinnerValues(perisanPriceList);
+        mMaxPriceHorizontalPicker.setActualValues(priceList);
+        mMaxPriceHorizontalPicker.setSelectedIndex(mMaxPriceIndex);
 
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);
@@ -319,20 +333,28 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     public void setFilters() {
         Intent data = new Intent();
-        data.putExtra("selectedProvinceId", mSelectedProvinceId);
-        data.putExtra("selectedProvinceName", mSelectedProvinceName);
-        data.putExtra("selectedCityId", mSelectedCityId);
-        data.putExtra("selectedCityName", mSelectedCityName);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME, mSelectedProvinceName);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, mMinPriceHorizontalPicker.getSelectedIndex());
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, mMinPriceHorizontalPicker.getActualSelectedValue());
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceHorizontalPicker.getSelectedIndex());
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, mMaxPriceHorizontalPicker.getActualSelectedValue());
         setResult(RESULT_OK, data);
         finish();
     }
 
     public void removeFilters() {
         Intent data = new Intent();
-        data.putExtra("selectedProvinceId", "");
-        data.putExtra("selectedProvinceName", "");
-        data.putExtra("selectedCityId", "");
-        data.putExtra("selectedCityName", "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_NAME, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, -1);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, "");
         setResult(RESULT_OK, data);
         finish();
     }

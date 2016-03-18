@@ -1,6 +1,7 @@
 package net.honarnama.browse.fragment;
 
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -28,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -45,6 +45,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private ListView mListView;
     public String mSelectedCategoryId;
     public String mSelectedCategoryName;
+
+    public int mMinPriceIndex = -1;
+    public String mMinPriceValue;
+    public int mMaxPriceIndex = -1;
+    public String mMaxPriceValue;
 
     ItemsParseAdapter mItemsParseAdapter;
     public Button mCategoryFilterButton;
@@ -113,10 +118,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-        Toast.makeText(getActivity(), "inja " + position, Toast.LENGTH_SHORT).show();
-
-
         ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedItem != null) {
@@ -128,14 +129,21 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onClick(View v) {
         if (v.getId() == R.id.category_filter_btn) {
             Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
-            intent.putExtra(HonarnamaBaseApp.INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }
         if (v.getId() == R.id.filter_container) {
             Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
-            intent.putExtra("selectedProvinceId", mSelectedProvinceId);
-            intent.putExtra("selectedCityId", mSelectedCityId);
+            intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+            intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+            if (mMinPriceIndex > -1) {
+                intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, mMinPriceIndex);
+            }
+
+            if (mMaxPriceIndex > -1) {
+                intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceIndex);
+            }
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
 
@@ -168,10 +176,13 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 }
             } else {
                 mEmptyListContainer.setVisibility(View.VISIBLE);
-                if (isVisible()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
+                    logE("Error Querying Items: " + e);
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 }
-                mOnErrorRetry.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -221,6 +232,20 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
                         parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
 
+                        logE("inja mMinPriceIndex " + mMinPriceIndex);
+                        logE("inja mMinPriceValue " + mMinPriceValue);
+
+                        logE("inja mMaxPriceIndex " + mMaxPriceIndex);
+                        logE("inja mMaxPriceValue " + mMaxPriceValue);
+
+                        if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
+                            parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
+                        }
+
+                        if (mMaxPriceIndex > -1 && mMaxPriceValue != null && !(mMaxPriceValue.equals("MAX"))) {
+                            parseQuery.whereLessThanOrEqualTo(Item.PRICE, Integer.valueOf(mMaxPriceValue));
+                        }
+
                         if (finalQueryCategoryIds != null && !(finalQueryCategoryIds.isEmpty())) {
                             parseQuery.whereContainedIn(Item.CATEGORY, finalQueryCategoryIds);
                         }
@@ -248,9 +273,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     boolean isFilterSubCategoryRowSelected = data.getBooleanExtra("isFilterSubCategoryRowSelected", false);
                     ArrayList<String> subCatList = data.getStringArrayListExtra("subCats");
 
-                    mSelectedCategoryName = data.getStringExtra("selectedCategoryName");
+                    mSelectedCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryFilterButton.setText(mSelectedCategoryName);
-                    mSelectedCategoryId = data.getStringExtra("selectedCategoryObjectId");
+                    mSelectedCategoryId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID);
 
                     mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
@@ -261,9 +286,13 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             case HonarnamaBaseApp.INTENT_FILTER_ITEMS_CODE:
 
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedProvinceId = data.getStringExtra("selectedProvinceId");
-                    mSelectedProvinceName = data.getStringExtra("selectedProvinceName");
-                    mSelectedCityId = data.getStringExtra("selectedCityId");
+                    mSelectedProvinceId = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
+                    mSelectedProvinceName = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME);
+                    mSelectedCityId = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
+                    mMinPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, -1);
+                    mMinPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE);
+                    mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
+                    mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
                     listItems();
                 }
                 break;

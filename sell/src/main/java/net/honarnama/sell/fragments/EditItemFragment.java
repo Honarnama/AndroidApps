@@ -428,7 +428,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 break;
             case R.id.edit_item_category_semi_button:
                 Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
-                intent.putExtra(HonarnamaBaseApp.INTENT_ORIGIN, HonarnamaBaseApp.SELL_APP_KEY);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.SELL_APP_KEY);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
             default:
@@ -614,8 +614,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                 if (resultCode == getActivity().RESULT_OK) {
                     mCategoryTextView.setError(null);
-                    mCategoryName = data.getStringExtra("selectedCategoryName");
-                    mCategoryId = data.getStringExtra("selectedCategoryObjectId");
+                    mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
+                    mCategoryId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID);
                     setDirty(true);
                     mChooseCategoryButton.setText(mCategoryName);
                 }

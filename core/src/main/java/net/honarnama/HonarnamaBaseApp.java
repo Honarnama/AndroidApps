@@ -45,6 +45,10 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
     public static final String EXTRA_KEY_UNCAUGHT_EXCEPTION = "EXTRA_KEY_UNCAUGHT_EXCEPTION";
+    public static final String EXTRA_KEY_INTENT_ORIGIN = "intent_origin";
+
+    public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
+    public static final String EXTRA_KEY_CATEGORY_NAME = "selectedCategoryName";
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
@@ -65,12 +69,10 @@ public abstract class HonarnamaBaseApp extends Application {
     public static String PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED = "local_data_store_for_store_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED = "local_data_store_for_event_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED = "local_data_store_for_item_synced";
+    public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
     public static String SELL_APP_KEY = "honarnama_sell";
     public static String BROWSE_APP_KEY = "honarnama_browse";
-    public static String INTENT_ORIGIN = "intent_origin";
-
-    public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
 
 
     private static HonarnamaBaseApp singleton;
