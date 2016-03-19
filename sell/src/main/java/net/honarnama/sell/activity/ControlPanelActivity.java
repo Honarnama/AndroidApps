@@ -31,6 +31,7 @@ import net.honarnama.sell.fragments.StoreInfoFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,6 +53,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -344,7 +347,12 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
             }
         } else {
-            super.onBackPressed();
+            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+            if (!sharedPref.getBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, false)) {
+                askToRate();
+            } else {
+                finish();
+            }
         }
     }
 
@@ -543,10 +551,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_support_us:
-                Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
-                intent.setPackage("com.farsitel.bazaar");
-                startActivity(intent);
+                callBazaarRateIntent();
                 break;
 
             case R.id.item_switch_app:
@@ -624,6 +629,44 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(ControlPanelActivity.this, "inja closing", Toast.LENGTH_SHORT).show();
+    }
+
+    public void askToRate() {
+        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.ask_for_starts);
+        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
+        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
+        letsRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callBazaarRateIntent();
+                //TODO inja set intent ke ray dade dige neshon nade dialogo
+
+                final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, true);
+                editor.commit();
+
+                dialog.dismiss();
+                finish();
+            }
+        });
+        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
+    public void callBazaarRateIntent() {
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
+        intent.setPackage("com.farsitel.bazaar");
+        startActivity(intent);
     }
 }
