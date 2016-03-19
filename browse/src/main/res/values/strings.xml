@@ -31,22 +31,28 @@
     <string name="art_shop">غرفه هنری</string>
 
     <string name="item_contact_dialog_warning_msg">
-        پیش از سفارش نهایی و خرید محصول به صورت حضوری از صحت آن مطمئن شوید. چرا که هنرنما هیج‌گونه منفعت و مسئولیتی در قبال معامله شما ندارد.
+        پیش از سفارش نهایی و خرید محصول به صورت حضوری از صحت آن مطمئن شوید. چرا که هنرنما هیج‌گونه
+        منفعت و مسئولیتی در قبال معامله شما ندارد.
 
     </string>
 
 
     <string name="event_contact_dialog_warning_msg">
-پیش از شرکت در رویداد، از صحت آن مطمئن شوید. هنرنما هیچ‌گونه منفعت و مسئولیتی در قبال شرکت شما در این رویداد ندارد.
+        پیش از شرکت در رویداد، از صحت آن مطمئن شوید. هنرنما هیچ‌گونه منفعت و مسئولیتی در قبال شرکت
+        شما در این رویداد ندارد.
     </string>
-    <string name="item_filter">فیلتر کردن محصولات</string>
+    <string name="item_filter">
+        "فیلتر کردن (محدوده جغرافیایی و قیمت)"
+    </string>
     <string name="event_filter">فیلتر کردن رویدادها</string>
     <string name="switch_app">برنامه فروشندگان</string>
     <string name="how_to_bookmark">برای نشان کردن محصول از دکمه
-    {gmd-stars}
+        {gmd-stars}
         در صفحه مشاهده محصول (واقع در سمت چپ بالای تصویر محصول) استفاده کنید.
     </string>
     <string name="from_label">از:</string>
     <string name="to_label">تا:</string>
+    <string name="change_filter">تغییر فیلتر</string>
+    <string name="filter_geo">فیلتر کردن محدوده جغرافیایی</string>
 
 </resources>

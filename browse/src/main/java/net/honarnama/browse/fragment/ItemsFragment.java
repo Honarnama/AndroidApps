@@ -1,6 +1,7 @@
 package net.honarnama.browse.fragment;
 
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,6 +33,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -63,8 +65,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private String mSelectedProvinceName;
     private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
-
     private boolean mIsAllIranChecked = true;
+    private boolean mIsFilterApplied = false;
+
+    private TextView mFilterTextView;
+    private IconicsImageView mFilterIcon;
 
     public RelativeLayout mOnErrorRetry;
 
@@ -89,6 +94,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
+
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
         if (!TextUtils.isEmpty(mSelectedCategoryName)) {
@@ -103,8 +111,13 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         listItems();
         mListView.setOnItemClickListener(this);
 
-
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeFilterTitle();
     }
 
 
@@ -297,10 +310,25 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+
+                    changeFilterTitle();
 
                     listItems();
                 }
                 break;
+        }
+    }
+
+    private void changeFilterTitle() {
+        if (mIsFilterApplied) {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
+            mFilterTextView.setText(R.string.change_filter);
+            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+        } else {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
+            mFilterTextView.setText(getResources().getString(R.string.item_filter));
+            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }
 

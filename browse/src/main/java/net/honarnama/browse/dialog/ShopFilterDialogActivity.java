@@ -342,7 +342,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, mSelectedProvinceName);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
-
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, true);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
 
         setResult(RESULT_OK, data);
@@ -355,7 +355,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, "");
-
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
 
         setResult(RESULT_OK, data);

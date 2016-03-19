@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -14,7 +15,6 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsParseAdapter;
 import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
@@ -31,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -55,6 +56,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public LinearLayout mLoadingCircle;
 
     private boolean mIsAllIranChecked = true;
+    private boolean mIsFilterApplied = false;
+    private TextView mFilterTextView;
+    private IconicsImageView mFilterIcon;
 
     private ListView mListView;
 
@@ -91,6 +95,8 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
 
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_shops_warning_container);
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
@@ -113,9 +119,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
-//        TextView toolbarTitle = (TextView) ((ControlPanelActivity) getActivity()).findViewById(R.id.toolbar_title);
-//        toolbarTitle.setText(getString(R.string.shops));
-
+        changeFilterTitle();
     }
 
     @Override
@@ -221,12 +225,25 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
-
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
-
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+                    changeFilterTitle();
                     listShops();
                 }
                 break;
         }
     }
+
+    private void changeFilterTitle() {
+        if (mIsFilterApplied) {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
+            mFilterTextView.setText(R.string.change_filter);
+            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+        } else {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
+            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
+            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+        }
+    }
+
 }

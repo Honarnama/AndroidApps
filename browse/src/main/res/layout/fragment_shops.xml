@@ -23,17 +23,19 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="10dp"
                 android:layout_alignParentRight="true"
-                android:id="@+id/filter_icon"
                 android:layout_centerVertical="true"
+                android:id="@+id/filter_icon"
                 />
 
         <TextView android:layout_width="match_parent"
                   android:layout_height="?attr/actionBarSize"
-                  android:text="فیلتر کردن محدوده جغرافیایی"
-                  android:textSize="16dp"
+                  android:text="@string/filter_geo"
+                  android:textColor="@color/text_color"
+                  android:textSize="16sp"
                   android:layout_toLeftOf="@id/filter_icon"
                   android:layout_centerVertical="true"
                   android:gravity="center_vertical"
+                  android:id="@+id/filter_text_view"
                 />
     </RelativeLayout>
 

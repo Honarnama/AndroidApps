@@ -30,8 +30,10 @@
 
         <TextView android:layout_width="match_parent"
                   android:layout_height="?attr/actionBarSize"
-                  android:text="فیلتر کردن (محدوده جغرافیایی و قیمت)"
-                  android:textSize="16dp"
+                  android:id="@+id/filter_text_view"
+                  android:text="@string/item_filter"
+                  android:textColor="@color/text_color"
+                  android:textSize="16sp"
                   android:layout_toLeftOf="@id/filter_icon"
                   android:layout_centerVertical="true"
                   android:gravity="center_vertical"

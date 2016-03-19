@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -34,6 +35,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -69,7 +71,11 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     private ListView mListView;
     private boolean mFilterAllCategoryRowSelected = false;
 
+    private TextView mFilterTextView;
+    private IconicsImageView mFilterIcon;
+
     private boolean mIsAllIranChecked = true;
+    private boolean mIsFilterApplied = false;
 
     @Override
     public String getTitle(Context context) {
@@ -116,6 +122,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
 
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
+
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mListView.setOnItemClickListener(this);
@@ -155,9 +164,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     @Override
     public void onResume() {
         super.onResume();
-//        TextView toolbarTitle = (TextView) ((ControlPanelActivity) getActivity()).findViewById(R.id.toolbar_title);
-//        toolbarTitle.setText(getString(R.string.shops));
-
+        changeFilterTitle();
     }
 
     @Override
@@ -316,12 +323,28 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
-
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+
+                    changeFilterTitle();
 
                     listEvents();
                 }
                 break;
         }
     }
+
+    private void changeFilterTitle() {
+        if (mIsFilterApplied) {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
+            mFilterTextView.setText(R.string.change_filter);
+            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+        } else {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
+            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
+            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+        }
+    }
+
+
 }

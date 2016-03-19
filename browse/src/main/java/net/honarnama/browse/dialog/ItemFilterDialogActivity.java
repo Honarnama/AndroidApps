@@ -392,6 +392,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceHorizontalPicker.getSelectedIndex());
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, mMaxPriceHorizontalPicker.getActualSelectedValue());
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, true);
         setResult(RESULT_OK, data);
         finish();
     }
@@ -407,6 +408,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
 
         setResult(RESULT_OK, data);
         finish();

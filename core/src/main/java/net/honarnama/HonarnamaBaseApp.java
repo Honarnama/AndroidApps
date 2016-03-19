@@ -53,6 +53,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED = "isFilterSubCategoryRowSelected";
     public static final String EXTRA_KEY_SUB_CATS = "subCats";
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
+    public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
 
 
     public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
