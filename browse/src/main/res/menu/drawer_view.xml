@@ -51,10 +51,19 @@
     </group>
 
 
-    <group>
+    <group android:checkableBehavior="single"
+           android:id="@+id/grp4"
+            >
+
+        <item
+                android:id="@+id/item_nav_title_exit_app"
+                android:title="@string/nav_title_exit_app"
+                android:checkable="false"
+                />
         <item
                 android:title=""
                 android:orderInCategory="200"/>
     </group>
+
 
 </menu>

@@ -180,7 +180,7 @@
                   android:layout_marginRight="5dp"
                   android:layout_marginLeft="5dp"
                   android:gravity="right"
-                  android:background="@drawable/bordered_background"
+                  android:background="@drawable/round_corner_white_back"
                   android:padding="10dp"
                   android:lineSpacingExtra="5dp"
                   android:layout_marginBottom="16dp"

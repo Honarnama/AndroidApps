@@ -44,12 +44,12 @@
     </style>
 
     <style name="bordered_edit_text" parent="edit_text_default">
-        <item name="android:background">@drawable/bordered_background</item>
+        <item name="android:background">@drawable/round_corner_white_back</item>
     </style>
 
 
     <style name="bordered_multiline_edit_text" parent="bordered_edit_text">
-        <item name="android:background">@drawable/bordered_background</item>
+        <item name="android:background">@drawable/round_corner_white_back</item>
         <item name="android:gravity">right|top</item>
         <item name="android:singleLine">false</item>
         <item name="android:scrollbars">vertical</item>
@@ -180,6 +180,12 @@
         <item name="android:layoutDirection" tools:targetApi="jelly_bean_mr1">rtl</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+
+    <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <style name="DialogWindowTitle_Custom">
         <item name="android:maxLines">1</item>
         <item name="android:scrollHorizontally">true</item>

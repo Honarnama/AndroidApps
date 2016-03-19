@@ -40,7 +40,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.LayoutInflaterCompat;
@@ -53,7 +52,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -324,15 +322,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         switchFragment(mEditItemFragment);
     }
 
-    @Override
-    protected void onStop() {
-        if (mWaitingProgressDialog != null) {
-            if (mWaitingProgressDialog.isShowing()) {
-                mWaitingProgressDialog.dismiss();
-            }
-        }
-        super.onStop();
-    }
 
     @Override
     public void onBackPressed() {
@@ -346,7 +335,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                         mEditItemFragment.reset(ControlPanelActivity.this, true);
                         switchFragment(ItemsFragment.getInstance());
                         resetMenuIcons();
-                        selectDrawerItem( mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
+                        selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
                     }
                 });
             } else {
@@ -357,12 +346,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
     }
 
     public void resetMenuIcons() {
@@ -628,4 +611,19 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         mDrawer.closeDrawer(Gravity.RIGHT);
     }
 
+    @Override
+    protected void onStop() {
+        if (mWaitingProgressDialog != null) {
+            if (mWaitingProgressDialog.isShowing()) {
+                mWaitingProgressDialog.dismiss();
+            }
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(ControlPanelActivity.this, "inja closing", Toast.LENGTH_SHORT).show();
+    }
 }

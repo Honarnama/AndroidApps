@@ -2,6 +2,8 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.parse.LogOutCallback;
+import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -21,12 +23,15 @@ import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.CommonUtil;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +49,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -79,6 +85,15 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public BookmarksFragment mBookmarksFragment;
 
     public RelativeLayout mNavFooter;
+
+    public static final int ITEM_IDENTIFIER_BOOKMARKS = 0;
+    public static final int ITEM_IDENTIFIER_CONTACT = 1;
+    public static final int ITEM_IDENTIFIER_RULES = 2;
+    public static final int ITEM_IDENTIFIER_ABOUT = 3;
+    public static final int ITEM_IDENTIFIER_SHARE = 4;
+    public static final int ITEM_IDENTIFIER_SUPPORT = 5;
+    public static final int ITEM_IDENTIFIER_SWAP = 6;
+    public static final int ITEM_IDENTIFIER_EXIT = 7;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,50 +202,58 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_stars);
-        menu.getItem(0).setIcon(bookmarksDrawable);
-        menu.getItem(0).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_BOOKMARKS).setIcon(bookmarksDrawable);
+        menu.getItem(ITEM_IDENTIFIER_BOOKMARKS).setChecked(false);
 
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_email);
-        menu.getItem(1).setIcon(contactDrawable);
-        menu.getItem(1).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_CONTACT).setIcon(contactDrawable);
+        menu.getItem(ITEM_IDENTIFIER_CONTACT).setChecked(false);
 
         IconicsDrawable gavelDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_gavel);
-        menu.getItem(2).setIcon(gavelDrawable);
-        menu.getItem(2).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_RULES).setIcon(gavelDrawable);
+        menu.getItem(ITEM_IDENTIFIER_RULES).setChecked(false);
 
         IconicsDrawable aboutDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_info_outline);
-        menu.getItem(3).setIcon(aboutDrawable);
-        menu.getItem(3).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_ABOUT).setIcon(aboutDrawable);
+        menu.getItem(ITEM_IDENTIFIER_ABOUT).setChecked(false);
 
         IconicsDrawable shareDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_share);
-        menu.getItem(4).setIcon(shareDrawable);
-        menu.getItem(4).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_SHARE).setIcon(shareDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SHARE).setChecked(false);
 
         IconicsDrawable supportDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_star);
-        menu.getItem(5).setIcon(supportDrawable);
-        menu.getItem(5).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setIcon(supportDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SUPPORT).setChecked(false);
 
         IconicsDrawable swapDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)
                         .color(getResources().getColor(R.color.gray_extra_dark))
                         .icon(GoogleMaterial.Icon.gmd_swap_horiz);
-        menu.getItem(6).setIcon(swapDrawable);
-        menu.getItem(6).setChecked(false);
+        menu.getItem(ITEM_IDENTIFIER_SWAP).setIcon(swapDrawable);
+        menu.getItem(ITEM_IDENTIFIER_SWAP).setChecked(false);
+
+        IconicsDrawable exitDrawable =
+                new IconicsDrawable(ControlPanelActivity.this)
+                        .color(getResources().getColor(R.color.gray_extra_dark))
+                        .sizeDp(20)
+                        .icon(GoogleMaterial.Icon.gmd_exit_to_app);
+        menu.getItem(ITEM_IDENTIFIER_EXIT).setIcon(exitDrawable);
+        menu.getItem(ITEM_IDENTIFIER_EXIT).setChecked(false);
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
@@ -322,6 +345,14 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 } catch (Exception e) {
                     logE("Error switching from browse app to sell. Error: " + e);
                 }
+                break;
+
+            case R.id.item_nav_title_exit_app:
+                final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.ask_for_starts);
+                dialog.show();
+//                finish();
                 break;
 
         }
@@ -640,8 +671,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             childFragmentManager.executePendingTransactions();
         }
 
-//        List<Fragment> fragments = childFragmentManager.getFragments();
-//        HonarnamaBaseFragment noNetFragment = (HonarnamaBaseFragment) fragments.get(0);
 
         HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
 
@@ -692,8 +721,18 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+    }
 }

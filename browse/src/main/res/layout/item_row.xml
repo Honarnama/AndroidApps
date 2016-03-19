@@ -9,7 +9,7 @@
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bordered_background"
+                    android:background="@drawable/round_corner_white_back"
             >
 
         <RelativeLayout android:layout_width="wrap_content"
