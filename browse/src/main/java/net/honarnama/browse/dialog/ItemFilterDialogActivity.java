@@ -18,7 +18,6 @@ import net.honarnama.core.utils.TextUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;

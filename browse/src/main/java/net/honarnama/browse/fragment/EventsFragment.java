@@ -37,7 +37,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -70,6 +69,8 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     private ListView mListView;
     private boolean mFilterAllCategoryRowSelected = false;
+
+    private boolean mIsAllIranChecked = true;
 
     @Override
     public String getTitle(Context context) {
@@ -193,6 +194,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 Intent intent = new Intent(getActivity(), EventFilterDialogActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
                 getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_EVENT_CODE);
                 break;
 
@@ -253,14 +255,18 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                             parseQuery.whereEqualTo(Event.CATEGORY, finalEventCategory);
                         }
 
-                        if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                            Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
-                            parseQuery.whereEqualTo(Event.PROVINCE, province);
-                        }
+                        if (!mIsAllIranChecked) {
+                            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+                                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                                parseQuery.whereEqualTo(Event.PROVINCE, province);
+                            }
 
-                        if (!TextUtils.isEmpty(mSelectedCityId)) {
-                            City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                            parseQuery.whereEqualTo(Event.CITY, city);
+                            if (!TextUtils.isEmpty(mSelectedCityId)) {
+                                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
+                                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+                                    parseQuery.whereEqualTo(Event.CITY, city);
+                                }
+                            }
                         }
 
                         parseQuery.include(Event.CITY);
@@ -311,6 +317,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
+
+                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+
                     listEvents();
                 }
                 break;

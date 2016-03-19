@@ -26,14 +26,13 @@
             <TextView
                     style="@style/section_title"
                     android:text="فیلتر محصولات"
-                    android:textColor="@color/dark_cyan"
                     android:id="@+id/item_filter_title"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="10dp"
                     />
 
             <TextView
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:id="@+id/geo_limit_title"
                     style="@style/section_title"
                     android:layout_centerHorizontal="true"
@@ -46,12 +45,43 @@
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
+                          android:id="@+id/all_iran_container"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_below="@id/geo_limit_title"
+                    >
+
+                <CheckBox
+                        android:layout_below="@+id/city_container"
+                        android:id="@+id/all_iran_checkbox"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_centerVertical="true"/>
+
+                <TextView style="@style/default_text_view"
+                          android:text="تمام ایران"
+                          android:layout_centerVertical="true"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                        />
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
                           android:id="@+id/provinces_container"
                           android:orientation="horizontal"
                           android:layout_marginTop="10dp"
-                          android:layout_marginRight="10dp"
-                          android:layout_marginLeft="10dp"
-                          android:layout_below="@id/geo_limit_title"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_below="@id/all_iran_container"
                     >
                 <TextView style="@style/default_text_view"
                           android:text="@string/provine_label"
@@ -62,7 +92,7 @@
                           android:focusable="false"
                           android:clickable="true"
                           android:textStyle="bold"
-                          android:layout_width="45dp"
+                          android:layout_width="40dp"
                         />
                 <EditText
                         android:hint="@string/province"
@@ -72,13 +102,14 @@
                         />
             </LinearLayout>
 
+
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:id="@+id/city_container"
                           android:orientation="horizontal"
                           android:layout_marginTop="10dp"
-                          android:layout_marginRight="10dp"
-                          android:layout_marginLeft="10dp"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
                           android:layout_below="@id/provinces_container"
                     >
                 <TextView style="@style/default_text_view"
@@ -90,7 +121,7 @@
                           android:focusable="false"
                           android:clickable="true"
                           android:textStyle="bold"
-                          android:layout_width="45dp"
+                          android:layout_width="40dp"
                         />
                 <EditText
                         android:hint="@string/city"
@@ -100,81 +131,10 @@
                         />
             </LinearLayout>
 
-            <!--<TextView-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:id="@+id/price_limit_title"-->
-            <!--style="@style/section_title"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:paddingRight="5dp"-->
-            <!--android:paddingLeft="5dp"-->
-            <!--android:text="محدوده قیمت"-->
-            <!--android:layout_below="@id/city_container"-->
-            <!--android:textColor="@color/gray_light"-->
-            <!--/>-->
-
-
-            <!--<LinearLayout android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/price_limit_title"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:id="@+id/from_container"-->
-            <!-->-->
-            <!--<TextView style="@style/default_text_view"-->
-            <!--android:text="از:"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:id="@+id/from_label"-->
-            <!--android:editable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:clickable="true"-->
-            <!--android:textStyle="bold"-->
-            <!--android:layout_width="45dp"-->
-            <!--/>-->
-            <!--<EditText-->
-            <!--android:hint="۱۰۰ تومان"-->
-            <!--style="@style/bordered_edit_text"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:id="@+id/from"-->
-            <!--android:inputType="number"-->
-            <!--/>-->
-            <!--</LinearLayout>-->
-
-
-            <!--<LinearLayout android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/from_container"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:id="@+id/to_price_container"-->
-            <!-->-->
-            <!--<TextView style="@style/default_text_view"-->
-            <!--android:text="تا:"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:id="@+id/to_label"-->
-            <!--android:editable="false"-->
-            <!--android:cursorVisible="false"-->
-            <!--android:focusable="false"-->
-            <!--android:clickable="true"-->
-            <!--android:textStyle="bold"-->
-            <!--android:layout_width="45dp"-->
-            <!--/>-->
-            <!--<EditText-->
-            <!--android:hint="۱۰۰۰۰۰۰۰ تومان"-->
-            <!--style="@style/bordered_edit_text"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:id="@+id/to"-->
-            <!--android:inputType="number"-->
-            <!--/>-->
-            <!--</LinearLayout>-->
 
             <View style="@style/HorizontalSeparatorLine"
                   android:layout_below="@id/city_container"
-                  android:layout_marginTop="20dp"
+                  android:layout_marginTop="30dp"
                   android:background="@color/gray_extra_light"
                   android:id="@+id/separator_line"
                     >

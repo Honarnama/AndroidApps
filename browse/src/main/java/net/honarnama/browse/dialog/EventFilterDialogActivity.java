@@ -1,5 +1,7 @@
 package net.honarnama.browse.dialog;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -19,6 +21,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -53,8 +57,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
     private Provinces mSelectedProvince;
 
-    public EditText mFromEditText;
-    public EditText mToEditText;
+    public CheckBox mAllIranCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,28 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         mCityEditEext.setOnClickListener(this);
         mCityEditEext.setKeyListener(null);
 
+        final IconicsDrawable unCheckedDrawable = new IconicsDrawable(EventFilterDialogActivity.this)
+                .icon(GoogleMaterial.Icon.gmd_check_box_outline_blank)
+                .color(getResources().getColor(R.color.dark_cyan))
+                .sizeDp(20);
+        mAllIranCheckBox = (CheckBox) findViewById(R.id.all_iran_checkbox);
+        mAllIranCheckBox.setButtonDrawable(unCheckedDrawable);
+        mAllIranCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mAllIranCheckBox.setButtonDrawable(
+                            new IconicsDrawable(EventFilterDialogActivity.this)
+                                    .icon(GoogleMaterial.Icon.gmd_check_box)
+                                    .color(getResources().getColor(R.color.dark_cyan))
+                                    .sizeDp(20)
+                    );
+                } else {
+                    mAllIranCheckBox.setButtonDrawable(unCheckedDrawable);
+                }
+            }
+        });
+
         Intent intent = getIntent();
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID)) {
             mSelectedProvinceId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
@@ -80,6 +105,10 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID)) {
             mSelectedCityId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
+        }
+
+        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
+            mAllIranCheckBox.setChecked(intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true));
         }
 
         if (TextUtils.isEmpty(mSelectedProvinceId)) {
@@ -216,6 +245,9 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                 mSelectedProvinceId = mSelectedProvince.getObjectId();
                 mSelectedProvinceName = mSelectedProvince.getName();
                 mProvinceEditEext.setText(mSelectedProvinceName);
+
+                mAllIranCheckBox.setChecked(false);
+
                 rePopulateCityList();
                 if (provinceDialog.isShowing()) {
                     provinceDialog.dismiss();
@@ -278,6 +310,8 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                     mCityEditEext.setText(mSelectedCityName);
                 }
 
+                mAllIranCheckBox.setChecked(false);
+
                 if (cityDialog.isShowing()) {
                     cityDialog.dismiss();
                 }
@@ -296,6 +330,9 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, mSelectedProvinceName);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
+
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
+
         setResult(RESULT_OK, data);
         finish();
     }
@@ -306,6 +343,8 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+
         setResult(RESULT_OK, data);
         finish();
     }
