@@ -2,8 +2,6 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.parse.LogOutCallback;
-import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -23,7 +21,6 @@ import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.CommonUtil;
-import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 
@@ -31,7 +28,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,7 +49,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -325,10 +320,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_support_us:
-                Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBrowseApp.getInstance().getPackageName()));
-                intent.setPackage("com.farsitel.bazaar");
-                startActivity(intent);
+                callBazaarRateIntent();
                 break;
 
             case R.id.item_switch_app:
@@ -348,11 +340,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_nav_title_exit_app:
-                final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.ask_for_starts);
-                dialog.show();
-//                finish();
+                askToRate();
                 break;
 
         }
@@ -568,7 +556,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (mActiveTab != TAB_ITEMS) {
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
-                finish();
+                askToRate();
             }
         }
     }
@@ -729,10 +717,36 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void askToRate() {
+        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.ask_for_starts);
+        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
+        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
+        letsRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callBazaarRateIntent();
+                //TODO inja set intent ke ray dade dige neshon nade dialogo
+                dialog.dismiss();
+                finish();
+            }
+        });
+        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
+    }
 
-
+    public void callBazaarRateIntent() {
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBrowseApp.getInstance().getPackageName()));
+        intent.setPackage("com.farsitel.bazaar");
+        startActivity(intent);
     }
 }
