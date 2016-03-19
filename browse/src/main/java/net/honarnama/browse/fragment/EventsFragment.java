@@ -18,7 +18,6 @@ import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.EventCategory;
 import net.honarnama.core.model.Provinces;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Dialog;

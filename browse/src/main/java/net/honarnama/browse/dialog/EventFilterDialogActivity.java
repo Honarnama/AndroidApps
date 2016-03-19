@@ -354,6 +354,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, "");
+
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
 
         setResult(RESULT_OK, data);

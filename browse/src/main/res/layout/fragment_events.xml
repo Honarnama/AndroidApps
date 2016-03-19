@@ -18,8 +18,8 @@
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:iiv_color="@color/dark_cyan"
                 app:iiv_icon="cmd-filter"
+                app:iiv_color="@color/text_color"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="10dp"
                 android:layout_alignParentRight="true"
@@ -30,7 +30,6 @@
         <TextView android:layout_width="match_parent"
                   android:layout_height="?attr/actionBarSize"
                   android:text="فیلتر کردن محدوده جغرافیایی"
-                  android:textColor="@color/dark_cyan"
                   android:textSize="16dp"
                   android:layout_toLeftOf="@id/filter_icon"
                   android:layout_centerVertical="true"

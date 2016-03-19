@@ -14,6 +14,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsParseAdapter;
 import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.core.model.City;
+import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
@@ -53,6 +54,8 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mLoadingCircle;
 
+    private boolean mIsAllIranChecked = true;
+
     private ListView mListView;
 
     @Override
@@ -91,29 +94,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_shops_warning_container);
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
-
-
-//        Shop.getShopList(getActivity()).continueWith(new Continuation<List<ParseObject>, Object>() {
-//            @Override
-//            public Object then(Task<List<ParseObject>> task) throws Exception {
-//                loadingCircle.setVisibility(View.GONE);
-//                if (task.isFaulted()) {
-//                    logE("Getting Shops Failed. Error: " + task.getError(), "", task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_shop_lsit) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
-//                    }
-//                } else {
-//                    List<ParseObject> shopList = task.getResult();
-//                    mAdapter.setImages(shopList);
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//                return null;
-//            }
-//        });
-
-//        mAdapter = new ShopsAdapter(getActivity());
-//        listView.setAdapter(mAdapter);
-//        listView.setOnItemClickListener(this);
 
         mListView.setOnItemClickListener(this);
         listShops();
@@ -164,6 +144,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
                 getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
                 break;
         }
@@ -182,16 +163,19 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
                         parseQuery.include(Store.CITY);
 
-                        if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                            Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
-                            parseQuery.whereEqualTo(Store.PROVINCE, province);
-                        }
+                        if (!mIsAllIranChecked) {
+                            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+                                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                                parseQuery.whereEqualTo(Store.PROVINCE, province);
+                            }
 
-                        if (!TextUtils.isEmpty(mSelectedCityId)) {
-                            City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                            parseQuery.whereEqualTo(Store.CITY, city);
+                            if (!TextUtils.isEmpty(mSelectedCityId)) {
+                                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
+                                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+                                    parseQuery.whereEqualTo(Store.CITY, city);
+                                }
+                            }
                         }
-
                         return parseQuery;
                     }
                 };
@@ -237,6 +221,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
+
+                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+
                     listShops();
                 }
                 break;
