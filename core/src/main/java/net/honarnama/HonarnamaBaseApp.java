@@ -55,6 +55,9 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
     public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
 
+    public static final String EXTRA_KEY_BROWSE_APP_RATED = "browse_app_rated";
+    public static final String EXTRA_KEY_SELL_APP_RATED = "sell_app_rated";
+
 
     public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
     public static final String EXTRA_KEY_CATEGORY_NAME = "selectedCategoryName";

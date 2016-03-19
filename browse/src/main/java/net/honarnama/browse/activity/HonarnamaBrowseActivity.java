@@ -7,5 +7,4 @@ import net.honarnama.core.activity.HonarnamaBaseActivity;
  */
 public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
     public final static String SELECTED_TAB_EXTRA_KEY = "selectedTabIndex";
-
 }

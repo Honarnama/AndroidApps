@@ -21,12 +21,15 @@ import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.CommonUtil;
+import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -90,11 +93,15 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public static final int ITEM_IDENTIFIER_SWAP = 6;
     public static final int ITEM_IDENTIFIER_EXIT = 7;
 
+    SharedPreferences mSharedPreferences;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.BROWSE_APP_KEY, Context.MODE_PRIVATE);
 
         mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
         mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
@@ -340,7 +347,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_nav_title_exit_app:
-                askToRate();
+                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, false)) {
+                    askToRate();
+                } else {
+                    finish();
+                }
                 break;
 
         }
@@ -556,7 +567,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (mActiveTab != TAB_ITEMS) {
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
-                askToRate();
+                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, false)) {
+                    askToRate();
+                } else {
+                    finish();
+                }
             }
         }
     }
@@ -729,6 +744,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             public void onClick(View v) {
                 callBazaarRateIntent();
                 //TODO inja set intent ke ray dade dige neshon nade dialogo
+
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, true);
+                editor.commit();
+
                 dialog.dismiss();
                 finish();
             }
