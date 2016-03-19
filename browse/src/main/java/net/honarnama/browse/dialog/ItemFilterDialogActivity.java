@@ -127,8 +127,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
         if (TextUtils.isEmpty(mSelectedCityId)) {
             mSelectedCityId = City.ALL_CITY_ID;
-
-            logE("inja mSelectedCityId at calling time is " + mSelectedCityId);
         }
 
         mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
