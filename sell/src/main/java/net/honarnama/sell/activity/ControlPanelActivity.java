@@ -17,6 +17,7 @@ import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.CacheData;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -347,12 +348,22 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
             }
         } else {
-            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-            if (!sharedPref.getBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, false)) {
-                askToRate();
-            } else {
-                finish();
-            }
+            new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.DialogStyle))
+                    .setTitle("تایید خروج")
+                    .setMessage("می‌خوای از برنامه خارج بشی؟")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("بله", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+                            if (!sharedPref.getBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, false)) {
+                                askToRate();
+                            } else {
+                                finish();
+                            }
+                        }
+                    })
+                    .setNegativeButton("نه می‌مونم", null).show();
+
         }
     }
 
