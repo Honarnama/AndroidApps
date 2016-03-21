@@ -81,7 +81,7 @@
 
         <item
                 android:id="@+id/item_nav_title_exit_app"
-                android:title="@string/nav_title_exit_app"
+                android:title="@string/exit_account"
                 android:checkable="false"
                 />
         <item

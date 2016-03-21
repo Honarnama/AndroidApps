@@ -42,7 +42,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -149,7 +148,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         final View rootView = inflater.inflate(R.layout.fragment_item_page, container, false);
         mItemId = getArguments().getString("itemId");
 
-
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
@@ -163,6 +161,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mPlaceTextView = (TextView) rootView.findViewById(R.id.item_place_text_view);
         mShare = (RelativeLayout) rootView.findViewById(R.id.item_share_container);
         mShare.setOnClickListener(this);
+        rootView.findViewById(R.id.share_item_icon).setOnClickListener(this);
+        rootView.findViewById(R.id.share_item_text).setOnClickListener(this);
 
         mBookmarkImageView = (IconicsImageView) rootView.findViewById(R.id.bookmark);
         mBookmarkImageView.setOnClickListener(this);
@@ -183,17 +183,15 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mInfoProgreeBarContainer = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
         mSimilarItemsProgressBar = (ProgressBar) rootView.findViewById(R.id.similar_items_progress_bar);
 
-
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
-
         final IconicsImageView bookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-
+        final RelativeLayout deletedItemMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_item_msg);
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
-
         final RelativeLayout similarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
+
         similarItemsContainer.setVisibility(View.GONE);
         mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
         mDefaultImageView.setVisibility(View.VISIBLE);
@@ -202,15 +200,22 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
             @Override
             public Object then(Task<ParseObject> task) throws Exception {
-                mDefaultImageView.setVisibility(View.GONE);
                 mInfoProgreeBarContainer.setVisibility(View.GONE);
                 if (task.isFaulted()) {
-                    logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_item_no_longer_exists), Toast.LENGTH_SHORT).show();
+                        }
+                        deletedItemMsg.setVisibility(View.VISIBLE);
+
+                    } else {
+                        logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
+                        mOnErrorRetry.setVisibility(View.VISIBLE);
                     }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                    return rootView;
                 } else {
+                    fab.setVisibility(View.VISIBLE);
+                    mDefaultImageView.setVisibility(View.GONE);
                     infoContainer.setVisibility(View.VISIBLE);
                     mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
@@ -242,9 +247,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     String formattedPrice = formatter.format(mItem.getPrice());
                     String price = TextUtil.convertEnNumberToFa(formattedPrice);
 
-
                     mPriceTextView.setText(price + " ");
-
                     mDescTextView.setText(mItem.getDescription());
 
                     mShop = mItem.getStore();
@@ -256,7 +259,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     });
 
-
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -266,7 +268,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
                         }
                     });
-
 
 //                    mBannerProgressBar.setVisibility(View.VISIBLE);
 
@@ -303,12 +304,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
                             if (task.isFaulted()) {
                                 logE("Finding similar items failed. " + task.getError());
+                                similarItemsContainer.setVisibility(View.GONE);
                             } else {
                                 List<Item> similarItems = task.getResult();
-                                similarItemsContainer.setVisibility(View.GONE);
                                 if (similarItems.size() > 0) {
                                     mSimilarTitleContainer.setVisibility(View.VISIBLE);
-                                    addItems(task.getResult());
+                                    addSimilarItems(task.getResult());
+                                } else {
+                                    similarItemsContainer.setVisibility(View.GONE);
                                 }
                             }
                             return null;
@@ -404,7 +407,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.item_share_container) {
+        if (v.getId() == R.id.item_share_container || v.getId() == R.id.share_item_icon || v.getId() == R.id.share_item_text) {
+
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
@@ -534,7 +538,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         super.onResume();
     }
 
-    public void addItems(List<Item> items) {
+    public void addSimilarItems(List<Item> items) {
 
         for (int i = 1; i < items.size(); i++) {
             final Item item = items.get(i);

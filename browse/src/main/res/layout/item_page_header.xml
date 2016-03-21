@@ -52,83 +52,84 @@
                   android:visibility="visible"
                   android:layout_alignParentTop="true"
                     />
-        </FrameLayout>
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:id="@+id/item_share_container"
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:id="@+id/item_share_container"
+                            android:visibility="gone"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="16dp"
+                    >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:iiv_color="@color/white"
+                        app:iiv_icon="gmd-share"
+                        android:id="@+id/share_item_icon"
+                        android:clickable="true"
+                        />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/share_us"
+                          android:textSize="14sp"
+                          android:textColor="@color/white"
+                          android:paddingRight="5dp"
+                          android:layout_toLeftOf="@id/share_item_icon"
+                          android:id="@+id/share_item_text"
+                          android:clickable="true"
+                        />
+            </RelativeLayout>
+
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:id="@+id/item_bookmark_container"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentLeft="true"
+                    >
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:iiv_color="@color/white"
+                        app:iiv_icon="gmd-lens"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
                         android:visibility="gone"
-                        android:layout_gravity="top|right"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                >
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:iiv_color="@color/white"
-                    app:iiv_icon="gmd-share"
-                    android:id="@+id/share_item"
-                    />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/share_us"
-                      android:textSize="14sp"
-                      android:textColor="@color/white"
-                      android:paddingRight="5dp"
-                      android:layout_toLeftOf="@id/share_item"
-                    />
-        </RelativeLayout>
+                        android:id="@+id/bookmark_back"
+                        />
 
-
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:id="@+id/item_bookmark_container"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_alignParentTop="true"
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_color="@color/gray"
+                        app:iiv_icon="gmd-stars"
+                        android:id="@+id/bookmark"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"
                         android:layout_alignParentLeft="true"
                         android:clickable="true"
-                >
+                        />
 
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:iiv_color="@color/white"
-                    app:iiv_icon="gmd-lens"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentLeft="true"
-                    android:visibility="gone"
-                    android:id="@+id/bookmark_back"
-                    />
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_color="@color/super_extra_dark_red"
+                        app:iiv_icon="gmd-stars"
+                        android:id="@+id/remove_bookmark"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:clickable="true"
+                        />
 
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:iiv_color="@color/gray"
-                    app:iiv_icon="gmd-stars"
-                    android:id="@+id/bookmark"
-                    android:visibility="gone"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentLeft="true"
-                    android:clickable="true"
-                    />
+            </RelativeLayout>
 
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:iiv_color="@color/super_extra_dark_red"
-                    app:iiv_icon="gmd-stars"
-                    android:id="@+id/remove_bookmark"
-                    android:visibility="gone"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentLeft="true"
-                    android:clickable="true"
-                    />
-
-        </RelativeLayout>
-
-
+        </FrameLayout>
     </RelativeLayout>
 
     <LinearLayout android:id="@+id/image_dots_container"
@@ -309,32 +310,5 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
-
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/image_dots_container"
-                    android:id="@+id/on_error_retry_container"
-                    android:visibility="gone"
-            >
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="40dp"
-                android:id="@+id/on_error_retry_icon"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                app:iiv_icon="gmd-sync"
-                app:iiv_color="@color/gray_dark"
-                />
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  style="@style/tiny_text_view"
-                  android:text="@string/error_connection_retry"
-                  android:id="@+id/on_error_retry_text_view"
-                  android:layout_below="@id/on_error_retry_icon"
-                  android:layout_centerHorizontal="true"
-                />
-    </RelativeLayout>
-
 
 </RelativeLayout>

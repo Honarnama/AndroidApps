@@ -111,7 +111,7 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="nav_title_exit_app">خروج</string>
+    <string name="exit_account">خروج از حساب</string>
 
     <string name="exit_from_editing_dialog_title">در حال ویرایش یک محصول</string>
     <string name="exit_from_editing_option_dont_exit">باقی ماندن در صفحه</string>
@@ -233,6 +233,7 @@
         خطا در نمایش رویداد هنری.
     </string>
     <string name="error_displaying_item">خطا در نمایش محصول.</string>
+    <string name="error_item_no_longer_exists">صاحب فروشگاه این محصول را دیگر عرضه نمی‌کند.</string>
     <string name="art_event">رویداد هنری/فرهنگی </string>
     <string name="event_address">
         آدرس رویداد

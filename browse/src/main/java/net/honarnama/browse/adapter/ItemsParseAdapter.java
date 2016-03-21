@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by elnaz on 2/23/16.
@@ -31,6 +32,7 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
         super(context, queryFactory);
         mContext = context;
     }
+
 
     @Override
     public boolean isEmpty() {
@@ -123,6 +125,13 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
                         }
                     });
         }
+
+//        mViewHolder.itemRowContainer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(mContext, "oniconClick", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         // Setting all values in listview
         mViewHolder.title.setText(item.getName());

@@ -156,7 +156,6 @@ public class Item extends net.honarnama.core.model.Item {
         return tcs.getTask();
     }
 
-
     public static Task<List<Item>> search(final String searchTerm) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);

@@ -27,6 +27,67 @@
             <include layout="@layout/item_page_header"
                      android:id="@+id/header_layout"></include>
 
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/header_layout"
+                            android:id="@+id/on_error_retry_container"
+                            android:layout_marginTop="20dp"
+                            android:visibility="gone"
+                    >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/on_error_retry_icon"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:iiv_icon="gmd-sync"
+                        app:iiv_color="@color/gray_dark"
+                        />
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          style="@style/tiny_text_view"
+                          android:text="@string/error_connection_retry"
+                          android:id="@+id/on_error_retry_text_view"
+                          android:layout_below="@id/on_error_retry_icon"
+                          android:layout_centerHorizontal="true"
+                        />
+            </RelativeLayout>
+
+            <RelativeLayout android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/deleted_item_msg"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone"
+                            android:layout_below="@id/header_layout"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                    >
+
+                <TextView android:id="@+id/empty_items_text_view"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          style="@style/tiny_text_view"
+                          android:layout_centerHorizontal="true"
+                          android:layout_centerVertical="true"
+                          android:background="@drawable/important_bar_background"
+                          android:paddingTop="2dp"
+                          android:paddingBottom="2dp"
+                          android:paddingLeft="10dp"
+                          android:paddingRight="30dp"
+                          android:text="@string/error_item_no_longer_exists"
+                        />
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:id="@+id/no_item_warning_image"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_color="@color/orange"
+                        app:iiv_icon="gmd-info"
+                        android:layout_toRightOf="@id/empty_items_text_view"
+                        android:layout_marginLeft="-24dp"
+                        android:layout_centerVertical="true"
+                        />
+            </RelativeLayout>
+
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -143,7 +204,6 @@
                 </HorizontalScrollView>
             </RelativeLayout>
         </RelativeLayout>
-
     </net.honarnama.core.utils.ObservableScrollView>
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -153,5 +213,6 @@
             android:layout_margin="16dp"
             android:src="@android:drawable/stat_sys_phone_call"
             app:fabSize="normal"
+            android:visibility="gone"
             />
 </android.support.design.widget.CoordinatorLayout>

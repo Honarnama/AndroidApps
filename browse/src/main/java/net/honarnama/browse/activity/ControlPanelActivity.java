@@ -743,8 +743,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onClick(View v) {
                 callBazaarRateIntent();
-                //TODO inja set intent ke ray dade dige neshon nade dialogo
-
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, true);
                 editor.commit();
