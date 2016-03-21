@@ -126,6 +126,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
+        final RelativeLayout deletedEventMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_event_msg);
 
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
@@ -137,12 +138,21 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
             public Object then(Task<ParseObject> task) throws Exception {
                 mEventInfoProgressBar.setVisibility(View.GONE);
                 if (task.isFaulted()) {
-                    logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_event_no_longer_exists), Toast.LENGTH_SHORT).show();
+                        }
+                        deletedEventMsg.setVisibility(View.VISIBLE);
+                    } else {
+                        logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        }
+                        mOnErrorRetry.setVisibility(View.VISIBLE);
                     }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                    return null;
                 } else {
+                    fab.setVisibility(View.VISIBLE);
                     infoContainer.setVisibility(View.VISIBLE);
                     mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
