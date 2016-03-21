@@ -212,7 +212,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
                         mOnErrorRetry.setVisibility(View.VISIBLE);
                     }
-                    return rootView;
+                    return null;
                 } else {
                     fab.setVisibility(View.VISIBLE);
                     mDefaultImageView.setVisibility(View.GONE);

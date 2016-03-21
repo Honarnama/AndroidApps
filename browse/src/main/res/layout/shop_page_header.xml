@@ -86,7 +86,6 @@
 
         </FrameLayout>
 
-
     </RelativeLayout>
 
     <RelativeLayout android:layout_width="wrap_content"
@@ -206,7 +205,7 @@
             >
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:id="@+id/on_error_retry_icon"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
