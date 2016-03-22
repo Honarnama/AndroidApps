@@ -8,7 +8,7 @@
             android:topLeftRadius="5dp"
             android:topRightRadius="5dp"/>
 
-    <solid android:color="@color/amber_launcher_color"/>
+    <solid android:color="@color/amber_primary_dark"/>
 
     <stroke
             android:width="0dp"

@@ -294,7 +294,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                                 mDotsText[i].setPadding(0, 10, 10, 0);
                             }
                             mDotsText[i].setTypeface(null, Typeface.BOLD);
-                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_launcher_color));
+                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }

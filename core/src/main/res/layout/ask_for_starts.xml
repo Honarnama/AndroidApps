@@ -59,7 +59,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         app:iiv_icon="gmd-star"
-                        app:iiv_color="@color/amber_launcher_color"
+                        app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
                         />
@@ -67,7 +67,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         app:iiv_icon="gmd-star"
-                        app:iiv_color="@color/amber_launcher_color"
+                        app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
                         />
@@ -75,7 +75,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         app:iiv_icon="gmd-star"
-                        app:iiv_color="@color/amber_launcher_color"
+                        app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
                         />
@@ -83,7 +83,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         app:iiv_icon="gmd-star"
-                        app:iiv_color="@color/amber_launcher_color"
+                        app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
                         />
@@ -91,7 +91,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         app:iiv_icon="gmd-star"
-                        app:iiv_color="@color/amber_launcher_color"
+                        app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
                         />
@@ -158,7 +158,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     app:iiv_icon="gmd-lens"
-                    app:iiv_color="@color/amber_launcher_color"
+                    app:iiv_color="@color/amber_primary_dark"
                     android:layout_centerInParent="true"
                     />
             <com.mikepenz.iconics.view.IconicsImageView

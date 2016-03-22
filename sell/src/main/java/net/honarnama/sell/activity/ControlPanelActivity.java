@@ -476,7 +476,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable accountDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_account_circle);
                 menuItem.setIcon(accountDrawable);
                 fragment = UserAccountFragment.getInstance();
@@ -487,7 +487,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable storeDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_store);
                 menuItem.setIcon(storeDrawable);
                 fragment = StoreInfoFragment.getInstance();
@@ -497,7 +497,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable itemsDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_view_list);
                 menuItem.setIcon(itemsDrawable);
                 fragment = ItemsFragment.getInstance();
@@ -507,7 +507,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable newItemDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_edit);
                 menuItem.setIcon(newItemDrawable);
                 fragment = EditItemFragment.getInstance();
@@ -517,7 +517,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable eventDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_event);
                 menuItem.setIcon(eventDrawable);
                 fragment = EventManagerFragment.getInstance();
@@ -527,7 +527,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable aboutDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_info_outline);
                 menuItem.setIcon(aboutDrawable);
                 fragment = AboutFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
@@ -537,7 +537,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 menuItem.setChecked(true);
                 IconicsDrawable contactDrawable =
                         new IconicsDrawable(ControlPanelActivity.this)
-                                .color(getResources().getColor(R.color.amber_launcher_color))
+                                .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_email);
                 menuItem.setIcon(contactDrawable);
                 fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);

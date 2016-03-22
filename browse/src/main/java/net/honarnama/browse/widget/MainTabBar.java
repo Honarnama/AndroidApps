@@ -6,10 +6,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import net.honarnama.browse.R;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +58,7 @@ public class MainTabBar extends LinearLayout {
     private void init() {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
-        mSelectedTabColor = getContext().getResources().getColor(R.color.amber_launcher_color);
+        mSelectedTabColor = getContext().getResources().getColor(R.color.amber);
         mNotSelectedTabColor = getContext().getResources().getColor(R.color.gray);
 
         Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),

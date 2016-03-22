@@ -3,9 +3,9 @@
 
     <gradient
             android:angle="45"
-            android:endColor="@color/amber_launcher_color"
-            android:centerColor="@color/amber_launcher_color"
-            android:startColor="@color/amber_launcher_color" />
+            android:endColor="@color/amber_primary_dark"
+            android:centerColor="@color/amber_primary_dark"
+            android:startColor="@color/amber_primary_dark" />
 
     <corners android:radius="8dp" />
     <size android:width="3dp"/>

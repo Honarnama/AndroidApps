@@ -148,7 +148,7 @@
                         <com.mikepenz.iconics.view.IconicsImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                app:iiv_color="@color/amber_launcher_color"
+                                app:iiv_color="@color/amber_primary_dark"
                                 app:iiv_icon="gmd-keyboard-arrow-left"/>
                     </LinearLayout>
                     <LinearLayout
@@ -165,7 +165,7 @@
                         <com.mikepenz.iconics.view.IconicsImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
-                                app:iiv_color="@color/amber_launcher_color"
+                                app:iiv_color="@color/amber_primary_dark"
                                 app:iiv_icon="gmd-keyboard-arrow-right"/>
                     </LinearLayout>
                 </RelativeLayout>
