@@ -27,7 +27,7 @@
                     android:paddingRight="16dp"
                     android:paddingLeft="16dp"
                     android:paddingBottom="16dp"
-                    android:paddingTop="110dp"
+                    android:paddingTop="116dp"
                     />
         </RelativeLayout>
 
@@ -43,7 +43,7 @@
                   style="@style/default_text_view"
                   android:textStyle="bold"
                   android:textSize="20sp"
-                  android:layout_marginTop="5dp"
+                  android:layout_marginTop="10dp"
                   android:layout_centerHorizontal="true"
                   android:layout_below="@id/about_logo"
                 />
