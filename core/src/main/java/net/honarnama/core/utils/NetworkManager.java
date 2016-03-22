@@ -39,7 +39,7 @@ public class NetworkManager {
             }
             if(activeNetworkInfo != null && (!activeNetworkInfo.isConnected() || !activeNetworkInfo.isAvailable()) )
             {
-                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_no_internet_connection), Toast.LENGTH_LONG).show();
+                Toast.makeText(HonarnamaBaseApp.getInstance(), context.getString(R.string.error_no_internet_connection), Toast.LENGTH_SHORT).show();
             }
         }
         return isNetworkEnabled;

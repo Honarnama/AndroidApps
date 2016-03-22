@@ -119,7 +119,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mListView.setOnItemClickListener(this);
 
-
         return rootView;
     }
 
@@ -171,6 +170,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             if (isVisible()) {
                 WindowUtil.hideKeyboard(getActivity());
             }
+
             msearchTerm = mSearchEditText.getText().toString().trim();
 
             if (TextUtils.isEmpty(msearchTerm)) {
@@ -180,7 +180,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 return;
             }
 
-            if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 return;
             }
             mEmptyListContainer.setVisibility(View.GONE);
@@ -208,6 +208,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void searchItems() {
+        Toast.makeText(getActivity(), "searchItems", Toast.LENGTH_LONG).show();
         Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
