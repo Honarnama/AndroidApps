@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:layoutDirection="rtl"
             android:layout_below="@id/toolbar"
+            android:fadeScrollbars="false"
             >
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -56,7 +57,10 @@
                 app:itemTextColor="@color/nav_item_text_selector"
                 app:itemIconTint="@color/nav_item_text_selector"
                 app:itemBackground="@drawable/nav_item_back_selector"
-                app:menu="@menu/drawer_view">
+                app:menu="@menu/drawer_view"
+                app:headerLayout="@layout/nav_header"
+                android:fadeScrollbars="false"
+                >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="match_parent"

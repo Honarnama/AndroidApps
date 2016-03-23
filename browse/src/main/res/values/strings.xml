@@ -56,5 +56,9 @@
     <string name="to_label">تا:</string>
     <string name="change_filter">تغییر فیلتر</string>
     <string name="filter_geo">فیلتر کردن محدوده جغرافیایی</string>
+    <string name="set_default_location">تعیین مکان جغرافیایی</string>
+    <string name="exit_app">خروج از برنامه</string>
+    <string name="register_location">ثبت مکان</string>
+    <string name="bikhial">بی خیال</string>
 
 </resources>

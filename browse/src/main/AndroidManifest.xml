@@ -105,6 +105,7 @@
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 >
         </activity>
+
     </application>
 
 </manifest>

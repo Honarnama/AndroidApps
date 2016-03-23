@@ -44,6 +44,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_FILTER_EVENT_CODE = 4001;
     public static final int INTENT_FILTER_SHOP_CODE = 4002;
 
+    public static final int INTENT_FILTER_SET_DEFAULT_LOCATION = 5000;
 
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
@@ -57,6 +58,9 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_SUB_CATS = "subCats";
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
     public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
+
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province";
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_ID = "default_city";
 
     public static final String EXTRA_KEY_BROWSE_APP_RATED = "browse_app_rated";
     public static final String EXTRA_KEY_SELL_APP_RATED = "sell_app_rated";
