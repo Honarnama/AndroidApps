@@ -249,6 +249,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
                         parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
                         parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+                        parseQuery.whereExists(Item.STORE);
 
                         if (!mIsAllIranChecked) {
                             parseQuery.whereMatchesQuery(Item.STORE, storeQuery);

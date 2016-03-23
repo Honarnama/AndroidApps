@@ -34,14 +34,17 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String DOMAIN = "honarnama.net";
     public static final String PRODUCTION_TAG = "Honarnama";
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 1000;
-    public static final int INTENT_TELEGRAM_CODE = 1003;
-    public static final int INTENT_CHOOSE_CATEGORY_CODE = 1004;
-    public static final int INTENT_FILTER_ITEMS_CODE = 1005;
-    public static final int INTENT_FILTER_EVENT_CODE = 1006;
-    public static final int INTENT_FILTER_SHOP_CODE = 1007;
+
+    public static final int INTENT_TELEGRAM_CODE = 2000;
+    public static final int INTENT_REGISTER_CODE = 2001;
+
+    public static final int INTENT_CHOOSE_CATEGORY_CODE = 3000;
+
+    public static final int INTENT_FILTER_ITEMS_CODE = 4000;
+    public static final int INTENT_FILTER_EVENT_CODE = 4001;
+    public static final int INTENT_FILTER_SHOP_CODE = 4002;
 
 
-    public static final int INTENT_REGISTER_CODE = 3000;
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
     public static final String EXTRA_KEY_UNCAUGHT_EXCEPTION = "EXTRA_KEY_UNCAUGHT_EXCEPTION";

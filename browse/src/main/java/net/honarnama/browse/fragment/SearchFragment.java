@@ -208,7 +208,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void searchItems() {
-        Toast.makeText(getActivity(), "searchItems", Toast.LENGTH_LONG).show();
         Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {

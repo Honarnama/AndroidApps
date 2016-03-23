@@ -288,7 +288,6 @@ public class ChooseCategoryActivity extends HonarnamaBaseActivity {
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME, mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, mSelectedCategoryObjectId);
 
-
         setResult(RESULT_OK, data);
         finish();
     }

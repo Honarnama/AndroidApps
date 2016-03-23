@@ -57,7 +57,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_ID = "categoryId";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME = "categoryName";
 
-
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
     private EditText mPriceEditText;
@@ -604,11 +603,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for (ImageSelector imageSelector : mItemImages) {
-            if (imageSelector.onActivityResult(requestCode, resultCode, data)) {
-                return;
-            }
-        }
+
         switch (requestCode) {
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
 
@@ -618,6 +613,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     mCategoryId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID);
                     setDirty(true);
                     mChooseCategoryButton.setText(mCategoryName);
+                }
+                break;
+            default:
+                for (ImageSelector imageSelector : mItemImages) {
+                    if (imageSelector.onActivityResult(requestCode, resultCode, data)) {
+                        return;
+                    }
                 }
                 break;
         }
