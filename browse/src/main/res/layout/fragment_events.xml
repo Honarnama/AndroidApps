@@ -85,7 +85,7 @@
                   android:paddingBottom="2dp"
                   android:paddingLeft="10dp"
                   android:paddingRight="30dp"
-                  android:text="رویدادی پیدا نشد."
+                  android:text="@string/no_event_found"
                 />
 
         <com.mikepenz.iconics.view.IconicsImageView

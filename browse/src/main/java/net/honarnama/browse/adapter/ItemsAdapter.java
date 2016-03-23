@@ -46,12 +46,18 @@ public class ItemsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mItems.size();
+        if (mItems != null) {
+            return mItems.size();
+        }
+        return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return mItems.get(position);
+        if (mItems != null) {
+            return mItems.get(position);
+        }
+        return null;
     }
 
     @Override
@@ -69,6 +75,10 @@ public class ItemsAdapter extends BaseAdapter {
             convertView.setTag(mViewHolder);
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
+        }
+
+        if (mItems == null) {
+            return convertView;
         }
 
         final Item item = mItems.get(position);

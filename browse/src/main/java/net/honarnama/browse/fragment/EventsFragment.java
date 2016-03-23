@@ -4,6 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -306,10 +307,16 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 }
             } else {
                 mEmptyListContainer.setVisibility(View.VISIBLE);
-                if (isVisible()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                if (((ParseException) e).getCode() == ParseException.OBJECT_NOT_FOUND) {
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_event_found), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
                 }
-                mOnErrorRetry.setVisibility(View.VISIBLE);
             }
         }
     }

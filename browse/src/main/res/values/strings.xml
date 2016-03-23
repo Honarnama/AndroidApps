@@ -25,7 +25,9 @@
     <string name="bookmarks">"نشان شده‌ها"</string>
     <string name="search">"جستجو"</string>
     <string name="no_shop_found">غرفه‌ای یافت نشد.</string>
-    <string name="error_getting_shop_lsit">خطا در گرفتن فهرست غرفه‌ها.</string>
+    <string name="error_getting_shop_list">خطا در گرفتن فهرست غرفه‌ها.</string>
+    <string name="error_getting_event_list">خطا در گرفتن فهرست رویدادها.</string>
+
     <string name="shop_has_no_item">غرفه فاقد محصول است.</string>
     <string name="shop_items">محصولات غرفه</string>
     <string name="art_shop">غرفه هنری</string>

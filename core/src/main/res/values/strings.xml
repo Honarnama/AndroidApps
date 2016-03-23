@@ -256,4 +256,5 @@
     <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="category_label">دسته‌بندی:</string>
     <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
+    <string name="no_event_found">رویدادی یافت نشد.</string>
 </resources>
