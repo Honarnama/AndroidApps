@@ -108,7 +108,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public static final int ITEM_IDENTIFIER_SWAP = 7;
     public static final int ITEM_IDENTIFIER_EXIT = 8;
 
-    SharedPreferences mSharedPreferences;
 
     public Dialog mSetDefaultLocationDialog;
 
@@ -135,8 +134,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.BROWSE_APP_KEY, Context.MODE_PRIVATE);
 
         mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
         mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
@@ -228,22 +225,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         handleExternalIntent(getIntent());
     }
 
-    public String getDefaultLocationProvinceId() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, "");
-    }
-
-    public String getDefaultLocationCityId() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, "");
-    }
-
-
-    public String getDefaultLocationProvinceName() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, "");
-    }
-
-    public String getDefaultLocationCityName() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, "");
-    }
 
     public void changeLocationTitle() {
         logE("inja changeLocationTitle");
@@ -912,6 +893,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
+                            mDefaultLocationProvinceEditText.setText(ControlPanelActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                             Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         } else {
@@ -936,6 +918,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
+                    mDefaultLocationCityEditText.setText(ControlPanelActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {

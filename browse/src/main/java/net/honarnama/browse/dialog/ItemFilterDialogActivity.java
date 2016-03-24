@@ -46,7 +46,7 @@ import bolts.Task;
 public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements View.OnClickListener {
 
     public Activity mActivity;
-    private EditText mProvinceEditEext;
+    private EditText mProvinceEditText;
 
     public String mSelectedProvinceId;
     public String mSelectedProvinceName;
@@ -78,9 +78,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
 
         mActivity = ItemFilterDialogActivity.this;
-        mProvinceEditEext = (EditText) findViewById(R.id.province_edit_text);
-        mProvinceEditEext.setOnClickListener(this);
-        mProvinceEditEext.setKeyListener(null);
+        mProvinceEditText = (EditText) findViewById(R.id.province_edit_text);
+        mProvinceEditText.setOnClickListener(this);
+        mProvinceEditText.setKeyListener(null);
 
         mCityEditEext = (EditText) findViewById(R.id.city_edit_text);
         mCityEditEext.setOnClickListener(this);
@@ -109,12 +109,13 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         });
 
         Intent intent = getIntent();
-        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID)) {
-            mSelectedProvinceId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
+        mSelectedProvinceId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
+        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+            mSelectedProvinceId = getDefaultLocationProvinceId();
         }
-
-        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID)) {
-            mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
+        mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
+        if (TextUtils.isEmpty(mSelectedCityId)) {
+            mSelectedCityId = getDefaultLocationCityId();
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
@@ -189,7 +190,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                                 }
                                 mProvincesHashMap.put(province.getObjectId(), province.getName());
                             }
-                            mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                            mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
                         }
                         return null;
                     }
@@ -295,7 +296,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 mSelectedProvince = mProvincesObjectsTreeMap.get(position + 1);
                 mSelectedProvinceId = mSelectedProvince.getObjectId();
                 mSelectedProvinceName = mSelectedProvince.getName();
-                mProvinceEditEext.setText(mSelectedProvinceName);
+                mProvinceEditText.setText(mSelectedProvinceName);
 
                 mAllIranCheckBox.setChecked(false);
 
