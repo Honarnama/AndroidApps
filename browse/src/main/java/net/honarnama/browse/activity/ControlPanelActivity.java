@@ -883,17 +883,25 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
 
+        fetchProvincesAndCities();
+
+        mSetDefaultLocationDialog.show();
+    }
+
+    private void fetchProvincesAndCities() {
 
         final Provinces provinces = new Provinces();
         final City city = new City();
 
+        mDefaultLocationProvinceEditText.setHint(getString(R.string.getting_information));
+        mDefaultLocationCityEditText.setHint(getString(R.string.getting_information));
 
         provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
                 continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
-                            mDefaultLocationProvinceEditText.setText(ControlPanelActivity.this.getString(R.string.error_occured));
+                            mDefaultLocationProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                             Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         } else {
@@ -918,7 +926,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    mDefaultLocationCityEditText.setText(ControlPanelActivity.this.getString(R.string.error_occured));
+                    mDefaultLocationCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {
@@ -939,7 +947,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
 
-        mSetDefaultLocationDialog.show();
     }
 
     private void displayProvinceDialog() {

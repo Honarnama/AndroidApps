@@ -174,12 +174,15 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         final Provinces provinces = new Provinces();
         final City city = new City();
 
+        mProvinceEditText.setHint(getString(R.string.getting_information));
+        mCityEditEext.setHint(getString(R.string.getting_information));
 
         provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
                 continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
+                            mProvinceEditText.setHint(ItemFilterDialogActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                             Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         } else {
@@ -202,10 +205,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-//                if (progressDialog.isShowing()) {
-//                    progressDialog.dismiss();
-//                }
+
                 if (task.isFaulted()) {
+                    mCityEditEext.setHint(ItemFilterDialogActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {

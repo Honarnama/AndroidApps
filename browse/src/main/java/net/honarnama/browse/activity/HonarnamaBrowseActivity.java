@@ -21,7 +21,6 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
         mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.BROWSE_APP_KEY, Context.MODE_PRIVATE);
     }
 
-
     public String getDefaultLocationProvinceId() {
         return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, "");
     }
@@ -38,4 +37,5 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
     public String getDefaultLocationCityName() {
         return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, "");
     }
+
 }

@@ -5,6 +5,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
 import net.honarnama.core.adapter.CityAdapter;
@@ -41,7 +42,7 @@ import bolts.Task;
 public class EventFilterDialogActivity extends HonarnamaBrowseActivity implements View.OnClickListener {
 
     public Activity mActivity;
-    private EditText mProvinceEditEext;
+    private EditText mProvinceEditText;
 
     public String mSelectedProvinceId;
     public String mSelectedProvinceName;
@@ -68,9 +69,9 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
 
 
         mActivity = EventFilterDialogActivity.this;
-        mProvinceEditEext = (EditText) findViewById(R.id.province_edit_text);
-        mProvinceEditEext.setOnClickListener(this);
-        mProvinceEditEext.setKeyListener(null);
+        mProvinceEditText = (EditText) findViewById(R.id.province_edit_text);
+        mProvinceEditText.setOnClickListener(this);
+        mProvinceEditText.setKeyListener(null);
 
         mCityEditEext = (EditText) findViewById(R.id.city_edit_text);
         mCityEditEext.setOnClickListener(this);
@@ -99,12 +100,13 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         });
 
         Intent intent = getIntent();
-        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID)) {
-            mSelectedProvinceId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
+        mSelectedProvinceId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
+        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+            mSelectedProvinceId = getDefaultLocationProvinceId();
         }
-
-        if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID)) {
-            mSelectedCityId = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
+        mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
+        if (TextUtils.isEmpty(mSelectedCityId)) {
+            mSelectedCityId = getDefaultLocationCityId();
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
@@ -115,24 +117,21 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
             mSelectedCityId = City.ALL_CITY_ID;
         }
 
-
-////        mFromEditText = (EditText) findViewById(R.id.from);
-////        mFromEditText.addTextChangedListener(new PriceTextWatcher(mFromEditText));
-//
-//        mToEditText = (EditText) findViewById(R.id.to);
-
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);
 
         final Provinces provinces = new Provinces();
         final City city = new City();
 
+        mProvinceEditText.setHint(getString(R.string.getting_information));
+        mCityEditEext.setHint(getString(R.string.getting_information));
 
         provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
                 continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
+                            mProvinceEditText.setHint(EventFilterDialogActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                             Toast.makeText(EventFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         } else {
@@ -143,7 +142,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                                 }
                                 mProvincesHashMap.put(province.getObjectId(), province.getName());
                             }
-                            mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                            mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
                         }
                         return null;
                     }
@@ -155,10 +154,8 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-//                if (progressDialog.isShowing()) {
-//                    progressDialog.dismiss();
-//                }
                 if (task.isFaulted()) {
+                    mCityEditEext.setHint(EventFilterDialogActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     Toast.makeText(EventFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {
@@ -187,7 +184,6 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
             }
         });
 
-
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,7 +191,6 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                 finish();
             }
         });
-
     }
 
     @Override
@@ -248,7 +243,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                 mSelectedProvince = mProvincesObjectsTreeMap.get(position + 1);
                 mSelectedProvinceId = mSelectedProvince.getObjectId();
                 mSelectedProvinceName = mSelectedProvince.getName();
-                mProvinceEditEext.setText(mSelectedProvinceName);
+                mProvinceEditText.setText(mSelectedProvinceName);
 
                 mAllIranCheckBox.setChecked(false);
 

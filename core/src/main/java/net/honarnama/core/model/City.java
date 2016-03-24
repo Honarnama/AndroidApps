@@ -127,7 +127,7 @@ public class City extends ParseObject {
             parseQuery.fromLocalDatastore();
         } else {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
                 tcs.setError(new NetworkErrorException("Network connection failed"));
                 return tcs.getTask();
             }
