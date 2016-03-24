@@ -59,8 +59,10 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
     public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
 
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province";
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_ID = "default_city";
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province_id";
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME = "default_province_name";
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_ID = "default_city_id";
+    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME = "default_city_name";
 
     public static final String EXTRA_KEY_BROWSE_APP_RATED = "browse_app_rated";
     public static final String EXTRA_KEY_SELL_APP_RATED = "sell_app_rated";

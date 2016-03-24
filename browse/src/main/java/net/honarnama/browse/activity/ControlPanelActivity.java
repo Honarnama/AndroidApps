@@ -220,10 +220,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         logE("inja mDefaultLocationProvinceId " + mDefaultLocationProvinceId);
         mSelectedDefaultLocationCityId = mDefaultLocationCityId = getDefaultLocationCityId();
         logE("inja mDefaultLocationCityId " + mDefaultLocationCityId);
-
-        if (!TextUtils.isEmpty(mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, ""))) {
-            mDefaultLocationCityId = mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, "");
-        }
+        mDefaultLocationProvinceName = getDefaultLocationProvinceName();
+        mDefaultLocationCityName = getDefaultLocationCityName();
+        changeLocationTitle();
 
         handleExternalIntent(getIntent());
     }
@@ -234,6 +233,22 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public String getDefaultLocationCityId() {
         return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, "");
+    }
+
+
+    public String getDefaultLocationProvinceName() {
+        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, "");
+    }
+
+    public String getDefaultLocationCityName() {
+        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, "");
+    }
+
+    public void changeLocationTitle() {
+        if (!TextUtils.isEmpty(mDefaultLocationProvinceName) && !TextUtils.isEmpty(mDefaultLocationCityName)) {
+            Menu menu = mNavigationView.getMenu();
+            menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultLocationProvinceName + "، " + mDefaultLocationCityName);
+        }
     }
 
     private void setupDrawerContent() {
@@ -857,13 +872,21 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         registerLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
-                mDefaultLocationCityId = mSelectedDefaultLocationCityId;
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
-                editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
-                editor.commit();
+                if (!TextUtils.isEmpty(mSelectedDefaultLocationProvinceId) && !TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
+                    mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
+                    mDefaultLocationProvinceName = mSelectedDefaultLocationProvinceName;
+                    mDefaultLocationCityId = mSelectedDefaultLocationCityId;
+                    mDefaultLocationCityName = mSelectedDefaultLocationCityName;
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
+                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
+                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
+                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
+                    editor.commit();
+                    changeLocationTitle();
+                } else {
+                    Toast.makeText(ControlPanelActivity.this, "استان یا شهر انتخاب نشده است.", Toast.LENGTH_SHORT).show();
+                }
                 mSetDefaultLocationDialog.dismiss();
             }
         });
@@ -985,7 +1008,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
                     for (String key : tempSet) {
                         mSelectedDefaultLocationCityId = key;
-                        mDefaultLocationCityEditText.setText(mCityHashMap.get(key));
+                        mSelectedDefaultLocationCityName = mCityHashMap.get(key);
+                        mDefaultLocationCityEditText.setText(mSelectedDefaultLocationCityName);
                     }
                 }
                 return null;
