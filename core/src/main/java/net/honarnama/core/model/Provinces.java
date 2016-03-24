@@ -155,10 +155,6 @@ public class Provinces extends ParseObject {
             @Override
             public void done(final List<Provinces> provincesList, ParseException e) {
                 if (e == null) {
-//                    if (mReceivingDataProgressDialog.isShowing()) {
-//                        mReceivingDataProgressDialog.dismiss();
-//                    }
-
                     if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED, false)) {
                         ParseObject.unpinAllInBackground(Provinces.OBJECT_NAME, provincesList, new DeleteCallback() {
                             @Override

@@ -66,7 +66,7 @@
                           android:layout_width="40dp"
                         />
                 <EditText
-                        android:hint="@string/province"
+                        android:hint="@string/getting_information"
                         android:id="@+id/province_edit_text"
                         style="@style/bordered_edit_text"
                         android:layout_marginRight="16dp"
@@ -94,7 +94,7 @@
                           android:layout_width="40dp"
                         />
                 <EditText
-                        android:hint="@string/city"
+                        android:hint="@string/getting_information"
                         android:id="@+id/city_edit_text"
                         style="@style/bordered_edit_text"
                         android:layout_marginRight="16dp"

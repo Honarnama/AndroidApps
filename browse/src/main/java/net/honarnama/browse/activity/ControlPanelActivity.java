@@ -217,11 +217,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mNavFooter.setOnClickListener(this);
 
         mSelectedDefaultLocationProvinceId = mDefaultLocationProvinceId = getDefaultLocationProvinceId();
-        logE("inja mDefaultLocationProvinceId " + mDefaultLocationProvinceId);
         mSelectedDefaultLocationCityId = mDefaultLocationCityId = getDefaultLocationCityId();
-        logE("inja mDefaultLocationCityId " + mDefaultLocationCityId);
-        mDefaultLocationProvinceName = getDefaultLocationProvinceName();
-        mDefaultLocationCityName = getDefaultLocationCityName();
+        mSelectedDefaultLocationProvinceName = mDefaultLocationProvinceName = getDefaultLocationProvinceName();
+        mSelectedDefaultLocationCityName = mDefaultLocationCityName = getDefaultLocationCityName();
+
+        logE("inja mSelectedDefaultLocationProvinceName " + mSelectedDefaultLocationProvinceName);
+
         changeLocationTitle();
 
         handleExternalIntent(getIntent());
@@ -245,6 +246,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void changeLocationTitle() {
+        logE("inja changeLocationTitle");
         if (!TextUtils.isEmpty(mDefaultLocationProvinceName) && !TextUtils.isEmpty(mDefaultLocationCityName)) {
             Menu menu = mNavigationView.getMenu();
             menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultLocationProvinceName + "، " + mDefaultLocationCityName);
@@ -872,6 +874,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         registerLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    return;
+                }
                 if (!TextUtils.isEmpty(mSelectedDefaultLocationProvinceId) && !TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
                     mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
                     mDefaultLocationProvinceName = mSelectedDefaultLocationProvinceName;
@@ -885,7 +890,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     editor.commit();
                     changeLocationTitle();
                 } else {
-                    Toast.makeText(ControlPanelActivity.this, "استان یا شهر انتخاب نشده است.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControlPanelActivity.this, ControlPanelActivity.this.getString(R.string.error_occured) + " استان یا شهر انتخاب نشده بود.", Toast.LENGTH_LONG).show();
                 }
                 mSetDefaultLocationDialog.dismiss();
             }
@@ -914,6 +919,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                             for (Provinces province : mProvincesObjectsTreeMap.values()) {
                                 if (TextUtils.isEmpty(mSelectedDefaultLocationProvinceId)) {
                                     mSelectedDefaultLocationProvinceId = province.getObjectId();
+                                    mSelectedDefaultLocationProvinceName = province.getName();
                                 }
                                 mProvincesHashMap.put(province.getObjectId(), province.getName());
                             }
@@ -939,14 +945,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
                             if (TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
                                 mSelectedDefaultLocationCityId = citySet.getKey();
+                                mSelectedDefaultLocationCityName = citySet.getValue();
                             }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
                     mDefaultLocationCityEditText.setText(mCityHashMap.get(mSelectedDefaultLocationCityId));
-                }
-                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(ControlPanelActivity.this, getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
                 }
                 return null;
             }
