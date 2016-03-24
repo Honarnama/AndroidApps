@@ -237,7 +237,7 @@
     <string name="error_shop_no_longer_exists">فروشگاه مورد نظر در حال حاضر غیر فعال است.</string>
     <string name="error_event_no_longer_exists">رویداد مورد نظر در حال حاضر غیر فعال است.</string>
 
-    <string name="art_event">رویداد هنری/فرهنگی </string>
+    <string name="art_event">رویداد هنری/فرهنگی</string>
     <string name="event_address">
         آدرس رویداد
     </string>
@@ -248,8 +248,8 @@
     <string name="toman">تومان</string>
     <string name="price_label">قیمت:</string>
     <string name="event_address_label">محل برگزاری:</string>
-    <string name="error_getting_city_list">خطا در نمایش فهرست شهرها. لطفا اینترنت دستگاه خود را
-        بررسی کنید.
+    <string name="error_getting_city_list">
+        خطا در نمایش فهرست شهرها.
     </string>
     <string name="send_device_info">ارسال مشخصات دستگاه</string>
     <string name="error_getting_event_cat_list">خطا در گرفتن فهرست دسته‌بندی رویداد‌ها.</string>

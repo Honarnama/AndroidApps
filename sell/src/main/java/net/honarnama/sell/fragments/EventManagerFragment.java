@@ -290,14 +290,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mActive.setChecked(true);
             mPassive.setChecked(false);
 
-            mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-            mSelectedCityId = City.DEFAULT_CITY_ID;
             mSelectedCatId = null;
 
             mEventCatBtn.setText(getString(R.string.select));
-
-            mProvinceEditText.setText(Provinces.DEFAULT_PROVINCE_NAME);
-            mCityEditEext.setText(City.DEFAULT_CITY_NAME);
 
             mNameEditText.setError(null);
             mAddressEditText.setError(null);
@@ -486,7 +481,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
 
 
-        if (mSelectedProvinceId == null) {
+        if (TextUtils.isEmpty(mSelectedProvinceId)) {
             mProvinceEditText.requestFocus();
             mProvinceEditText.setError(getString(R.string.error_event_province_not_set));
             return false;
@@ -494,7 +489,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mProvinceEditText.setError(null);
         }
 
-        if (mSelectedCityId == null) {
+        if (TextUtils.isEmpty(mSelectedCityId)) {
             mCityEditEext.requestFocus();
             mCityEditEext.setError(getString(R.string.error_event_city_not_set));
             return false;
@@ -864,22 +859,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Provinces>>>() {
             @Override
             public Task<TreeMap<Number, Provinces>> then(Task<Void> task) throws Exception {
-                if (mSelectedProvinceId == null) {
-                    mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-
-                }
-                if (mSelectedCityId == null) {
-                    mSelectedCityId = City.DEFAULT_CITY_ID;
-                }
                 return provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance());
             }
         }).continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                 if (task.isFaulted()) {
-                    mProvinceEditText.setText(Provinces.DEFAULT_PROVINCE_NAME);
                     logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
@@ -889,6 +875,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 } else {
                     mProvincesObjectsTreeMap = task.getResult();
                     for (Provinces province : mProvincesObjectsTreeMap.values()) {
+                        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+                            mSelectedProvinceId = province.getObjectId();
+                            mSelectedProvinceName = province.getName();
+                        }
                         mProvincesHashMap.put(province.getObjectId(), province.getName());
                     }
                     mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
@@ -907,7 +897,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     progressDialog.dismiss();
                 }
                 if (task.isFaulted()) {
-                    mCityEditEext.setText(City.DEFAULT_CITY_NAME);
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
@@ -916,6 +905,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                                mSelectedCityId = citySet.getKey();
+                                mSelectedCityName = citySet.getValue();
+                            }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }

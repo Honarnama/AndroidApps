@@ -39,9 +39,9 @@ public class City extends ParseObject {
     public static String ORDER = "order";
     public static String OBJECT_ID = "objectId";
     public static String PARENT_ID = "parentId";
-
-    public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
-    public static String DEFAULT_CITY_NAME = "آذرشهر";
+//
+//    public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
+//    public static String DEFAULT_CITY_NAME = "آذرشهر";
 
     public static String ALL_CITY_ID = "ALL";
     public static String ALL_CITY_NAME = "تمام شهرها";

@@ -39,8 +39,8 @@ public class Provinces extends ParseObject {
     public static String NAME = "name";
     public static String ORDER = "order";
     public static String OBJECT_ID = "objectId";
-    public static String DEFAULT_PROVINCE_ID = "4ADtQvS2KR";
-    public static String DEFAULT_PROVINCE_NAME = "آذربایجان شرقی";
+//    public static String DEFAULT_PROVINCE_ID = "4ADtQvS2KR";
+//    public static String DEFAULT_PROVINCE_NAME = "آذربایجان شرقی";
 
     public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public TreeMap<Number, Provinces> mProvincesObjectTreeMap = new TreeMap<Number, Provinces>();

@@ -121,15 +121,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             mAllIranCheckBox.setChecked(intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true));
         }
 
-        if (TextUtils.isEmpty(mSelectedProvinceId)) {
-            mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-        }
-
         if (TextUtils.isEmpty(mSelectedCityId)) {
             mSelectedCityId = City.ALL_CITY_ID;
         }
 
-        mSelectedProvinceName = Provinces.DEFAULT_PROVINCE_NAME;
         mSelectedCityName = City.ALL_CITY_NAME;
 
         mMinPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.min_price);
@@ -184,12 +179,14 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
-                            mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                             Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Provinces province : mProvincesObjectsTreeMap.values()) {
+                                if (TextUtils.isEmpty(mSelectedProvinceId)) {
+                                    mSelectedProvinceId = province.getObjectId();
+                                }
                                 mProvincesHashMap.put(province.getObjectId(), province.getName());
                             }
                             mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
@@ -208,7 +205,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 //                    progressDialog.dismiss();
 //                }
                 if (task.isFaulted()) {
-                    mCityEditEext.setText(City.DEFAULT_CITY_NAME);
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                 } else {
@@ -216,6 +212,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                                mSelectedCityId = citySet.getKey();
+                            }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }

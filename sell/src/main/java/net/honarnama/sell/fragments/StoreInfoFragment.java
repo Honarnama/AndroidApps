@@ -43,6 +43,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -243,12 +244,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             mPhoneNumberEditText.setText("");
             mCellNumberEditText.setText("");
 
-            mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-            mSelectedCityId = City.DEFAULT_CITY_ID;
-
-            mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
-            mCityEditEext.setText(City.DEFAULT_CITY_NAME);
-
             mNameEditText.setError(null);
             mDescriptionEditText.setError(null);
             mPhoneNumberEditText.setError(null);
@@ -386,12 +381,13 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             mNameEditText.setError(getString(R.string.error_store_name_cant_be_empty));
             return false;
         }
-        if (mSelectedProvinceId == null) {
+
+        if (TextUtils.isEmpty(mSelectedProvinceId)) {
             mProvinceEditEext.requestFocus();
             mProvinceEditEext.setError(getString(R.string.error_store_province_not_set));
         }
 
-        if (mSelectedCityId == null) {
+        if (TextUtils.isEmpty(mSelectedCityId)) {
             mCityEditEext.requestFocus();
             mCityEditEext.setError(getString(R.string.error_store_city_not_set));
         }
@@ -758,20 +754,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Provinces>>>() {
             @Override
             public Task<TreeMap<Number, Provinces>> then(Task<Void> task) throws Exception {
-                if (mSelectedProvinceId == null) {
-                    mSelectedProvinceId = Provinces.DEFAULT_PROVINCE_ID;
-
-                }
-                if (mSelectedCityId == null) {
-                    mSelectedCityId = City.DEFAULT_CITY_ID;
-                }
                 return provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance());
             }
         }).continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                 if (task.isFaulted()) {
-                    mProvinceEditEext.setText(Provinces.DEFAULT_PROVINCE_NAME);
                     logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
 
                     if (progressDialog.isShowing()) {
@@ -783,6 +771,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 } else {
                     mProvinceObjectsTreeMap = task.getResult();
                     for (Provinces province : mProvinceObjectsTreeMap.values()) {
+                        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+                            mSelectedProvinceId = province.getObjectId();
+                            mSelectedProvinceName = province.getName();
+                        }
                         mProvincesHashMap.put(province.getObjectId(), province.getName());
                     }
                     mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
@@ -801,7 +793,6 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     progressDialog.dismiss();
                 }
                 if (task.isFaulted()) {
-                    mCityEditEext.setText(City.DEFAULT_CITY_NAME);
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
@@ -810,6 +801,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                                mSelectedCityId = citySet.getKey();
+                                mSelectedCityName = citySet.getValue();
+                            }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
