@@ -237,7 +237,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             }
         });
 
-
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override

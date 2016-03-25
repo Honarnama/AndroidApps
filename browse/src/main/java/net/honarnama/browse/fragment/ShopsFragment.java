@@ -158,6 +158,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     public void listShops() {
+        //TODO list only shops having items
         ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
                 new ParseQueryAdapter.QueryFactory<ParseObject>() {
                     public ParseQuery create() {

@@ -505,6 +505,64 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mAddressEditText.setError(null);
         }
 
+        String fromYearValue = mStartYearSpinner.getItemAtPosition(mStartYearSpinner.getSelectedItemPosition()).toString();
+        String fromMonthValue = (mStartMonthSpinner.getSelectedItemPosition() + 1) + "";
+        String fromDayValue = (mStartDaySpinner.getSelectedItemPosition() + 1) + "";
+
+        String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
+        mStartDate = JalaliCalendar.getGregorianDate(userEnteredStartDate);
+        String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
+        if (!checkJalaliDate.equals(userEnteredStartDate)) {
+            mStartDaySpinner.requestFocus();
+            mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mStartLabelTextView.setError(null);
+        }
+
+
+        String toYearValue = mEndYearSpinner.getItemAtPosition(mEndYearSpinner.getSelectedItemPosition()).toString();
+        String toMonthValue = (mEndMonthSpinner.getSelectedItemPosition() + 1) + "";
+        String toDayValue = (mEndDaySpinner.getSelectedItemPosition() + 1) + "";
+
+        String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
+        mEndDate = JalaliCalendar.getGregorianDate(userEnteredEndDate);
+        checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
+        if (!checkJalaliDate.equals(userEnteredEndDate)) {
+            mEndDaySpinner.requestFocus();
+            mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mEndLabelTextView.setError(null);
+        }
+
+        if (mStartDate.after(mEndDate)) {
+            mStartDaySpinner.requestFocus();
+            mStartLabelTextView.setError("تاریخ شروع بزرگتر از تاریخ پایان است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ شروع بزرگتر از تاریخ پایان است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mStartLabelTextView.setError(null);
+        }
+
+        if (System.currentTimeMillis() > mEndDate.getTime()) {
+            mEndDaySpinner.requestFocus();
+            mEndLabelTextView.setError("تاریخ پایان رویداد گذشته است.");
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "تاریخ پایان رویداد گذشته است.", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        } else {
+            mEndLabelTextView.setError(null);
+        }
 
         if (mDescriptionEditText.getText().toString().trim().length() == 0) {
             mDescriptionEditText.requestFocus();
@@ -543,43 +601,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             } else {
                 mPhoneNumberEditText.setError(null);
             }
-        }
-
-        String fromYearValue = mStartYearSpinner.getItemAtPosition(mStartYearSpinner.getSelectedItemPosition()).toString();
-        String fromMonthValue = (mStartMonthSpinner.getSelectedItemPosition() + 1) + "";
-        String fromDayValue = (mStartDaySpinner.getSelectedItemPosition() + 1) + "";
-
-        String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
-        mStartDate = JalaliCalendar.getGregorianDate(userEnteredStartDate);
-        String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
-        if (!checkJalaliDate.equals(userEnteredStartDate)) {
-            mStartDaySpinner.requestFocus();
-            mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
-            }
-            return false;
-        } else {
-            mStartLabelTextView.setError(null);
-        }
-
-
-        String toYearValue = mEndYearSpinner.getItemAtPosition(mEndYearSpinner.getSelectedItemPosition()).toString();
-        String toMonthValue = (mEndMonthSpinner.getSelectedItemPosition() + 1) + "";
-        String toDayValue = (mEndDaySpinner.getSelectedItemPosition() + 1) + "";
-
-        String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
-        mEndDate = JalaliCalendar.getGregorianDate(userEnteredEndDate);
-        checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
-        if (!checkJalaliDate.equals(userEnteredEndDate)) {
-            mEndDaySpinner.requestFocus();
-            mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
-            }
-            return false;
-        } else {
-            mEndLabelTextView.setError(null);
         }
 
         return true;
