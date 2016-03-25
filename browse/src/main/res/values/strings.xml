@@ -60,5 +60,8 @@
     <string name="exit_app">خروج از برنامه</string>
     <string name="register_location">ثبت مکان</string>
     <string name="bikhial">بی خیال</string>
+    <string name="error_wrong_price_range">محدوده قیمت نادرست است.</string>
+    <string name="error_min_price_greater_than_max_price">حداقل قیمت بیشتر از حداکثر قیمت است.
+    </string>
 
 </resources>

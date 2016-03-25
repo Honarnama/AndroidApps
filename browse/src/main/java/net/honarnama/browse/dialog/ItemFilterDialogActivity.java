@@ -267,6 +267,14 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 break;
 
             case R.id.apply_filter:
+                if (!mMaxPriceHorizontalPicker.getActualSelectedValue().equals("MAX")) {
+                    if (Integer.valueOf((String) mMinPriceHorizontalPicker.getActualSelectedValue()) >
+                            Integer.valueOf((String) mMaxPriceHorizontalPicker.getActualSelectedValue())) {
+                        Toast.makeText(ItemFilterDialogActivity.this,
+                                getString(R.string.error_wrong_price_range) + " " + getString(R.string.error_min_price_greater_than_max_price), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                }
                 setFilters();
                 break;
 
