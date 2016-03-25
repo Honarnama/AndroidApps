@@ -20,6 +20,7 @@ import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.PriceFormatterTextWatcher;
 import net.honarnama.core.utils.TextUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -195,7 +196,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.editProductDescription);
 
         mPriceEditText = (EditText) rootView.findViewById(R.id.editItemPrice);
-//        mPriceEditText.addTextChangedListener(new PersianTextWatcher(mPriceEditText));
+        mPriceEditText.addTextChangedListener(new PriceFormatterTextWatcher(mPriceEditText));
 
         mImagesTitleTextView = (TextView) rootView.findViewById(R.id.edit_item_images_title_text_view);
         mScrollView = (ScrollView) rootView.findViewById(R.id.edit_item_scroll_view);
@@ -443,7 +444,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private boolean isFormInputsValid() {
 
         final String title = mTitleEditText.getText().toString();
-        final String price = mPriceEditText.getText().toString();
+
+        final String price = TextUtil.normalizePrice(mPriceEditText.getText().toString());
+
         final String description = mDescriptionEditText.getText().toString();
 
 
@@ -509,7 +512,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private void saveItem() {
         final String title = mTitleEditText.getText().toString().trim();
         final String description = mDescriptionEditText.getText().toString().trim();
-        final Number price = Integer.valueOf(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim()));
+        final Number price = Integer.valueOf(TextUtil.normalizePrice(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim())));
         final String catId = mCategoryId;
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());

@@ -62,4 +62,14 @@ public class TextUtil {
             format.setDecimalFormatSymbols(new DecimalFormatSymbols());
         return format;
     }
+
+    public static String normalizePrice(String input) {
+        return input.replaceAll(LocaleUtils.ENGLISH_DECIMAL_SEPERATOR + "", "")
+                .replaceAll(LocaleUtils.PERSIAN_DECIMAL_SEPRATOR + "", "");
+    }
+
+    public static String getPricePart(long val, Locale locale) {
+        NumberFormat formatter = LocaleUtils.getPriceNumberFormmat(Locale.ENGLISH);
+        return LocaleUtils.persianDigitsIfPersian(formatter.format(val), locale);
+    }
 }

@@ -24,6 +24,9 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Created by elnaz on 7/22/15.
@@ -95,8 +98,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static String SELL_APP_KEY = "honarnama_sell";
     public static String BROWSE_APP_KEY = "honarnama_browse";
 
-
-    private static HonarnamaBaseApp singleton;
+   private static HonarnamaBaseApp singleton;
 
     public synchronized static HonarnamaBaseApp getInstance() {
         return singleton;
