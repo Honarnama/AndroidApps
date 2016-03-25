@@ -241,18 +241,17 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     });
 
-
-                    mNameTextView.setText(mItem.getName());
+                    mNameTextView.setText(TextUtil.convertEnNumberToFa(mItem.getName()));
                     NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
                     String formattedPrice = formatter.format(mItem.getPrice());
                     String price = TextUtil.convertEnNumberToFa(formattedPrice);
-
                     mPriceTextView.setText(price + " ");
-                    mDescTextView.setText(mItem.getDescription());
+
+                    mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.getDescription()));
 
                     mShop = mItem.getStore();
                     mPlaceTextView.setText(mShop.getProvince().getString(Provinces.NAME) + "، " + mShop.getCity().getString(City.NAME));
-                    mShopNameTextView.append(mShop.getName());
+                    mShopNameTextView.append(TextUtil.convertEnNumberToFa(mShop.getName()));
                     mShopLogo.loadInBackground(mShop.getLogo(), new GetDataCallback() {
                         @Override
                         public void done(byte[] data, ParseException e) {
@@ -550,7 +549,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             TextView similarPostPrice = (TextView) similarItemLayout.findViewById(R.id.similar_post_price);
 
             similarItemImage.loadInBackground(item.getParseFile(Item.IMAGE_1));
-            similarItemTitle.setText(item.getName());
+            similarItemTitle.setText(TextUtil.convertEnNumberToFa(item.getName()));
 
             NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
             String formattedPrice = formatter.format(item.getPrice());

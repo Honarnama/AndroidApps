@@ -12,6 +12,7 @@ import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -71,8 +72,8 @@ public class ShopsAdapter extends BaseAdapter {
                 mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
             }
 
-            mViewHolderWithoutImage.title.setText(store.getString("name"));
-            mViewHolderWithoutImage.desc.setText(store.getString("description"));
+            mViewHolderWithoutImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
+            mViewHolderWithoutImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
             mViewHolderWithoutImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
 
         } else {
@@ -84,8 +85,8 @@ public class ShopsAdapter extends BaseAdapter {
                 mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
             }
 
-            mViewHolderWithImage.title.setText(store.getString("name"));
-            mViewHolderWithImage.desc.setText(store.getString("description"));
+            mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
+            mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
             mViewHolderWithImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
 
             mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);

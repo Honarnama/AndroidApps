@@ -9,6 +9,7 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -68,8 +69,8 @@ public class EventsAdapter extends BaseAdapter {
                 mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
             }
 
-            mViewHolderWithoutImage.title.setText(event.getName());
-            mViewHolderWithoutImage.desc.setText(event.getDescription());
+            mViewHolderWithoutImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
+            mViewHolderWithoutImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
             mViewHolderWithoutImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
 
         } else {
@@ -81,8 +82,8 @@ public class EventsAdapter extends BaseAdapter {
                 mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
             }
 
-            mViewHolderWithImage.title.setText(event.getName());
-            mViewHolderWithImage.desc.setText(event.getDescription());
+            mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
+            mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
             mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
 
             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);

@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.browse.R;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.net.Uri;
@@ -51,8 +52,8 @@ public class EventsParseAdapter extends ParseQueryAdapter {
 
         super.getItemView(event, convertView, parent);
 
-        mViewHolderWithImage.title.setText(event.getName());
-        mViewHolderWithImage.desc.setText(event.getDescription());
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
         mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
 
 //        mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);

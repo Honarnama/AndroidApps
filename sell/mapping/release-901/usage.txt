@@ -7287,7 +7287,7 @@ net.honarnama.core.utils.MapUtil$1
 net.honarnama.core.utils.ParseIO:
     16:16:public ParseIO()
     47:66:public static void copyFile(java.io.File,java.io.File)
-net.honarnama.core.utils.PriceTextWatcher
+net.honarnama.core.utils.PersianTextWatcher
 net.honarnama.core.utils.TextUtil
 net.honarnama.core.utils.WindowUtil:
     14:14:public WindowUtil()

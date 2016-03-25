@@ -20,6 +20,7 @@ import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.TextUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
@@ -190,8 +191,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
         mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
+
         mDescriptionEditText = (EditText) rootView.findViewById(R.id.editProductDescription);
+
         mPriceEditText = (EditText) rootView.findViewById(R.id.editItemPrice);
+//        mPriceEditText.addTextChangedListener(new PersianTextWatcher(mPriceEditText));
+
         mImagesTitleTextView = (TextView) rootView.findViewById(R.id.edit_item_images_title_text_view);
         mScrollView = (ScrollView) rootView.findViewById(R.id.edit_item_scroll_view);
 
@@ -491,7 +496,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
-
         if (!mDirty) {
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.item_not_changed), Toast.LENGTH_LONG).show();
@@ -505,7 +509,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private void saveItem() {
         final String title = mTitleEditText.getText().toString().trim();
         final String description = mDescriptionEditText.getText().toString().trim();
-        final Number price = Integer.valueOf(mPriceEditText.getText().toString().trim());
+        final Number price = Integer.valueOf(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim()));
         final String catId = mCategoryId;
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());

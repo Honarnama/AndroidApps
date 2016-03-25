@@ -12,6 +12,7 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.util.Log;
@@ -74,8 +75,8 @@ public class BookmarksParseAdapter extends ParseQueryAdapter {
         });
 
         // Setting all values in listview
-        mViewHolder.title.setText(item.getName());
-        mViewHolder.desc.setText(item.getDescription());
+        mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
+        mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
 
         Category category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());

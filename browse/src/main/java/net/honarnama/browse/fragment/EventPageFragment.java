@@ -175,7 +175,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                         });
                     }
 
-                    mNameTextView.setText(event.getName());
+                    mNameTextView.setText(TextUtil.convertEnNumberToFa(event.getName()));
 
                     Locale locale = new Locale("fa", "IR");
 
@@ -193,7 +193,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
                     );
 
-                    mDescTextView.setText(event.getDescription());
+                    mDescTextView.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
                     mAddreddTextView.append(" " + event.getAddress());
                     mPlaceTextView.setText(event.getProvince().getString(Provinces.NAME) + "، " + event.getCity().getString(City.NAME));
 

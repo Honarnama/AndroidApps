@@ -30,7 +30,6 @@ import net.honarnama.core.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;

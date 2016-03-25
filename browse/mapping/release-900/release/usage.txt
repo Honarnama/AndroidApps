@@ -6775,7 +6775,7 @@ net.honarnama.core.utils.JalaliCalendar$JalaliDate:
 net.honarnama.core.utils.MapUtil
 net.honarnama.core.utils.MapUtil$1
 net.honarnama.core.utils.ParseIO
-net.honarnama.core.utils.PriceTextWatcher
+net.honarnama.core.utils.PersianTextWatcher
 net.honarnama.core.utils.TextUtil:
     11:11:public TextUtil()
 net.honarnama.core.utils.WindowUtil:

@@ -15,6 +15,7 @@ import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Store;
+import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.net.Uri;
@@ -57,8 +58,8 @@ public class ShopsParseAdapter extends ParseQueryAdapter {
 
         super.getItemView(shop, convertView, parent);
 
-        mViewHolderWithImage.title.setText(shop.getName());
-        mViewHolderWithImage.desc.setText(shop.getDescription());
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(shop.getName()));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(shop.getDescription()));
         mViewHolderWithImage.place.setText(shop.getParseObject(Shop.CITY).getString(City.NAME));
 //
 //        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);

@@ -21,6 +21,7 @@ import net.honarnama.core.model.Provinces;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
+import net.honarnama.core.utils.TextUtil;
 import net.honarnama.core.utils.WindowUtil;
 
 import android.accounts.NetworkErrorException;
@@ -167,8 +168,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     mShare.setVisibility(View.VISIBLE);
                     final ParseObject shop = task.getResult();
                     mOwner = shop.getParseUser(Store.OWNER);
-                    mShopName.setText(shop.getString(Store.NAME));
-                    mShopDesc.setText(shop.getString(Store.DESCRIPTION));
+                    mShopName.setText(TextUtil.convertEnNumberToFa(shop.getString(Store.NAME)));
+                    mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.getString(Store.DESCRIPTION)));
 
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
