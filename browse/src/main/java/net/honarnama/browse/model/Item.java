@@ -157,6 +157,10 @@ public class Item extends net.honarnama.core.model.Item {
     }
 
     public static Task<List<Item>> search(final String searchTerm) {
+
+        //TODO ask server for random results
+        //TODO ask server to search for either persian and english texts
+
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
         ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
         parseQuery.whereContains(Item.NAME, searchTerm);

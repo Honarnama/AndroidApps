@@ -5,6 +5,8 @@ import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
@@ -15,6 +17,7 @@ import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,49 +60,64 @@ public class ShopsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolderWithoutImage mViewHolderWithoutImage;
         final ViewHolderWithImage mViewHolderWithImage;
 
         final ParseObject store = mShops.get(position);
-        ParseFile shopLogo = store.getParseFile(Shop.LOGO);
 
-        if (shopLogo == null) {
-            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithoutImage)) {
-                convertView = View.inflate(mContext, R.layout.shop_row, null);
-                mViewHolderWithoutImage = new ViewHolderWithoutImage(convertView);
-                convertView.setTag(mViewHolderWithoutImage);
-            } else {
-                mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
-            }
-
-            mViewHolderWithoutImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
-            mViewHolderWithoutImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
-            mViewHolderWithoutImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
-
+        if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
+            convertView = View.inflate(mContext, R.layout.shop_row, null);
+            mViewHolderWithImage = new ViewHolderWithImage(convertView);
+            convertView.setTag(mViewHolderWithImage);
         } else {
-            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
-                convertView = View.inflate(mContext, R.layout.shop_row, null);
-                mViewHolderWithImage = new ViewHolderWithImage(convertView);
-                convertView.setTag(mViewHolderWithImage);
-            } else {
-                mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
-            }
-
-            mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
-            mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
-            mViewHolderWithImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
-
-            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
-            mViewHolderWithImage.icon.setVisibility(View.GONE);
-            mViewHolderWithImage.icon.loadInBackground(shopLogo, new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                    mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
-                }
-            });
+            mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
         }
 
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
+        mViewHolderWithImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
+
+//        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
+//        mViewHolderWithImage.icon.setVisibility(View.GONE);
+//        mViewHolderWithImage.icon.loadInBackground(shopLogo, new GetDataCallback() {
+//            @Override
+//            public void done(byte[] data, ParseException e) {
+//                mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+//                mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
+//            }
+//        });
+
+        ParseFile image = store.getParseFile(Shop.LOGO);
+        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
+        if (image != null) {
+            Uri imageUri = Uri.parse(image.getUrl());
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.default_logo_hand)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Picasso.with(mContext).load(R.drawable.default_logo_hand)
+                    .error(R.drawable.default_logo_hand)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        }
         return convertView;
 
     }
@@ -125,16 +143,16 @@ public class ShopsAdapter extends BaseAdapter {
         }
     }
 
-    private class ViewHolderWithoutImage {
-        TextView title;
-        TextView desc;
-        TextView shopPlace;
-
-        public ViewHolderWithoutImage(View view) {
-            title = (TextView) view.findViewById(R.id.shop_title_in_list);
-            desc = (TextView) view.findViewById(R.id.shop_desc_in_list);
-            shopPlace = (TextView) view.findViewById(R.id.shop_place_text_view);
-
-        }
-    }
+//    private class ViewHolderWithoutImage {
+//        TextView title;
+//        TextView desc;
+//        TextView shopPlace;
+//
+//        public ViewHolderWithoutImage(View view) {
+//            title = (TextView) view.findViewById(R.id.shop_title_in_list);
+//            desc = (TextView) view.findViewById(R.id.shop_desc_in_list);
+//            shopPlace = (TextView) view.findViewById(R.id.shop_place_text_view);
+//
+//        }
+//    }
 }

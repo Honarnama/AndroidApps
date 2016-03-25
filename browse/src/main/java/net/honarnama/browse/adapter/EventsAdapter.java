@@ -4,6 +4,8 @@ import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Shop;
@@ -12,6 +14,7 @@ import net.honarnama.core.model.Event;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,46 +59,66 @@ public class EventsAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         final Event event = mEvents.get(position);
-        final ViewHolderWithoutImage mViewHolderWithoutImage;
         final ViewHolderWithImage mViewHolderWithImage;
 
         ParseFile eventBanner = event.getParseFile(Event.BANNER);
-        if (eventBanner == null) {
-            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithoutImage)) {
-                convertView = View.inflate(mContext, R.layout.event_row, null);
-                mViewHolderWithoutImage = new ViewHolderWithoutImage(convertView);
-                convertView.setTag(mViewHolderWithoutImage);
-            } else {
-                mViewHolderWithoutImage = (ViewHolderWithoutImage) convertView.getTag();
-            }
 
-            mViewHolderWithoutImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
-            mViewHolderWithoutImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
-            mViewHolderWithoutImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
-
+        if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
+            convertView = View.inflate(mContext, R.layout.event_row, null);
+            mViewHolderWithImage = new ViewHolderWithImage(convertView);
+            convertView.setTag(mViewHolderWithImage);
         } else {
-            if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
-                convertView = View.inflate(mContext, R.layout.event_row, null);
-                mViewHolderWithImage = new ViewHolderWithImage(convertView);
-                convertView.setTag(mViewHolderWithImage);
-            } else {
-                mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
-            }
-
-            mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
-            mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
-            mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
-
-            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
-            mViewHolderWithImage.icon.setVisibility(View.GONE);
-            mViewHolderWithImage.icon.loadInBackground(event.getParseFile(Event.BANNER), new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
-                    mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
-                }
-            });
+            mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
         }
+
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
+        mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
+
+
+        ParseFile image = event.getParseFile(Event.BANNER);
+        mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
+
+        if (image != null) {
+            Uri imageUri = Uri.parse(image.getUrl());
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.party_flags)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Picasso.with(mContext).load(R.drawable.party_flags)
+                    .error(R.drawable.party_flags)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        }
+
+//        mViewHolderWithImage.icon.setVisibility(View.GONE);
+//        mViewHolderWithImage.icon.loadInBackground(event.getParseFile(Event.BANNER), new GetDataCallback() {
+//            @Override
+//            public void done(byte[] data, ParseException e) {
+//                mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
 
         return convertView;
 
@@ -122,18 +145,18 @@ public class EventsAdapter extends BaseAdapter {
         }
     }
 
-    private class ViewHolderWithoutImage {
-        TextView title;
-        TextView desc;
-        RelativeLayout eventRowContainer;
-        TextView place;
-
-        public ViewHolderWithoutImage(View view) {
-            title = (TextView) view.findViewById(R.id.event_title_in_list);
-            desc = (TextView) view.findViewById(R.id.event_desc_in_list);
-            eventRowContainer = (RelativeLayout) view.findViewById(R.id.event_row_container);
-            place = (TextView) view.findViewById(R.id.event_place_text_view);
-
-        }
-    }
+//    private class ViewHolderWithoutImage {
+//        TextView title;
+//        TextView desc;
+//        RelativeLayout eventRowContainer;
+//        TextView place;
+//
+//        public ViewHolderWithoutImage(View view) {
+//            title = (TextView) view.findViewById(R.id.event_title_in_list);
+//            desc = (TextView) view.findViewById(R.id.event_desc_in_list);
+//            eventRowContainer = (RelativeLayout) view.findViewById(R.id.event_row_container);
+//            place = (TextView) view.findViewById(R.id.event_place_text_view);
+//
+//        }
+//    }
 }

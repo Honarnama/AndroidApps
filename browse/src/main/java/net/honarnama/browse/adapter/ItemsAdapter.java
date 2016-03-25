@@ -4,6 +4,9 @@ import com.crashlytics.android.Crashlytics;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -12,10 +15,12 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.Category;
+import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,22 +95,55 @@ public class ItemsAdapter extends BaseAdapter {
         Category category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());
 
+//        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
+//        mViewHolder.icon.setVisibility(View.GONE);
+//
+//
+//        mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
+//            @Override
+//            public void done(byte[] data, ParseException e) {
+//                mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                mViewHolder.icon.setVisibility(View.VISIBLE);
+//            }
+//        });
+
+        ParseFile image = item.getParseFile(Item.IMAGE_1);
         mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-        mViewHolder.icon.setVisibility(View.GONE);
-        mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                mViewHolder.icon.setVisibility(View.VISIBLE);
-            }
-        });
+
+        if (image != null) {
+            Uri imageUri = Uri.parse(image.getUrl());
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Picasso.with(mContext).load(R.drawable.camera_insta)
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        }
         return convertView;
 
     }
-//
-//    public void setImages(List<Item> itemList) {
-//        mItems=itemList;
-//    }
+
 
     public void setItems(List<Item> itemList) {
         mItems = itemList;
