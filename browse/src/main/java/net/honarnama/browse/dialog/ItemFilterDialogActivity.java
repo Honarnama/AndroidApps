@@ -68,6 +68,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     public int mMaxPriceIndex;
 
     public CheckBox mAllIranCheckBox;
+
     IconicsImageView mRefetchProvinces;
     IconicsImageView mRefetchCities;
 

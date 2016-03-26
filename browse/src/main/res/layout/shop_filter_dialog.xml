@@ -93,15 +93,34 @@
                           android:clickable="true"
                           android:textStyle="bold"
                           android:layout_width="40dp"
+                          android:layout_gravity="center_vertical"
+                          android:gravity="center_vertical"
                         />
-                <EditText
-                        android:hint="@string/getting_information"
-                        android:id="@+id/province_edit_text"
-                        style="@style/bordered_edit_text"
-                        android:layout_marginRight="16dp"
-                        />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:layout_gravity="center_vertical"
+                        >
+                    <EditText
+                            android:hint="@string/getting_information"
+                            android:id="@+id/province_edit_text"
+                            style="@style/bordered_edit_text"
+                            android:layout_marginRight="16dp"
+                            />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentLeft="true"
+                            app:iiv_icon="gmd-refresh"
+                            app:iiv_color="@color/gray_dark"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/refetchProvinces"
+                            android:visibility="gone"
+                            android:clickable="true"
+                            />
+                </RelativeLayout>
             </LinearLayout>
-
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
@@ -122,13 +141,33 @@
                           android:clickable="true"
                           android:textStyle="bold"
                           android:layout_width="40dp"
+                          android:layout_gravity="center_vertical"
+                          android:gravity="center_vertical"
                         />
-                <EditText
-                        android:hint="@string/getting_information"
-                        android:id="@+id/city_edit_text"
-                        style="@style/bordered_edit_text"
-                        android:layout_marginRight="16dp"
-                        />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:layout_gravity="center_vertical"
+                        >
+                    <EditText
+                            android:hint="@string/getting_information"
+                            android:id="@+id/city_edit_text"
+                            style="@style/bordered_edit_text"
+                            android:layout_marginRight="16dp"
+                            />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentLeft="true"
+                            app:iiv_icon="gmd-refresh"
+                            app:iiv_color="@color/gray_dark"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/refetchCities"
+                            android:visibility="gone"
+                            android:clickable="true"
+                            />
+                </RelativeLayout>
             </LinearLayout>
 
 

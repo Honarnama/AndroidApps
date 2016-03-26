@@ -59,6 +59,8 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
     private Provinces mSelectedProvince;
 
     public CheckBox mAllIranCheckBox;
+    IconicsImageView mRefetchProvinces;
+    IconicsImageView mRefetchCities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,12 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         mCityEditEext = (EditText) findViewById(R.id.city_edit_text);
         mCityEditEext.setOnClickListener(this);
         mCityEditEext.setKeyListener(null);
+
+        mRefetchProvinces = (IconicsImageView) findViewById(R.id.refetchProvinces);
+        mRefetchProvinces.setOnClickListener(this);
+
+        mRefetchCities = (IconicsImageView) findViewById(R.id.refetchCities);
+        mRefetchCities.setOnClickListener(this);
 
         final IconicsDrawable unCheckedDrawable = new IconicsDrawable(ShopFilterDialogActivity.this)
                 .icon(GoogleMaterial.Icon.gmd_check_box_outline_blank)
@@ -120,68 +128,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);
 
-        final Provinces provinces = new Provinces();
-        final City city = new City();
-
-        mProvinceEditText.setHint(getString(R.string.getting_information));
-        mCityEditEext.setHint(getString(R.string.getting_information));
-
-        provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
-                continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
-                    @Override
-                    public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
-                        if (task.isFaulted()) {
-                            mProvinceEditText.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
-                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-                            Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        } else {
-                            mProvincesObjectsTreeMap = task.getResult();
-                            for (Provinces province : mProvincesObjectsTreeMap.values()) {
-                                if (TextUtils.isEmpty(mSelectedProvinceId)) {
-                                    mSelectedProvinceId = province.getObjectId();
-                                }
-                                mProvincesHashMap.put(province.getObjectId(), province.getName());
-                            }
-                            mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
-                        }
-                        return null;
-                    }
-                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
-            @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
-            }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
-            @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-                if (task.isFaulted()) {
-                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                } else {
-                    mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-                            if (TextUtils.isEmpty(mSelectedCityId)) {
-                                mSelectedCityId = citySet.getKey();
-                            }
-                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
-                        }
-                    }
-
-                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    HashMap<String, String> allCitiesHashMap = new HashMap<String, String>();
-                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    mCityOrderedTreeMap.put(0, allCitiesHashMap);
-
-                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
-
-                }
-
-                return null;
-            }
-        });
-
+        fetchProvincesAndCities();
 
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +165,16 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
 
             case R.id.remove_filter:
                 removeFilters();
+                break;
+
+            case R.id.refetchProvinces:
+            case R.id.refetchCities:
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    break;
+                }
+                mRefetchProvinces.setVisibility(View.GONE);
+                mRefetchCities.setVisibility(View.GONE);
+                fetchProvincesAndCities();
                 break;
         }
     }
@@ -352,6 +309,75 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
 
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    public void fetchProvincesAndCities() {
+        final Provinces provinces = new Provinces();
+        final City city = new City();
+
+        mProvinceEditText.setHint(getString(R.string.getting_information));
+        mCityEditEext.setHint(getString(R.string.getting_information));
+
+        provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
+                continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
+                    @Override
+                    public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mRefetchProvinces.setVisibility(View.VISIBLE);
+                            mRefetchCities.setVisibility(View.VISIBLE);
+                            mProvinceEditText.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+                            Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                        } else {
+                            mProvincesObjectsTreeMap = task.getResult();
+                            for (Provinces province : mProvincesObjectsTreeMap.values()) {
+                                if (TextUtils.isEmpty(mSelectedProvinceId)) {
+                                    mSelectedProvinceId = province.getObjectId();
+                                }
+                                mProvincesHashMap.put(province.getObjectId(), province.getName());
+                            }
+                            mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                        }
+                        return null;
+                    }
+                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
+            @Override
+            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
+                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
+            }
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+            @Override
+            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+                if (task.isFaulted()) {
+                    mRefetchProvinces.setVisibility(View.VISIBLE);
+                    mRefetchCities.setVisibility(View.VISIBLE);
+                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
+                    Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                } else {
+                    mCityOrderedTreeMap = task.getResult();
+                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                                mSelectedCityId = citySet.getKey();
+                            }
+                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
+                        }
+                    }
+
+                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    HashMap<String, String> allCitiesHashMap = new HashMap<String, String>();
+                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    mCityOrderedTreeMap.put(0, allCitiesHashMap);
+
+                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
+
+                }
+
+                return null;
+            }
+        });
+
     }
 }
 
