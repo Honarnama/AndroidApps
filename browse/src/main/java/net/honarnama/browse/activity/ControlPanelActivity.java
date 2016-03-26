@@ -2,6 +2,7 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -128,6 +129,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public String mSelectedDefaultLocationCityName;
     public EditText mDefaultLocationCityEditText;
 
+    IconicsImageView mRefetchProvinces;
+    IconicsImageView mRefetchCities;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
@@ -216,8 +220,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mSelectedDefaultLocationCityId = mDefaultLocationCityId = getDefaultLocationCityId();
         mSelectedDefaultLocationProvinceName = mDefaultLocationProvinceName = getDefaultLocationProvinceName();
         mSelectedDefaultLocationCityName = mDefaultLocationCityName = getDefaultLocationCityName();
-
-        logE("inja mSelectedDefaultLocationProvinceName " + mSelectedDefaultLocationProvinceName);
 
         changeLocationTitle();
 
@@ -724,6 +726,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 displayCityDialog();
                 break;
 
+            case R.id.refetchProvinces:
+            case R.id.refetchCities:
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    break;
+                }
+                mRefetchProvinces.setVisibility(View.GONE);
+                mRefetchCities.setVisibility(View.GONE);
+                fetchProvincesAndCities();
+                break;
+
         }
     }
 
@@ -849,6 +861,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mDefaultLocationCityEditText.setOnClickListener(this);
         mDefaultLocationCityEditText.setKeyListener(null);
 
+        mRefetchProvinces = (IconicsImageView) mSetDefaultLocationDialog.findViewById(R.id.refetchProvinces);
+        mRefetchProvinces.setOnClickListener(this);
+
+        mRefetchCities = (IconicsImageView) mSetDefaultLocationDialog.findViewById(R.id.refetchCities);
+        mRefetchCities.setOnClickListener(this);
+
+
         Button registerLocationBtn = (Button) mSetDefaultLocationDialog.findViewById(R.id.register_location_btn);
         Button bikhialBtn = (Button) mSetDefaultLocationDialog.findViewById(R.id.bikhial_btn);
         registerLocationBtn.setOnClickListener(new View.OnClickListener() {
@@ -900,9 +919,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     @Override
                     public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
                         if (task.isFaulted()) {
+                            mRefetchProvinces.setVisibility(View.VISIBLE);
+                            mRefetchCities.setVisibility(View.VISIBLE);
                             mDefaultLocationProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-                            Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Provinces province : mProvincesObjectsTreeMap.values()) {
@@ -925,9 +946,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
+                    mRefetchProvinces.setVisibility(View.VISIBLE);
+                    mRefetchCities.setVisibility(View.VISIBLE);
                     mDefaultLocationCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
 
