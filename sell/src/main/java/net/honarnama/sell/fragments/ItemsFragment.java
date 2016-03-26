@@ -107,7 +107,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             public Object then(Task<List<Item>> task) throws Exception {
 //                progressDialog.dismiss();
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
                 }
                 if (task.isFaulted()) {
                     logE("Getting User Items Failed. Error: " + task.getError(), "", task.getError());

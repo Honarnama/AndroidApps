@@ -186,7 +186,7 @@
     <string name="no_item_found">"محصولی یافت نشد."</string>
     <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
     <string name="error_displaying_image">خطا در نمایش تصویر.</string>
-    <string name="connec_to_see_updated_notif_message">برای مشاهده به‌روزترین اطلاعات دستگاه خود را
+    <string name="connect_to_see_most_updated_info">برای مشاهده به‌روزترین اطلاعات دستگاه خود را
         به اینترنت متصل کنید.
     </string>
     <string name="error_displaying_store_logo">خطا در نمایش تصویر لوگو.</string>

@@ -29,7 +29,6 @@ import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.ParseIO;
-import net.honarnama.core.utils.TextUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
@@ -775,6 +774,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         final City city = new City();
         final EventCategory eventCategory = new EventCategory();
 
+
         getUserEventAsync().continueWith(new Continuation<Event, Void>() {
             @Override
             public Void then(Task<Event> task) throws Exception {
@@ -934,9 +934,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                     }
                 }
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
-                }
                 mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
                 return null;
             }
@@ -963,9 +960,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         mEventCategoriesHashMap.put(category.getObjectId(), category.getName());
                     }
                 }
+                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
+                }
                 return null;
             }
         });
+
+
     }
 
     public Task<Event> getUserEventAsync() {

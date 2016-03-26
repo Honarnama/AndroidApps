@@ -812,7 +812,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
                 }
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connec_to_see_updated_notif_message), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
                 }
                 return null;
             }
