@@ -177,9 +177,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                     mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
 
                 }
-                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
-                }
+
                 return null;
             }
         });
