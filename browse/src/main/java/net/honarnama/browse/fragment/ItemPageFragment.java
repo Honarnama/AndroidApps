@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -297,18 +298,19 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             mDotsLayout.addView(mDotsText[i]);
                         }
                     }
+                    similarItemsContainer.setVisibility(View.VISIBLE);
                     Item.getSimilarItemsByCategory(mItem.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
                         @Override
                         public Object then(Task<List<Item>> task) throws Exception {
-
+                            mSimilarItemsProgressBar.setVisibility(View.GONE);
                             if (task.isFaulted()) {
                                 logE("Finding similar items failed. " + task.getError());
                                 similarItemsContainer.setVisibility(View.GONE);
                             } else {
                                 List<Item> similarItems = task.getResult();
                                 if (similarItems.size() > 0) {
-                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
-                                    addSimilarItems(task.getResult());
+//                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
+                                    addSimilarItems(similarItems);
                                 } else {
                                     similarItemsContainer.setVisibility(View.GONE);
                                 }
@@ -317,7 +319,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     });
                 }
-                similarItemsContainer.setVisibility(View.VISIBLE);
+
                 return null;
             }
         });
@@ -539,7 +541,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public void addSimilarItems(List<Item> items) {
 
-        for (int i = 1; i < items.size(); i++) {
+        for (int i = 0; i < items.size(); i++) {
             final Item item = items.get(i);
 
             View similarItemLayout = getActivity().getLayoutInflater().inflate(R.layout.similar_item_layout, null);

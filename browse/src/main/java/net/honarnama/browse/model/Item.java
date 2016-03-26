@@ -91,13 +91,14 @@ public class Item extends net.honarnama.core.model.Item {
                     query.whereEqualTo(Item.VALIDITY_CHECKED, true);
                     query.whereNotEqualTo(Item.OBJECT_ID, itemId);
                     query.setLimit(6);
-                    Random random = new Random();
-                    if (count > 6) {
-                        int randNo = random.nextInt(count - 6);
-                        if (randNo > 0) {
-                            query.setSkip(randNo);
-                        }
-                    }
+                    //TODO ask server to return random results
+//                    Random random = new Random();
+//                    if (count > 6) {
+//                        int randNo = random.nextInt(count - 6);
+//                        if (randNo > 0) {
+//                            query.setSkip(randNo);
+//                        }
+//                    }
                     query.findInBackground(new FindCallback<Item>() {
                         @Override
                         public void done(List<Item> items, ParseException e) {
