@@ -159,4 +159,17 @@ public abstract class HonarnamaBaseApp extends Application {
     }
 
     abstract public Tracker getDefaultTracker();
+
+    @Override
+    public void onTerminate() {
+        GRPCUtils grpcUtils = GRPCUtils.getInstanceIfCreated();
+        if (grpcUtils != null) {
+            try {
+                grpcUtils.close();
+            } catch (InterruptedException ie) {
+                // TODO
+            }
+        }
+        super.onTerminate();
+    }
 }

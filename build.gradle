@@ -7,15 +7,18 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.21.5'
         classpath 'com.google.gms:google-services:2.0.0-alpha9'
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.7.4"
     }
 }
 
 allprojects {
     repositories {
-        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        jcenter()
+        mavenLocal()
+//        mavenCentral()
     }
 }
 
