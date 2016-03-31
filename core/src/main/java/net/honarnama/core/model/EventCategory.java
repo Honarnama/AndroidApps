@@ -1,23 +1,14 @@
 package net.honarnama.core.model;
 
 import com.crashlytics.android.Crashlytics;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.HonarnamaUser;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.helper.DatabaseHelper;
 
-import android.accounts.NetworkErrorException;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -29,14 +20,18 @@ import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-@ParseClassName("event_category")
-public class EventCategory extends ParseObject {
+import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ID;
+import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_NAME;
+import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ORDER;
+
+
+public class EventCategory {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventCatModel";
 
-    public static String OBJECT_NAME = "event_category";
-    public static String NAME = "name";
-    public static String ORDER = "order";
-    public static String OBJECT_ID = "objectId";
+    public static String TABLE_NAME = DatabaseHelper.TABLE_EVENT_CATEGORIES;
+    public static int mOrder;
+    public static String mName;
+    public static int mId;
 
 
     public TreeMap<Number, HashMap<String, String>> mEventCatsTreeMap = new TreeMap<Number, HashMap<String, String>>();
@@ -48,140 +43,65 @@ public class EventCategory extends ParseObject {
 
 
     public String getName() {
-        return getString(NAME);
+        return mName;
     }
 
-    public Number getOrder() {
-        return getNumber(ORDER);
+    public void setName(String name) {
+        mName = name;
     }
 
-    public static Task<String> getCategoryNameById(String categoryId) {
-        final TaskCompletionSource<String> tcs = new TaskCompletionSource<>();
+    public int getOrder() {
+        return mOrder;
+    }
 
-        ParseQuery<EventCategory> parseQuery = ParseQuery.getQuery(EventCategory.class);
-        parseQuery.whereEqualTo(OBJECT_ID, categoryId);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false)) {
+    public void setOrder(int order) {
+        mOrder = order;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    // Insert a post into the database
+    public static Task<Void> resetEventCategories(net.honarnama.nano.EventCategory[] eventCategories) {
+
+        final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+
+        // Create and/or open the database for writing
+        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getWritableDatabase();
+        // It's a good idea to wrap our insert in a transaction. This helps with performance and ensures
+        // consistency of the database.
+        db.beginTransaction();
+        try {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            db.execSQL(DatabaseHelper.CREATE_TABLE_EVENT_CATEGORIES);
+            for (int i = 0; i < eventCategories.length; i++) {
+                ContentValues values = new ContentValues();
+                net.honarnama.nano.EventCategory eventCategory = eventCategories[i];
+                values.put(COL_EVENT_CAT_ID, eventCategory.id);
+                values.put(COL_EVENT_CAT_NAME, eventCategory.name);
+                db.insertOrThrow(TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+            tcs.trySetResult(null);
+        } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting event categories from local datastore");
+                Log.e(DEBUG_TAG, "Error while trying to add eventCategories to database", e);
+            } else {
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e);
             }
-            parseQuery.fromLocalDatastore();
-        } else {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
+            tcs.trySetError(e);
+        } finally {
+            db.endTransaction();
         }
-        parseQuery.getFirstInBackground(new GetCallback<EventCategory>() {
-            @Override
-            public void done(EventCategory category, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(category.getName());
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding  event category failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding  event category failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e);
-                    }
-                    tcs.trySetError(e);
-                }
-            }
-        });
         return tcs.getTask();
     }
 
-    public static Task<EventCategory> getCategoryById(String catId, String callingAppKey) {
-        final TaskCompletionSource<EventCategory> tcs = new TaskCompletionSource<>();
-
-        ParseQuery<EventCategory> parseQuery = ParseQuery.getQuery(EventCategory.class);
-        parseQuery.whereEqualTo(OBJECT_ID, catId);
-
-        String sharedPrefKey = "";
-        if (HonarnamaUser.getCurrentUser() == null || callingAppKey == HonarnamaBaseApp.BROWSE_APP_KEY) {
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
-        } else {
-            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
-        }
-
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting event category by id from local datastore");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
-        }
-
-        parseQuery.getFirstInBackground(new GetCallback<EventCategory>() {
-            @Override
-            public void done(EventCategory category, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(category);
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding event category by id failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding event category by id failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                    }
-                    tcs.trySetError(e);
-                }
-            }
-        });
-        return tcs.getTask();
-    }
-
-
-    public static Task<List<EventCategory>> getCategoriesById(final ArrayList<String> catIds, String callingAppKey) {
-        final TaskCompletionSource<List<EventCategory>> tcs = new TaskCompletionSource<>();
-
-
-        ParseQuery<EventCategory> parseQuery = ParseQuery.getQuery(EventCategory.class);
-        parseQuery.whereContainedIn(OBJECT_ID, catIds);
-
-        String sharedPrefKey;
-        if (HonarnamaUser.getCurrentUser() == null || callingAppKey == HonarnamaBaseApp.BROWSE_APP_KEY) {
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
-        } else {
-            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
-        }
-
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting event category by id from local datastore");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
-        }
-
-        parseQuery.findInBackground(new FindCallback<EventCategory>() {
-            @Override
-            public void done(List<EventCategory> categories, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(categories);
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding event categories with id " + catIds + " failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding event categories with id " + catIds + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                    }
-                    tcs.trySetError(e);
-                }
-            }
-        });
-        return tcs.getTask();
-    }
-
-    public Task<TreeMap<Number, EventCategory>> getOrderedEventCategories() {
+    public Task<TreeMap<Number, EventCategory>> getAllEventCategoriesSorted() {
 
         final TaskCompletionSource<TreeMap<Number, EventCategory>> tcs = new TaskCompletionSource<>();
 
@@ -191,10 +111,8 @@ public class EventCategory extends ParseObject {
                 if (task.isFaulted()) {
                     tcs.trySetError(task.getError());
                 } else {
-
                     List<EventCategory> categories = task.getResult();
                     for (int i = 0; i < categories.size(); i++) {
-
                         EventCategory eventCategory = categories.get(i);
                         mEventCatObjectTreeMap.put(eventCategory.getOrder(), eventCategory);
                     }
@@ -212,68 +130,70 @@ public class EventCategory extends ParseObject {
     public Task<List<EventCategory>> findEventCatsAsync() {
         final TaskCompletionSource<List<EventCategory>> tcs = new TaskCompletionSource<>();
 
-        ParseQuery<EventCategory> parseQuery = ParseQuery.getQuery(EventCategory.class);
-        parseQuery.orderByAscending(EventCategory.ORDER);
+        List<EventCategory> eventCategories = new ArrayList<>();
 
-        String sharedPrefKey;
-        if (HonarnamaUser.getCurrentUser() == null) {
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
-        } else {
-            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
-        }
+        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
+        Cursor cursor = db.rawQuery(query, null);
 
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false)) {
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    EventCategory eventCategory = new EventCategory();
+                    eventCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ID)));
+                    eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
+                    eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
+                    eventCategories.add(eventCategory);
+                } while (cursor.moveToNext());
+            }
+            tcs.trySetResult(eventCategories);
+        } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting event cat list from Local datastore");
+                Log.e(DEBUG_TAG, "Error while trying to get event categories from database", e);
+            } else {
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event categories from database // Error: " + e);
             }
-            parseQuery.fromLocalDatastore();
-        } else {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
+            tcs.trySetError(e);
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
             }
         }
 
+        return tcs.getTask();
+    }
 
-        parseQuery.findInBackground(new FindCallback<EventCategory>() {
-            @Override
-            public void done(final List<EventCategory> eventCatsList, ParseException e) {
-                if (e == null) {
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, false)) {
-                        ParseObject.unpinAllInBackground(EventCategory.OBJECT_NAME, eventCatsList, new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    ParseObject.pinAllInBackground(EventCategory.OBJECT_NAME, eventCatsList, new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED, true);
-                                                        editor.commit();
-                                                    }
+    public static EventCategory getCategoryById(int categoryId) {
+//        final TaskCompletionSource<EventCategory> tcs = new TaskCompletionSource<>();
 
-                                                }
-                                            }
-                                    );
-                                }
+        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EVENT_CAT_ID + " = " + categoryId;
+        Cursor cursor = db.rawQuery(query, null);
 
-                            }
-                        });
-                    }
-                    tcs.trySetResult(eventCatsList);
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding event categories list failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding event categories failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                    }
-                    tcs.trySetError(e);
+        try {
+            if (cursor != null) {
+                cursor.moveToFirst();
+                EventCategory eventCategory = new EventCategory();
+                eventCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ID)));
+                eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
+                eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
+                return eventCategory;
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Error while trying to get event category from database. Event cat not found for catId " + categoryId);
                 }
             }
-        });
-        return tcs.getTask();
+        } catch (Exception e) {
+            if (BuildConfig.DEBUG) {
+                Log.e(DEBUG_TAG, "Error while trying to get event category from database", e);
+            } else {
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event category from database // Error: " + e);
+            }
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return null;
     }
 }

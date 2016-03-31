@@ -61,7 +61,8 @@ public class GRPCUtils {
             // Nevermind!
         }
 
-        TelephonyManager tel = (TelephonyManager) HonarnamaBaseApp.getInstance().getSystemService(Context.TELEPHONY_SERVICE);String networkOperator = tel.getNetworkOperator();
+        TelephonyManager tel = (TelephonyManager) HonarnamaBaseApp.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+        String networkOperator = tel.getNetworkOperator();
         if (TextUtils.isEmpty(networkOperator) == false) {
             rp.mcc = Integer.parseInt(networkOperator.substring(0, 3));
             rp.mnc = Integer.parseInt(networkOperator.substring(3));
@@ -76,10 +77,10 @@ public class GRPCUtils {
     }
 
     // Not to be run in the UI thread
-    public String updateMetaData() {
+    public MetaReply getMetaData(long currentMetaVersion) {
         RequestProperties rp = newRPWithDeviceInfo();
         // TODO: read current meta and extract the etag
-        rp.ifNotMatchEtag = 0;
+        rp.ifNotMatchEtag = currentMetaVersion;
         MetaRequest req = new MetaRequest();
         req.requestProperties = rp;
 
@@ -93,13 +94,13 @@ public class GRPCUtils {
             Log.w("GRPC-HN", "updateMetaData :: reply.statusCode= " + reply.replyProperties.statusCode);
             Log.w("GRPC-HN", "updateMetaData :: reply.serverVersion= " + reply.replyProperties.serverVersion);
         }
-
-        // Test Part
-        StringBuilder sb = new StringBuilder();
-        for (EventCategory ev : reply.eventCategories) {
-            sb.append(ev.name);
-            sb.append(" / ");
-        }
-        return sb.toString();
+//
+//        // Test Part
+//        StringBuilder sb = new StringBuilder();
+//        for (EventCategory ev : reply.eventCategories) {
+//            sb.append(ev.name);
+//            sb.append(" / ");
+//        }
+        return reply;
     }
 }

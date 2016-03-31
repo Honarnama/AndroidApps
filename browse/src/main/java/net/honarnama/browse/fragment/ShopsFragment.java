@@ -15,7 +15,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsParseAdapter;
 import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
@@ -170,7 +170,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
                         if (!mIsAllIranChecked) {
                             if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
                                 parseQuery.whereEqualTo(Store.PROVINCE, province);
                             }
 

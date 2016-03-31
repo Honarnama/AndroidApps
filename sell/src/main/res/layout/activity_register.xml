@@ -257,74 +257,17 @@
                     android:textSize="16sp"
                     android:layout_weight="2"
                     android:ellipsize="start"
-                    android:nextFocusForward="@+id/register_password_edit_text"
-                    android:textColorHint="@color/default_hint_color_for_android"
-                    android:gravity="right"
-                    />
-
-        </LinearLayout>
-
-
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@id/register_mobile_number_layer"
-                      android:id="@+id/register_password_layer"
-                      android:visibility="gone"
-                >
-
-            <TextView
-                    android:id="@+id/register_password_star_marker"
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
-                    />
-            <EditText
-                    android:id="@id/register_password_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="textWebPassword"
-                    android:hint="@string/password_hint"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
                     android:nextFocusForward="@+id/register_confirm_password_edit_text"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    android:layout_marginLeft="5dp"
                     />
 
-            <TextView
-                    android:id="@+id/register_confirm_password_star_marker"
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
-                    android:layout_marginRight="5dp"
-                    />
-            <EditText
-                    android:id="@id/register_confirm_password_edit_text"
-                    android:layout_width="fill_parent" android:layout_height="45dp"
-                    android:inputType="textWebPassword"
-                    android:hint="@string/confirm_password_hint"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:layout_weight="2"
-                    android:ellipsize="start"
-                    android:nextFocusForward="@+id/register_bank_card_number_edit_text"
-                    android:textColorHint="@color/default_hint_color_for_android"
-                    android:gravity="right"
-                    />
         </LinearLayout>
 
         <Button
                 android:id="@+id/register_button"
                 android:text="@string/send"
-                android:layout_below="@id/register_password_layer"
+                android:layout_below="@id/register_mobile_number_layer"
                 android:layout_marginTop="10dp"
                 android:nextFocusForward="@id/register_name_edit_text"
                 style="@style/core_full_width_button"

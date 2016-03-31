@@ -11,17 +11,14 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.model.Category;
-import net.honarnama.core.model.City;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
 import android.util.Log;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -66,7 +63,7 @@ public class Item extends net.honarnama.core.model.Item {
         return tcs.getTask();
     }
 
-    public static Task<List<Item>> getSimilarItemsByCategory(final Category category, final String itemId) {
+    public static Task<List<Item>> getSimilarItemsByCategory(final ArtCategory category, final String itemId) {
         final TaskCompletionSource<List<Item>> tcs = new TaskCompletionSource<>();
 
         final ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);

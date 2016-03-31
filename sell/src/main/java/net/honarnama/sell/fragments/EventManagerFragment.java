@@ -22,7 +22,7 @@ import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.EventCategory;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.JalaliCalendar;
@@ -97,15 +97,15 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private Button mEventCatBtn;
     private TextView mEventCatLabel;
     public TreeMap<Number, EventCategory> mEventCategoryObjectsTreeMap = new TreeMap<Number, EventCategory>();
-    public HashMap<String, String> mEventCategoriesHashMap = new HashMap<>();
+    public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
 
     private EditText mProvinceEditText;
-    public TreeMap<Number, Provinces> mProvincesObjectsTreeMap = new TreeMap<>();
+    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<>();
     public HashMap<String, String> mProvincesHashMap = new HashMap<>();
 
     private EditText mCityEditEext;
-    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<>();
-    public HashMap<String, String> mCityHashMap = new HashMap<>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
+    public HashMap<Integer, String> mCityHashMap = new HashMap<>();
 
 
     private Spinner mStartDaySpinner, mStartMonthSpinner, mStartYearSpinner;
@@ -119,13 +119,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileBanner;
 
-    public String mSelectedProvinceId;
+    public int mSelectedProvinceId = -1;
     public String mSelectedProvinceName;
 
     public String mSelectedCityId;
     public String mSelectedCityName;
 
-    public String mSelectedCatId;
+    public int mSelectedCatId = -1;
     public String mSelectedCatName;
 
     public ProgressBar mBannerProgressBar;
@@ -165,24 +165,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false)) {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false)) {
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
-                editor.commit();
-
-                Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+            getActivity().finish();
+            startActivity(intent);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_event_manager, container, false);
-        // Inflate the layout for this fragment
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
@@ -289,7 +278,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mActive.setChecked(true);
             mPassive.setChecked(false);
 
-            mSelectedCatId = null;
+            mSelectedCatId = -1;
 
             mEventCatBtn.setText(getString(R.string.select));
 
@@ -360,8 +349,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Provinces selectedProvince = mProvincesObjectsTreeMap.get(position + 1);
-                mSelectedProvinceId = selectedProvince.getObjectId();
+                Province selectedProvince = mProvincesObjectsTreeMap.get(position + 1);
+                mSelectedProvinceId = selectedProvince.getId();
                 mSelectedProvinceName = selectedProvince.getName();
                 mProvinceEditText.setText(mSelectedProvinceName);
                 rePopulateCityList();
@@ -375,17 +364,17 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getOrderedCities(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
 
                         }
@@ -448,7 +437,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EventCategory eventCategory = mEventCategoryObjectsTreeMap.get(position + 1);
-                mSelectedCatId = eventCategory.getObjectId();
+                mSelectedCatId = eventCategory.getId();
                 mSelectedCatName = eventCategory.getName();
                 mEventCatBtn.setText(mSelectedCatName);
                 eventCatDialog.dismiss();
@@ -468,7 +457,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mNameEditText.setError(null);
         }
 
-        if (mSelectedCatId == null) {
+        if (mSelectedCatId == -1) {
             mEventCatLabel.requestFocus();
             mEventCatLabel.setError(getString(R.string.error_event_cat_is_not_selected));
             if (isVisible()) {
@@ -480,7 +469,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
 
 
-        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+        if (mSelectedProvinceId < 0) {
             mProvinceEditText.requestFocus();
             mProvinceEditText.setError(getString(R.string.error_event_province_not_set));
             return false;
@@ -699,9 +688,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                 }
 
-                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
                 City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                EventCategory eventCategory = ParseObject.createWithoutData(EventCategory.class, mSelectedCatId);
+
+                EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
 
                 eventObject.setProvince(province);
                 eventObject.setCity(city);
@@ -770,7 +760,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        final Provinces provinces = new Provinces();
+        final Province provinces = new Province();
         final City city = new City();
         final EventCategory eventCategory = new EventCategory();
 
@@ -826,12 +816,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         mCellNumberEditText.setText(event.getCellNumber());
 
                         EventCategory eventCategory = (EventCategory) event.getCategory();
-                        Provinces province = (Provinces) event.getProvince();
+                        Province province = (Province) event.getProvince();
                         City city = (City) event.getCity();
 
-                        mSelectedCatId = eventCategory.getObjectId();
-                        mSelectedProvinceId = event.getProvince().getObjectId();
-                        mSelectedCityId = city.getObjectId();
+                        mSelectedCatId = eventCategory.getId();
+                        mSelectedProvinceId = event.getProvince().getId();
+                        mSelectedCityId = city.getId();
 
                         if (!TextUtils.isEmpty(eventCategory.getName())) {
                             mEventCatBtn.setText(eventCategory.getName());
@@ -877,14 +867,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
                 return null;
             }
-        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Provinces>>>() {
+        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Province>>>() {
             @Override
-            public Task<TreeMap<Number, Provinces>> then(Task<Void> task) throws Exception {
-                return provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance());
+            public Task<TreeMap<Number, Province>> then(Task<Void> task) throws Exception {
+                return provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance());
             }
-        }).continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
+        }).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
                 if (task.isFaulted()) {
                     logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                     if (progressDialog.isShowing()) {
@@ -895,7 +885,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                 } else {
                     mProvincesObjectsTreeMap = task.getResult();
-                    for (Provinces province : mProvincesObjectsTreeMap.values()) {
+                    for (Province province : mProvincesObjectsTreeMap.values()) {
                         if (TextUtils.isEmpty(mSelectedProvinceId)) {
                             mSelectedProvinceId = province.getObjectId();
                             mSelectedProvinceName = province.getName();
@@ -909,7 +899,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
+                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
@@ -940,7 +930,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, EventCategory>>>() {
             @Override
             public Task<TreeMap<Number, EventCategory>> then(Task<Object> task) throws Exception {
-                return eventCategory.getOrderedEventCategories();
+                return eventCategory.getAllEventCategoriesSorted();
             }
         }).continueWith(new Continuation<TreeMap<Number, EventCategory>, Object>() {
             @Override
@@ -957,7 +947,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 } else {
                     mEventCategoryObjectsTreeMap = task.getResult();
                     for (EventCategory category : mEventCategoryObjectsTreeMap.values()) {
-                        mEventCategoriesHashMap.put(category.getObjectId(), category.getName());
+                        mEventCategoriesHashMap.put(category.getId(), category.getName());
                     }
                 }
                 if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {

@@ -20,7 +20,7 @@ import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Item;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
@@ -86,7 +86,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private View mBannerFrameLayout;
 
     private EditText mProvinceEditEext;
-    public TreeMap<Number, Provinces> mProvinceObjectsTreeMap = new TreeMap<Number, Provinces>();
+    public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<Number, Province>();
     public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
 
     private EditText mCityEditEext;
@@ -141,21 +141,10 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
-                editor.commit();
-
-                Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+            getActivity().finish();
+            startActivity(intent);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_store_info, container, false);
@@ -304,7 +293,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Provinces selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
+                Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
                 mSelectedProvinceId = selectedProvince.getObjectId();
                 mSelectedProvinceName = selectedProvince.getName();
                 mProvinceEditEext.setText(mSelectedProvinceName);
@@ -319,7 +308,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getOrderedCities(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -575,9 +564,9 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     }
                 }
 
-                new Provinces().getProvinceById(mSelectedProvinceId).continueWithTask(new Continuation<Provinces, Task<City>>() {
+                new Province().getProvinceById(mSelectedProvinceId).continueWithTask(new Continuation<Province, Task<City>>() {
                     @Override
-                    public Task<City> then(Task<Provinces> task) throws Exception {
+                    public Task<City> then(Task<Province> task) throws Exception {
                         if (task.isFaulted()) {
                             mSendingDataProgressDialog.dismiss();
                             if (isVisible()) {
@@ -669,7 +658,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
-        final Provinces provinces = new Provinces();
+        final Province provinces = new Province();
         final City city = new City();
 
         getUserStoreAsync().continueWith(new Continuation<Store, Void>() {
@@ -751,14 +740,14 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                 }
                 return null;
             }
-        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Provinces>>>() {
+        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Province>>>() {
             @Override
-            public Task<TreeMap<Number, Provinces>> then(Task<Void> task) throws Exception {
-                return provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance());
+            public Task<TreeMap<Number, Province>> then(Task<Void> task) throws Exception {
+                return provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance());
             }
-        }).continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
+        }).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
                 if (task.isFaulted()) {
                     logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
 
@@ -770,7 +759,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
                     }
                 } else {
                     mProvinceObjectsTreeMap = task.getResult();
-                    for (Provinces province : mProvinceObjectsTreeMap.values()) {
+                    for (Province province : mProvinceObjectsTreeMap.values()) {
                         if (TextUtils.isEmpty(mSelectedProvinceId)) {
                             mSelectedProvinceId = province.getObjectId();
                             mSelectedProvinceName = province.getName();
@@ -784,7 +773,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
+                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override

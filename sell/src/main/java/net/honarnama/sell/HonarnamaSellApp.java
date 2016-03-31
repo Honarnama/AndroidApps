@@ -41,6 +41,8 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
             new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread thread, Throwable ex) {
+
+                    //TODO inja display a dialog to restart app
                     // here I do logging of exception to a db
                     Intent restartIntent = new Intent(getApplicationContext(), ControlPanelActivity.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -50,21 +52,9 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                     restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     restartIntent.putExtra(EXTRA_KEY_UNCAUGHT_EXCEPTION, "Uncaught Exception is: " + ex);
 
-//                    PendingIntent pendingIntent = PendingIntent.getActivity(HonarnamaSellApp.getInstance().getBaseContext(),
-//                            0, restartIntent,
-//                            PendingIntent.FLAG_ONE_SHOT);
-//
-//                    AlarmManager alarmManager;
-//                    alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//                            1000, pendingIntent);
-//
                     startActivity(restartIntent);
                     android.os.Process.killProcess(Process.myPid());
                     System.exit(0);
-                    // re-throw critical exception further to the os (important)
-//                    defaultUEH.uncaughtException(thread, ex);
-
                 }
             };
 

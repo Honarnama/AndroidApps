@@ -1,27 +1,18 @@
 package net.honarnama.browse.adapter;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
-import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.Category;
-import net.honarnama.core.model.Event;
-import net.honarnama.core.model.Store;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +22,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by elnaz on 2/15/16.
@@ -92,14 +80,14 @@ public class ItemsAdapter extends BaseAdapter {
         mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
         mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
 
-        Category category = item.getCategory();
+        ArtCategory category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());
 
 //        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
 //        mViewHolder.icon.setVisibility(View.GONE);
 //
 //
-//        mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
+//        mViewHolder.icon.loadInBackground(item.getFile(Item.IMAGE_1), new GetDataCallback() {
 //            @Override
 //            public void done(byte[] data, ParseException e) {
 //                mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);

@@ -65,21 +65,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
 
-            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
-                editor.commit();
-
-                Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+            getActivity().finish();
+            startActivity(intent);
         }
 
         final View rootView = inflater.inflate(R.layout.fragment_items, container, false);
@@ -137,7 +127,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Item item = (Item) mAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.switchFragmentToEditItem(item.getObjectId());
+        controlPanelActivity.switchFragmentToEditItem(item.getId());
     }
 
     @Override

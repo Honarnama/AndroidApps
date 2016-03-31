@@ -7362,9 +7362,9 @@ net.honarnama.core.fragment.HonarnamaBaseFragment:
     94:95:public void logD(java.lang.String)
 net.honarnama.core.model.CacheData$16:
     308:308:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Category:
+net.honarnama.core.model.ArtCategory:
     public static final java.lang.String DEBUG_TAG
-net.honarnama.core.model.Category$1:
+net.honarnama.core.model.ArtCategory$1:
     61:61:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
 net.honarnama.core.model.City:
     public static final java.lang.String DEBUG_TAG
@@ -7379,7 +7379,7 @@ net.honarnama.core.model.Item:
     82:83:public void setOwner(com.parse.ParseUser)
 net.honarnama.core.model.Item$4:
     300:300:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Provinces:
+net.honarnama.core.model.Province:
     public static final java.lang.String DEBUG_TAG
 net.honarnama.core.model.Store:
     public static final java.lang.String DEBUG_TAG

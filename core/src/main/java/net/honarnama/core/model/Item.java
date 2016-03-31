@@ -5,7 +5,6 @@ import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -15,7 +14,6 @@ import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.FileUtil;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ParseIO;
@@ -23,18 +21,11 @@ import net.honarnama.core.utils.ParseIO;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,151 +33,219 @@ import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-@ParseClassName("Item")
-public class Item extends ParseObject {
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/model.Item";
+public class Item {
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/itemModel";
     public final static int NUMBER_OF_IMAGES = 4;
 
-    public static String OBJECT_NAME = "Item";
 
     //Defining fields
-    public static String NAME = "name";
-    public static String DESCRIPTION = "description";
-    public static String CATEGORY = "category";
-    public static String PRICE = "price";
-    public static String IMAGE_1 = "image_1";
-    public static String IMAGE_2 = "image_2";
-    public static String IMAGE_3 = "image_3";
-    public static String IMAGE_4 = "image_4";
-    public static String THUMBNAIL = "thumbnail";
-    public static String VALIDITY_CHECKED = "validity_checked";
-
-    public static String STATUS = "status";
-    public static String OWNER = "owner";
-    public static String STORE = "store";
-    public static String OBJECT_ID = "objectId";
+    public String mName;
+    public String mDescription;
+    public ArtCategory mCategory;
+    public Number mPrice;
+    public File mImage1;
+    public File mImage2;
+    public File mImage3;
+    public File mImage4;
+    public boolean mValidityChecked;
+    public int mStatus;
+    public int mOwnerId;
+    public Store mStore;
+    public int mId;
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;
     public static Number STATUS_CODE_VERIFIED = 1;
 
 
-    public Item() {
-        super();
-    }
-
-    public Item(ParseUser owner, String name, String description, Category category, Number price, Store store) {
-        super();
-        put(NAME, name);
-        put(DESCRIPTION, description);
-        put(OWNER, owner);
-        put(CATEGORY, category);
-        put(PRICE, price);
-        if (store != null) {
-            put(STORE, store);
-        }
-    }
-
-    private void update(String name, String description, Category category, Number price, Store store) {
-        put(NAME, name);
-        put(DESCRIPTION, description);
-        put(CATEGORY, category);
-        put(PRICE, price);
-        if (store != null) {
-            put(STORE, store);
-        }
-    }
-
-    public void setOwner(ParseUser parseUser) {
-        put(OWNER, parseUser);
-    }
-
     public String getName() {
-        return getString("name");
+        return mName;
     }
 
     public void setName(String name) {
-        put(NAME, name);
-    }
-
-
-    public Number getPrice() {
-        return getNumber("price");
-    }
-
-    public Number getStatus() {
-        return getNumber(STATUS);
+        mName = name;
     }
 
     public String getDescription() {
-        return getString("description");
+        return mDescription;
     }
 
-    public Category getCategory() {
-        return (Category) getParseObject(CATEGORY);
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public ArtCategory getCategory() {
+        return mCategory;
+    }
+
+    public void setCategory(ArtCategory category) {
+        mCategory = category;
+    }
+
+    public Number getPrice() {
+        return mPrice;
+    }
+
+    public void setPrice(Number price) {
+        mPrice = price;
+    }
+
+    public File getImage1() {
+        return mImage1;
+    }
+
+    public void setImage1(File image1) {
+        mImage1 = image1;
+    }
+
+    public File getImage2() {
+        return mImage2;
+    }
+
+    public void setImage2(File image2) {
+        mImage2 = image2;
+    }
+
+    public File getImage3() {
+        return mImage3;
+    }
+
+    public void setImage3(File image3) {
+        mImage3 = image3;
+    }
+
+    public File getImage4() {
+        return mImage4;
+    }
+
+    public void setImage4(File image4) {
+        mImage4 = image4;
+    }
+
+    public boolean isValidityChecked() {
+        return mValidityChecked;
+    }
+
+    public void setValidityChecked(boolean validityChecked) {
+        mValidityChecked = validityChecked;
+    }
+
+    public int getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(int status) {
+        mStatus = status;
+    }
+
+    public int getOwnerId() {
+        return mOwnerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        mOwnerId = ownerId;
     }
 
     public Store getStore() {
-        return (Store) getParseObject(STORE);
+        return mStore;
     }
 
     public void setStore(Store store) {
-        put(STORE, store);
+        mStore = store;
     }
 
-    public ParseFile[] getImages() {
-        ParseFile[] res = new ParseFile[NUMBER_OF_IMAGES];
-        for (int i = 0; i < NUMBER_OF_IMAGES; i++) {
-            if (has("image_" + (i + 1))) {
-                ParseFile imageFile = getParseFile("image_" + (i + 1));
-                res[i] = imageFile;
-            }
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public Item(int ownerId, String name, String description, ArtCategory category, Number price, Store store) {
+        super();
+        setName(name);
+        setDescription(description);
+        setOwnerId(ownerId);
+        setCategory(category);
+        setPrice(price);
+        if (store != null) {
+            setStore(store);
         }
+    }
+
+    private void update(String name, String description, ArtCategory category, Number price, Store store) {
+        setName(name);
+        setDescription(description);
+        setCategory(category);
+        setPrice(price);
+        if (store != null) {
+            setStore(store);
+        }
+    }
+
+    public File[] getImages() {
+        File[] res = new File[NUMBER_OF_IMAGES];
+        File imageFile;
+
+        int count = 0;
+        if (getImage1() != null) {
+            imageFile = getImage1();
+            res[count] = imageFile;
+            count++;
+        }
+        if (getImage2() != null) {
+            imageFile = getImage2();
+            res[count] = imageFile;
+            count++;
+        }
+
+        if (getImage3() != null) {
+            imageFile = getImage3();
+            res[count] = imageFile;
+            count++;
+        }
+
+        if (getImage4() != null) {
+            imageFile = getImage4();
+            res[count] = imageFile;
+            count++;
+        }
+
         return res;
     }
 
     public static Task<Item> saveWithImages(final Item originalItem, final String name, final String description,
-                                            final Category category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
-        final ArrayList<ParseFile> parseFileImages = new ArrayList<ParseFile>();
-        final ArrayList<ParseFile> parseFileImagesToRemove = new ArrayList<ParseFile>();
+                                            final ArtCategory category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
+        final ArrayList<File> parseFileImages = new ArrayList();
+        final ArrayList<File> parseFileImagesToRemove = new ArrayList();
 //        final ArrayList<ParseFile> parseFileThumbnails = new ArrayList<ParseFile>();
         final ArrayList<Task<Void>> tasks = new ArrayList<Task<Void>>();
 
         int counter = 0;
         for (ImageSelector imageSelector : itemImages) {
 
-            ParseFile parseFile = imageSelector.getParseFile();
+            File file = imageSelector.getFile();
             if (imageSelector.isChanged()) {
                 if (imageSelector.getFinalImageUri() != null) {
                     counter++;
-                    parseFile = ParseIO.getParseFileFromFile(
+                    file = ParseIO.getParseFileFromFile(
                             "image_" + imageSelector.getImageSelectorIndex() + ".jpeg",
                             new File(imageSelector.getFinalImageUri().getPath())
                     );
                     if (BuildConfig.DEBUG) {
-                        Log.d(DEBUG_TAG, "saveWithImages, new file: " + parseFile);
+                        Log.d(DEBUG_TAG, "saveWithImages, new file: " + file);
                     }
-                    parseFileImages.add(parseFile);
-                    tasks.add(parseFile.saveInBackground());
-//                    if (counter == 1) {
-//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imageSelector.getFinalImageUri().getPath()), 120, 120);
-////                        thumbImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-////                        OutputStream outputStream = new FileOutputStream("thumbnail.jpeg");
-////                        stream.writeTo(outputStream);
-//                        ParseFile thumbParseFile = ParseIO.getParseFileFromFile("thumbnail.jpeg", FileUtil.convertBitmapToFile(thumbImage));
-//                        parseFileThumbnails.add(thumbParseFile);
-//                        tasks.add(thumbParseFile.saveInBackground());
-//                    }
+                    parseFileImages.add(file);
                 } else {
-                    parseFileImagesToRemove.add(parseFile);
+                    parseFileImagesToRemove.add(file);
                 }
-            } else if (parseFile != null) {
+            } else if (file != null) {
                 if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "saveWithImages, existing file: " + parseFile);
+                    Log.d(DEBUG_TAG, "saveWithImages, existing file: " + file);
                 }
                 if (!imageSelector.isDeleted()) {
-                    parseFileImages.add(parseFile);
+                    parseFileImages.add(file);
                 }
             } else {
                 if (BuildConfig.DEBUG) {
@@ -355,7 +414,7 @@ public class Item extends ParseObject {
     }
 
 
-    public static Task<Void> deleteItem(Context context, String itemId) {
+    public static Task<Void> deleteItem(Context context, int itemId) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {

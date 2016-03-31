@@ -16930,8 +16930,8 @@ net.honarnama.browse.widget.MainTabBar: MainTabBar(android.content.Context)
 net.honarnama.browse.widget.MainTabBar: MainTabBar(android.content.Context,android.util.AttributeSet)
 net.honarnama.browse.widget.MainTabBar: void setSelectedTab(java.lang.Object)
 net.honarnama.browse.widget.MainTabBar: void setOnTabItemClickListener(net.honarnama.browse.widget.MainTabBar$OnTabItemClickListener)
-net.honarnama.core.activity.ChooseCategoryActivity
-net.honarnama.core.activity.ChooseCategoryActivity: ChooseCategoryActivity()
+net.honarnama.core.activity.ChooseArtCategoryActivity
+net.honarnama.core.activity.ChooseArtCategoryActivity: ChooseCategoryActivity()
 net.honarnama.core.activity.HonarnamaBaseActivity: HonarnamaBaseActivity()
 net.honarnama.core.utils.HonarnamaUser$ActivationMethod: net.honarnama.core.utils.HonarnamaUser$ActivationMethod[] values()
 net.honarnama.core.utils.HonarnamaUser$ActivationMethod: net.honarnama.core.utils.HonarnamaUser$ActivationMethod valueOf(java.lang.String)

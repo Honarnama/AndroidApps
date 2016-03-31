@@ -21,7 +21,7 @@ import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -35,7 +35,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -251,7 +250,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.getDescription()));
 
                     mShop = mItem.getStore();
-                    mPlaceTextView.setText(mShop.getProvince().getString(Provinces.NAME) + "، " + mShop.getCity().getString(City.NAME));
+                    mPlaceTextView.setText(mShop.getProvince().getString(Province.NAME) + "، " + mShop.getCity().getString(City.NAME));
                     mShopNameTextView.append(TextUtil.convertEnNumberToFa(mShop.getName()));
                     mShopLogo.loadInBackground(mShop.getLogo(), new GetDataCallback() {
                         @Override

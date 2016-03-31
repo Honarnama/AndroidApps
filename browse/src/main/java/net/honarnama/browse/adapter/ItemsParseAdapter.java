@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.model.Category;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by elnaz on 2/23/16.
@@ -138,7 +137,7 @@ public class ItemsParseAdapter extends ParseQueryAdapter {
         mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
         mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
 
-        Category category = item.getCategory();
+        ArtCategory category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());
 
         return convertView;

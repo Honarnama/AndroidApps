@@ -58,7 +58,7 @@ public class EventsParseAdapter extends ParseQueryAdapter {
 
 //        mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
 //        mViewHolderWithImage.icon.setVisibility(View.GONE);
-//        mViewHolderWithImage.icon.loadInBackground(event.getParseFile(Event.BANNER), new GetDataCallback() {
+//        mViewHolderWithImage.icon.loadInBackground(event.getFile(Event.BANNER), new GetDataCallback() {
 //            @Override
 //            public void done(byte[] data, ParseException e) {
 //                mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);

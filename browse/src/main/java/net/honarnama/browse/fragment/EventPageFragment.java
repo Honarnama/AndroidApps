@@ -16,7 +16,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -195,7 +194,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
                     mDescTextView.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
                     mAddreddTextView.append(" " + event.getAddress());
-                    mPlaceTextView.setText(event.getProvince().getString(Provinces.NAME) + "، " + event.getCity().getString(City.NAME));
+                    mPlaceTextView.setText(event.getProvince().getString(Province.NAME) + "، " + event.getCity().getString(City.NAME));
 
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override

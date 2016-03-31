@@ -3,28 +3,21 @@ package net.honarnama.browse.adapter;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Bookmark;
-import net.honarnama.core.model.Category;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.List;
-
-import bolts.TaskCompletionSource;
 
 /**
  * Created by elnaz on 2/23/16.
@@ -78,7 +71,7 @@ public class BookmarksParseAdapter extends ParseQueryAdapter {
         mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
         mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
 
-        Category category = item.getCategory();
+        ArtCategory category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());
 
         return convertView;

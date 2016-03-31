@@ -63,7 +63,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mTempImageUriCrop;
     private Uri mFinalImageUri;
 
-    private ParseFile mParseFile;
+    private File mFile;
     private boolean mChanged = false;
     private boolean mImageIsLoaded = false;
 
@@ -150,7 +150,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 
         String[] imageSourceProviders;
-        if (mIncludeRemoveImage && (mParseFile != null)) {
+        if (mIncludeRemoveImage && (mFile != null)) {
             imageSourceProviders = new String[3];
             imageSourceProviders[2] = mContext.getString(R.string.image_selector_option_text_remove);
         } else {
@@ -200,7 +200,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public void removeSelectedImage() {
         mFinalImageUri = null;
-        mParseFile = null;
+        mFile = null;
         setFinalImageUri(null);
         if (mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageRemoved();
@@ -488,16 +488,16 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             return Task.forResult(null);
         }
 
-        if (mParseFile != null) {
-            mParseFile.cancel();
+        if (mFile != null) {
+            mFile.cancel();
         }
-        mParseFile = parseFile;
+        mFile = parseFile;
 
         return parseFile.getDataInBackground().continueWithTask(new Continuation<byte[], Task<byte[]>>() {
             @Override
             public Task<byte[]> then(Task<byte[]> task) throws Exception {
                 byte[] data = task.getResult();
-                if (mParseFile != parseFile) {
+                if (mFile != parseFile) {
                     // This prevents the very slim chance of the file's download finishing and the callback
                     // triggering just before this ImageView is reused for another ParseObject.
                     return Task.cancelled();
@@ -538,8 +538,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mChanged;
     }
 
-    public ParseFile getParseFile() {
-        return mParseFile;
+    public File getFile() {
+        return mFile;
     }
 
     //for Square Imageview

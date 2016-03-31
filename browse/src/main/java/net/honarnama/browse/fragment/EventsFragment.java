@@ -19,7 +19,7 @@ import net.honarnama.core.adapter.EventCategoriesAdapter;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.EventCategory;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Dialog;
@@ -58,8 +58,8 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public Button mCategoryFilterButton;
     public RelativeLayout mFilterContainer;
     public TreeMap<Number, EventCategory> mEventCategoryObjectsTreeMap = new TreeMap<Number, EventCategory>();
-    public HashMap<String, String> mEventCategoriesHashMap = new HashMap<>();
-    public String mSelectedCatId;
+    public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
+    public int mSelectedCatId = -1;
     public String mSelectedCatName;
 
     private String mSelectedProvinceId;
@@ -131,7 +131,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mListView.setOnItemClickListener(this);
 
         final EventCategory eventCategory = new EventCategory();
-        eventCategory.getOrderedEventCategories().continueWith(new Continuation<TreeMap<Number, EventCategory>, Object>() {
+        eventCategory.getAllEventCategoriesSorted().continueWith(new Continuation<TreeMap<Number, EventCategory>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, EventCategory>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -142,7 +142,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 } else {
                     mEventCategoryObjectsTreeMap = task.getResult();
                     for (EventCategory category : mEventCategoryObjectsTreeMap.values()) {
-                        mEventCategoriesHashMap.put(category.getObjectId(), category.getName());
+                        mEventCategoriesHashMap.put(category.getId(), category.getName());
                     }
                 }
                 return null;
@@ -229,7 +229,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     mFilterAllCategoryRowSelected = false;
                 }
                 EventCategory eventCategory = mEventCategoryObjectsTreeMap.get(position + 1);
-                mSelectedCatId = eventCategory.getObjectId();
+                mSelectedCatId = eventCategory.getId();
                 mSelectedCatName = eventCategory.getName();
                 mCategoryFilterButton.setText(mSelectedCatName);
                 eventCatDialog.dismiss();
@@ -245,10 +245,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public void listEvents() {
 
         EventCategory eventCategory = null;
-        if (!TextUtils.isEmpty(mSelectedCatId) && !mFilterAllCategoryRowSelected) {
-            eventCategory = ParseObject.createWithoutData(EventCategory.class, mSelectedCatId);
-        }
 
+        if (mSelectedCatId >= 0 && !mFilterAllCategoryRowSelected) {
+            eventCategory = EventCategory.getCategoryById(mSelectedCatId);
+        }
 
         final EventCategory finalEventCategory = eventCategory;
         ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
@@ -264,7 +264,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
                         if (!mIsAllIranChecked) {
                             if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
                                 parseQuery.whereEqualTo(Event.PROVINCE, province);
                             }
 

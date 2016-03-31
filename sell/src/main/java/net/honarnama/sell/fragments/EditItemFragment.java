@@ -12,9 +12,9 @@ import com.parse.ParseQuery;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.activity.ChooseCategoryActivity;
+import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.model.Category;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -72,7 +72,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private ImageSelector[] mItemImages;
 
     private Item mItem;
-    private String mItemId;
+    private int mItemId;
 
     private boolean mDirty = false;
     private boolean mCreateNew = false;
@@ -109,14 +109,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mImagesTitleTextView.setError(null);
         }
         mItem = null;
-        mItemId = null;
+        mItemId = -1;
         mCategoryId = null;
         mCategoryName = null;
         setDirty(false);
         mCreateNew = createNew;
     }
 
-    public void setItemId(Context context, String itemId) {
+    public void setItemId(Context context, int itemId) {
         reset(context, false);
         mItemId = itemId;
     }
@@ -131,7 +131,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     @Override
     public String getTitle(Context context) {
-        if (mItemId != null) {
+        if (mItemId >= 0) {
             return context.getString(R.string.nav_title_edit_item);
         } else {
             return context.getString(R.string.register_new_item);
@@ -170,22 +170,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true) || !sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_SYNCED, false);
-                editor.commit();
-
-                Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+            getActivity().finish();
+            startActivity(intent);
         }
 
         mFragmentHasView = true;
@@ -264,10 +252,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
             boolean savedDirty = false;
-            String savedItemId = null;
+            int savedItemId = -1;
             if (savedInstanceState != null) {
                 savedDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
-                savedItemId = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
+                savedItemId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
             }
 
             if (BuildConfig.DEBUG) {
@@ -286,20 +274,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mCategoryId = savedInstanceState.getString("categoryId");
                 mPriceEditText.setText(savedInstanceState.getString("price"));
             } else {
-                if (mItemId != null) {
+                if (mItemId >= 0) {
                     showLoadingDialog();
-                    ParseQuery<Item> query = ParseQuery.getQuery(Item.class);
 
-                    if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED, false)) {
-                        if (BuildConfig.DEBUG) {
-                            logD("Getting items from Local data store");
-                        }
-                        query.fromLocalDatastore();
-                    } else {
-                        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                            return null;
-                        }
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return null;
                     }
+
 
                     query.getInBackground(mItemId, new GetCallback<Item>() {
                         @Override
@@ -318,7 +299,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 mPriceEditText.setText(mItem.getPrice() + "");
                                 mCategoryId = mItem.getCategory().getObjectId();
                                 mChooseCategoryButton.setText(getString(R.string.getting_information));
-                                new Category().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
+                                new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
                                     @Override
                                     public Object then(Task<String> task) throws Exception {
                                         if (task.isFaulted()) {
@@ -432,7 +413,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
                 break;
             case R.id.edit_item_category_semi_button:
-                Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
+                Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.SELL_APP_KEY);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
@@ -456,7 +437,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
-            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getParseFile() != null && !imageSelector.isDeleted())) {
+            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getFile() != null && !imageSelector.isDeleted())) {
                 noImage = false;
                 break;
             }
@@ -521,9 +502,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Store.getStoreByOwner(HonarnamaUser.getCurrentUser()).continueWithTask(new Continuation<Store, Task<Category>>() {
+            Store.getStoreByOwner(HonarnamaUser.getCurrentUser()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
                 @Override
-                public Task<Category> then(Task<Store> task) throws Exception {
+                public Task<ArtCategory> then(Task<Store> task) throws Exception {
                     if (task.isFaulted()) {
                         mDirty = true;
                         if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
@@ -535,12 +516,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         return Task.forError(task.getError());
                     } else {
                         mStore = task.getResult();
-                        return Category.getCategoryById(catId, HonarnamaBaseApp.SELL_APP_KEY);
+                        return ArtCategory.getCategoryById(catId, HonarnamaBaseApp.SELL_APP_KEY);
                     }
                 }
-            }).continueWithTask(new Continuation<Category, Task<Item>>() {
+            }).continueWithTask(new Continuation<ArtCategory, Task<Item>>() {
                 @Override
-                public Task<Item> then(Task<Category> task) throws Exception {
+                public Task<Item> then(Task<ArtCategory> task) throws Exception {
 
                     if (task.isFaulted()) {
                         mDirty = true;

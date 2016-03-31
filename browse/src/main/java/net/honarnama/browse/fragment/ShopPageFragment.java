@@ -17,14 +17,13 @@ import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.TextUtil;
 import net.honarnama.core.utils.WindowUtil;
 
-import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -181,7 +180,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                     });
 
-                    String province = shop.getParseObject(Store.PROVINCE).getString(Provinces.NAME);
+                    String province = shop.getParseObject(Store.PROVINCE).getString(Province.NAME);
                     String city = shop.getParseObject(Store.CITY).getString(City.NAME);
 
                     mShopPlace.setText(province + "، " + city);

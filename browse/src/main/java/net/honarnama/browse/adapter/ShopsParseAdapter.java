@@ -64,7 +64,7 @@ public class ShopsParseAdapter extends ParseQueryAdapter {
 //
 //        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
 //        mViewHolderWithImage.icon.setVisibility(View.GONE);
-//        mViewHolderWithImage.icon.loadInBackground(shop.getParseFile(Shop.LOGO), new GetDataCallback() {
+//        mViewHolderWithImage.icon.loadInBackground(shop.getFile(Shop.LOGO), new GetDataCallback() {
 //            @Override
 //            public void done(byte[] data, ParseException e) {
 //                mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);

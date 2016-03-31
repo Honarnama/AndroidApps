@@ -22,15 +22,15 @@ import java.util.HashMap;
 public class CategoriesAdapter extends BaseAdapter {
     private final Context mContext;
     private HashMap<Number, String> mArtCategoriesName;
-    private HashMap<Number, String> mArtCategoriesObjectIds;
+    private HashMap<Number, Integer> mArtCategoriesObjectIds;
 
     private int mSelectedPosition;
-    public ArrayList<String> mNodeCategories = new ArrayList<String>();
-    public HashMap<String, String> mFilterSubCatParentHashMap = new HashMap<String, String>();
+    public ArrayList<Integer> mNodeCategories = new ArrayList();
+    public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap();
 
 
-    public CategoriesAdapter(Context context, HashMap<Number, String> artCategoriesObjectIds, HashMap<Number,
-            String> artCategoriesName, ArrayList<String> nodeCategories, HashMap<String, String> filterSubCatParentHashMap) {
+    public CategoriesAdapter(Context context, HashMap<Number, Integer> artCategoriesObjectIds, HashMap<Number,
+            String> artCategoriesName, ArrayList<Integer> nodeCategories, HashMap<Integer, Integer> filterSubCatParentHashMap) {
         super();
         mContext = context;
         mArtCategoriesObjectIds = artCategoriesObjectIds;
@@ -54,7 +54,7 @@ public class CategoriesAdapter extends BaseAdapter {
         return 0;
     }
 
-    public void refreshArtCategories(HashMap<Number, String> artCategoriesObjectIds, HashMap<Number, String> artCategoriesName) {
+    public void refreshArtCategories(HashMap<Number, Integer> artCategoriesObjectIds, HashMap<Number, String> artCategoriesName) {
 
         mArtCategoriesObjectIds = artCategoriesObjectIds;
         mArtCategoriesName = artCategoriesName;

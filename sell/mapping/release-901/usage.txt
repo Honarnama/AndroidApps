@@ -7218,14 +7218,14 @@ net.honarnama.core.model.CacheData$17:
     325:325:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
 net.honarnama.core.model.CacheData$18:
     392:392:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Category:
+net.honarnama.core.model.ArtCategory:
     public static final java.lang.String DEBUG_TAG
     138:179:public static bolts.Task getCategoriesById(java.util.ArrayList,java.lang.String)
-net.honarnama.core.model.Category$1:
+net.honarnama.core.model.ArtCategory$1:
     74:74:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Category$2:
+net.honarnama.core.model.ArtCategory$2:
     118:118:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Category$3
+net.honarnama.core.model.ArtCategory$3
 net.honarnama.core.model.City:
     public static final java.lang.String DEBUG_TAG
 net.honarnama.core.model.City$3:
@@ -7254,11 +7254,11 @@ net.honarnama.core.model.Item:
     130:130:public net.honarnama.core.model.Store getStore()
 net.honarnama.core.model.Item$5:
     368:368:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
-net.honarnama.core.model.Provinces:
+net.honarnama.core.model.Province:
     public static final java.lang.String DEBUG_TAG
     66:92:public bolts.Task getOrderedProvinceHashMap(android.content.Context)
-net.honarnama.core.model.Provinces$1
-net.honarnama.core.model.Provinces$4:
+net.honarnama.core.model.Province$1
+net.honarnama.core.model.Province$4:
     225:225:public bridge synthetic void done(com.parse.ParseObject,com.parse.ParseException)
 net.honarnama.core.model.Store:
     public static final java.lang.String DEBUG_TAG

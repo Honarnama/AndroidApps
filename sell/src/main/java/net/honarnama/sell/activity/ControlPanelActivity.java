@@ -16,7 +16,7 @@ import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.model.CacheData;
+import net.honarnama.core.loader.MetaUpdater;
 import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
@@ -60,9 +60,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
-
-import bolts.Continuation;
-import bolts.Task;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements View.OnClickListener {
 
@@ -157,28 +154,44 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
         processIntent(getIntent());
 
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ControlPanelActivity.this);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-//        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
-                switchFragment(fragment);
-                return;
-            }
-            new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
-                @Override
-                public Object then(Task<Void> task) throws Exception {
-                    if (task.isFaulted()) {
-                        HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
-                        switchFragment(fragment);
-                        Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
-                    }
-                    return null;
-                }
-            });
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
+            switchFragment(fragment);
+            return;
         }
+
+        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+//        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
+//            new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
+//                @Override
+//                public Object then(Task<Void> task) throws Exception {
+//                    if (task.isFaulted()) {
+//                        HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
+//                        switchFragment(fragment);
+//                        Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
+//                    }
+//                    return null;
+//                }
+//            });
+//        }
+
+//        Task.callInBackground(new Callable<Void>() {
+//            public Void call() {
+//                String metaResult = "";
+//                try {
+//                    metaResult = GRPCUtils.getInstance().getMetaData();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Log.e("inja ", metaResult);
+//                return null;
+//            }
+//        });
+
         mDrawer.openDrawer(Gravity.RIGHT);
+
+        MetaUpdater metaUpdater = new MetaUpdater(ControlPanelActivity.this);
+        metaUpdater.execute();
     }
 
     private void setupDrawerContent() {
@@ -320,7 +333,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
     }
 
-    public void switchFragmentToEditItem(String itemId) {
+    public void switchFragmentToEditItem(int itemId) {
         mEditItemFragment.setItemId(ControlPanelActivity.this, itemId);
         switchFragment(mEditItemFragment);
     }

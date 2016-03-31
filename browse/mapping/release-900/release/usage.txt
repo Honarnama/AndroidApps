@@ -6604,7 +6604,7 @@ net.honarnama.browse.fragment.ItemPageFragment:
     128:129:private void setOwner(com.parse.ParseUser)
     490:506:public int getVisibleViews(java.lang.String)
 net.honarnama.browse.fragment.ItemsFragment:
-    private net.honarnama.core.model.Provinces mSelectedProvince
+    private net.honarnama.core.model.Province mSelectedProvince
 net.honarnama.browse.fragment.ShopPageFragment:
     public static net.honarnama.browse.fragment.ShopPageFragment mShopPageFragment
     87:88:private void setOwner(com.parse.ParseUser)
@@ -6671,14 +6671,14 @@ net.honarnama.core.model.CacheData$6
 net.honarnama.core.model.CacheData$7
 net.honarnama.core.model.CacheData$8
 net.honarnama.core.model.CacheData$9
-net.honarnama.core.model.Category:
+net.honarnama.core.model.ArtCategory:
     public static final java.lang.String DEBUG_TAG
     56:89:public static bolts.Task getCategoryNameById(java.lang.String)
     93:133:public static bolts.Task getCategoryById(java.lang.String,java.lang.String)
     138:179:public static bolts.Task getCategoriesById(java.util.ArrayList,java.lang.String)
-net.honarnama.core.model.Category$1
-net.honarnama.core.model.Category$2
-net.honarnama.core.model.Category$3
+net.honarnama.core.model.ArtCategory$1
+net.honarnama.core.model.ArtCategory$2
+net.honarnama.core.model.ArtCategory$3
 net.honarnama.core.model.City:
     public static final java.lang.String DEBUG_TAG
     148:188:public bolts.Task getCityById(java.lang.String)
@@ -6699,7 +6699,7 @@ net.honarnama.core.model.Event:
     143:144:public void setBanner(com.parse.ParseFile)
     147:147:public com.parse.ParseUser getOwner()
     151:152:public void setOwner(com.parse.ParseUser)
-    159:160:public void setProvince(net.honarnama.core.model.Provinces)
+    159:160:public void setProvince(net.honarnama.core.model.Province)
     167:168:public void setCity(net.honarnama.core.model.City)
     171:206:public static bolts.Task checkIfUserHaveEvent(android.content.Context)
     211:247:public static bolts.Task getEventByOwner(com.parse.ParseUser)
@@ -6709,13 +6709,13 @@ net.honarnama.core.model.HonarnamaBaseModel
 net.honarnama.core.model.Item:
     public static final java.lang.String DEBUG_TAG
     public static final int NUMBER_OF_IMAGES
-    79:88:public Item(com.parse.ParseUser,java.lang.String,java.lang.String,net.honarnama.core.model.Category,java.lang.Number,net.honarnama.core.model.Store)
-    91:98:private void update(java.lang.String,java.lang.String,net.honarnama.core.model.Category,java.lang.Number,net.honarnama.core.model.Store)
+    79:88:public Item(com.parse.ParseUser,java.lang.String,java.lang.String,net.honarnama.core.model.ArtCategory,java.lang.Number,net.honarnama.core.model.Store)
+    91:98:private void update(java.lang.String,java.lang.String,net.honarnama.core.model.ArtCategory,java.lang.Number,net.honarnama.core.model.Store)
     101:102:public void setOwner(com.parse.ParseUser)
     109:110:public void setName(java.lang.String)
     118:118:public java.lang.Number getStatus()
     134:135:public void setStore(net.honarnama.core.model.Store)
-    150:235:public static bolts.Task saveWithImages(net.honarnama.core.model.Item,java.lang.String,java.lang.String,net.honarnama.core.model.Category,java.lang.Number,com.parse.ImageSelector[],net.honarnama.core.model.Store)
+    150:235:public static bolts.Task saveWithImages(net.honarnama.core.model.Item,java.lang.String,java.lang.String,net.honarnama.core.model.ArtCategory,java.lang.Number,com.parse.ImageSelector[],net.honarnama.core.model.Store)
     263:275:public static void setUserItemsStore(net.honarnama.core.model.Store)
     278:354:public static bolts.Task getUserItems(android.content.Context)
     359:388:public static bolts.Task deleteItem(android.content.Context,java.lang.String)
@@ -6727,12 +6727,12 @@ net.honarnama.core.model.Item$4$1
 net.honarnama.core.model.Item$4$1$1
 net.honarnama.core.model.Item$5
 net.honarnama.core.model.Item$5$1
-net.honarnama.core.model.Provinces:
+net.honarnama.core.model.Province:
     public static final java.lang.String DEBUG_TAG
     66:92:public bolts.Task getOrderedProvinceHashMap(android.content.Context)
     199:240:public bolts.Task getProvinceById(java.lang.String)
-net.honarnama.core.model.Provinces$1
-net.honarnama.core.model.Provinces$4
+net.honarnama.core.model.Province$1
+net.honarnama.core.model.Province$4
 net.honarnama.core.model.Store:
     public static final java.lang.String DEBUG_TAG
     63:64:public void setName(java.lang.String)
@@ -6745,7 +6745,7 @@ net.honarnama.core.model.Store:
     110:111:public void setBanner(com.parse.ParseFile)
     114:114:public com.parse.ParseUser getOwner()
     118:119:public void setOwner(com.parse.ParseUser)
-    126:127:public void setProvince(net.honarnama.core.model.Provinces)
+    126:127:public void setProvince(net.honarnama.core.model.Province)
     134:135:public void setCity(net.honarnama.core.model.City)
     138:173:public static bolts.Task checkIfUserHaveStore(android.content.Context)
     178:214:public static bolts.Task getStoreByOwner(com.parse.ParseUser)

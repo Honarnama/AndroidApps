@@ -20016,8 +20016,8 @@ net.honarnama.base.R$styleable: int View_android_theme
 net.honarnama.base.R$styleable: int View_paddingEnd
 net.honarnama.base.R$styleable: int View_paddingStart
 net.honarnama.base.R$styleable: int View_theme
-net.honarnama.core.activity.ChooseCategoryActivity
-net.honarnama.core.activity.ChooseCategoryActivity: ChooseCategoryActivity()
+net.honarnama.core.activity.ChooseArtCategoryActivity
+net.honarnama.core.activity.ChooseArtCategoryActivity: ChooseCategoryActivity()
 net.honarnama.core.activity.HonarnamaBaseActivity: HonarnamaBaseActivity()
 net.honarnama.core.activity.RegisterActivity
 net.honarnama.core.activity.RegisterActivity: RegisterActivity()

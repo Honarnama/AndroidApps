@@ -29,302 +29,165 @@ import bolts.TaskCompletionSource;
 /**
  * Created by elnaz on 1/5/16.
  */
-@ParseClassName("Event")
-public class Event extends ParseObject {
+public class Event {
 
     public Event() {
         super();
     }
 
-    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/storeModel";
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventModel";
 
     public static String OBJECT_NAME = "Event";
 
-    public static String NAME = "name";
-    public static String DESCRIPTION = "description";
-    public static String PHONE_NUMBER = "phoneNumber";
-    public static String CELL_NUMBER = "cellNumber";
-    public static String BANNER = "banner";
-    public static String OWNER = "owner";
-    public static String CATEGORY = "category";
-    public static String PROVINCE = "province";
-    public static String CITY = "city";
-    public static String STATUS = "status";
-    public static String VALIDITY_CHECKED = "validity_checked";
-    public static String OBJECT_ID = "objectId";
-    public static String ACTIVE = "active";
-    public static String ADDRESS = "address";
-    public static String START_DATE = "start_date";
-    public static String END_DATE = "end_date";
+    public String mName;
+    public String mDescription;
+    public String mPhoneNumber;
+    public String mCellNumber;
+    public String mBanner;
+    public int mOwnerId;
+    public EventCategory mCategory;
+    public Province mProvince;
+    public City mCity;
+    public int mStatus;
+    public boolean mValidityChecked;
+    public int mId;
+    public boolean mActive;
+    public String mAddress;
+    public Date mStartDate;
+    public Date mEndDate;
 
 
     public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static Number STATUS_CODE_NOT_VERIFIED = -1;
     public static Number STATUS_CODE_VERIFIED = 1;
 
-
     public String getName() {
-        return getString(NAME);
+        return mName;
     }
 
-    public void setName(String value) {
-        put(NAME, value);
+    public void setName(String name) {
+        mName = name;
     }
-
-    public String getAddress() {
-        return getString(ADDRESS);
-    }
-
-    public void setAddress(String value) {
-        put(ADDRESS, value);
-    }
-
-    public boolean getActive() {
-        return getBoolean(ACTIVE);
-    }
-
-    public void setStartDate(Date date) {
-        put(START_DATE, date);
-    }
-
-    public Date getStartDate() {
-        return getDate(START_DATE);
-    }
-
-
-    public void setEndtDate(Date date) {
-        put(END_DATE, date);
-    }
-
-    public Date getEndDate() {
-        return getDate(END_DATE);
-    }
-
-    public void setActive(boolean value) {
-        put(ACTIVE, value);
-    }
-
 
     public String getDescription() {
-        return getString(DESCRIPTION);
+        return mDescription;
     }
 
-    public void setDescription(String value) {
-        put(DESCRIPTION, value);
+    public void setDescription(String description) {
+        mDescription = description;
     }
-
 
     public String getPhoneNumber() {
-        return getString(PHONE_NUMBER);
+        return mPhoneNumber;
     }
 
-    public void setPhoneNumber(String value) {
-        put(PHONE_NUMBER, value);
+    public void setPhoneNumber(String phoneNumber) {
+        mPhoneNumber = phoneNumber;
     }
 
     public String getCellNumber() {
-        return getString(CELL_NUMBER);
+        return mCellNumber;
     }
 
-    public void setCellNumber(String value) {
-        put(CELL_NUMBER, value);
+    public void setCellNumber(String cellNumber) {
+        mCellNumber = cellNumber;
     }
 
-
-    public Number getStatus() {
-        return getNumber(STATUS);
+    public String getBanner() {
+        return mBanner;
     }
 
-
-    public ParseFile getBanner() {
-        return getParseFile(BANNER);
+    public void setBanner(String banner) {
+        mBanner = banner;
     }
 
-    public void setBanner(ParseFile parseFile) {
-        put(BANNER, parseFile);
+    public int getOwnerId() {
+        return mOwnerId;
     }
 
-    public ParseUser getOwner() {
-        return getParseUser(OWNER);
+    public void setOwnerId(int ownerId) {
+        mOwnerId = ownerId;
     }
 
-    public void setOwner(ParseUser parseUser) {
-        put(OWNER, parseUser);
+    public EventCategory getCategory() {
+        return mCategory;
     }
 
-    public ParseObject getProvince() {
-        return getParseObject(PROVINCE);
+    public void setCategory(EventCategory category) {
+        mCategory = category;
     }
 
-    public void setProvince(Provinces province) {
-        put(PROVINCE, province);
+    public Province getProvince() {
+        return mProvince;
     }
 
-    public ParseObject getCity() {
-        return getParseObject(CITY);
+    public void setProvince(Province province) {
+        mProvince = province;
+    }
+
+    public City getCity() {
+        return mCity;
     }
 
     public void setCity(City city) {
-        put(CITY, city);
+        mCity = city;
     }
 
-    public ParseObject getCategory() {
-        return getParseObject(CATEGORY);
+    public int getStatus() {
+        return mStatus;
     }
 
-    public void setCategory(EventCategory eventCategory) {
-        put(CATEGORY, eventCategory);
+    public void setStatus(int status) {
+        mStatus = status;
     }
 
-    public static Task<Boolean> checkIfUserHaveEvent(Context context) {
-        final TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
-        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
+    public boolean isValidityChecked() {
+        return mValidityChecked;
+    }
 
-        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
+    public void setValidityChecked(boolean validityChecked) {
+        mValidityChecked = validityChecked;
+    }
 
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+    public int getId() {
+        return mId;
+    }
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false)) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "Getting event info from local datastore.");
-                }
-                query.fromLocalDatastore();
-            } else {
-                tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for event"));
-                return tcs.getTask();
-            }
-        }
+    public void setId(int id) {
+        mId = id;
+    }
 
-        query.getFirstInBackground(new GetCallback<Event>() {
-            @Override
-            public void done(Event object, ParseException e) {
-                if (e == null) {
-                    tcs.setResult(true);
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        tcs.setResult(false);
-                    } else {
-                        tcs.setError(e);
-                    }
-                }
-            }
-        });
+    public boolean isActive() {
+        return mActive;
+    }
 
-        return tcs.getTask();
+    public void setActive(boolean active) {
+        mActive = active;
+    }
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    public void setAddress(String address) {
+        mAddress = address;
+    }
+
+    public Date getStartDate() {
+        return mStartDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        mStartDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return mEndDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        mEndDate = endDate;
     }
 
 
-    public static Task<Event> getEventByOwner(final ParseUser parseUser) {
-        final TaskCompletionSource<Event> tcs = new TaskCompletionSource<>();
-
-        final ParseQuery<Event> parseQuery = ParseQuery.getQuery(Event.class);
-        parseQuery.whereEqualTo(OWNER, parseUser);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting event for owner from local datastore");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
-        }
-
-        parseQuery.getFirstInBackground(new GetCallback<Event>() {
-            @Override
-            public void done(Event event, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(event);
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        tcs.trySetResult(null);
-                    } else {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(DEBUG_TAG, "Finding event for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                        } else {
-                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding event for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                        }
-                        tcs.trySetError(e);
-                    }
-                }
-            }
-        });
-        return tcs.getTask();
-    }
-
-    public static Task<ParseObject> getEventById(final String eventId) {
-        final TaskCompletionSource<ParseObject> tcs = new TaskCompletionSource<>();
-
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(OBJECT_NAME);
-        parseQuery.whereEqualTo(VALIDITY_CHECKED, true);
-        parseQuery.whereEqualTo(STATUS, Event.STATUS_CODE_VERIFIED);
-//        parseQuery.whereEqualTo(ACTIVE, activeOnly);
-        parseQuery.whereEqualTo(OBJECT_ID, eventId);
-        parseQuery.include(PROVINCE);
-        parseQuery.include(CITY);
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            tcs.setError(new NetworkErrorException("No network connection."));
-            return tcs.getTask();
-        }
-
-        parseQuery.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject event, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(event);
-                } else {
-                    tcs.trySetError(e);
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG,
-                                "Error getting event info for " + eventId + ". Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error getting event info for " + eventId + ". Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                    }
-                }
-            }
-        });
-
-        return tcs.getTask();
-    }
-
-    public static Task<List<Event>> search(final String searchTerm) {
-        final TaskCompletionSource<List<Event>> tcs = new TaskCompletionSource<>();
-        ParseQuery<Event> parseQuery = new ParseQuery<Event>(Event.class);
-        parseQuery.whereContains(Event.NAME, searchTerm);
-        parseQuery.whereEqualTo(Event.STATUS, STATUS_CODE_VERIFIED);
-        parseQuery.whereEqualTo(Event.VALIDITY_CHECKED, true);
-        parseQuery.whereEqualTo(Event.ACTIVE, true);
-        parseQuery.include(Event.CITY);
-        parseQuery.setLimit(50);
-
-        parseQuery.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(final List<Event> events, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(events);
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (BuildConfig.DEBUG) {
-                            Log.d(DEBUG_TAG, "Searching events with search term " + searchTerm + " does not have any results.");
-                        }
-                        tcs.trySetResult(null);
-                    } else {
-                        tcs.trySetError(e);
-                        if (BuildConfig.DEBUG) {
-                            Log.e(DEBUG_TAG,
-                                    "Searching events with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage(), e);
-                        } else {
-                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Searching events with search term " + searchTerm + " failed Error Code: " + e.getCode() + " //  Error Msg: " + e.getMessage() + " // Error: " + e);
-                        }
-                    }
-                }
-            }
-        });
-        return tcs.getTask();
-    }
 }

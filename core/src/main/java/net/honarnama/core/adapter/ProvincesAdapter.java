@@ -2,7 +2,7 @@ package net.honarnama.core.adapter;
 
 
 import net.honarnama.base.R;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -21,19 +20,19 @@ import java.util.TreeMap;
  */
 public class ProvincesAdapter extends BaseAdapter {
     private final Context mContext;
-    public TreeMap<Number, Provinces> mProvinceObjectsTreeMap;
+    public TreeMap<Number, Province> mProvinceObjectsTreeMap;
     public List<String> mProvincesNameList = new ArrayList<String>();
-    public List<String> mProvincesIdsList = new ArrayList<String>();
+    public List<Integer> mProvincesIdsList = new ArrayList();
 
 
-    public ProvincesAdapter(Context context, TreeMap<Number, Provinces> provincesTreeMap) {
+    public ProvincesAdapter(Context context, TreeMap<Number, Province> provincesTreeMap) {
         super();
         mContext = context;
         mProvinceObjectsTreeMap = provincesTreeMap;
 
         if (mProvinceObjectsTreeMap != null) {
-            for (Provinces province : mProvinceObjectsTreeMap.values()) {
-                mProvincesIdsList.add(province.getObjectId());
+            for (Province province : mProvinceObjectsTreeMap.values()) {
+                mProvincesIdsList.add(province.getId());
                 mProvincesNameList.add(province.getName());
             }
         }

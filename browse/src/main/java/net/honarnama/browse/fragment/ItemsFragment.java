@@ -14,10 +14,10 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsParseAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.activity.ChooseCategoryActivity;
-import net.honarnama.core.model.Category;
+import net.honarnama.core.activity.ChooseArtCategoryActivity;
+import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
@@ -59,7 +59,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     public RelativeLayout mEmptyListContainer;
     public RelativeLayout mFilterContainer;
-    private Provinces mSelectedProvince;
+    private Province mSelectedProvince;
     private String mSelectedProvinceId;
     private String mSelectedCityId;
     private String mSelectedProvinceName;
@@ -143,7 +143,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.category_filter_btn) {
-            Intent intent = new Intent(getActivity(), ChooseCategoryActivity.class);
+            Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
             intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
@@ -211,7 +211,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         if (!mIsAllIranChecked) {
             if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                Provinces province = ParseObject.createWithoutData(Provinces.class, mSelectedProvinceId);
+                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
                 storeQuery.whereEqualTo(Store.PROVINCE, province);
             }
 
@@ -222,7 +222,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 }
             }
         }
-        ArrayList<Category> queryCategoryIds = new ArrayList<>();
+        ArrayList<ArtCategory> queryCategoryIds = new ArrayList<>();
         if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
 
             ArrayList<String> querySubCatIds = new ArrayList<>();
@@ -235,13 +235,13 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
 
             for (int i = 0; i < querySubCatIds.size(); i++) {
-                Category category = ParseObject.createWithoutData(Category.class, querySubCatIds.get(i));
+                ArtCategory category = ParseObject.createWithoutData(ArtCategory.class, querySubCatIds.get(i));
                 queryCategoryIds.add(category);
             }
 
         }
 
-        final ArrayList<Category> finalQueryCategoryIds = queryCategoryIds;
+        final ArrayList<ArtCategory> finalQueryCategoryIds = queryCategoryIds;
 
         ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
                 new ParseQueryAdapter.QueryFactory<ParseObject>() {

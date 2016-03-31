@@ -86,7 +86,7 @@ public class ItemsAdapter extends BaseAdapter {
 
         mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.setVisibility(View.GONE);
-        mViewHolder.icon.loadInBackground(item.getParseFile(Item.IMAGE_1), new GetDataCallback() {
+        mViewHolder.icon.loadInBackground(item.getImage1(), new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
                 mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
@@ -110,7 +110,7 @@ public class ItemsAdapter extends BaseAdapter {
                                 progressDialog.show();
 
 
-                                Item.deleteItem(mContext, item.getObjectId()).continueWith(new Continuation<Void, Object>() {
+                                Item.deleteItem(mContext, item.getId()).continueWith(new Continuation<Void, Object>() {
                                     @Override
                                     public Object then(Task<Void> task) throws Exception {
                                         progressDialog.dismiss();
@@ -138,7 +138,7 @@ public class ItemsAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Item item = (Item) getItem(position);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
-                controlPanelActivity.switchFragmentToEditItem(item.getObjectId());
+                controlPanelActivity.switchFragmentToEditItem(item.getId());
             }
         });
         return convertView;

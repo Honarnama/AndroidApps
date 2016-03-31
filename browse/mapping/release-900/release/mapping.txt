@@ -35687,7 +35687,7 @@ net.honarnama.browse.dialog.ItemFilterDialogActivity -> net.honarnama.browse.dia
     android.widget.EditText mCityEditEext -> t
     java.util.TreeMap mCityOrderedTreeMap -> q
     java.util.HashMap mCityHashMap -> r
-    net.honarnama.core.model.Provinces mSelectedProvince -> u
+    net.honarnama.core.model.Province mSelectedProvince -> u
     37:53:void <init>() -> <init>
     61:167:void onCreate(android.os.Bundle) -> onCreate
     171:174:void onResume() -> onResume
@@ -35699,8 +35699,8 @@ net.honarnama.browse.dialog.ItemFilterDialogActivity -> net.honarnama.browse.dia
     305:312:void removeFilters() -> l
     37:37:android.widget.EditText access$000(net.honarnama.browse.dialog.ItemFilterDialogActivity) -> a
     37:37:android.widget.EditText access$100(net.honarnama.browse.dialog.ItemFilterDialogActivity) -> b
-    37:37:net.honarnama.core.model.Provinces access$202(net.honarnama.browse.dialog.ItemFilterDialogActivity,net.honarnama.core.model.Provinces) -> a
-    37:37:net.honarnama.core.model.Provinces access$200(net.honarnama.browse.dialog.ItemFilterDialogActivity) -> c
+    37:37:net.honarnama.core.model.Province access$202(net.honarnama.browse.dialog.ItemFilterDialogActivity,net.honarnama.core.model.Province) -> a
+    37:37:net.honarnama.core.model.Province access$200(net.honarnama.browse.dialog.ItemFilterDialogActivity) -> c
     37:37:void access$300(net.honarnama.browse.dialog.ItemFilterDialogActivity) -> d
 net.honarnama.browse.dialog.ItemFilterDialogActivity$1 -> net.honarnama.browse.dialog.g:
     net.honarnama.browse.dialog.ItemFilterDialogActivity this$0 -> a
@@ -36143,7 +36143,7 @@ net.honarnama.browse.fragment.ShopsFragment$1 -> net.honarnama.browse.b.ar:
 net.honarnama.browse.model.Item -> net.honarnama.browse.c.a:
     33:33:void <init>() -> <init>
     36:66:bolts.Task getItemsByOwner(com.parse.ParseUser) -> a
-    70:119:bolts.Task getSimilarItemsByCategory(net.honarnama.core.model.Category,java.lang.String) -> a
+    70:119:bolts.Task getSimilarItemsByCategory(net.honarnama.core.model.ArtCategory,java.lang.String) -> a
     124:156:bolts.Task getItemById(java.lang.String) -> b
     161:191:bolts.Task search(java.lang.String) -> C
 net.honarnama.browse.model.Item$1 -> net.honarnama.browse.c.b:
@@ -36154,9 +36154,9 @@ net.honarnama.browse.model.Item$1 -> net.honarnama.browse.c.b:
     43:43:void done(java.lang.Object,java.lang.Throwable) -> a
 net.honarnama.browse.model.Item$2 -> net.honarnama.browse.c.c:
     bolts.TaskCompletionSource val$tcs -> a
-    net.honarnama.core.model.Category val$category -> b
+    net.honarnama.core.model.ArtCategory val$category -> b
     java.lang.String val$itemId -> c
-    78:78:void <init>(bolts.TaskCompletionSource,net.honarnama.core.model.Category,java.lang.String) -> <init>
+    78:78:void <init>(bolts.TaskCompletionSource,net.honarnama.core.model.ArtCategory,java.lang.String) -> <init>
     81:117:void done(int,com.parse.ParseException) -> a
 net.honarnama.browse.model.Item$2$1 -> net.honarnama.browse.c.d:
     net.honarnama.browse.model.Item$2 this$0 -> a
@@ -36227,7 +36227,7 @@ net.honarnama.browse.widget.MainTabBar$Tab -> net.honarnama.browse.widget.c:
     com.mikepenz.iconics.IconicsDrawable icon -> b
     int label -> c
     199:203:void <init>(java.lang.Object,com.mikepenz.iconics.IconicsDrawable,int) -> <init>
-net.honarnama.core.activity.ChooseCategoryActivity -> net.honarnama.core.activity.ChooseCategoryActivity:
+net.honarnama.core.activity.ChooseArtCategoryActivity -> net.honarnama.core.activity.ChooseArtCategoryActivity:
     android.widget.ListView mCategoriesListView -> s
     java.util.HashMap mCurrentArtCategoriesName -> i
     java.util.HashMap mCurrentArtCategoriesObjectIds -> j
@@ -36251,31 +36251,31 @@ net.honarnama.core.activity.ChooseCategoryActivity -> net.honarnama.core.activit
     268:271:boolean isFilterSubCategoryRowSelected(java.lang.String) -> b
     276:294:void returnSelectedCategory() -> l
     299:305:void onBackPressed() -> onBackPressed
-    32:32:void access$000(net.honarnama.core.activity.ChooseCategoryActivity) -> a
-    32:32:java.lang.String access$102(net.honarnama.core.activity.ChooseCategoryActivity,java.lang.String) -> a
-    32:32:java.lang.String access$100(net.honarnama.core.activity.ChooseCategoryActivity) -> b
-    32:32:void access$200(net.honarnama.core.activity.ChooseCategoryActivity) -> c
-net.honarnama.core.activity.ChooseCategoryActivity$1 -> net.honarnama.core.activity.a:
+    32:32:void access$000(net.honarnama.core.activity.ChooseArtCategoryActivity) -> a
+    32:32:java.lang.String access$102(net.honarnama.core.activity.ChooseArtCategoryActivity,java.lang.String) -> a
+    32:32:java.lang.String access$100(net.honarnama.core.activity.ChooseArtCategoryActivity) -> b
+    32:32:void access$200(net.honarnama.core.activity.ChooseArtCategoryActivity) -> c
+net.honarnama.core.activity.ChooseArtCategoryActivity$1 -> net.honarnama.core.activity.a:
     android.content.SharedPreferences val$sharedPref -> a
     android.app.ProgressDialog val$receivingDataProgressDialog -> b
-    net.honarnama.core.activity.ChooseCategoryActivity this$0 -> c
-    113:113:void <init>(net.honarnama.core.activity.ChooseCategoryActivity,android.content.SharedPreferences,android.app.ProgressDialog) -> <init>
+    net.honarnama.core.activity.ChooseArtCategoryActivity this$0 -> c
+    113:113:void <init>(net.honarnama.core.activity.ChooseArtCategoryActivity,android.content.SharedPreferences,android.app.ProgressDialog) -> <init>
     116:182:void done(java.util.List,com.parse.ParseException) -> a
     113:113:void done(java.lang.Object,java.lang.Throwable) -> a
-net.honarnama.core.activity.ChooseCategoryActivity$1$1 -> net.honarnama.core.activity.b:
+net.honarnama.core.activity.ChooseArtCategoryActivity$1$1 -> net.honarnama.core.activity.b:
     java.util.List val$artCategories -> a
-    net.honarnama.core.activity.ChooseCategoryActivity$1 this$1 -> b
-    121:121:void <init>(net.honarnama.core.activity.ChooseCategoryActivity$1,java.util.List) -> <init>
+    net.honarnama.core.activity.ChooseArtCategoryActivity$1 this$1 -> b
+    121:121:void <init>(net.honarnama.core.activity.ChooseArtCategoryActivity$1,java.util.List) -> <init>
     124:137:void done(com.parse.ParseException) -> a
     121:121:void done(java.lang.Throwable) -> a
-net.honarnama.core.activity.ChooseCategoryActivity$1$1$1 -> net.honarnama.core.activity.c:
-    net.honarnama.core.activity.ChooseCategoryActivity$1$1 this$2 -> a
-    125:125:void <init>(net.honarnama.core.activity.ChooseCategoryActivity$1$1) -> <init>
+net.honarnama.core.activity.ChooseArtCategoryActivity$1$1$1 -> net.honarnama.core.activity.c:
+    net.honarnama.core.activity.ChooseArtCategoryActivity$1$1 this$2 -> a
+    125:125:void <init>(net.honarnama.core.activity.ChooseArtCategoryActivity$1$1) -> <init>
     128:133:void done(com.parse.ParseException) -> a
     125:125:void done(java.lang.Throwable) -> a
-net.honarnama.core.activity.ChooseCategoryActivity$2 -> net.honarnama.core.activity.d:
-    net.honarnama.core.activity.ChooseCategoryActivity this$0 -> a
-    216:216:void <init>(net.honarnama.core.activity.ChooseCategoryActivity) -> <init>
+net.honarnama.core.activity.ChooseArtCategoryActivity$2 -> net.honarnama.core.activity.d:
+    net.honarnama.core.activity.ChooseArtCategoryActivity this$0 -> a
+    216:216:void <init>(net.honarnama.core.activity.ChooseArtCategoryActivity) -> <init>
     219:226:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
 net.honarnama.core.activity.HonarnamaBaseActivity -> net.honarnama.core.activity.e:
     boolean announced -> i
@@ -36359,7 +36359,7 @@ net.honarnama.core.model.Bookmark$3 -> net.honarnama.core.b.g:
     150:150:void <init>(bolts.TaskCompletionSource,net.honarnama.core.model.Item) -> <init>
     153:167:void done(net.honarnama.core.model.Bookmark,com.parse.ParseException) -> a
     150:150:void done(java.lang.Object,java.lang.Throwable) -> a
-net.honarnama.core.model.Category -> net.honarnama.core.b.h:
+net.honarnama.core.model.ArtCategory -> net.honarnama.core.b.h:
     java.lang.String OBJECT_NAME -> g
     java.lang.String NAME -> h
     java.lang.String ORDER -> i
@@ -36467,11 +36467,11 @@ net.honarnama.core.model.Item -> net.honarnama.core.b.o:
     105:105:java.lang.String getName() -> b
     114:114:java.lang.Number getPrice() -> c
     122:122:java.lang.String getDescription() -> d
-    126:126:net.honarnama.core.model.Category getCategory() -> f
+    126:126:net.honarnama.core.model.ArtCategory getCategory() -> f
     130:130:net.honarnama.core.model.Store getStore() -> g
     138:145:com.parse.ParseFile[] getImages() -> h
     50:71:void <clinit>() -> <clinit>
-net.honarnama.core.model.Provinces -> net.honarnama.core.b.p:
+net.honarnama.core.model.Province -> net.honarnama.core.b.p:
     java.lang.String OBJECT_NAME -> g
     java.lang.String NAME -> h
     java.lang.String ORDER -> i
@@ -36487,27 +36487,27 @@ net.honarnama.core.model.Provinces -> net.honarnama.core.b.p:
     98:122:bolts.Task getOrderedProvinceObjects(android.content.Context) -> a
     126:195:bolts.Task findProvincesAsync() -> d
     38:43:void <clinit>() -> <clinit>
-net.honarnama.core.model.Provinces$2 -> net.honarnama.core.b.q:
+net.honarnama.core.model.Province$2 -> net.honarnama.core.b.q:
     bolts.TaskCompletionSource val$tcs -> a
-    net.honarnama.core.model.Provinces this$0 -> b
-    102:102:void <init>(net.honarnama.core.model.Provinces,bolts.TaskCompletionSource) -> <init>
+    net.honarnama.core.model.Province this$0 -> b
+    102:102:void <init>(net.honarnama.core.model.Province,bolts.TaskCompletionSource) -> <init>
     105:118:java.lang.Object then(bolts.Task) -> a
-net.honarnama.core.model.Provinces$3 -> net.honarnama.core.b.r:
+net.honarnama.core.model.Province$3 -> net.honarnama.core.b.r:
     android.content.SharedPreferences val$sharedPref -> a
     bolts.TaskCompletionSource val$tcs -> b
-    net.honarnama.core.model.Provinces this$0 -> c
-    154:154:void <init>(net.honarnama.core.model.Provinces,android.content.SharedPreferences,bolts.TaskCompletionSource) -> <init>
+    net.honarnama.core.model.Province this$0 -> c
+    154:154:void <init>(net.honarnama.core.model.Province,android.content.SharedPreferences,bolts.TaskCompletionSource) -> <init>
     157:193:void done(java.util.List,com.parse.ParseException) -> a
     154:154:void done(java.lang.Object,java.lang.Throwable) -> a
-net.honarnama.core.model.Provinces$3$1 -> net.honarnama.core.b.s:
+net.honarnama.core.model.Province$3$1 -> net.honarnama.core.b.s:
     java.util.List val$provincesList -> a
-    net.honarnama.core.model.Provinces$3 this$1 -> b
-    163:163:void <init>(net.honarnama.core.model.Provinces$3,java.util.List) -> <init>
+    net.honarnama.core.model.Province$3 this$1 -> b
+    163:163:void <init>(net.honarnama.core.model.Province$3,java.util.List) -> <init>
     166:181:void done(com.parse.ParseException) -> a
     163:163:void done(java.lang.Throwable) -> a
-net.honarnama.core.model.Provinces$3$1$1 -> net.honarnama.core.b.t:
-    net.honarnama.core.model.Provinces$3$1 this$2 -> a
-    167:167:void <init>(net.honarnama.core.model.Provinces$3$1) -> <init>
+net.honarnama.core.model.Province$3$1$1 -> net.honarnama.core.b.t:
+    net.honarnama.core.model.Province$3$1 this$2 -> a
+    167:167:void <init>(net.honarnama.core.model.Province$3$1) -> <init>
     170:176:void done(com.parse.ParseException) -> a
     167:167:void done(java.lang.Throwable) -> a
 net.honarnama.core.model.Store -> net.honarnama.core.b.u:

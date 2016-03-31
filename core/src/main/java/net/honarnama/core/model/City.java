@@ -1,25 +1,18 @@
 package net.honarnama.core.model;
 
 import com.crashlytics.android.Crashlytics;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.HonarnamaUser;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.helper.DatabaseHelper;
+import net.honarnama.nano.Location;
 
-import android.accounts.NetworkErrorException;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -28,22 +21,57 @@ import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
+import static net.honarnama.core.helper.DatabaseHelper.COL_LOCATIONS_ID;
+import static net.honarnama.core.helper.DatabaseHelper.COL_LOCATIONS_NAME;
+import static net.honarnama.core.helper.DatabaseHelper.COL_LOCATIONS_ORDER;
+import static net.honarnama.core.helper.DatabaseHelper.COL_LOCATIONS_PARENT_ID;
+import static net.honarnama.core.helper.DatabaseHelper.COL_LOCATIONS_TYPE;
+
+
 /**
  * Created by elnaz on 1/9/16.
  */
-@ParseClassName("City")
-public class City extends ParseObject {
+public class City {
 
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/cityModel";
 
-    public static String OBJECT_NAME = "City";
-    public static String NAME = "name";
-    public static String ORDER = "order";
-    public static String OBJECT_ID = "objectId";
-    public static String PARENT_ID = "parentId";//provinceId
-//
-//    public static String DEFAULT_CITY_ID = "9AXzdV8WWV";
-//    public static String DEFAULT_CITY_NAME = "آذرشهر";
+    public static String TABLE_NAME = DatabaseHelper.TABLE_LOCATIONS;
+    public String mName;
+    public int mOrder;
+    public int mId;
+    public int mParentId;
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public int getOrder() {
+        return mOrder;
+    }
+
+    public void setOrder(int order) {
+        mOrder = order;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public int getParentId() {
+        return mParentId;
+    }
+
+    public void setParentId(int parentId) {
+        mParentId = parentId;
+    }
 
     public static String ALL_CITY_ID = "ALL";
     public static String ALL_CITY_NAME = "تمام شهرها";
@@ -51,32 +79,17 @@ public class City extends ParseObject {
     public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
 
 
-    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreehMap = new TreeMap<Number, HashMap<String, String>>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<Number, HashMap<Integer, String>>();
     public Context mContext;
 
-    public City() {
-        super();
-    }
 
-    public String getName() {
-        return getString(NAME);
-    }
-
-    public String getParentId() {
-        return getString(PARENT_ID);
-    }
-
-    public Number getOrder() {
-        return getNumber(ORDER);
-    }
-
-    public Task<TreeMap<Number, HashMap<String, String>>> getOrderedCities(Context context, final String parentId) {
+    public Task<TreeMap<Number, HashMap<Integer, String>>> getAllCitiesSorted(Context context, final int parentId) {
 
         mContext = context;
 
-        final TaskCompletionSource<TreeMap<Number, HashMap<String, String>>> tcs = new TaskCompletionSource<>();
+        final TaskCompletionSource<TreeMap<Number, HashMap<Integer, String>>> tcs = new TaskCompletionSource<>();
 
-        findCitiesAsync().continueWith(new Continuation<List<City>, Object>() {
+        findCitiesAsync(parentId).continueWith(new Continuation<List<City>, Object>() {
             @Override
             public Object then(Task<List<City>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -86,11 +99,9 @@ public class City extends ParseObject {
 
                     for (int i = 0; i < cities.size(); i++) {
                         City city = cities.get(i);
-                        if (city.getParentId().equals(parentId)) {
-                            HashMap<String, String> tempMap = new HashMap<String, String>();
-                            tempMap.put(city.getObjectId(), city.getName());
-                            mCityOrderedTreehMap.put(city.getOrder(), tempMap);
-                        }
+                        HashMap<Integer, String> tempMap = new HashMap<Integer, String>();
+                        tempMap.put(city.getId(), city.getName());
+                        mCityOrderedTreehMap.put(city.getOrder(), tempMap);
                     }
                     tcs.trySetResult(mCityOrderedTreehMap);
                 }
@@ -103,120 +114,75 @@ public class City extends ParseObject {
     }
 
 
-    public Task<List<City>> findCitiesAsync() {
+    public Task<List<City>> findCitiesAsync(int parentId) {
         final TaskCompletionSource<List<City>> tcs = new TaskCompletionSource<>();
+        List<City> cities = new ArrayList<>();
 
-        ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
-//        parseQuery.whereEqualTo(PARENT_ID, parentId);
-        parseQuery.orderByAscending(ORDER);
-        parseQuery.setLimit(1000);
+        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_LOCATIONS_TYPE + " = " + Location.CITY +
+                " AND " + COL_LOCATIONS_PARENT_ID + " = " + parentId + " ORDER BY " + COL_LOCATIONS_ORDER + " ASC";
+        Cursor cursor = db.rawQuery(query, null);
 
-        String sharedPrefKey;
-        if (HonarnamaUser.getCurrentUser() == null) {
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
-        } else {
-            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
-        }
-
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    net.honarnama.core.model.City city = new net.honarnama.core.model.City();
+                    city.setId(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ID)));
+                    city.setName(cursor.getString(cursor.getColumnIndex(COL_LOCATIONS_NAME)));
+                    city.setOrder(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ORDER)));
+                    cities.add(city);
+                } while (cursor.moveToNext());
+            }
+            tcs.trySetResult(cities);
+        } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, " Getting city list from LocalDatastore");
+                Log.e(DEBUG_TAG, "Error while trying to get city list for province: " + parentId, e);
+            } else {
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get city list for province: " + parentId + ". // Error: " + e);
             }
-            parseQuery.fromLocalDatastore();
-        } else {
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
+            tcs.trySetError(e);
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
             }
-//            mReceivingDataProgressDialog.show();
         }
 
-
-        parseQuery.findInBackground(new FindCallback<City>() {
-            @Override
-            public void done(final List<City> cityList, ParseException e) {
-                if (e == null) {
-                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
-                        ParseObject.unpinAllInBackground(City.OBJECT_NAME, cityList, new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    ParseObject.pinAllInBackground(City.OBJECT_NAME, cityList, new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, true);
-                                                        editor.commit();
-                                                    }
-
-                                                }
-                                            }
-                                    );
-                                }
-
-                            }
-                        });
-                    }
-                    tcs.trySetResult(cityList);
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding cities failed. Code: " + e.getCode() + " // " + e.getMessage());
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding  city failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e);
-                    }
-                    tcs.trySetError(e);
-                }
-            }
-        });
         return tcs.getTask();
     }
 
-    public Task<City> getCityById(String cityId) {
-        final TaskCompletionSource<City> tcs = new TaskCompletionSource<>();
+    public City getCityById(int cityId) {
+//        final TaskCompletionSource<City> tcs = new TaskCompletionSource<>();
 
-        ParseQuery<City> parseQuery = ParseQuery.getQuery(City.class);
-        parseQuery.whereEqualTo(OBJECT_ID, cityId);
+        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_LOCATIONS_TYPE + " = " + Location.CITY +
+                " AND id = " + cityId;
+        Cursor cursor = db.rawQuery(query, null);
 
-        String sharedPrefKey;
-        if (HonarnamaUser.getCurrentUser() == null) {
-            sharedPrefKey = HonarnamaBaseApp.BROWSE_APP_KEY;
-        } else {
-            sharedPrefKey = HonarnamaUser.getCurrentUser().getUsername();
-        }
-
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting city by id from local datastore");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
-        }
-
-        parseQuery.getFirstInBackground(new GetCallback<City>() {
-            @Override
-            public void done(City city, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(city);
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.e(DEBUG_TAG, "Finding city by id failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                    } else {
-                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding city by id failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                    }
-                    tcs.trySetError(e);
+        try {
+            if (cursor != null) {
+                cursor.moveToFirst();
+                City city = new City();
+                city.setId(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ID)));
+                city.setName(cursor.getString(cursor.getColumnIndex(COL_LOCATIONS_NAME)));
+                city.setOrder(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ORDER)));
+                return city;
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Error while trying to get city from database. City not found for cityId " + cityId);
                 }
             }
-        });
-        return tcs.getTask();
+        } catch (Exception e) {
+            if (BuildConfig.DEBUG) {
+                Log.e(DEBUG_TAG, "Error while trying to get city from database.", e);
+            } else {
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get city from database. // Error: " + e);
+            }
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return null;
     }
 
 }

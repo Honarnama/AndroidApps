@@ -1,6 +1,5 @@
 package net.honarnama;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
 import com.crashlytics.android.Crashlytics;
@@ -9,14 +8,12 @@ import com.parse.ParseACL;
 import com.parse.ParseObject;
 
 import net.honarnama.base.BuildConfig;
-import net.honarnama.base.R;
+import net.honarnama.core.helper.DatabaseHelper;
 import net.honarnama.core.model.Bookmark;
-import net.honarnama.core.model.Category;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
-import net.honarnama.core.model.EventCategory;
 import net.honarnama.core.model.Item;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 
 import android.app.Application;
@@ -24,9 +21,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 /**
  * Created by elnaz on 7/22/15.
@@ -88,17 +82,13 @@ public abstract class HonarnamaBaseApp extends Application {
     public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED = "local_data_store_for_event_categories_synced";
 
-    public static String PREF_LOCAL_DATA_STORE_FOR_PROVINCES_SYNCED = "local_data_store_for_provinces_synced";
-    public static String PREF_LOCAL_DATA_STORE_FOR_CITY_SYNCED = "local_data_store_for_city_synced";
-    public static String PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED = "local_data_store_for_store_synced";
-    public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED = "local_data_store_for_event_synced";
-    public static String PREF_LOCAL_DATA_STORE_FOR_ITEM_SYNCED = "local_data_store_for_item_synced";
-    public static String PREF_LOCAL_DATA_STORE_SYNCED = "local_data_store_for_provinces_synced";
+    public static String PREF_META_VERSION = "meta_version";
 
     public static String SELL_APP_KEY = "honarnama_sell";
     public static String BROWSE_APP_KEY = "honarnama_browse";
+    public static String COMMON_KEY = "honarnama_apps";
 
-   private static HonarnamaBaseApp singleton;
+    private static HonarnamaBaseApp singleton;
 
     public synchronized static HonarnamaBaseApp getInstance() {
         return singleton;
@@ -116,12 +106,7 @@ public abstract class HonarnamaBaseApp extends Application {
         }
 
         Parse.enableLocalDatastore(this);
-        ParseObject.registerSubclass(Category.class);
-        ParseObject.registerSubclass(EventCategory.class);
         ParseObject.registerSubclass(Store.class);
-        ParseObject.registerSubclass(Event.class);
-        ParseObject.registerSubclass(Provinces.class);
-        ParseObject.registerSubclass(City.class);
         ParseObject.registerSubclass(Item.class);
         ParseObject.registerSubclass(Bookmark.class);
 
@@ -148,6 +133,7 @@ public abstract class HonarnamaBaseApp extends Application {
             APP_IMAGES_FOLDER = new File(APP_FOLDER, "images");
             APP_IMAGES_FOLDER.mkdirs();
         }
+        DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance());
     }
 
     public static String getParseApplicationId() {

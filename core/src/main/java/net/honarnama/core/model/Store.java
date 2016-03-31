@@ -122,7 +122,7 @@ public class Store extends ParseObject {
         return getParseObject(PROVINCE);
     }
 
-    public void setProvince(Provinces province) {
+    public void setProvince(Province province) {
         put(PROVINCE, province);
     }
 
@@ -144,15 +144,8 @@ public class Store extends ParseObject {
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "Getting store info from local datastore.");
-                }
-                query.fromLocalDatastore();
-            } else {
-                tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));
-                return tcs.getTask();
-            }
+            tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));
+            return tcs.getTask();
         }
 
         query.getFirstInBackground(new GetCallback<Store>() {
@@ -180,16 +173,10 @@ public class Store extends ParseObject {
         final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);
         parseQuery.whereEqualTo(OWNER, parseUser);
         final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-            if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Getting store for owner from local datastore");
-            }
-            parseQuery.fromLocalDatastore();
-        } else {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                tcs.setError(new NetworkErrorException("Network connection failed"));
-                return tcs.getTask();
-            }
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            tcs.setError(new NetworkErrorException("Network connection failed"));
+            return tcs.getTask();
         }
 
         parseQuery.getFirstInBackground(new GetCallback<Store>() {

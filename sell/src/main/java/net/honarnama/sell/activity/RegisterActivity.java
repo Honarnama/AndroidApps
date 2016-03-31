@@ -41,8 +41,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     private EditText mNameEditText;
     private EditText mMobileNumberEditText;
     private EditText mEmailAddressEditText;
-    private EditText mPasswordEdiText;
-    private EditText mConfirmPasswordEditText;
 
     private RadioButton mActivateWithEmail;
     private RadioButton mActivateWithTelegram;
@@ -68,8 +66,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         mNameEditText = (EditText) findViewById(R.id.register_name_edit_text);
         mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);
         mEmailAddressEditText = (EditText) findViewById(R.id.register_email_address_edit_text);
-        mPasswordEdiText = (EditText) findViewById(R.id.register_password_edit_text);
-        mConfirmPasswordEditText = (EditText) findViewById(R.id.register_confirm_password_edit_text);
         mRegisterButton = (Button) findViewById(R.id.register_button);
 
         mActivateWithEmail = (RadioButton) findViewById(R.id.register_activate_with_email);
@@ -77,8 +73,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
         mMobileNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mMobileNumberEditText));
         mEmailAddressEditText.addTextChangedListener(new GenericGravityTextWatcher(mEmailAddressEditText));
-        mPasswordEdiText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEdiText));
-        mConfirmPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mConfirmPasswordEditText));
         mRegisterButton.setOnClickListener(this);
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithTelegram.setOnClickListener(this);
@@ -227,12 +221,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             user.setEmail(mEmailAddressEditText.getText().toString().trim());
         }
 
-        if (mActivateWithEmail.isChecked()) {
-            user.setPassword(mPasswordEdiText.getText().toString());
-        } else {
-            user.setPassword(mMobileNumberEditText.getText().toString().trim());
-        }
-
         user.put("userEnteredEmailAddress", mEmailAddressEditText.getText().toString().trim());
         user.put("mobileNumber", mMobileNumberEditText.getText().toString().trim());
         user.put("name", mNameEditText.getText().toString().trim());
@@ -274,13 +262,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             findViewById(R.id.register_email_star_marker).setVisibility(View.VISIBLE);
             findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.GONE);
 
-            findViewById(R.id.register_password_layer).setVisibility(View.VISIBLE);
-
         } else {
             findViewById(R.id.register_email_star_marker).setVisibility(View.GONE);
             findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.VISIBLE);
-
-            findViewById(R.id.register_password_layer).setVisibility(View.GONE);
         }
     }
 
@@ -322,31 +306,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
         }
 
-        if (mActivateWithEmail.isChecked()) {
-            if (mPasswordEdiText.getText().toString().trim().length() == 0) {
-                mPasswordEdiText.requestFocus();
-                mPasswordEdiText.setError(getString(R.string.error_password_field_can_not_be_empty));
-                return false;
-            }
 
-            if (mPasswordEdiText.getText().toString().trim().length() < 6) {
-                mPasswordEdiText.requestFocus();
-                mPasswordEdiText.setError(getString(R.string.password_is_short));
-                return false;
-            }
-
-            if (mConfirmPasswordEditText.getText().toString().trim().length() == 0) {
-                mConfirmPasswordEditText.requestFocus();
-                mConfirmPasswordEditText.setError(getString(R.string.error_confirm_password_field_cant_be_empty));
-                return false;
-            }
-
-            if (!mConfirmPasswordEditText.getText().toString().equals(mPasswordEdiText.getText().toString())) {
-                mPasswordEdiText.requestFocus();
-                mPasswordEdiText.setError(getString(R.string.error_password_and_confirmpassword_does_not_match));
-                return false;
-            }
-        }
 
         /*
         if (mNationalCardImageView.getFinalImageUri() == null) {

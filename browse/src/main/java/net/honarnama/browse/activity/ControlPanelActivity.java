@@ -24,7 +24,7 @@ import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Provinces;
+import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
@@ -111,7 +111,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public Dialog mSetDefaultLocationDialog;
 
-    public TreeMap<Number, Provinces> mProvincesObjectsTreeMap = new TreeMap<Number, Provinces>();
+    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<Number, Province>();
     public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
     public String mDefaultLocationProvinceId;
     public String mDefaultLocationProvinceName;
@@ -119,7 +119,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public String mSelectedDefaultLocationProvinceName;
 
     public EditText mDefaultLocationProvinceEditText;
-    private Provinces mSelectedDefaultLocationProvince;
+    private Province mSelectedDefaultLocationProvince;
 
     public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
@@ -908,16 +908,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     private void fetchProvincesAndCities() {
 
-        final Provinces provinces = new Provinces();
+        final Province provinces = new Province();
         final City city = new City();
 
         mDefaultLocationProvinceEditText.setHint(getString(R.string.getting_information));
         mDefaultLocationCityEditText.setHint(getString(R.string.getting_information));
 
-        provinces.getOrderedProvinceObjects(HonarnamaBaseApp.getInstance()).
-                continueWith(new Continuation<TreeMap<Number, Provinces>, Object>() {
+        provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance()).
+                continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
                     @Override
-                    public Object then(Task<TreeMap<Number, Provinces>> task) throws Exception {
+                    public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
                         if (task.isFaulted()) {
                             mRefetchProvinces.setVisibility(View.VISIBLE);
                             mRefetchCities.setVisibility(View.VISIBLE);
@@ -926,7 +926,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                             Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
-                            for (Provinces province : mProvincesObjectsTreeMap.values()) {
+                            for (Province province : mProvincesObjectsTreeMap.values()) {
                                 if (TextUtils.isEmpty(mSelectedDefaultLocationProvinceId)) {
                                     mSelectedDefaultLocationProvinceId = province.getObjectId();
                                     mSelectedDefaultLocationProvinceName = province.getName();
@@ -940,7 +940,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getOrderedCities(HonarnamaBaseApp.getInstance(), mSelectedDefaultLocationProvinceId);
+                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedDefaultLocationProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
@@ -1005,7 +1005,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getOrderedCities(ControlPanelActivity.this, mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(ControlPanelActivity.this, mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
                 if (task.isFaulted()) {
