@@ -74,7 +74,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
         mSubject.setError(null);
         mBody.setError(null);
 
-        if (HonarnamaUser.getCurrentUser() != null && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+        if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
             mEmail.setText(HonarnamaUser.getUserEnteredEmailAddress());
         }
 
@@ -145,7 +145,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("text", body + "\n \n Phone: " + phone);
                 params.put("subject", subject);
                 params.put("fromEmail", email);
-                if (HonarnamaUser.getCurrentUser() != null && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+                if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
                     params.put("fromName", HonarnamaUser.getName());
                 }
 

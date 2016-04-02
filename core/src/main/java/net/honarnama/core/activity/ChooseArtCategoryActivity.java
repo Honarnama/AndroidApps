@@ -84,7 +84,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 //        receivingDataProgressDialog.setMessage(getString(R.string.receiving_data));
 
         List<ArtCategory> artCategories;
-        if (HonarnamaUser.getCurrentUser() == null || mCallingApp == HonarnamaBaseApp.BROWSE_APP_KEY) {
+        if (mCallingApp == HonarnamaBaseApp.BROWSE_APP_KEY) {
             artCategories = ArtCategory.getAllArtCategories(true);
         } else {
             artCategories = ArtCategory.getAllArtCategories(false);

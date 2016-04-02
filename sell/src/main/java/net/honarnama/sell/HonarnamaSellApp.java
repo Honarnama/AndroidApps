@@ -62,12 +62,12 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
         super();
         defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         // setup handler for uncaught exception
-        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
+        //TODO
+//        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
     }
 
     @Override
     public void onCreate() {
-        ParseObject.registerSubclass(Item.class);
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 

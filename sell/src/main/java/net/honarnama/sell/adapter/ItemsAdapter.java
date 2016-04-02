@@ -78,7 +78,7 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         if (item.getStatus() == Item.STATUS_CODE_NOT_VERIFIED) {
-            mViewHolder.itemRowContainer.setBackground(mContext.getResources().getDrawable(R.drawable.red_borderd_background));
+            mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
             mViewHolder.waitingToBeConfirmedTextView.setText("این آگهی تایید نشد");
 
@@ -86,13 +86,13 @@ public class ItemsAdapter extends BaseAdapter {
 
         mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.setVisibility(View.GONE);
-        mViewHolder.icon.loadInBackground(item.getImage1(), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
-                mViewHolder.icon.setVisibility(View.VISIBLE);
-            }
-        });
+//        mViewHolder.icon.loadInBackground(item.getImage1(), new GetDataCallback() {
+//            @Override
+//            public void done(byte[] data, ParseException e) {
+//                mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+//                mViewHolder.icon.setVisibility(View.VISIBLE);
+//            }
+//        });
 
         mViewHolder.deleteContainer.setOnClickListener(new View.OnClickListener() {
             @Override

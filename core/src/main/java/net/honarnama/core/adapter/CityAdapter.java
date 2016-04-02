@@ -22,18 +22,18 @@ import java.util.TreeMap;
  */
 public class CityAdapter extends BaseAdapter {
     private final Context mContext;
-    public TreeMap<Number, HashMap<String, String>> mCityTreeMap;
+    public TreeMap<Number, HashMap<Integer, String>> mCityTreeMap;
     public List<String> mCityNameList = new ArrayList<String>();
-    public List<String> mCityIdsList = new ArrayList<String>();
+    public List<Integer> mCityIdsList = new ArrayList();
 
-    public CityAdapter(Context context, TreeMap<Number, HashMap<String, String>> cityTreeMap) {
+    public CityAdapter(Context context, TreeMap<Number, HashMap<Integer, String>> cityTreeMap) {
         super();
         mContext = context;
         mCityTreeMap = cityTreeMap;
 
         if (mCityTreeMap != null) {
-            for (HashMap<String, String> cityHashMap : mCityTreeMap.values()) {
-                for (HashMap.Entry<String, String> city : cityHashMap.entrySet()) {
+            for (HashMap<Integer, String> cityHashMap : mCityTreeMap.values()) {
+                for (HashMap.Entry<Integer, String> city : cityHashMap.entrySet()) {
                     mCityIdsList.add(city.getKey());
                     mCityNameList.add(city.getValue());
                 }

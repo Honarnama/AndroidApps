@@ -77,7 +77,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private boolean mDirty = false;
     private boolean mCreateNew = false;
 
-    private String mCategoryId;
+    private int mCategoryId = -1;
     private String mCategoryName;
 
     public Store mStore = null;
@@ -110,7 +110,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
         mItem = null;
         mItemId = -1;
-        mCategoryId = null;
+        mCategoryId = -1;
         mCategoryName = null;
         setDirty(false);
         mCreateNew = createNew;
@@ -131,7 +131,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     @Override
     public String getTitle(Context context) {
-        if (mItemId >= 0) {
+        if (mItemId > 0) {
             return context.getString(R.string.nav_title_edit_item);
         } else {
             return context.getString(R.string.register_new_item);
@@ -271,118 +271,117 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mTitleEditText.setText(savedInstanceState.getString("title"));
                 mDescriptionEditText.setText(savedInstanceState.getString("description"));
                 mChooseCategoryButton.setText(savedInstanceState.getString("categoryName"));
-                mCategoryId = savedInstanceState.getString("categoryId");
+                mCategoryId = savedInstanceState.getInt("categoryId");
                 mPriceEditText.setText(savedInstanceState.getString("price"));
             } else {
-                if (mItemId >= 0) {
-                    showLoadingDialog();
-
-                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                        return null;
-                    }
-
-
-                    query.getInBackground(mItemId, new GetCallback<Item>() {
-                        @Override
-                        public void done(Item item, ParseException e) {
-                            hideLoadingDialog();
-                            if (e != null) {
-                                logE("Exception while loading item_row. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "mItemId= " + mItemId, e);
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                // TODO: check if still we are need this
-                                mItem = item;
-                                mTitleEditText.setText(mItem.getName());
-                                mDescriptionEditText.setText(mItem.getDescription());
-                                mPriceEditText.setText(mItem.getPrice() + "");
-                                mCategoryId = mItem.getCategory().getObjectId();
-                                mChooseCategoryButton.setText(getString(R.string.getting_information));
-                                new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
-                                    @Override
-                                    public Object then(Task<String> task) throws Exception {
-                                        if (task.isFaulted()) {
-                                            if (isVisible()) {
-                                                Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                                            }
-                                        } else {
-                                            mChooseCategoryButton.setText(task.getResult());
-                                        }
-                                        return null;
-                                    }
-                                });
-
-                                ParseFile[] images = mItem.getImages();
-
-                                int counter = -1;
-                                for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
-                                    if (images[i] != null) {
-                                        counter++;
-                                        switch (counter) {
-                                            case 0:
-                                                rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.VISIBLE);
-                                                rootView.findViewById(R.id.itemImage1).setVisibility(View.GONE);
-                                                break;
-                                            case 1:
-                                                rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.VISIBLE);
-                                                rootView.findViewById(R.id.itemImage2).setVisibility(View.GONE);
-                                                break;
-                                            case 2:
-                                                rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.VISIBLE);
-                                                rootView.findViewById(R.id.itemImage3).setVisibility(View.GONE);
-                                                break;
-                                            case 3:
-                                                rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.VISIBLE);
-                                                rootView.findViewById(R.id.itemImage4).setVisibility(View.GONE);
-                                                break;
-                                        }
-                                        final int finalCounter = counter;
-                                        mItemImages[counter].loadInBackground(images[i], new GetDataCallback() {
-                                            @Override
-                                            public void done(byte[] data, ParseException e) {
-                                                switch (finalCounter) {
-                                                    case 0:
-                                                        rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.GONE);
-                                                        rootView.findViewById(R.id.itemImage1).setVisibility(View.VISIBLE);
-                                                        break;
-                                                    case 1:
-                                                        rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.GONE);
-                                                        rootView.findViewById(R.id.itemImage2).setVisibility(View.VISIBLE);
-                                                        break;
-                                                    case 2:
-                                                        rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.GONE);
-                                                        rootView.findViewById(R.id.itemImage3).setVisibility(View.VISIBLE);
-                                                        break;
-                                                    case 3:
-                                                        rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.GONE);
-                                                        rootView.findViewById(R.id.itemImage4).setVisibility(View.VISIBLE);
-                                                        break;
-                                                }
-                                                if (e == null) {
-                                                    if (data != null) {
-                                                        if (BuildConfig.DEBUG) {
-                                                            logD("Fetched! Data length: " + data.length);
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (isVisible()) {
-                                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                    logE("Exception while loading image. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                                mDirty = false;
-                            }
-                        }
-                    });
-                } else {
-//                    logE("Unexpected state!");
-                }
+//                if (mItemId >= 0) {
+//                    showLoadingDialog();
+//
+//                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                        return null;
+//                    }
+//
+//                    query.getInBackground(mItemId, new GetCallback<Item>() {
+//                        @Override
+//                        public void done(Item item, ParseException e) {
+//                            hideLoadingDialog();
+//                            if (e != null) {
+//                                logE("Exception while loading item_row. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "mItemId= " + mItemId, e);
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                            } else {
+//                                // TODO: check if still we are need this
+//                                mItem = item;
+//                                mTitleEditText.setText(mItem.getName());
+//                                mDescriptionEditText.setText(mItem.getDescription());
+//                                mPriceEditText.setText(mItem.getPrice() + "");
+//                                mCategoryId = mItem.getCategory().getId();
+//                                mChooseCategoryButton.setText(getString(R.string.getting_information));
+//                                new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
+//                                    @Override
+//                                    public Object then(Task<String> task) throws Exception {
+//                                        if (task.isFaulted()) {
+//                                            if (isVisible()) {
+//                                                Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        } else {
+//                                            mChooseCategoryButton.setText(task.getResult());
+//                                        }
+//                                        return null;
+//                                    }
+//                                });
+//
+//                                ParseFile[] images = mItem.getImages();
+//
+//                                int counter = -1;
+//                                for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
+//                                    if (images[i] != null) {
+//                                        counter++;
+//                                        switch (counter) {
+//                                            case 0:
+//                                                rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.VISIBLE);
+//                                                rootView.findViewById(R.id.itemImage1).setVisibility(View.GONE);
+//                                                break;
+//                                            case 1:
+//                                                rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.VISIBLE);
+//                                                rootView.findViewById(R.id.itemImage2).setVisibility(View.GONE);
+//                                                break;
+//                                            case 2:
+//                                                rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.VISIBLE);
+//                                                rootView.findViewById(R.id.itemImage3).setVisibility(View.GONE);
+//                                                break;
+//                                            case 3:
+//                                                rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.VISIBLE);
+//                                                rootView.findViewById(R.id.itemImage4).setVisibility(View.GONE);
+//                                                break;
+//                                        }
+//                                        final int finalCounter = counter;
+//                                        mItemImages[counter].loadInBackground(images[i], new GetDataCallback() {
+//                                            @Override
+//                                            public void done(byte[] data, ParseException e) {
+//                                                switch (finalCounter) {
+//                                                    case 0:
+//                                                        rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.GONE);
+//                                                        rootView.findViewById(R.id.itemImage1).setVisibility(View.VISIBLE);
+//                                                        break;
+//                                                    case 1:
+//                                                        rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.GONE);
+//                                                        rootView.findViewById(R.id.itemImage2).setVisibility(View.VISIBLE);
+//                                                        break;
+//                                                    case 2:
+//                                                        rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.GONE);
+//                                                        rootView.findViewById(R.id.itemImage3).setVisibility(View.VISIBLE);
+//                                                        break;
+//                                                    case 3:
+//                                                        rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.GONE);
+//                                                        rootView.findViewById(R.id.itemImage4).setVisibility(View.VISIBLE);
+//                                                        break;
+//                                                }
+//                                                if (e == null) {
+//                                                    if (data != null) {
+//                                                        if (BuildConfig.DEBUG) {
+//                                                            logD("Fetched! Data length: " + data.length);
+//                                                        }
+//                                                    }
+//                                                } else {
+//                                                    if (isVisible()) {
+//                                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+//                                                    }
+//
+//                                                    logE("Exception while loading image. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                                }
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                                mDirty = false;
+//                            }
+//                        }
+//                    });
+//                } else {
+////                    logE("Unexpected state!");
+//                }
             }
         }
 
@@ -468,7 +467,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
 
 
-        if (mCategoryId == null) {
+        if (mCategoryId < 0) {
             mCategoryTextView.requestFocus();
             mCategoryTextView.setError(getString(R.string.error_category_is_not_selected));
             return false;
@@ -494,7 +493,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         final String title = mTitleEditText.getText().toString().trim();
         final String description = mDescriptionEditText.getText().toString().trim();
         final Number price = Integer.valueOf(TextUtil.normalizePrice(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim())));
-        final String catId = mCategoryId;
+        final int catId = mCategoryId;
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
         sendingDataProgressDialog.setCancelable(false);
@@ -502,7 +501,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Store.getStoreByOwner(HonarnamaUser.getCurrentUser()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
+            Store.getStoreByOwner(HonarnamaUser.getUserId()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
                 @Override
                 public Task<ArtCategory> then(Task<Store> task) throws Exception {
                     if (task.isFaulted()) {
@@ -516,7 +515,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         return Task.forError(task.getError());
                     } else {
                         mStore = task.getResult();
-                        return ArtCategory.getCategoryById(catId, HonarnamaBaseApp.SELL_APP_KEY);
+                        return ArtCategory.getCategoryById(catId);
                     }
                 }
             }).continueWithTask(new Continuation<ArtCategory, Task<Item>>() {
@@ -554,7 +553,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         }
                         mDirty = false;
                         mItem = task.getResult();
-                        mItemId = mItem.getObjectId();
+                        mItemId = mItem.getId();
                         if (BuildConfig.DEBUG) {
                             logD("saveItem, mItem= " + mItem + ", mItemId= " + mItemId);
                         }
@@ -598,7 +597,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 if (resultCode == getActivity().RESULT_OK) {
                     mCategoryTextView.setError(null);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
-                    mCategoryId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID);
+                    mCategoryId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
                     setDirty(true);
                     mChooseCategoryButton.setText(mCategoryName);
                 }
@@ -621,11 +620,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 imageSelector.onSaveInstanceState(outState);
             }
             outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
-            outState.putString(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
+            outState.putInt(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
             outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, mTitleEditText.getText().toString().trim());
             outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, mDescriptionEditText.getText().toString().trim());
             outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, mPriceEditText.getText().toString().trim());
-            outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
+            outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
             outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, mChooseCategoryButton.getText().toString());
         }
     }

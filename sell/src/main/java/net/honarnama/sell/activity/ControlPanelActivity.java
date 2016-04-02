@@ -160,7 +160,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             return;
         }
 
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+//        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 //        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
 //            new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
 //                @Override
@@ -220,8 +220,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         }
 
         if (data != null) {
-            final String itemId = data.getQueryParameter("itemId");
-            if (itemId != null) {
+            final int itemId = Integer.valueOf(data.getQueryParameter("itemId"));
+            if (itemId > 0) {
                 if (mEditItemFragment.isDirty()) {
                     switchFragmentFromEdittingItem(new OnAcceptedListener() {
                         @Override
@@ -366,7 +366,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton("بله", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+                            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
                             if (!sharedPref.getBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, false)) {
                                 askToRate();
                             } else {
@@ -597,21 +597,22 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
                 mWaitingProgressDialog.setCancelable(false);
                 mWaitingProgressDialog.show();
-                HonarnamaUser.logOutInBackground(new LogOutCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                        }
-                        if (mWaitingProgressDialog.isShowing()) {
-                            mWaitingProgressDialog.dismiss();
-                        }
-
-                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-                        finish();
-                        startActivity(intent);
-                    }
-                });
+                //TODO
+//                HonarnamaUser.logOutInBackground(new LogOutCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        if (e != null) {
+//                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                        }
+//                        if (mWaitingProgressDialog.isShowing()) {
+//                            mWaitingProgressDialog.dismiss();
+//                        }
+//
+//                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+//                        finish();
+//                        startActivity(intent);
+//                    }
+//                });
                 break;
 
         }
@@ -665,9 +666,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             @Override
             public void onClick(View v) {
                 callBazaarRateIntent();
-                //TODO inja set intent ke ray dade dige neshon nade dialogo
 
-                final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+                final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, true);
                 editor.commit();

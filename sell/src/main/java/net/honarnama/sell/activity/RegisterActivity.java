@@ -194,10 +194,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             return; // TODO: feedback
         }
 
-        ParseUser currentUser = HonarnamaUser.getCurrentUser();
-        if (currentUser != null) {
-            // do stuff with the user
-            HonarnamaUser.logOut();
+        if (HonarnamaUser.isLoggedIn()) {
+            // TODO
+//            HonarnamaUser.logOut();
         }
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);

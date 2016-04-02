@@ -11,25 +11,30 @@ import java.util.HashMap;
 /**
  * Created by elnaz on 7/26/15.
  */
-public class HonarnamaUser extends ParseUser {
+public class HonarnamaUser {
 
     public static boolean isAuthenticatedUser() {
-        ParseUser user = HonarnamaUser.getCurrentUser();
-        if ((isVerified()) && user.isAuthenticated()) {
-            return true;
-        }
-        return false;
+//        ParseUser user = HonarnamaUser.getCurrentUser();
+//        if ((isVerified()) && user.isAuthenticated()) {
+//            return true;
+//        }
+//        return false;
+        //TODO
+        return true;
     }
 
-    public static String getUserEnteredEmailAddress()
-    {
-        return getCurrentUser().get("userEnteredEmailAddress").toString();
+    public static String getUserEnteredEmailAddress() {
+//        return getCurrentUser().get("userEnteredEmailAddress").toString();
+        //TODO
+        return "mojahedi.elnaz@gmail.com";
     }
 
-    public static String getName()
-    {
-        return getCurrentUser().get("name").toString();
+    public static String getName() {
+        //return getCurrentUser().get("name").toString();
+        //TODO
+        return "Elnaz";
     }
+
     public static void telegramLogInInBackground(String token, final LogInCallback logInCallback) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("token", token);
@@ -46,25 +51,38 @@ public class HonarnamaUser extends ParseUser {
     }
 
     public static ActivationMethod getActivationMethod() {
-        ParseUser user = getCurrentUser();
-        String activationMethod = "";
-        if (user != null) {
-            activationMethod = user.getString("activationMethod");
-        }
-        if ("email".equals(activationMethod)) {
-            return ActivationMethod.EMAIL;
-        } else if ("mobileNumber".equals(activationMethod)) {
-            return ActivationMethod.MOBILE_NUMBER;
-        } else {
-            return ActivationMethod.UNKNOWN;
-        }
+//        ParseUser user = getCurrentUser();
+//        String activationMethod = "";
+//        if (user != null) {
+//            activationMethod = user.getString("activationMethod");
+//        }
+//        if ("email".equals(activationMethod)) {
+//            return ActivationMethod.EMAIL;
+//        } else if ("mobileNumber".equals(activationMethod)) {
+//            return ActivationMethod.MOBILE_NUMBER;
+//        } else {
+//            return ActivationMethod.UNKNOWN;
+//        }
+        //TODO
+        return ActivationMethod.MOBILE_NUMBER;
     }
 
     public static boolean isVerified() {
-        if (getCurrentUser() == null) {
-            return false;
-        }
-        return getActivationMethod().isUserVerified(getCurrentUser());
+//        if (getCurrentUser() == null) {
+//            return false;
+//        }
+//        return getActivationMethod().isUserVerified(getCurrentUser());
+        //TODO
+        return true;
+    }
+
+    public static boolean isLoggedIn() {
+//        if (getCurrentUser() == null) {
+//            return false;
+//        }
+//        return getActivationMethod().isUserVerified(getCurrentUser());
+        //TODO
+        return true;
     }
 
     public static enum ActivationMethod {
@@ -84,5 +102,21 @@ public class HonarnamaUser extends ParseUser {
             }
             return false;
         }
+    }
+
+    public static String getTelegramCode() {
+        //TODO
+        return "abcdef";
+    }
+
+
+    public static String getUsername() {
+        //TODO
+        return "mojahedi.elnaz@gmail.com";
+    }
+
+    public static int getUserId() {
+        //TODO
+        return 1;
     }
 }

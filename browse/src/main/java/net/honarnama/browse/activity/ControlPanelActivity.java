@@ -116,7 +116,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
     public int mDefaultLocationProvinceId;
     public String mDefaultLocationProvinceName;
-    public int mSelectedDefaultLocationProvinceId;
+    public int mSelectedDefaultLocationProvinceId = -1;
     public String mSelectedDefaultLocationProvinceName;
 
     public EditText mDefaultLocationProvinceEditText;
@@ -124,9 +124,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
-    public String mDefaultLocationCityId;
+    public int mDefaultLocationCityId;
     public String mDefaultLocationCityName;
-    public String mSelectedDefaultLocationCityId;
+    public int mSelectedDefaultLocationCityId = -1;
     public String mSelectedDefaultLocationCityName;
     public EditText mDefaultLocationCityEditText;
 
@@ -878,7 +878,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
-                if ((mSelectedDefaultLocationProvinceId > 0) && !TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
+                if ((mSelectedDefaultLocationProvinceId > 0) && mSelectedDefaultLocationCityId > 0) {
                     mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
                     mDefaultLocationProvinceName = mSelectedDefaultLocationProvinceName;
                     mDefaultLocationCityId = mSelectedDefaultLocationCityId;

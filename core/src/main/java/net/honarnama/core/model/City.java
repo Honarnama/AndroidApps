@@ -79,7 +79,7 @@ public class City {
     public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
 
 
-    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<Number, HashMap<Integer, String>>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<>();
     public Context mContext;
 
 
@@ -150,7 +150,7 @@ public class City {
         return tcs.getTask();
     }
 
-    public City getCityById(int cityId) {
+    public static City getCityById(int cityId) {
 //        final TaskCompletionSource<City> tcs = new TaskCompletionSource<>();
 
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();

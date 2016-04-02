@@ -101,7 +101,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     private EditText mProvinceEditText;
     public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<>();
-    public HashMap<String, String> mProvincesHashMap = new HashMap<>();
+    public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
     private EditText mCityEditEext;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
@@ -122,7 +122,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public int mSelectedProvinceId = -1;
     public String mSelectedProvinceName;
 
-    public String mSelectedCityId;
+    public int mSelectedCityId = -1;
     public String mSelectedCityName;
 
     public int mSelectedCatId = -1;
@@ -380,8 +380,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                     }
 
-                    Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                    for (String key : tempSet) {
+                    Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                    for (Integer key : tempSet) {
                         mSelectedCityId = key;
                         mCityEditEext.setText(mCityHashMap.get(key));
                     }
@@ -404,8 +404,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                for (String key : selectedCity.keySet()) {
+                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+                for (int key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }
                 for (String value : selectedCity.values()) {
@@ -477,7 +477,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mProvinceEditText.setError(null);
         }
 
-        if (TextUtils.isEmpty(mSelectedCityId)) {
+        if (mSelectedCityId < 0) {
             mCityEditEext.requestFocus();
             mCityEditEext.setError(getString(R.string.error_event_city_not_set));
             return false;
@@ -664,94 +664,96 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             return;
         }
 
-        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
-        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
-        query.getFirstInBackground(new GetCallback<Event>() {
-            @Override
-            public void done(final Event event, ParseException e) {
-                final Event eventObject;
-                if (e == null) {
-                    eventObject = event;
-                    mIsNew = false;
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        eventObject = new Event();
-                        eventObject.setOwner(HonarnamaUser.getCurrentUser());
-                        mIsNew = true;
-                    } else {
-                        mSendingDataProgressDialog.dismiss();
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_updating_event_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                        logE("Error changing event Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                        return;
-                    }
-                }
+        //TODO ask server event info
 
-                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
-                City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-
-                EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
-
-                eventObject.setProvince(province);
-                eventObject.setCity(city);
-                eventObject.setCategory(eventCategory);
-
-
-                eventObject.setActive(mActive.isChecked());
-                eventObject.setName(mNameEditText.getText().toString().trim());
-                eventObject.setAddress(mAddressEditText.getText().toString().trim());
-                eventObject.setDescription(mDescriptionEditText.getText().toString().trim());
-                eventObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
-                eventObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
-                eventObject.setStartDate(mStartDate);
-                eventObject.setEndtDate(mEndDate);
-
-                if (mBannerImageView.isDeleted()) {
-                    eventObject.remove(Event.BANNER);
-                } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
-                    eventObject.setBanner(mParseFileBanner);
-                }
-
-                eventObject.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        mSendingDataProgressDialog.dismiss();
-                        if (e == null) {
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_event_info), Toast.LENGTH_LONG).show();
-                            }
-                            eventObject.pinInBackground();
-                        } else {
-                            logE("Saving event failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-                            try {
-                                JSONObject error = new JSONObject(e.getMessage());
-                                if ((error.has("code")) && error.get("code").toString().equals("3001")) {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.event_name_already_exists), Toast.LENGTH_LONG).show();
-                                        mNameEditText.setError(getString(R.string.event_name_already_exists));
-                                    }
-                                } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
-                                    Toast.makeText(getActivity(), getString(R.string.you_own_another_event_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
-                                } else {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.saving_event_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            } catch (JSONException e1) {
-                                logE("Saving event failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.saving_event_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-
-                    }
-                });
-
-            }
-
-        });
+//        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
+//        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
+//        query.getFirstInBackground(new GetCallback<Event>() {
+//            @Override
+//            public void done(final Event event, ParseException e) {
+//                final Event eventObject;
+//                if (e == null) {
+//                    eventObject = event;
+//                    mIsNew = false;
+//                } else {
+//                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        eventObject = new Event();
+//                        eventObject.setOwner(HonarnamaUser.getCurrentUser());
+//                        mIsNew = true;
+//                    } else {
+//                        mSendingDataProgressDialog.dismiss();
+//                        if (isVisible()) {
+//                            Toast.makeText(getActivity(), getString(R.string.error_updating_event_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                        }
+//                        logE("Error changing event Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                        return;
+//                    }
+//                }
+//
+//                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
+//                City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+//
+//                EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
+//
+//                eventObject.setProvince(province);
+//                eventObject.setCity(city);
+//                eventObject.setCategory(eventCategory);
+//
+//
+//                eventObject.setActive(mActive.isChecked());
+//                eventObject.setName(mNameEditText.getText().toString().trim());
+//                eventObject.setAddress(mAddressEditText.getText().toString().trim());
+//                eventObject.setDescription(mDescriptionEditText.getText().toString().trim());
+//                eventObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
+//                eventObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
+//                eventObject.setStartDate(mStartDate);
+//                eventObject.setEndtDate(mEndDate);
+//
+//                if (mBannerImageView.isDeleted()) {
+//                    eventObject.remove(Event.BANNER);
+//                } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
+//                    eventObject.setBanner(mParseFileBanner);
+//                }
+//
+//                eventObject.saveInBackground(new SaveCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        mSendingDataProgressDialog.dismiss();
+//                        if (e == null) {
+//                            if (isVisible()) {
+//                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_event_info), Toast.LENGTH_LONG).show();
+//                            }
+//                            eventObject.pinInBackground();
+//                        } else {
+//                            logE("Saving event failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+//                            try {
+//                                JSONObject error = new JSONObject(e.getMessage());
+//                                if ((error.has("code")) && error.get("code").toString().equals("3001")) {
+//                                    if (isVisible()) {
+//                                        Toast.makeText(getActivity(), getString(R.string.event_name_already_exists), Toast.LENGTH_LONG).show();
+//                                        mNameEditText.setError(getString(R.string.event_name_already_exists));
+//                                    }
+//                                } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
+//                                    Toast.makeText(getActivity(), getString(R.string.you_own_another_event_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
+//                                } else {
+//                                    if (isVisible()) {
+//                                        Toast.makeText(getActivity(), getString(R.string.saving_event_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                    }
+//                                }
+//                            } catch (JSONException e1) {
+//                                logE("Saving event failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.saving_event_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                });
+//
+//            }
+//
+//        });
     }
 
     private void setEventInfo() {
@@ -805,8 +807,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         yearAdapter = (ArrayAdapter<String>) mEndYearSpinner.getAdapter();
                         mEndYearSpinner.setSelection(yearAdapter.getPosition(endYear));
 
-                        mActive.setChecked(event.getActive());
-                        mPassive.setChecked(!event.getActive());
+                        mActive.setChecked(event.isActive());
+                        mPassive.setChecked(!event.isActive());
 
                         mNameEditText.setText(event.getName());
                         mAddressEditText.setText(event.getAddress());
@@ -846,21 +848,22 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
 
                         mBannerProgressBar.setVisibility(View.VISIBLE);
-                        mBannerImageView.loadInBackground(event.getBanner(), new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                mBannerProgressBar.setVisibility(View.GONE);
-                                if (e != null) {
-                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                    if (progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_event_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-                        });
+                        //TODO load image
+//                        mBannerImageView.loadInBackground(event.getBanner(), new GetDataCallback() {
+//                            @Override
+//                            public void done(byte[] data, ParseException e) {
+//                                mBannerProgressBar.setVisibility(View.GONE);
+//                                if (e != null) {
+//                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                    if (progressDialog.isShowing()) {
+//                                        progressDialog.dismiss();
+//                                    }
+//                                    if (isVisible()) {
+//                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_event_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                    }
+//                                }
+//                            }
+//                        });
                     } else {
                         resetFields();
                     }
@@ -886,24 +889,24 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 } else {
                     mProvincesObjectsTreeMap = task.getResult();
                     for (Province province : mProvincesObjectsTreeMap.values()) {
-                        if (TextUtils.isEmpty(mSelectedProvinceId)) {
-                            mSelectedProvinceId = province.getObjectId();
+                        if (mSelectedProvinceId < 0) {
+                            mSelectedProvinceId = province.getId();
                             mSelectedProvinceName = province.getName();
                         }
-                        mProvincesHashMap.put(province.getObjectId(), province.getName());
+                        mProvincesHashMap.put(province.getId(), province.getName());
                     }
                     mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
                 }
                 return null;
             }
-        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
+        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
             @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
+            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
                 return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
             }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -914,9 +917,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+                            if (mSelectedCityId < 0) {
                                 mSelectedCityId = citySet.getKey();
                                 mSelectedCityName = citySet.getValue();
                             }
@@ -962,79 +965,74 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     public Task<Event> getUserEventAsync() {
         final TaskCompletionSource<Event> tcs = new TaskCompletionSource<>();
-        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
-        query.include(Event.CATEGORY);
-        query.include(Event.PROVINCE);
-        query.include(Event.CITY);
-
-        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
-
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                if (BuildConfig.DEBUG) {
-                    logD("Getting event info from local datastore");
-                }
-                query.fromLocalDatastore();
-            } else {
-                tcs.setError(new NetworkErrorException("No network connection + Offline data not available for event"));
-                return tcs.getTask();
-            }
-        }
-
-
-        query.getFirstInBackground(new GetCallback<Event>() {
-            @Override
-            public void done(final Event event, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(event);
-//                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-
-                    final List<Event> tempEventList = new ArrayList<Event>() {{
-                        add(event);
-                    }};
-
-                    ParseObject.unpinAllInBackground(Event.OBJECT_NAME, tempEventList, new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-
-                                ParseObject.pinAllInBackground(Event.OBJECT_NAME, tempEventList, new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                if (e == null) {
-                                                    SharedPreferences.Editor editor = sharedPref.edit();
-                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, true);
-                                                    editor.commit();
-                                                }
-                                            }
-                                        }
-                                );
-                            }
-                        }
-                    });
+//        ParseQuery<Event> query = ParseQuery.getQuery(Event.class);
+//        query.include(Event.CATEGORY);
+//        query.include(Event.PROVINCE);
+//        query.include(Event.CITY);
+//
+//        query.whereEqualTo(Event.OWNER, HonarnamaUser.getCurrentUser());
+//
+////        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+//            tcs.setError(new NetworkErrorException("No network connection + Offline data not available for event"));
+//            return tcs.getTask();
+//        }
+//
+//
+//        query.getFirstInBackground(new GetCallback<Event>() {
+//            @Override
+//            public void done(final Event event, ParseException e) {
+//                if (e == null) {
+//                    tcs.trySetResult(event);
+////                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+//
+//                    final List<Event> tempEventList = new ArrayList<Event>() {{
+//                        add(event);
+//                    }};
+//
+//                    ParseObject.unpinAllInBackground(Event.OBJECT_NAME, tempEventList, new DeleteCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if (e == null) {
+//
+//                                ParseObject.pinAllInBackground(Event.OBJECT_NAME, tempEventList, new SaveCallback() {
+//                                            @Override
+//                                            public void done(ParseException e) {
+//                                                if (e == null) {
+//                                                    SharedPreferences.Editor editor = sharedPref.edit();
+//                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_EVENT_SYNCED, true);
+//                                                    editor.commit();
+//                                                }
+//                                            }
+//                                        }
+//                                );
+//                            }
+//                        }
+//                    });
+////                    }
+//
+//                } else {
+//                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        if (BuildConfig.DEBUG) {
+//                            logD("Getting User Event Result: User does not have any event yet.");
+//                        }
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+//                        editor.commit();
+//                        tcs.trySetResult(null);
+//                    } else {
+//                        tcs.trySetError(e);
+//                        logE("Error Getting Event Info. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
 //                    }
-
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (BuildConfig.DEBUG) {
-                            logD("Getting User Event Result: User does not have any event yet.");
-                        }
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
-                        editor.commit();
-                        tcs.trySetResult(null);
-                    } else {
-                        tcs.trySetError(e);
-                        logE("Error Getting Event Info. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                    }
-                }
-
-            }
-        });
-        return tcs.getTask();
+//                }
+//
+//            }
+//        });
+//        return tcs.getTask();
+        //TODO ask server 
+        return null;
     }
 
 

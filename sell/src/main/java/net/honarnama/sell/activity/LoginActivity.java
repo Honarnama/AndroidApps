@@ -83,34 +83,39 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);
 
-        final ParseUser user = HonarnamaUser.getCurrentUser();
-        if (user != null) {
-            if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
-                return;
-            }
-            showLoadingDialog();
-            if (BuildConfig.DEBUG) {
-                logD("Parse user is not empty", "user= " + user.getEmail());
-            }
-            user.fetchInBackground(new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject parseObject, ParseException parseException) {
-                    //checkIfUserStillExistOnParse
-                    ParseQuery<ParseUser> query = ParseUser.getQuery();
-                    query.whereEqualTo("username", user.getUsername());
-                    query.findInBackground(new FindCallback<ParseUser>() {
-                        public void done(List<ParseUser> objects, ParseException e) {
-                            if (e == null) {
-                                // User Exist On Parse
-                                gotoControlPanelOrRaiseError();
-                            } else {
-                                user.logOut();
-                            }
-                            hideLoadingDialog();
-                        }
-                    });
-                }
-            });
+//        final ParseUser user = HonarnamaUser.getCurrentUser();
+//        if (user != null) {
+//            if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
+//                return;
+//            }
+//            showLoadingDialog();
+//            if (BuildConfig.DEBUG) {
+//                logD("Parse user is not empty", "user= " + user.getEmail());
+//            }
+//            user.fetchInBackground(new GetCallback<ParseObject>() {
+//                @Override
+//                public void done(ParseObject parseObject, ParseException parseException) {
+//                    //checkIfUserStillExistOnParse
+//                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+//                    query.whereEqualTo("username", user.getUsername());
+//                    query.findInBackground(new FindCallback<ParseUser>() {
+//                        public void done(List<ParseUser> objects, ParseException e) {
+//                            if (e == null) {
+//                                // User Exist On Parse
+//                                gotoControlPanelOrRaiseError();
+//                            } else {
+//                                user.logOut();
+//                            }
+//                            hideLoadingDialog();
+//                        }
+//                    });
+//                }
+//            });
+//        }
+
+        //TODO if user is loggedin
+        if (true) {
+            gotoControlPanelOrRaiseError();
         } else {
             processIntent(getIntent());
         }
@@ -206,8 +211,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 break;
             case R.id.telegram_login_container:
                 Intent telegramIntent;
-                if (HonarnamaUser.getCurrentUser() != null) {
-                    String telegramCode = HonarnamaUser.getCurrentUser().getString("telegramCode");
+                if (HonarnamaUser.isLoggedIn()) {
+                    String telegramCode = HonarnamaUser.getTelegramCode();
 
                     if (HonarnamaUser.getActivationMethod() != HonarnamaUser.ActivationMethod.MOBILE_NUMBER || telegramCode == null) {
                         telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
@@ -351,8 +356,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                     mMessageContainer.setVisibility(View.VISIBLE);
                     mLoginMessageTextView.setText(getString(R.string.telegram_activation_timeout_message));
                     String telegramToken = "";
-                    if (HonarnamaUser.getCurrentUser() != null) {
-                        telegramToken = HonarnamaUser.getCurrentUser().getString("telegramCode");
+                    if (HonarnamaUser.isLoggedIn()) {
+                        telegramToken = HonarnamaUser.getTelegramCode();
                     }
                     showTelegramActivationDialog(telegramToken);
                 }

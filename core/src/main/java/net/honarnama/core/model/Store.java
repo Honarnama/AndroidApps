@@ -50,9 +50,9 @@ public class Store extends ParseObject {
     public static String OBJECT_ID = "objectId";
 
 
-    public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
-    public static Number STATUS_CODE_NOT_VERIFIED = -1;
-    public static Number STATUS_CODE_VERIFIED = 1;
+    public static int STATUS_CODE_CONFIRMATION_WAITING = 0;
+    public static int STATUS_CODE_NOT_VERIFIED = -1;
+    public static int STATUS_CODE_VERIFIED = 1;
 
 
     public String getName() {
@@ -136,68 +136,52 @@ public class Store extends ParseObject {
 
     public static Task<Boolean> checkIfUserHaveStore(Context context) {
         final TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
-        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
-
-        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
-
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             tcs.setError(new NetworkErrorException("No network connection + Offline ddata not available for store"));
             return tcs.getTask();
         }
 
-        query.getFirstInBackground(new GetCallback<Store>() {
-            @Override
-            public void done(Store object, ParseException e) {
-                if (e == null) {
-                    tcs.setResult(true);
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        tcs.setResult(false);
-                    } else {
-                        tcs.setError(e);
-                    }
-                }
-            }
-        });
+       // TODO ask server
+        tcs.setResult(true);
 
         return tcs.getTask();
     }
 
 
-    public static Task<Store> getStoreByOwner(final ParseUser parseUser) {
+    public static Task<Store> getStoreByOwner(final  int userId) {
         final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
 
-        final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);
-        parseQuery.whereEqualTo(OWNER, parseUser);
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            tcs.setError(new NetworkErrorException("Network connection failed"));
-            return tcs.getTask();
-        }
-
-        parseQuery.getFirstInBackground(new GetCallback<Store>() {
-            @Override
-            public void done(Store store, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(store);
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        tcs.trySetResult(null);
-                    } else {
-                        if (BuildConfig.DEBUG) {
-                            Log.e(DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
-                        } else {
-                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
-                        }
-                        tcs.trySetError(e);
-                    }
-                }
-            }
-        });
+//        final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);
+//        parseQuery.whereEqualTo(OWNER, parseUser);
+//        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            tcs.setError(new NetworkErrorException("Network connection failed"));
+//            return tcs.getTask();
+//        }
+//
+//        parseQuery.getFirstInBackground(new GetCallback<Store>() {
+//            @Override
+//            public void done(Store store, ParseException e) {
+//                if (e == null) {
+//                    tcs.trySetResult(store);
+//                } else {
+//                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        tcs.trySetResult(null);
+//                    } else {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.e(DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // " + e.getMessage(), e);
+//                        } else {
+//                            Crashlytics.log(Log.ERROR, DEBUG_TAG, "Finding store for owner " + parseUser.getObjectId() + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e);
+//                        }
+//                        tcs.trySetError(e);
+//                    }
+//                }
+//            }
+//        });
+        //TODO
+        tcs.trySetResult(null);
         return tcs.getTask();
     }
 }

@@ -87,20 +87,20 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private EditText mProvinceEditEext;
     public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<Number, Province>();
-    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    public HashMap<Integer, String> mProvincesHashMap = new HashMap();
 
     private EditText mCityEditEext;
-    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
-    public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
+    public HashMap<Integer, String> mCityHashMap = new HashMap();
 
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileLogo;
     ParseFile mParseFileBanner;
 
-    public String mSelectedProvinceId;
+    public int mSelectedProvinceId = -1;
     public String mSelectedProvinceName;
 
-    public String mSelectedCityId;
+    public int mSelectedCityId = -1;
     public String mSelectedCityName;
 
     public ProgressBar mBannerProgressBar;
@@ -294,7 +294,7 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
-                mSelectedProvinceId = selectedProvince.getObjectId();
+                mSelectedProvinceId = selectedProvince.getId();
                 mSelectedProvinceName = selectedProvince.getName();
                 mProvinceEditEext.setText(mSelectedProvinceName);
                 rePopulateCityList();
@@ -308,24 +308,24 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
 
                         }
                     }
 
-                    Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                    for (String key : tempSet) {
+                    Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                    for (int key : tempSet) {
                         mSelectedCityId = key;
                         mCityEditEext.setText(mCityHashMap.get(key));
                     }
@@ -348,8 +348,8 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                for (String key : selectedCity.keySet()) {
+                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+                for (int key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }
                 for (String value : selectedCity.values()) {
@@ -371,12 +371,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             return false;
         }
 
-        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+        if (mSelectedProvinceId < 0) {
             mProvinceEditEext.requestFocus();
             mProvinceEditEext.setError(getString(R.string.error_store_province_not_set));
         }
 
-        if (TextUtils.isEmpty(mSelectedCityId)) {
+        if (mSelectedCityId < 0) {
             mCityEditEext.requestFocus();
             mCityEditEext.setError(getString(R.string.error_store_city_not_set));
         }
@@ -540,116 +540,106 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
             return;
         }
 
-        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
-        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
-        query.getFirstInBackground(new GetCallback<Store>() {
-            @Override
-            public void done(final Store store, ParseException e) {
-                final Store storeObject;
-                if (e == null) {
-                    storeObject = store;
-                    mIsNew = false;
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        storeObject = new Store();
-                        storeObject.setOwner(HonarnamaUser.getCurrentUser());
-                        mIsNew = true;
-                    } else {
-                        mSendingDataProgressDialog.dismiss();
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                        logE("Error changing Store Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                        return;
-                    }
-                }
-
-                new Province().getProvinceById(mSelectedProvinceId).continueWithTask(new Continuation<Province, Task<City>>() {
-                    @Override
-                    public Task<City> then(Task<Province> task) throws Exception {
-                        if (task.isFaulted()) {
-                            mSendingDataProgressDialog.dismiss();
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                            }
-                            return Task.forError(task.getError());
-                        } else {
-                            storeObject.setProvince(task.getResult());
-                            return new City().getCityById(mSelectedCityId);
-                        }
-                    }
-                }).continueWith(new Continuation<City, Object>() {
-                    @Override
-                    public Object then(Task<City> task) throws Exception {
-                        if (task.isFaulted()) {
-                            mSendingDataProgressDialog.dismiss();
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            storeObject.setCity(task.getResult());
-                            storeObject.setName(mNameEditText.getText().toString().trim());
-                            storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
-                            storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
-                            storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
-
-                            if (mLogoImageView.isDeleted()) {
-                                storeObject.remove(Store.LOGO);
-                            } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
-                                storeObject.setLogo(mParseFileLogo);
-                            }
-
-                            if (mBannerImageView.isDeleted()) {
-                                storeObject.remove(Store.BANNER);
-                            } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
-                                storeObject.setBanner(mParseFileBanner);
-                            }
-
-                            storeObject.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    mSendingDataProgressDialog.dismiss();
-                                    if (e == null) {
-                                        if (isVisible()) {
-                                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
-                                        }
-                                        storeObject.pinInBackground();
-                                        if (mIsNew) {
-                                            Item.setUserItemsStore(storeObject);
-                                        }
-                                    } else {
-                                        logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-                                        try {
-                                            JSONObject error = new JSONObject(e.getMessage());
-                                            if ((error.has("code")) && error.get("code").toString().equals("3001")) {
-                                                if (isVisible()) {
-                                                    Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
-                                                    mNameEditText.setError(getString(R.string.store_name_already_exists));
-                                                }
-                                            } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
-                                                Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
-                                            } else {
-                                                if (isVisible()) {
-                                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        } catch (JSONException e1) {
-                                            logE("Saving store failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-                                            if (isVisible()) {
-                                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    }
-
-                                }
-                            });
-
-                        }
-                        return null;
-                    }
-                });
-            }
-        });
+//        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+//        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+//        query.getFirstInBackground(
+//                new GetCallback<Store>() {
+//                    @Override
+//                    public void done(final Store store, ParseException e) {
+//                        final Store storeObject;
+//                        if (e == null) {
+//                            storeObject = store;
+//                            mIsNew = false;
+//                        } else {
+//                            if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                                storeObject = new Store();
+//                                storeObject.setOwner(HonarnamaUser.getCurrentUser());
+//                                mIsNew = true;
+//                            } else {
+//                                mSendingDataProgressDialog.dismiss();
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                                logE("Error changing Store Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                return;
+//                            }
+//                        }
+//
+//                        Province province = Province.getProvinceById(mSelectedProvinceId);
+//                        City city = City.getCityById(mSelectedCityId);
+//
+//                        if (province == null || city == null) {
+//                            mSendingDataProgressDialog.dismiss();
+//                            if (isVisible()) {
+//                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                            }
+//                        } else {
+//                            storeObject.setProvince(province);
+//                            storeObject.setCity(city);
+//
+//
+//                            storeObject.setName(mNameEditText.getText().toString().trim());
+//                            storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
+//                            storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
+//                            storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
+//
+//                            if (mLogoImageView.isDeleted()) {
+//                                storeObject.remove(Store.LOGO);
+//                            } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
+//                                storeObject.setLogo(mParseFileLogo);
+//                            }
+//
+//                            if (mBannerImageView.isDeleted()) {
+//                                storeObject.remove(Store.BANNER);
+//                            } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
+//                                storeObject.setBanner(mParseFileBanner);
+//                            }
+//
+//                            storeObject.saveInBackground(new SaveCallback() {
+//                                @Override
+//                                public void done(ParseException e) {
+//                                    mSendingDataProgressDialog.dismiss();
+//                                    if (e == null) {
+//                                        if (isVisible()) {
+//                                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
+//                                        }
+//                                        storeObject.pinInBackground();
+//                                        if (mIsNew) {
+//                                            Item.setUserItemsStore(storeObject);
+//                                        }
+//                                    } else {
+//                                        logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+//                                        try {
+//                                            JSONObject error = new JSONObject(e.getMessage());
+//                                            if ((error.has("code")) && error.get("code").toString().equals("3001")) {
+//                                                if (isVisible()) {
+//                                                    Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
+//                                                    mNameEditText.setError(getString(R.string.store_name_already_exists));
+//                                                }
+//                                            } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
+//                                                Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
+//                                            } else {
+//                                                if (isVisible()) {
+//                                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                                }
+//                                            }
+//                                        } catch (JSONException e1) {
+//                                            logE("Saving store failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
+//                                            if (isVisible()) {
+//                                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//                            });
+//
+//                        }
+//                    }
+//
+//                }
+//        );
+        // TODO save store
     }
 
     private void setStoredStoreInfo() {
@@ -661,226 +651,223 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
         final Province provinces = new Province();
         final City city = new City();
 
-        getUserStoreAsync().continueWith(new Continuation<Store, Void>() {
-            @Override
-            public Void then(Task<Store> task) throws Exception {
-                if (task.isFaulted()) {
-                    logE("Getting Store Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-                    progressDialog.dismiss();
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
-
-                    Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-                    getActivity().finish();
-                    startActivity(intent);
-
-                } else {
-                    Store store = task.getResult();
-                    if (store != null) {
-                        mNameEditText.setText(store.getName());
-                        mDescriptionEditText.setText(store.getDescription());
-
-                        mPhoneNumberEditText.setText(store.getPhoneNumber());
-                        mCellNumberEditText.setText(store.getCellNumber());
-
-                        mSelectedProvinceId = store.getProvince().getObjectId();
-                        mSelectedCityId = store.getCity().getObjectId();
-
-                        mCityEditEext.setText(getString(R.string.getting_information));
-                        mProvinceEditEext.setText(getString(R.string.getting_information));
-
-
-                        if (store.getStatus() == Store.STATUS_CODE_CONFIRMATION_WAITING) {
-                            mStatusBarTextView.setVisibility(View.VISIBLE);
-                        }
-
-                        if (store.getStatus() == Store.STATUS_CODE_NOT_VERIFIED) {
-                            mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
-                            mStatusBarTextView.setVisibility(View.VISIBLE);
-                            mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
-                        }
-
-                        mLogoProgressBar.setVisibility(View.VISIBLE);
-                        mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                mLogoProgressBar.setVisibility(View.GONE);
-                                if (e != null) {
-                                    logE("Getting  logo image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
-                                    if (progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-                        });
-
-                        mBannerProgressBar.setVisibility(View.VISIBLE);
-                        mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                mBannerProgressBar.setVisibility(View.GONE);
-                                if (e != null) {
-                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                    if (progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        resetFields();
-                    }
-                }
-                return null;
-            }
-        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Province>>>() {
-            @Override
-            public Task<TreeMap<Number, Province>> then(Task<Void> task) throws Exception {
-                return provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance());
-            }
-        }).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
-            @Override
-            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
-                if (task.isFaulted()) {
-                    logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    mProvinceObjectsTreeMap = task.getResult();
-                    for (Province province : mProvinceObjectsTreeMap.values()) {
-                        if (TextUtils.isEmpty(mSelectedProvinceId)) {
-                            mSelectedProvinceId = province.getObjectId();
-                            mSelectedProvinceName = province.getName();
-                        }
-                        mProvincesHashMap.put(province.getObjectId(), province.getName());
-                    }
-                    mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
-                }
-                return null;
-            }
-        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
-            @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
-            }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
-            @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-                if (task.isFaulted()) {
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-                            if (TextUtils.isEmpty(mSelectedCityId)) {
-                                mSelectedCityId = citySet.getKey();
-                                mSelectedCityName = citySet.getValue();
-                            }
-                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
-                        }
-                    }
-                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
-
-                }
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
-                }
-                return null;
-            }
-        });
-
+//        getUserStoreAsync().continueWith(new Continuation<Store, Void>() {
+//            @Override
+//            public Void then(Task<Store> task) throws Exception {
+//                if (task.isFaulted()) {
+//                    logE("Getting Store Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+//                    progressDialog.dismiss();
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getString(R.string.getting_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+//                    getActivity().finish();
+//                    startActivity(intent);
+//
+//                } else {
+//                    Store store = task.getResult();
+//                    if (store != null) {
+//                        mNameEditText.setText(store.getName());
+//                        mDescriptionEditText.setText(store.getDescription());
+//
+//                        mPhoneNumberEditText.setText(store.getPhoneNumber());
+//                        mCellNumberEditText.setText(store.getCellNumber());
+//
+//                        mSelectedProvinceId = store.getProvince().getObjectId();
+//                        mSelectedCityId = store.getCity().getObjectId();
+//
+//                        mCityEditEext.setText(getString(R.string.getting_information));
+//                        mProvinceEditEext.setText(getString(R.string.getting_information));
+//
+//
+//                        if (store.getStatus() == Store.STATUS_CODE_CONFIRMATION_WAITING) {
+//                            mStatusBarTextView.setVisibility(View.VISIBLE);
+//                        }
+//
+//                        if (store.getStatus() == Store.STATUS_CODE_NOT_VERIFIED) {
+//                            mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
+//                            mStatusBarTextView.setVisibility(View.VISIBLE);
+//                            mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
+//                        }
+//
+//                        mLogoProgressBar.setVisibility(View.VISIBLE);
+//                        //TODO load logo
+////                        mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
+////                            @Override
+////                            public void done(byte[] data, ParseException e) {
+////                                mLogoProgressBar.setVisibility(View.GONE);
+////                                if (e != null) {
+////                                    logE("Getting  logo image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
+////                                    if (progressDialog.isShowing()) {
+////                                        progressDialog.dismiss();
+////                                    }
+////                                    if (isVisible()) {
+////                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+////                                    }
+////                                }
+////                            }
+////                        });
+//
+//                        //TODO load banner
+//
+//                        mBannerProgressBar.setVisibility(View.VISIBLE);
+////                        mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
+////                            @Override
+////                            public void done(byte[] data, ParseException e) {
+////                                mBannerProgressBar.setVisibility(View.GONE);
+////                                if (e != null) {
+////                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+////                                    if (progressDialog.isShowing()) {
+////                                        progressDialog.dismiss();
+////                                    }
+////                                    if (isVisible()) {
+////                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+////                                    }
+////                                }
+////                            }
+////                        });
+//                    } else {
+//                        resetFields();
+//                    }
+//                }
+//                return null;
+//            }
+//        }).continueWithTask(new Continuation<Void, Task<TreeMap<Number, Province>>>() {
+//            @Override
+//            public Task<TreeMap<Number, Province>> then(Task<Void> task) throws Exception {
+//                return provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance());
+//            }
+//        }).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
+//            @Override
+//            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
+//                if (task.isFaulted()) {
+//                    logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+//
+//                    if (progressDialog.isShowing()) {
+//                        progressDialog.dismiss();
+//                    }
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                } else {
+//                    mProvinceObjectsTreeMap = task.getResult();
+//                    for (Province province : mProvinceObjectsTreeMap.values()) {
+//                        if (mSelectedProvinceId < 0) {
+//                            mSelectedProvinceId = province.getId();
+//                            mSelectedProvinceName = province.getName();
+//                        }
+//                        mProvincesHashMap.put(province.getId(), province.getName());
+//                    }
+//                    mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
+//                }
+//                return null;
+//            }
+//        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
+//            @Override
+//            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
+//                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
+//            }
+//        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+//            @Override
+//            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
+//                if (progressDialog.isShowing()) {
+//                    progressDialog.dismiss();
+//                }
+//                if (task.isFaulted()) {
+//                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                } else {
+//                    mCityOrderedTreeMap = task.getResult();
+//                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+//                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+//                            if (mSelectedCityId < 0) {
+//                                mSelectedCityId = citySet.getKey();
+//                                mSelectedCityName = citySet.getValue();
+//                            }
+//                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
+//                        }
+//                    }
+//                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
+//
+//                }
+//                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
+//                }
+//                return null;
+//            }
+//        });
+//TODO
     }
 
     public Task<Store> getUserStoreAsync() {
         final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
-        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+//        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
+//
+//        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
+//
+//        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+//            tcs.setError(new NetworkErrorException("No network connection + Offline data not available for store"));
+//            return tcs.getTask();
+//        }
 
-        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
-
-//        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-                if (BuildConfig.DEBUG) {
-                    logD("Getting store info from local datastore");
-                }
-                query.fromLocalDatastore();
-            } else {
-                tcs.setError(new NetworkErrorException("No network connection + Offline data not available for store"));
-                return tcs.getTask();
-            }
-        }
-
-
-        query.getFirstInBackground(new GetCallback<Store>() {
-            @Override
-            public void done(final Store store, ParseException e) {
-                if (e == null) {
-                    tcs.trySetResult(store);
-//                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
-
-                    final List<Store> tempStoreList = new ArrayList<Store>() {{
-                        add(store);
-                    }};
-
-                    ParseObject.unpinAllInBackground(Store.OBJECT_NAME, tempStoreList, new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-
-                                ParseObject.pinAllInBackground(Store.OBJECT_NAME, tempStoreList, new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                if (e == null) {
-                                                    SharedPreferences.Editor editor = sharedPref.edit();
-                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
-                                                    editor.commit();
-                                                }
-                                            }
-                                        }
-                                );
-                            }
-                        }
-                    });
+//
+//        query.getFirstInBackground(new GetCallback<Store>() {
+//            @Override
+//            public void done(final Store store, ParseException e) {
+//                if (e == null) {
+//                    tcs.trySetResult(store);
+////                    if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, false)) {
+//
+//                    final List<Store> tempStoreList = new ArrayList<Store>() {{
+//                        add(store);
+//                    }};
+//
+//                    ParseObject.unpinAllInBackground(Store.OBJECT_NAME, tempStoreList, new DeleteCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if (e == null) {
+//
+//                                ParseObject.pinAllInBackground(Store.OBJECT_NAME, tempStoreList, new SaveCallback() {
+//                                            @Override
+//                                            public void done(ParseException e) {
+//                                                if (e == null) {
+//                                                    SharedPreferences.Editor editor = sharedPref.edit();
+//                                                    editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+//                                                    editor.commit();
+//                                                }
+//                                            }
+//                                        }
+//                                );
+//                            }
+//                        }
+//                    });
+////                    }
+//
+//                } else {
+//                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        if (BuildConfig.DEBUG) {
+//                            logD("Getting User Store Result: User does not have any store yet.");
+//                        }
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
+//                        editor.commit();
+//                        tcs.trySetResult(null);
+//                    } else {
+//                        tcs.trySetError(e);
+//                        logE("Error Getting Store Info. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
 //                    }
-
-                } else {
-                    if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (BuildConfig.DEBUG) {
-                            logD("Getting User Store Result: User does not have any store yet.");
-                        }
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean(HonarnamaBaseApp.PREF_LOCAL_DATA_STORE_FOR_STORE_SYNCED, true);
-                        editor.commit();
-                        tcs.trySetResult(null);
-                    } else {
-                        tcs.trySetError(e);
-                        logE("Error Getting Store Info. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                    }
-                }
-
-            }
-        });
+//                }
+//
+//            }
+//        });
+        tcs.trySetResult(null);
         return tcs.getTask();
+        //TODO ask server
     }
 
 

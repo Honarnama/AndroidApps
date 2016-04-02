@@ -141,7 +141,7 @@ public class Province {
         return tcs.getTask();
     }
 
-    public Province getProvinceById(int provinceId) {
+    public static Province getProvinceById(int provinceId) {
 
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_LOCATIONS_TYPE + " = " + Location.PROVINCE +

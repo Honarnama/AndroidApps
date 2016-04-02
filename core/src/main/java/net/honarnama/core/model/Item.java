@@ -32,9 +32,9 @@ public class Item {
     public Store mStore;
     public int mId;
 
-    public static Number STATUS_CODE_CONFIRMATION_WAITING = 0;
-    public static Number STATUS_CODE_NOT_VERIFIED = -1;
-    public static Number STATUS_CODE_VERIFIED = 1;
+    public static int STATUS_CODE_CONFIRMATION_WAITING = 0;
+    public static int STATUS_CODE_NOT_VERIFIED = -1;
+    public static int STATUS_CODE_VERIFIED = 1;
 
 
     public String getName() {
