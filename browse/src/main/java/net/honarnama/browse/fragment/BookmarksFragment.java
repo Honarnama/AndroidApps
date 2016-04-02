@@ -1,15 +1,14 @@
 package net.honarnama.browse.fragment;
 
 
-import com.parse.ParseObject;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.BookmarksParseAdapter;
+import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Bookmark;
-import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -92,9 +91,9 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Bookmark selectedBookmark = (Bookmark) mBookmarksParseAdapter.getItem(position);
-        ParseObject selectedItem = selectedBookmark.getItem();
+        Item selectedItem = selectedBookmark.getItem();
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+        controlPanelActivity.displayItemPage(selectedItem.getId(), false);
     }
 
 }

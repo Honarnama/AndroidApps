@@ -3,18 +3,9 @@ package net.honarnama;
 import com.google.android.gms.analytics.Tracker;
 
 import com.crashlytics.android.Crashlytics;
-import com.parse.Parse;
-import com.parse.ParseACL;
-import com.parse.ParseObject;
 
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.helper.DatabaseHelper;
-import net.honarnama.core.model.Bookmark;
-import net.honarnama.core.model.City;
-import net.honarnama.core.model.Event;
-import net.honarnama.core.model.Item;
-import net.honarnama.core.model.Province;
-import net.honarnama.core.model.Store;
 
 import android.app.Application;
 import android.os.Environment;
@@ -104,18 +95,6 @@ public abstract class HonarnamaBaseApp extends Application {
         if (BuildConfig.DEBUG) {
             Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "App created: " + getPackageName());
         }
-
-        Parse.enableLocalDatastore(this);
-        ParseObject.registerSubclass(Store.class);
-        ParseObject.registerSubclass(Item.class);
-        ParseObject.registerSubclass(Bookmark.class);
-
-        Parse.initialize(this, HonarnamaBaseApp.getParseApplicationId(), HonarnamaBaseApp.getParseClientKey());
-
-        ParseACL defaultACL = new ParseACL();
-// Optionally enable public read access while disabling public write access.
-        defaultACL.setPublicReadAccess(true);
-        ParseACL.setDefaultACL(defaultACL, true);
 
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             if (BuildConfig.DEBUG) {

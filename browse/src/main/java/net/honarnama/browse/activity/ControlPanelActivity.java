@@ -4,6 +4,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -84,9 +85,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private Toolbar mToolbar;
     private int mActiveTab;
     private MainTabBar mMainTabBar;
-    private String mShopId;
-    private String mEventId;
-    private String mItemId;
+    private int mShopId;
+    private int mEventId;
+    private int mItemId;
     public TextView mTitle;
 
     private DrawerLayout mDrawer;
@@ -113,9 +114,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<Number, Province>();
     public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
-    public String mDefaultLocationProvinceId;
+    public int mDefaultLocationProvinceId;
     public String mDefaultLocationProvinceName;
-    public String mSelectedDefaultLocationProvinceId;
+    public int mSelectedDefaultLocationProvinceId;
     public String mSelectedDefaultLocationProvinceName;
 
     public EditText mDefaultLocationProvinceEditText;
@@ -502,34 +503,34 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     }
 
-    public void displayShopPage(String shopId, boolean isExternal) {
+    public void displayShopPage(int shopId, boolean isExternal) {
         setShopId(shopId);
 //        mMainTabBar.deselectAllTabs();
         switchFragment(ShopPageFragment.getInstance(shopId), isExternal, getResources().getString(R.string.art_shop));
     }
 
-    public void displayEventPage(String eventId, boolean isExternal) {
+    public void displayEventPage(int eventId, boolean isExternal) {
         setEventId(eventId);
 //        mMainTabBar.deselectAllTabs();
         switchFragment(EventPageFragment.getInstance(eventId), isExternal, getResources().getString(R.string.art_event));
     }
 
-    public void displayItemPage(String itemId, boolean isExternal) {
+    public void displayItemPage(int itemId, boolean isExternal) {
         setItemId(itemId);
         switchFragment(ItemPageFragment.getInstance(itemId), isExternal, "مشاهده محصول");
         //TODO SET ITEM CATEGORY AS TITLE
 //        mTitle.setText();
     }
 
-    public void setShopId(String shopId) {
+    public void setShopId(int shopId) {
         mShopId = shopId;
     }
 
-    public void setEventId(String eventId) {
+    public void setEventId(int eventId) {
         mEventId = eventId;
     }
 
-    public void setItemId(String itemId) {
+    public void setItemId(int itemId) {
         mItemId = itemId;
     }
 
@@ -733,7 +734,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 }
                 mRefetchProvinces.setVisibility(View.GONE);
                 mRefetchCities.setVisibility(View.GONE);
-                fetchProvincesAndCities();
+                // TODO:
+                // GRPCUtils.getInstance().UpdateMeta()
                 break;
 
         }
@@ -876,13 +878,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
-                if (!TextUtils.isEmpty(mSelectedDefaultLocationProvinceId) && !TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
+                if ((mSelectedDefaultLocationProvinceId > 0) && !TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
                     mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
                     mDefaultLocationProvinceName = mSelectedDefaultLocationProvinceName;
                     mDefaultLocationCityId = mSelectedDefaultLocationCityId;
                     mDefaultLocationCityName = mSelectedDefaultLocationCityName;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
+                    editor.putInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
                     editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
                     editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
                     editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
@@ -901,74 +903,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
 
-        fetchProvincesAndCities();
+        // TODO:
+        // GRPCUtils.getInstance().MakeSureMetaExists()
 
         mSetDefaultLocationDialog.show();
-    }
-
-    private void fetchProvincesAndCities() {
-
-        final Province provinces = new Province();
-        final City city = new City();
-
-        mDefaultLocationProvinceEditText.setHint(getString(R.string.getting_information));
-        mDefaultLocationCityEditText.setHint(getString(R.string.getting_information));
-
-        provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance()).
-                continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
-                    @Override
-                    public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
-                        if (task.isFaulted()) {
-                            mRefetchProvinces.setVisibility(View.VISIBLE);
-                            mRefetchCities.setVisibility(View.VISIBLE);
-                            mDefaultLocationProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
-                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-                            Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                        } else {
-                            mProvincesObjectsTreeMap = task.getResult();
-                            for (Province province : mProvincesObjectsTreeMap.values()) {
-                                if (TextUtils.isEmpty(mSelectedDefaultLocationProvinceId)) {
-                                    mSelectedDefaultLocationProvinceId = province.getObjectId();
-                                    mSelectedDefaultLocationProvinceName = province.getName();
-                                }
-                                mProvincesHashMap.put(province.getObjectId(), province.getName());
-                            }
-                            mDefaultLocationProvinceEditText.setText(mProvincesHashMap.get(mSelectedDefaultLocationProvinceId));
-                        }
-                        return null;
-                    }
-                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
-            @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
-                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedDefaultLocationProvinceId);
-            }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
-            @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
-                if (task.isFaulted()) {
-                    mRefetchProvinces.setVisibility(View.VISIBLE);
-                    mRefetchCities.setVisibility(View.VISIBLE);
-                    mDefaultLocationCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                } else {
-                    mCityOrderedTreeMap = task.getResult();
-
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-                            if (TextUtils.isEmpty(mSelectedDefaultLocationCityId)) {
-                                mSelectedDefaultLocationCityId = citySet.getKey();
-                                mSelectedDefaultLocationCityName = citySet.getValue();
-                            }
-                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
-                        }
-                    }
-                    mDefaultLocationCityEditText.setText(mCityHashMap.get(mSelectedDefaultLocationCityId));
-                }
-                return null;
-            }
-        });
-
     }
 
     private void displayProvinceDialog() {
@@ -988,7 +926,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedDefaultLocationProvince = mProvincesObjectsTreeMap.get(position + 1);
-                mSelectedDefaultLocationProvinceId = mSelectedDefaultLocationProvince.getObjectId();
+                mSelectedDefaultLocationProvinceId = mSelectedDefaultLocationProvince.getId();
                 mSelectedDefaultLocationProvinceName = mSelectedDefaultLocationProvince.getName();
                 mDefaultLocationProvinceEditText.setText(mSelectedDefaultLocationProvinceName);
 

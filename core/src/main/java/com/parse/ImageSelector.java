@@ -475,64 +475,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         void onImageSelectionFailed();
     }
 
-    /**
-     * Kick off downloading of remote image. When the download is finished, the image data will be
-     * displayed.
-     *
-     * @param parseFile The remote file on Parse's server.
-     * @return A Task that is resolved when the image data is fetched and this View displays the
-     * image.
-     */
-    public Task<byte[]> loadInBackground(final ParseFile parseFile) {
-        if (parseFile == null) {
-            return Task.forResult(null);
-        }
-
-        if (mFile != null) {
-            mFile.cancel();
-        }
-        mFile = parseFile;
-
-        return parseFile.getDataInBackground().continueWithTask(new Continuation<byte[], Task<byte[]>>() {
-            @Override
-            public Task<byte[]> then(Task<byte[]> task) throws Exception {
-                byte[] data = task.getResult();
-                if (mFile != parseFile) {
-                    // This prevents the very slim chance of the file's download finishing and the callback
-                    // triggering just before this ImageView is reused for another ParseObject.
-                    return Task.cancelled();
-                }
-                if (data != null) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if (bitmap != null) {
-                        setImageBitmap(bitmap);
-                    }
-                }
-                mChanged = false;
-                mIsDeleted = false;
-
-                if (BuildConfig.DEBUG) {
-                    Log.d(LOG_TAG, "Image is loaded");
-                }
-                return task;
-            }
-        }, Task.UI_THREAD_EXECUTOR);
-    }
-
-
-    /**
-     * Kick off downloading of remote image. When the download is finished, the image data will be
-     * displayed and the {@code completionCallback} will be triggered.
-     *
-     * @param parseFile          The remote file on Parse's server.
-     * @param completionCallback A custom {@code GetDataCallback} to be called after the image data
-     *                           is fetched and this
-     *                           {@code ImageView} displays the image.
-     */
-    public void loadInBackground(final ParseFile parseFile, final GetDataCallback completionCallback) {
-        ParseTaskUtils.callbackOnMainThreadAsync(loadInBackground(parseFile), completionCallback, true);
-    }
-
 
     public boolean isChanged() {
         return mChanged;
@@ -541,22 +483,4 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public File getFile() {
         return mFile;
     }
-
-    //for Square Imageview
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec,
-//                             int heightMeasureSpec) {
-//        Drawable d = getDrawable();
-//
-//        if (d != null) {
-//            // ceil not round - avoid thin vertical gaps along the left/right edges
-//            int width = MeasureSpec.getSize(widthMeasureSpec);
-//            int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
-//            setMeasuredDimension(width, height);
-//        } else {
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        }
-////        int width = MeasureSpec.getSize(widthMeasureSpec);
-////        setMeasuredDimension(width, width);
-//    }
 }
