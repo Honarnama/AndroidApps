@@ -73,10 +73,10 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         return getString(R.string.art_event);
     }
 
-    public synchronized static EventPageFragment getInstance(String eventId) {
+    public synchronized static EventPageFragment getInstance(int eventId) {
         EventPageFragment eventPageFragment = new EventPageFragment();
         Bundle args = new Bundle();
-        args.putString("eventId", eventId);
+        args.putInt("eventId", eventId);
         eventPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return eventPageFragment;
@@ -132,84 +132,86 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.event_info_container);
         mEventInfoProgressBar.setVisibility(View.VISIBLE);
         mOnErrorRetry.setVisibility(View.GONE);
-        Event.getEventById(mEventId).continueWith(new Continuation<ParseObject, Object>() {
-            @Override
-            public Object then(Task<ParseObject> task) throws Exception {
-                mEventInfoProgressBar.setVisibility(View.GONE);
-                if (task.isFaulted()) {
-                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_event_no_longer_exists), Toast.LENGTH_SHORT).show();
-                        }
-                        deletedEventMsg.setVisibility(View.VISIBLE);
-                    } else {
-                        logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                        mOnErrorRetry.setVisibility(View.VISIBLE);
-                    }
-                    return null;
-                } else {
-                    fab.setVisibility(View.VISIBLE);
-                    infoContainer.setVisibility(View.VISIBLE);
-                    mOnErrorRetry.setVisibility(View.GONE);
-                    mShare.setVisibility(View.VISIBLE);
-                    final Event event = (Event) task.getResult();
 
-                    ParseFile eventBanner = event.getParseFile(Event.BANNER);
-                    if (eventBanner != null) {
-                        mBannerProgressBar.setVisibility(View.VISIBLE);
-                        mBannerImageView.loadInBackground(eventBanner, new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                mBannerProgressBar.setVisibility(View.GONE);
-                                if (e != null) {
-                                    logE("Getting  banner image for event " + mEventId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-                        });
-                    }
-
-                    mNameTextView.setText(TextUtil.convertEnNumberToFa(event.getName()));
-
-                    Locale locale = new Locale("fa", "IR");
-
-                    Date startDate = event.getStartDate();
-                    String jalaliStartDate = JalaliCalendar.getJalaliDate(startDate);
-
-                    Date endDate = event.getEndDate();
-                    String jalaliEndDate = JalaliCalendar.getJalaliDate(endDate);
-
-                    mDateTextView.setText("تاریخ برگزاری رویداد از " +
-                                    TextUtil.convertEnNumberToFa(jalaliStartDate) +
-                                    " تا " +
-                                    TextUtil.convertEnNumberToFa(jalaliEndDate) +
-                                    " است. "
-
-                    );
-
-                    mDescTextView.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
-                    mAddreddTextView.append(" " + event.getAddress());
-                    mPlaceTextView.setText(event.getProvince().getString(Province.NAME) + "، " + event.getCity().getString(City.NAME));
-
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ContactDialog contactDialog = new ContactDialog();
-                            contactDialog.showDialog(getActivity(), event.getPhoneNumber(), event.getCellNumber(),
-                                    getResources().getString(R.string.event_contact_dialog_warning_msg));
-
-                        }
-                    });
-
-                }
-                return null;
-            }
-        });
+        //TODO
+//        Event.getEventById(mEventId).continueWith(new Continuation<ParseObject, Object>() {
+//            @Override
+//            public Object then(Task<ParseObject> task) throws Exception {
+//                mEventInfoProgressBar.setVisibility(View.GONE);
+//                if (task.isFaulted()) {
+//                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        if (isVisible()) {
+//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_event_no_longer_exists), Toast.LENGTH_SHORT).show();
+//                        }
+//                        deletedEventMsg.setVisibility(View.VISIBLE);
+//                    } else {
+//                        logE("Getting event with id " + mEventId + " for event page failed. Error: " + task.getError(), "", task.getError());
+//                        if (isVisible()) {
+//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_event) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                        }
+//                        mOnErrorRetry.setVisibility(View.VISIBLE);
+//                    }
+//                    return null;
+//                } else {
+//                    fab.setVisibility(View.VISIBLE);
+//                    infoContainer.setVisibility(View.VISIBLE);
+//                    mOnErrorRetry.setVisibility(View.GONE);
+//                    mShare.setVisibility(View.VISIBLE);
+//                    final Event event = (Event) task.getResult();
+//
+//                    ParseFile eventBanner = event.getParseFile(Event.BANNER);
+//                    if (eventBanner != null) {
+//                        mBannerProgressBar.setVisibility(View.VISIBLE);
+//                        mBannerImageView.loadInBackground(eventBanner, new GetDataCallback() {
+//                            @Override
+//                            public void done(byte[] data, ParseException e) {
+//                                mBannerProgressBar.setVisibility(View.GONE);
+//                                if (e != null) {
+//                                    logE("Getting  banner image for event " + mEventId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                    if (isVisible()) {
+//                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                    }
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    mNameTextView.setText(TextUtil.convertEnNumberToFa(event.getName()));
+//
+//                    Locale locale = new Locale("fa", "IR");
+//
+//                    Date startDate = event.getStartDate();
+//                    String jalaliStartDate = JalaliCalendar.getJalaliDate(startDate);
+//
+//                    Date endDate = event.getEndDate();
+//                    String jalaliEndDate = JalaliCalendar.getJalaliDate(endDate);
+//
+//                    mDateTextView.setText("تاریخ برگزاری رویداد از " +
+//                                    TextUtil.convertEnNumberToFa(jalaliStartDate) +
+//                                    " تا " +
+//                                    TextUtil.convertEnNumberToFa(jalaliEndDate) +
+//                                    " است. "
+//
+//                    );
+//
+//                    mDescTextView.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
+//                    mAddreddTextView.append(" " + event.getAddress());
+//                    mPlaceTextView.setText(event.getProvince().getString(Province.NAME) + "، " + event.getCity().getString(City.NAME));
+//
+//                    fab.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            ContactDialog contactDialog = new ContactDialog();
+//                            contactDialog.showDialog(getActivity(), event.getPhoneNumber(), event.getCellNumber(),
+//                                    getResources().getString(R.string.event_contact_dialog_warning_msg));
+//
+//                        }
+//                    });
+//
+//                }
+//                return null;
+//            }
+//        });
 
         return rootView;
 

@@ -31,7 +31,6 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
         if (BuildConfig.DEBUG) {
             Log.i(PRODUCTION_TAG, "HonarnamaBrowseApp.onCreate()");
         }
-        ParseObject.registerSubclass(Item.class);
     }
 
 

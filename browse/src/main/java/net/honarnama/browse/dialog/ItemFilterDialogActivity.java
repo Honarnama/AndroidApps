@@ -48,18 +48,18 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
     public Activity mActivity;
     private EditText mProvinceEditText;
 
-    public String mSelectedProvinceId;
+    public int mSelectedProvinceId;
     public String mSelectedProvinceName;
 
     public Dialog mDialog;
-    public String mSelectedCityId;
+    public int mSelectedCityId;
     public String mSelectedCityName;
     public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<Number, Province>();
-    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
     private EditText mCityEditEext;
-    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
-    public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
+    public HashMap<Integer, String> mCityHashMap = new HashMap<>();
     private Province mSelectedProvince;
 
     HorizontalNumberPicker mMinPriceHorizontalPicker;
@@ -118,12 +118,12 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         });
 
         Intent intent = getIntent();
-        mSelectedProvinceId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
-        if (TextUtils.isEmpty(mSelectedProvinceId)) {
+        mSelectedProvinceId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, -1);
+        if (mSelectedProvinceId < 0) {
             mSelectedProvinceId = getDefaultLocationProvinceId();
         }
-        mSelectedCityId = intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
-        if (TextUtils.isEmpty(mSelectedCityId)) {
+        mSelectedCityId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
+        if (mSelectedCityId < 0) {
             mSelectedCityId = getDefaultLocationCityId();
         }
 
@@ -131,7 +131,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             mAllIranCheckBox.setChecked(intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true));
         }
 
-        if (TextUtils.isEmpty(mSelectedCityId)) {
+        if (mSelectedCityId < 0) {
             mSelectedCityId = City.ALL_CITY_ID;
         }
 
@@ -258,7 +258,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedProvince = mProvincesObjectsTreeMap.get(position + 1);
-                mSelectedProvinceId = mSelectedProvince.getObjectId();
+                mSelectedProvinceId = mSelectedProvince.getId();
                 mSelectedProvinceName = mSelectedProvince.getName();
                 mProvinceEditText.setText(mSelectedProvinceName);
 
@@ -277,29 +277,29 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(mActivity, mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(mActivity, mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if ((mDialog.isShowing())) {
                         Toast.makeText(mActivity, mActivity.getString(R.string.error_getting_city_list) + mActivity.getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
 
                         }
                     }
 
                     mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    HashMap<String, String> allCitiesHashMap = new HashMap<>();
+                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
                     allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
                     mCityOrderedTreeMap.put(0, allCitiesHashMap);
 
-                    Set<String> tempSet = mCityOrderedTreeMap.get(0).keySet();
-                    for (String key : tempSet) {
+                    Set<Integer> tempSet = mCityOrderedTreeMap.get(0).keySet();
+                    for (int key : tempSet) {
                         mSelectedCityId = key;
                         mCityEditEext.setText(mCityHashMap.get(key));
                     }
@@ -323,8 +323,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position);
-                for (String key : selectedCity.keySet()) {
+                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position);
+                for (int key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }
                 for (String value : selectedCity.values()) {
@@ -398,23 +398,23 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Province province : mProvincesObjectsTreeMap.values()) {
-                                if (TextUtils.isEmpty(mSelectedProvinceId)) {
-                                    mSelectedProvinceId = province.getObjectId();
+                                if (mSelectedProvinceId < 0) {
+                                    mSelectedProvinceId = province.getId();
                                 }
-                                mProvincesHashMap.put(province.getObjectId(), province.getName());
+                                mProvincesHashMap.put(province.getId(), province.getName());
                             }
                             mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
                         }
                         return null;
                     }
-                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<String, String>>>>() {
+                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
             @Override
-            public Task<TreeMap<Number, HashMap<String, String>>> then(Task<Object> task) throws Exception {
+            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
                 return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
             }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
 
                 if (task.isFaulted()) {
                     mRefetchProvinces.setVisibility(View.VISIBLE);
@@ -425,9 +425,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 } else {
                     mCityOrderedTreeMap = task.getResult();
 
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
-                            if (TextUtils.isEmpty(mSelectedCityId)) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+                            if (mSelectedCityId < 0) {
                                 mSelectedCityId = citySet.getKey();
                             }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
@@ -435,7 +435,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                     }
 
                     mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    HashMap<String, String> allCitiesHashMap = new HashMap<String, String>();
+                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
                     allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
                     mCityOrderedTreeMap.put(0, allCitiesHashMap);
 

@@ -37,12 +37,12 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
     CategoriesAdapter mCategoriesAdapter;
     private Integer mSelectedCategoryObjectId;
-    public HashMap<Integer, ArrayList<Integer>> mCategoriesHierarchyHashMap = new HashMap();
-    public HashMap<Integer, String> mCategoriesNameHashMap = new HashMap();
-    public HashMap<Integer, Number> mCategoriesOrderHashMap = new HashMap();
+    public HashMap<Integer, ArrayList<Integer>> mCategoriesHierarchyHashMap = new HashMap<>();
+    public HashMap<Integer, String> mCategoriesNameHashMap = new HashMap<>();
+    public HashMap<Integer, Number> mCategoriesOrderHashMap = new HashMap<>();
 
     public ArrayList<Integer> mNodeCategories = new ArrayList();
-    public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap();
+    public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap<>();
 
     public String mCallingApp = HonarnamaBaseApp.SELL_APP_KEY;
 
@@ -130,8 +130,8 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
     private void populateList() {
 
-        mCurrentArtCategoriesName = new HashMap();
-        mCurrentArtCategoriesObjectIds = new HashMap();
+        mCurrentArtCategoriesName = new HashMap<>();
+        mCurrentArtCategoriesObjectIds = new HashMap<>();
 
         if (mSelectedCategoryObjectId == null) {
             //nothing is selected yet

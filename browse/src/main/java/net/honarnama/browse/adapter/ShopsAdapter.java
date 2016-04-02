@@ -49,7 +49,7 @@ public class ShopsAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Store getItem(int position) {
         return mShops.get(position);
     }
 
@@ -62,7 +62,7 @@ public class ShopsAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolderWithImage mViewHolderWithImage;
 
-        final ParseObject store = mShops.get(position);
+        final Store store = mShops.get(position);
 
         if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
             convertView = View.inflate(mContext, R.layout.shop_row, null);
@@ -72,38 +72,29 @@ public class ShopsAdapter extends BaseAdapter {
             mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
         }
 
-        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getString("name")));
-        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getString("description")));
-        mViewHolderWithImage.shopPlace.setText(store.getParseObject(Store.CITY).getString("name"));
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getName()));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getDescription()));
+        mViewHolderWithImage.shopPlace.setText(store.getCity().getName());
+        //TODO load image
 
+//        ParseFile image = store.getParseFile(Shop.LOGO);
 //        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
-//        mViewHolderWithImage.icon.setVisibility(View.GONE);
-//        mViewHolderWithImage.icon.loadInBackground(shopLogo, new GetDataCallback() {
-//            @Override
-//            public void done(byte[] data, ParseException e) {
-//                mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-//                mViewHolderWithImage.icon.setVisibility(View.VISIBLE);
-//            }
-//        });
-
-        ParseFile image = store.getParseFile(Shop.LOGO);
-        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
-        if (image != null) {
-            Uri imageUri = Uri.parse(image.getUrl());
-            Picasso.with(mContext).load(imageUri.toString())
-                    .error(R.drawable.default_logo_hand)
-                    .into(mViewHolderWithImage.icon, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
+//        if (image != null) {
+//            Uri imageUri = Uri.parse(image.getUrl());
+//            Picasso.with(mContext).load(imageUri.toString())
+//                    .error(R.drawable.default_logo_hand)
+//                    .into(mViewHolderWithImage.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
+//        } else {
             Picasso.with(mContext).load(R.drawable.default_logo_hand)
                     .error(R.drawable.default_logo_hand)
                     .into(mViewHolderWithImage.icon, new Callback() {
@@ -117,7 +108,7 @@ public class ShopsAdapter extends BaseAdapter {
                             mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
                         }
                     });
-        }
+//        }
         return convertView;
 
     }

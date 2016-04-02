@@ -26,7 +26,7 @@ import bolts.TaskCompletionSource;
  * Created by elnaz on 1/5/16.
  */
 @ParseClassName("Store")
-public class Store extends ParseObject {
+public class Store {
 
     public Store() {
         super();
@@ -36,102 +36,117 @@ public class Store extends ParseObject {
 
     public static String OBJECT_NAME = "Store";
 
-    public static String NAME = "name";
-    public static String DESCRIPTION = "description";
-    public static String PHONE_NUMBER = "phoneNumber";
-    public static String CELL_NUMBER = "cellNumber";
-    public static String LOGO = "logo";
-    public static String BANNER = "banner";
-    public static String OWNER = "owner";
-    public static String PROVINCE = "province";
-    public static String CITY = "city";
-    public static String STATUS = "status";
-    public static String VALIDITY_CHECKED = "validity_checked";
-    public static String OBJECT_ID = "objectId";
-
-
     public static int STATUS_CODE_CONFIRMATION_WAITING = 0;
     public static int STATUS_CODE_NOT_VERIFIED = -1;
     public static int STATUS_CODE_VERIFIED = 1;
 
+    public String mName;
+    public String mDescription;
+    public String mPhoneNumber;
+    public String mCellNumber;
+    public String mLogo;
+    public String mBanner;
+    public int mOwnerId;
+    public Province mProvince;
+    public City mCity;
+    public int mStatus;
+    public boolean mValidityChecked;
+    public int mId;
 
     public String getName() {
-        return getString(NAME);
+        return mName;
     }
 
-    public void setName(String value) {
-        put(NAME, value);
+    public void setName(String name) {
+        mName = name;
     }
 
     public String getDescription() {
-        return getString(DESCRIPTION);
+        return mDescription;
     }
 
-    public void setDescription(String value) {
-        put(DESCRIPTION, value);
+    public void setDescription(String description) {
+        mDescription = description;
     }
-
 
     public String getPhoneNumber() {
-        return getString(PHONE_NUMBER);
+        return mPhoneNumber;
     }
 
-    public void setPhoneNumber(String value) {
-        put(PHONE_NUMBER, value);
+    public void setPhoneNumber(String phoneNumber) {
+        mPhoneNumber = phoneNumber;
     }
 
     public String getCellNumber() {
-        return getString(CELL_NUMBER);
+        return mCellNumber;
     }
 
-    public void setCellNumber(String value) {
-        put(CELL_NUMBER, value);
+    public void setCellNumber(String cellNumber) {
+        mCellNumber = cellNumber;
     }
 
-
-    public ParseFile getLogo() {
-        return getParseFile(LOGO);
+    public String getLogo() {
+        return mLogo;
     }
 
-    public void setLogo(ParseFile parseFile) {
-        put(LOGO, parseFile);
+    public void setLogo(String logo) {
+        mLogo = logo;
     }
 
-    public Number getStatus() {
-        return getNumber(STATUS);
+    public String getBanner() {
+        return mBanner;
     }
 
-
-    public ParseFile getBanner() {
-        return getParseFile(BANNER);
+    public void setBanner(String banner) {
+        mBanner = banner;
     }
 
-    public void setBanner(ParseFile parseFile) {
-        put(BANNER, parseFile);
+    public int getOwnerId() {
+        return mOwnerId;
     }
 
-    public ParseUser getOwner() {
-        return getParseUser(OWNER);
+    public void setOwnerId(int ownerId) {
+        mOwnerId = ownerId;
     }
 
-    public void setOwner(ParseUser parseUser) {
-        put(OWNER, parseUser);
-    }
-
-    public ParseObject getProvince() {
-        return getParseObject(PROVINCE);
+    public Province getProvince() {
+        return mProvince;
     }
 
     public void setProvince(Province province) {
-        put(PROVINCE, province);
+        mProvince = province;
     }
 
-    public ParseObject getCity() {
-        return getParseObject(CITY);
+    public City getCity() {
+        return mCity;
     }
 
     public void setCity(City city) {
-        put(CITY, city);
+        mCity = city;
+    }
+
+    public int getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(int status) {
+        mStatus = status;
+    }
+
+    public boolean isValidityChecked() {
+        return mValidityChecked;
+    }
+
+    public void setValidityChecked(boolean validityChecked) {
+        mValidityChecked = validityChecked;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
     }
 
     public static Task<Boolean> checkIfUserHaveStore(Context context) {
@@ -142,14 +157,14 @@ public class Store extends ParseObject {
             return tcs.getTask();
         }
 
-       // TODO ask server
+        // TODO ask server
         tcs.setResult(true);
 
         return tcs.getTask();
     }
 
 
-    public static Task<Store> getStoreByOwner(final  int userId) {
+    public static Task<Store> getStoreByOwner(final int userId) {
         final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
 
 //        final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);

@@ -6,9 +6,9 @@ import com.parse.ParseQueryAdapter;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.BookmarksParseAdapter;
-import net.honarnama.core.model.Item;
+import net.honarnama.browse.adapter.BookmarksAdapter;
 import net.honarnama.core.model.Bookmark;
+import net.honarnama.core.model.Item;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +30,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     public static BookmarksFragment mBookmarksFragment;
     private ListView mListView;
 
-    BookmarksParseAdapter mBookmarksParseAdapter;
+    BookmarksAdapter mBookmarksAdapter;
 
     public synchronized static BookmarksFragment getInstance() {
 //        if (mBookmarksFragment == null) {
@@ -50,24 +50,25 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
         final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
-        mBookmarksParseAdapter = new BookmarksParseAdapter(HonarnamaBrowseApp.getInstance());
-        mBookmarksParseAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
-            @Override
-            public void onLoading() {
-                loadingCircle.setVisibility(View.VISIBLE);
-                emptyListContainer.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onLoaded(List objects, Exception e) {
-                loadingCircle.setVisibility(View.GONE);
-
-                if (mBookmarksParseAdapter.isEmpty()) {
-                    emptyListContainer.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        mListView.setAdapter(mBookmarksParseAdapter);
+        mBookmarksAdapter = new BookmarksAdapter(HonarnamaBrowseApp.getInstance());
+        //TODO
+//        mBookmarksAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
+//            @Override
+//            public void onLoading() {
+//                loadingCircle.setVisibility(View.VISIBLE);
+//                emptyListContainer.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onLoaded(List objects, Exception e) {
+//                loadingCircle.setVisibility(View.GONE);
+//
+//                if (mBookmarksAdapter.isEmpty()) {
+//                    emptyListContainer.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+        mListView.setAdapter(mBookmarksAdapter);
         mListView.setOnItemClickListener(this);
         return rootView;
     }
@@ -90,7 +91,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Bookmark selectedBookmark = (Bookmark) mBookmarksParseAdapter.getItem(position);
+        Bookmark selectedBookmark = (Bookmark) mBookmarksAdapter.getItem(position);
         Item selectedItem = selectedBookmark.getItem();
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getId(), false);

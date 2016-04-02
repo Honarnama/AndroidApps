@@ -86,12 +86,12 @@ public class StoreInfoFragment extends HonarnamaBaseFragment implements View.OnC
     private View mBannerFrameLayout;
 
     private EditText mProvinceEditEext;
-    public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<Number, Province>();
-    public HashMap<Integer, String> mProvincesHashMap = new HashMap();
+    public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<>();
+    public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
     private EditText mCityEditEext;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
-    public HashMap<Integer, String> mCityHashMap = new HashMap();
+    public HashMap<Integer, String> mCityHashMap = new HashMap<>();
 
     ProgressDialog mSendingDataProgressDialog;
     ParseFile mParseFileLogo;

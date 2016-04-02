@@ -47,7 +47,7 @@ public class ItemsAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Item getItem(int position) {
         if (mItems != null) {
             return mItems.get(position);
         }
@@ -83,37 +83,26 @@ public class ItemsAdapter extends BaseAdapter {
         ArtCategory category = item.getCategory();
         mViewHolder.itemCat.setText(category.getName());
 
+        //TODO load image
+//        ParseFile image = item.getParseFile(Item.IMAGE_1);
 //        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-//        mViewHolder.icon.setVisibility(View.GONE);
 //
+//        if (image != null) {
+//            Uri imageUri = Uri.parse(image.getUrl());
+//            Picasso.with(mContext).load(imageUri.toString())
+//                    .error(R.drawable.camera_insta)
+//                    .into(mViewHolder.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                        }
 //
-//        mViewHolder.icon.loadInBackground(item.getFile(Item.IMAGE_1), new GetDataCallback() {
-//            @Override
-//            public void done(byte[] data, ParseException e) {
-//                mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-//                mViewHolder.icon.setVisibility(View.VISIBLE);
-//            }
-//        });
-
-        ParseFile image = item.getParseFile(Item.IMAGE_1);
-        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-
-        if (image != null) {
-            Uri imageUri = Uri.parse(image.getUrl());
-            Picasso.with(mContext).load(imageUri.toString())
-                    .error(R.drawable.camera_insta)
-                    .into(mViewHolder.icon, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
+//                        @Override
+//                        public void onError() {
+//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
+//        } else {
             Picasso.with(mContext).load(R.drawable.camera_insta)
                     .error(R.drawable.camera_insta)
                     .into(mViewHolder.icon, new Callback() {
@@ -127,7 +116,7 @@ public class ItemsAdapter extends BaseAdapter {
                             mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
                     });
-        }
+//        }
         return convertView;
 
     }

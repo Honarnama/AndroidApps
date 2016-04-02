@@ -23,13 +23,16 @@ public class Item extends net.honarnama.core.model.Item {
 
     public static Task<List<Item>> getItemsByOwner(final ParseUser owner) {
         return null;
+        //TODO
     }
 
     public static Task<List<Item>> getSimilarItemsByCategory(final ArtCategory category, final String itemId) {
+        //TODO
         return null;
     }
 
     public static Task<ParseObject> getItemById(final String itemId) {
+        //TODO
         return null;
     }
 

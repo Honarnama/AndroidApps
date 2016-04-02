@@ -142,9 +142,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mItemsAdapter = new ItemsAdapter(getActivity());
         mOnErrorRetry.setVisibility(View.GONE);
-        Shop.getShopById(mShopId).continueWith(new Continuation<ParseObject, Boolean>() {
+        Shop.getShopById(mShopId).continueWith(new Continuation<Store, Boolean>() {
             @Override
-            public Boolean then(Task<ParseObject> task) throws Exception {
+            public Boolean then(Task<Store> task) throws Exception {
                 if (task.isFaulted()) {
                     if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
                         if (isVisible()) {
@@ -165,53 +165,56 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     infoContainer.setVisibility(View.VISIBLE);
                     mOnErrorRetry.setVisibility(View.GONE);
                     mShare.setVisibility(View.VISIBLE);
-                    final ParseObject shop = task.getResult();
-                    mOwner = shop.getParseUser(Store.OWNER);
-                    mShopName.setText(TextUtil.convertEnNumberToFa(shop.getString(Store.NAME)));
-                    mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.getString(Store.DESCRIPTION)));
+                    final Store shop = task.getResult();
+                    //TODO
+//                    mOwner = shop.getParseUser(Store.OWNER);
+                    mShopName.setText(TextUtil.convertEnNumberToFa(shop.getName()));
+                    mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.getDescription()));
 
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ContactDialog contactDialog = new ContactDialog();
-                            contactDialog.showDialog(getActivity(), shop.getString(Store.PHONE_NUMBER), shop.getString(Store.CELL_NUMBER),
+                            contactDialog.showDialog(getActivity(), shop.getPhoneNumber(), shop.getCellNumber(),
                                     getResources().getString(R.string.item_contact_dialog_warning_msg));
 
                         }
                     });
 
-                    String province = shop.getParseObject(Store.PROVINCE).getString(Province.NAME);
-                    String city = shop.getParseObject(Store.CITY).getString(City.NAME);
+                    String province = shop.getProvince().getName();
+                    String city = shop.getCity().getName();
 
                     mShopPlace.setText(province + "، " + city);
 
                     mLogoProgressBar.setVisibility(View.VISIBLE);
-                    mLogoImageView.loadInBackground(shop.getParseFile(Store.LOGO), new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-                            mLogoProgressBar.setVisibility(View.GONE);
-                            if (e != null) {
-                                logE("Getting  logo image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    });
+                    //TODO
+//                    mLogoImageView.loadInBackground(shop.getParseFile(Store.LOGO), new GetDataCallback() {
+//                        @Override
+//                        public void done(byte[] data, ParseException e) {
+//                            mLogoProgressBar.setVisibility(View.GONE);
+//                            if (e != null) {
+//                                logE("Getting  logo image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        }
+//                    });
 
                     mBannerProgressBar.setVisibility(View.VISIBLE);
-                    mBannerImageView.loadInBackground(shop.getParseFile(Store.BANNER), new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-                            mBannerProgressBar.setVisibility(View.GONE);
-                            if (e != null) {
-                                logE("Getting  banner image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    });
+                    //TODO
+//                    mBannerImageView.loadInBackground(shop.getParseFile(Store.BANNER), new GetDataCallback() {
+//                        @Override
+//                        public void done(byte[] data, ParseException e) {
+//                            mBannerProgressBar.setVisibility(View.GONE);
+//                            if (e != null) {
+//                                logE("Getting  banner image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
+//                                if (isVisible()) {
+//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        }
+//                    });
                 }
                 return true;
             }
@@ -280,9 +283,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
+        net.honarnama.core.model.Item selectedItem = (Item) mItemsAdapter.getItem(position);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+        controlPanelActivity.displayItemPage(selectedItem.getId(), false);
     }
 
     @Override

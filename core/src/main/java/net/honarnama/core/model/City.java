@@ -73,7 +73,7 @@ public class City {
         mParentId = parentId;
     }
 
-    public static String ALL_CITY_ID = "ALL";
+    public static int ALL_CITY_ID = 0;
     public static String ALL_CITY_NAME = "تمام شهرها";
 
     public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();

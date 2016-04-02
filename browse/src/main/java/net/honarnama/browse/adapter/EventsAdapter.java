@@ -22,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class EventsAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Event getItem(int position) {
         return mEvents.get(position);
     }
 
@@ -61,7 +62,7 @@ public class EventsAdapter extends BaseAdapter {
         final Event event = mEvents.get(position);
         final ViewHolderWithImage mViewHolderWithImage;
 
-        ParseFile eventBanner = event.getParseFile(Event.BANNER);
+//        ParseFile eventBanner = event.getParseFile(Event.BANNER);
 
         if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
             convertView = View.inflate(mContext, R.layout.event_row, null);
@@ -73,27 +74,27 @@ public class EventsAdapter extends BaseAdapter {
 
         mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
         mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
-        mViewHolderWithImage.place.setText(event.getParseObject(Event.CITY).getString(City.NAME));
+        mViewHolderWithImage.place.setText(event.getCity().getName());
 
-
-        ParseFile image = event.getParseFile(Event.BANNER);
+//TODO
+       File image = null;
         mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
 
         if (image != null) {
-            Uri imageUri = Uri.parse(image.getUrl());
-            Picasso.with(mContext).load(imageUri.toString())
-                    .error(R.drawable.party_flags)
-                    .into(mViewHolderWithImage.icon, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
-                        }
-                    });
+//            Uri imageUri = Uri.parse(image.getUrl());
+//            Picasso.with(mContext).load(imageUri.toString())
+//                    .error(R.drawable.party_flags)
+//                    .into(mViewHolderWithImage.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
         } else {
             Picasso.with(mContext).load(R.drawable.party_flags)
                     .error(R.drawable.party_flags)

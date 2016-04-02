@@ -11,7 +11,7 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.ItemsParseAdapter;
+import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
@@ -53,7 +53,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public int mMaxPriceIndex = -1;
     public String mMaxPriceValue;
 
-    ItemsParseAdapter mItemsParseAdapter;
+    ItemsAdapter mItemsAdapter;
     public Button mCategoryFilterButton;
     public LinearLayout mLoadingCircle;
 
@@ -133,10 +133,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ParseObject selectedItem = (ParseObject) mItemsParseAdapter.getItem(position - 1);
+        Item selectedItem = mItemsAdapter.getItem(position - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedItem != null) {
-            controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+            controlPanelActivity.displayItemPage(selectedItem.getId(), false);
         }
     }
 
@@ -204,76 +204,75 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     public void listItems() {
+//TODO
+//        final ParseQuery<Store> storeQuery = new ParseQuery<Store>(Store.class);
+//        storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
+//        storeQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
 
-        final ParseQuery<Store> storeQuery = new ParseQuery<Store>(Store.class);
-        storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
-        storeQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
+//        if (!mIsAllIranChecked) {
+//            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
+//                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
+//                storeQuery.whereEqualTo(Store.PROVINCE, province);
+//            }
+//
+//            if (!TextUtils.isEmpty(mSelectedCityId)) {
+//                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
+//                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
+//                    storeQuery.whereEqualTo(Store.CITY, city);
+//                }
+//            }
+//        }
+//        ArrayList<ArtCategory> queryCategoryIds = new ArrayList<>();
+//        if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
+//
+//            ArrayList<String> querySubCatIds = new ArrayList<>();
+//            if (mSubCatList == null || mSubCatList.isEmpty()) {
+//                if (!TextUtils.isEmpty(mSelectedCategoryId)) {
+//                    querySubCatIds.add(mSelectedCategoryId);
+//                }
+//            } else {
+//                querySubCatIds = mSubCatList;
+//            }
+//
+//            for (int i = 0; i < querySubCatIds.size(); i++) {
+//                ArtCategory category = ParseObject.createWithoutData(ArtCategory.class, querySubCatIds.get(i));
+//                queryCategoryIds.add(category);
+//            }
+//
+//        }
+//
+//        final ArrayList<ArtCategory> finalQueryCategoryIds = queryCategoryIds;
+//
+////        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
+////                new ParseQueryAdapter.QueryFactory<ParseObject>() {
+////                    public ParseQuery create() {
+////                        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
+////                        parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
+////                        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
+////                        parseQuery.whereExists(Item.STORE);
+////
+////                        if (!mIsAllIranChecked) {
+////                            parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
+////                        }
+////
+////                        if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
+////                            parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
+////                        }
+////
+////                        if (mMaxPriceIndex > -1 && mMaxPriceValue != null && !(mMaxPriceValue.equals("MAX"))) {
+////                            parseQuery.whereLessThanOrEqualTo(Item.PRICE, Integer.valueOf(mMaxPriceValue));
+////                        }
+////
+////                        if (finalQueryCategoryIds != null && !(finalQueryCategoryIds.isEmpty())) {
+////                            parseQuery.whereContainedIn(Item.CATEGORY, finalQueryCategoryIds);
+////                        }
+////                        parseQuery.include(Item.CATEGORY);
+////                        return parseQuery;
+////                    }
+////                };
 
-        if (!mIsAllIranChecked) {
-            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
-                storeQuery.whereEqualTo(Store.PROVINCE, province);
-            }
-
-            if (!TextUtils.isEmpty(mSelectedCityId)) {
-                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
-                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                    storeQuery.whereEqualTo(Store.CITY, city);
-                }
-            }
-        }
-        ArrayList<ArtCategory> queryCategoryIds = new ArrayList<>();
-        if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
-
-            ArrayList<String> querySubCatIds = new ArrayList<>();
-            if (mSubCatList == null || mSubCatList.isEmpty()) {
-                if (!TextUtils.isEmpty(mSelectedCategoryId)) {
-                    querySubCatIds.add(mSelectedCategoryId);
-                }
-            } else {
-                querySubCatIds = mSubCatList;
-            }
-
-            for (int i = 0; i < querySubCatIds.size(); i++) {
-                ArtCategory category = ParseObject.createWithoutData(ArtCategory.class, querySubCatIds.get(i));
-                queryCategoryIds.add(category);
-            }
-
-        }
-
-        final ArrayList<ArtCategory> finalQueryCategoryIds = queryCategoryIds;
-
-        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-                new ParseQueryAdapter.QueryFactory<ParseObject>() {
-                    public ParseQuery create() {
-                        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-                        parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
-                        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-                        parseQuery.whereExists(Item.STORE);
-
-                        if (!mIsAllIranChecked) {
-                            parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
-                        }
-
-                        if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
-                            parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
-                        }
-
-                        if (mMaxPriceIndex > -1 && mMaxPriceValue != null && !(mMaxPriceValue.equals("MAX"))) {
-                            parseQuery.whereLessThanOrEqualTo(Item.PRICE, Integer.valueOf(mMaxPriceValue));
-                        }
-
-                        if (finalQueryCategoryIds != null && !(finalQueryCategoryIds.isEmpty())) {
-                            parseQuery.whereContainedIn(Item.CATEGORY, finalQueryCategoryIds);
-                        }
-                        parseQuery.include(Item.CATEGORY);
-                        return parseQuery;
-                    }
-                };
-
-        mItemsParseAdapter = new ItemsParseAdapter(getContext(), filterFactory);
-        mItemsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
-        mListView.setAdapter(mItemsParseAdapter);
+        mItemsAdapter = new ItemsAdapter(getContext());
+        mListView.setAdapter(mItemsAdapter);
 
     }
 

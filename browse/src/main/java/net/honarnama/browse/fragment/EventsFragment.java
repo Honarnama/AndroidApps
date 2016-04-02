@@ -5,21 +5,17 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.EventsParseAdapter;
+import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.dialog.EventFilterDialogActivity;
 import net.honarnama.core.adapter.EventCategoriesAdapter;
-import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.model.EventCategory;
-import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.app.Dialog;
@@ -53,7 +49,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public static EventsFragment mEventsFragment;
     private Tracker mTracker;
     private FragmentActivity mFragmentActivity;
-    EventsParseAdapter mEventsParseAdapter;
+    EventsAdapter mEventsAdapter;
     public RelativeLayout mOnErrorRetry;
     public Button mCategoryFilterButton;
     public RelativeLayout mFilterContainer;
@@ -155,10 +151,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ParseObject selectedEvent = (ParseObject) mEventsParseAdapter.getItem(i - 1);
+        Event selectedEvent = mEventsAdapter.getItem(i - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedEvent != null) {
-            controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+            controlPanelActivity.displayEventPage(selectedEvent.getId(), false);
         }
     }
 
@@ -250,44 +246,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             eventCategory = EventCategory.getCategoryById(mSelectedCatId);
         }
 
-        final EventCategory finalEventCategory = eventCategory;
-        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-                new ParseQueryAdapter.QueryFactory<ParseObject>() {
-                    public ParseQuery create() {
-                        ParseQuery<Event> parseQuery = new ParseQuery<Event>(Event.class);
-                        parseQuery.whereEqualTo(Event.STATUS, Event.STATUS_CODE_VERIFIED);
-                        parseQuery.whereEqualTo(Event.VALIDITY_CHECKED, true);
-                        parseQuery.whereEqualTo(Event.ACTIVE, true);
-                        if (finalEventCategory != null) {
-                            parseQuery.whereEqualTo(Event.CATEGORY, finalEventCategory);
-                        }
-
-                        if (!mIsAllIranChecked) {
-                            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-                                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
-                                parseQuery.whereEqualTo(Event.PROVINCE, province);
-                            }
-
-                            if (!TextUtils.isEmpty(mSelectedCityId)) {
-                                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
-                                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-                                    parseQuery.whereEqualTo(Event.CITY, city);
-                                }
-                            }
-                        }
-
-                        parseQuery.include(Event.CITY);
-                        return parseQuery;
-                    }
-                };
-
-        mEventsParseAdapter = new EventsParseAdapter(getContext(), filterFactory);
-        mEventsParseAdapter.addOnQueryLoadListener(new onQueryLoadListener());
-        mListView.setAdapter(mEventsParseAdapter);
+        mEventsAdapter = new EventsAdapter(getContext());
+        mListView.setAdapter(mEventsAdapter);
     }
 
 
     class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
+        //TODO remove this listener
         @Override
         public void onLoading() {
             mEmptyListContainer.setVisibility(View.GONE);

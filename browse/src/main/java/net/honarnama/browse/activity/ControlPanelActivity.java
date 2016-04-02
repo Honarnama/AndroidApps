@@ -122,8 +122,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public EditText mDefaultLocationProvinceEditText;
     private Province mSelectedDefaultLocationProvince;
 
-    public TreeMap<Number, HashMap<String, String>> mCityOrderedTreeMap = new TreeMap<Number, HashMap<String, String>>();
-    public HashMap<String, String> mCityHashMap = new HashMap<String, String>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
+    public HashMap<Integer, String> mCityHashMap = new HashMap<>();
     public int mDefaultLocationCityId;
     public String mDefaultLocationCityName;
     public int mSelectedDefaultLocationCityId = -1;
@@ -653,21 +653,21 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (intent.getAction().equals(Intent.ACTION_VIEW)) {
                 List<String> segments = data.getPathSegments();
                 if (segments.size() > 1 && segments.get(0).equals("shop")) {
-                    String shopId = segments.get(1).replace("/", "");
+                    int shopId = Integer.valueOf(segments.get(1).replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_SHOPS);
                     displayShopPage(shopId, true);
                     return;
                 }
 
                 if (segments.size() > 1 && segments.get(0).equals("event")) {
-                    String eventId = segments.get(1).replace("/", "");
+                    int eventId = Integer.valueOf(segments.get(1).replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_EVENTS);
                     displayEventPage(eventId, true);
                     return;
                 }
 
                 if (segments.size() > 1 && segments.get(0).equals("item")) {
-                    String itemId = segments.get(1).replace("/", "");
+                    int itemId = Integer.valueOf(segments.get(1).replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_ITEMS);
                     displayItemPage(itemId, true);
                     return;
@@ -886,7 +886,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
                     editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
-                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
+                    editor.putInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
                     editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
                     editor.commit();
                     changeLocationTitle();
@@ -943,24 +943,24 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(ControlPanelActivity.this, mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<String, String>>, Object>() {
+        city.getAllCitiesSorted(ControlPanelActivity.this, mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, HashMap<String, String>>> task) throws Exception {
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if ((mSetDefaultLocationDialog.isShowing())) {
                         Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<String, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<String, String> citySet : cityMap.entrySet()) {
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
 
                         }
                     }
 
-                    Set<String> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                    for (String key : tempSet) {
+                    Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                    for (int key : tempSet) {
                         mSelectedDefaultLocationCityId = key;
                         mSelectedDefaultLocationCityName = mCityHashMap.get(key);
                         mDefaultLocationCityEditText.setText(mSelectedDefaultLocationCityName);
@@ -985,8 +985,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                HashMap<String, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                for (String key : selectedCity.keySet()) {
+                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+                for (int key : selectedCity.keySet()) {
                     mSelectedDefaultLocationCityId = key;
                 }
                 for (String value : selectedCity.values()) {

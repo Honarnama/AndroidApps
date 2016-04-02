@@ -73,12 +73,13 @@ public class ImageAdapter extends BaseAdapter {
         ImageSelector imageView = mViewHolder.imageSelector;
 
         mViewHolder.imageProgressBar.setVisibility(View.VISIBLE);
-        imageView.loadInBackground(mImages.get(position), new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                mViewHolder.imageProgressBar.setVisibility(View.GONE);
-            }
-        });
+        //TODO
+//        imageView.loadInBackground(mImages.get(position), new GetDataCallback() {
+//            @Override
+//            public void done(byte[] data, ParseException e) {
+//                mViewHolder.imageProgressBar.setVisibility(View.GONE);
+//            }
+//        });
         imageView.setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         imageView.setAdjustViewBounds(true);
         return imageView;

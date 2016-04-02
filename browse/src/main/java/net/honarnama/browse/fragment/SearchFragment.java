@@ -178,24 +178,27 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (mSearchSegment == SearchSegment.ITEMS) {
-            ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
-            if (selectedItem != null) {
-                controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
-            }
+            //TODO
+//            ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
+//            if (selectedItem != null) {
+//                controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
+//            }
         }
 
         if (mSearchSegment == SearchSegment.SHOPS) {
-            ParseObject selectedShop = (ParseObject) mShopsAdapter.getItem(position);
-            if (selectedShop != null) {
-                controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
-            }
+            //TODO
+//            ParseObject selectedShop = (ParseObject) mShopsAdapter.getItem(position);
+//            if (selectedShop != null) {
+//                controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
+//            }
         }
 
         if (mSearchSegment == SearchSegment.EVENTS) {
-            ParseObject selectedEvent = (ParseObject) mEventsAdapterr.getItem(position);
-            if (selectedEvent != null) {
-                controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
-            }
+            //TODO
+//            ParseObject selectedEvent = (ParseObject) mEventsAdapterr.getItem(position);
+//            if (selectedEvent != null) {
+//                controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
+//            }
         }
     }
 
@@ -259,30 +262,30 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         List<Item> emptyList = new ArrayList<>();
         mItemsAdapter.setItems(emptyList);
         mItemsAdapter.notifyDataSetChanged();
-
-        Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
-            @Override
-            public Object then(Task<List<Item>> task) throws Exception {
-                mLoadingCircle.setVisibility(View.GONE);
-                mEmptyListContainer.setVisibility(View.VISIBLE);
-                mListView.setEmptyView(mEmptyListContainer);
-
-                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Searching items with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                } else {
-
-                    mOnErrorRetry.setVisibility(View.GONE);
-                    List<Item> foundItems = task.getResult();
-                    mItemsAdapter.setItems(foundItems);
-                    mItemsAdapter.notifyDataSetChanged();
-                }
-                return null;
-            }
-        });
+//TODO
+//        Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
+//            @Override
+//            public Object then(Task<List<Item>> task) throws Exception {
+//                mLoadingCircle.setVisibility(View.GONE);
+//                mEmptyListContainer.setVisibility(View.VISIBLE);
+//                mListView.setEmptyView(mEmptyListContainer);
+//
+//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
+//                    logE("Searching items with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                    mOnErrorRetry.setVisibility(View.VISIBLE);
+//                } else {
+//
+//                    mOnErrorRetry.setVisibility(View.GONE);
+//                    List<Item> foundItems = task.getResult();
+//                    mItemsAdapter.setItems(foundItems);
+//                    mItemsAdapter.notifyDataSetChanged();
+//                }
+//                return null;
+//            }
+//        });
     }
 
     public void searchShops() {
@@ -329,28 +332,29 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         mEventsAdapterr.setEvents(emptyList);
         mEventsAdapterr.notifyDataSetChanged();
 
-        Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
-            @Override
-            public Object then(Task<List<Event>> task) throws Exception {
-                mLoadingCircle.setVisibility(View.GONE);
-                mEmptyListContainer.setVisibility(View.VISIBLE);
-                mListView.setEmptyView(mEmptyListContainer);
-
-                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Searching events with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_event_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                } else {
-                    mOnErrorRetry.setVisibility(View.GONE);
-                    List<Event> foundItems = task.getResult();
-                    mEventsAdapterr.setEvents(foundItems);
-                    mEventsAdapterr.notifyDataSetChanged();
-                }
-                return null;
-            }
-        });
+        //TODO
+//        Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
+//            @Override
+//            public Object then(Task<List<Event>> task) throws Exception {
+//                mLoadingCircle.setVisibility(View.GONE);
+//                mEmptyListContainer.setVisibility(View.VISIBLE);
+//                mListView.setEmptyView(mEmptyListContainer);
+//
+//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
+//                    logE("Searching events with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_event_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                    mOnErrorRetry.setVisibility(View.VISIBLE);
+//                } else {
+//                    mOnErrorRetry.setVisibility(View.GONE);
+//                    List<Event> foundItems = task.getResult();
+//                    mEventsAdapterr.setEvents(foundItems);
+//                    mEventsAdapterr.notifyDataSetChanged();
+//                }
+//                return null;
+//            }
+//        });
     }
 
     public void resetFields() {

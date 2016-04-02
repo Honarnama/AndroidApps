@@ -26,7 +26,7 @@ public class CategoriesAdapter extends BaseAdapter {
 
     private int mSelectedPosition;
     public ArrayList<Integer> mNodeCategories = new ArrayList();
-    public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap();
+    public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap<>();
 
 
     public CategoriesAdapter(Context context, HashMap<Number, Integer> artCategoriesObjectIds, HashMap<Number,
