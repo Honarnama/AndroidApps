@@ -16,6 +16,7 @@ protobuf {
                 javanano {
                     // Options added to --javanano_out
                     option 'ignore_services=true'
+                    option 'store_unknown_fields=true'
                 }
             }
 
@@ -53,4 +54,5 @@ dependencies {
     compile 'io.grpc:grpc-okhttp:0.13.2'
     compile 'io.grpc:grpc-protobuf-nano:0.13.2'
     compile 'io.grpc:grpc-stub:0.13.2'
+    protobuf files('lib/google.tar.gz')
 }

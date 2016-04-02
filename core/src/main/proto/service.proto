@@ -6,8 +6,9 @@ option java_outer_classname = "HonarnamaProto";
 
 package protobuf;
 
-// import "google/api/annotations.proto";
+import "google/api/annotations.proto";
 
+/// Commons /////////////////////////////////////////////////////////////////
 message RequestProperties {
   uint64 ifNotMatchEtag = 1;
   string userAuthToken = 2;
@@ -25,6 +26,7 @@ message ReplyProperties {
     NOT_MODIFIED = 1;
     CLIENT_ERROR = 2;
     SERVER_ERROR = 3;
+    NOT_AUTHORIZED = 4;
   }
   StatusCode statusCode = 1;
   uint32 maxAgeMinutes = 2;
@@ -34,14 +36,11 @@ message ReplyProperties {
   string newUserAuthToken = 6;
 }
 
-service MetaService {
-  rpc Meta(MetaRequest) returns (MetaReply) {
-//    option (google.api.http) = {
-//      get: "/v1/meta"
-//    };
-  }
+message SimpleRequest {
+  RequestProperties requestProperties = 1;
 }
 
+/// Meta --------------------------------------------------
 message Location {
   uint32 id = 1;
   uint32 parentId = 2;
@@ -70,8 +69,25 @@ message EventCategory {
   uint32 order = 3;
 }
 
-message MetaRequest {
-  RequestProperties requestProperties = 1;
+message LocationId {
+  uint32 countryId = 1;
+  uint32 provinceId = 2;
+  uint32 cityId = 3;
+  uint32 neighborhoodId = 4;
+}
+
+message ArtCategoryId {
+  uint32 level1Id = 1;
+  uint32 level2Id = 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+service MetaService {
+  rpc Meta(SimpleRequest) returns (MetaReply) {
+    option (google.api.http) = {
+      get: "/v1/meta"
+    };
+  }
 }
 
 message MetaReply {
@@ -84,12 +100,13 @@ message MetaReply {
   repeated int32 removedEventCategories = 7 [packed=true];
 }
 
+/////////////////////////////////////////////////////////////////////////////
 service AuthService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountReply) {
-//    option (google.api.http) = {
-//      post: "/v1/accounts"
-//      body: "*"
-//    };
+    option (google.api.http) = {
+      post: "/v1/accounts"
+      body: "*"
+    };
   }
 }
 
@@ -124,36 +141,186 @@ message CreateAccountReply {
   string telegramActivationCode = 3;
 }
 
+/////////////////////////////////////////////////////////////////////////////
 service SellService {
-  rpc CreateItem(CreateItemRequest) returns (CreateItemReply) {
+
+  rpc PrepareToUploadPhoto(UploadPhotoRequest) returns (UploadPhotoReply) {
+    option (google.api.http) = {
+      post: "/v1/prepare-to-upload-photo"
+      body: "*"
+    };
+  }
+
+  rpc GetMyStore(SimpleRequest) returns (GetMyStoreReply) {
+    option (google.api.http) = {
+      get: "/v1/my-store"
+    };
+  }
+  rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
+    option (google.api.http) = {
+      post: "/v1/stores"
+      body: "*"
+    };
+  }
+  rpc UpdateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
+    option (google.api.http) = {
+      put: "/v1/store/{store.id}"
+      body: "*"
+    };
+  }
+
+  rpc GetItems(SimpleRequest) returns (GetItemsReply) {
+    option (google.api.http) = {
+      get: "/v1/items"
+    };
+  }
+  rpc GetItem(GetItemRequest) returns (GetItemReply) {
+    option (google.api.http) = {
+      get: "/v1/item/id"
+    };
+  }
+  rpc CreateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
+    option (google.api.http) = {
+      post: "/v1/items"
+      body: "*"
+    };
+  }
+  rpc UpdateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
+    option (google.api.http) = {
+      put: "/v1/item/{item.id}"
+      body: "*"
+    };
   }
 }
 
-message CreateItemRequest {
-  RequestProperties requestProperties = 1;
-  string name = 2;
-  uint64 price = 3;
-  uint32 artCategoryId = 4;
-  string description = 5;
-  string image1 = 6;
-  string image2 = 7;
-  string image3 = 8;
-  string image4 = 9;
-  string ownerId = 10;
-  string storeId = 11;
+enum ReviewStatus {
+  NOT_REVIEW = 0;
+  CHANGES_NEEDED = 1;
+  APPROVED = 2;
 }
 
-message CreateItemReply {
+/// Upload ------------------------------------------------
+enum ImageBucket {
+  STORE_LOGO = 0;
+  STORE_BANNER = 1;
+  ITEM_PICTURE = 2;
+}
+
+message UploadPhotoRequest {
+  RequestProperties requestProperties = 1;
+  ImageBucket bucket = 2;
+}
+message UploadPhotoReply {
+  ReplyProperties replyProperties = 1;
+  string uploadUrl = 2;
+  uint64 imageId = 3;
+}
+
+message ImageMetaData {
+  uint64 id = 1;
+  string url = 2;
+}
+
+/// Store -------------------------------------------------
+message Store {
+  uint32 id = 1; // Will be ignored in create
+  uint32 ownerId = 2;
+  LocationId locationId = 3;
+  string name = 4;
+  string description = 5;
+  string publicCellNumber = 6;
+  string publicPhoneNumber = 7;
+  ImageMetaData logo = 8;
+  ImageMetaData banner = 9;
+  ReviewStatus reviewStatus = 10; // Will be ignored in create and update
+}
+
+message GetMyStoreReply {
+  ReplyProperties replyProperties = 1;
+  Store store = 2;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    STORE_NOT_FOUND = 1;
+  }
+  ErrorCode errorCode = 3;
+}
+
+message CreateOrUpdateStoreRequest {
+  RequestProperties requestProperties = 1;
+  Store store = 2;
+}
+
+message CreateOrUpdateStoreReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    NO_NAME_ERROR = 1;
-    NO_PRICE_ERROR = 2;
-    NO_CATEGORY_ERROR = 3;
-    NO_DESC_ERROR = 4;
-    NO_IMAGE_ERROR = 5;
-    NO_OWNER_ERROR = 6;
+    INVALID_OWNER = 1;
+    INVALID_LOCATION = 2;
+    INVALID_NAME = 3;
+    INVALID_DESC = 4;
+    INVALID_PUBLIC_CELL_NUMBRT = 5;
+    INVALID_PUBLIC_PHONE_NUMBRT = 6;
+    INVALID_LOGO_IMAGE_ID = 7;
+    INVALID_BANNER_IMAGE_ID = 8;
+    ALREADY_CREATED = 9; // Only while creating
+    STORE_NOT_FOUND = 10; // Only while updating
   }
   ErrorCode errorCode = 2;
-  string telegramActivationCode = 3;
+}
+
+/// Item --------------------------------------------------
+message Item {
+  uint64 id = 1; // Will be ignored in create
+  uint32 ownerId = 2;
+  uint32 storeId = 3;
+  ArtCategoryId artCategoryId = 4;
+  string name = 5;
+  string description = 6;
+  uint64 price = 7;
+  repeated ImageMetaData images = 8;
+  ReviewStatus reviewStatus = 9; // Will be ignored in create and update
+}
+
+message GetItemsReply {
+  ReplyProperties replyProperties = 1;
+  repeated Item items = 2;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    STORE_NOT_FOUND = 1;
+  }
+  ErrorCode errorCode = 3;
+}
+
+message GetItemRequest {
+  RequestProperties requestProperties = 1;
+  uint64 id = 2;
+}
+
+message GetItemReply {
+  ReplyProperties replyProperties = 1;
+  Item items = 2;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    ITEM_NOT_FOUND = 1;
+    FORBIDDEN = 2;
+  }
+  ErrorCode errorCode = 3;
+}
+
+message CreateOrUpdateItemRequest {
+  RequestProperties requestProperties = 1;
+  Item item = 2;
+}
+
+message CreateOrUpdateItemReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    INVALID_OWNER = 1;
+    INVALID_NAME = 2;
+    INVALID_DESC = 3;
+    INVALID_CATEGORY = 4;
+    INVALID_PRICE = 5;
+  }
+  ErrorCode errorCode = 2;
 }

@@ -5,6 +5,7 @@ import net.honarnama.nano.MetaServiceGrpc;
 import net.honarnama.nano.MetaRequest;
 import net.honarnama.nano.MetaReply;
 import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SimpleRequest;
 
 import android.app.Application;
 import android.content.Context;
@@ -81,7 +82,7 @@ public class GRPCUtils {
         RequestProperties rp = newRPWithDeviceInfo();
         // TODO: read current meta and extract the etag
         rp.ifNotMatchEtag = currentMetaVersion;
-        MetaRequest req = new MetaRequest();
+        SimpleRequest req = new SimpleRequest();
         req.requestProperties = rp;
 
         Log.w("GRPC-HN", "updateMetaData :: rp= " + rp);
