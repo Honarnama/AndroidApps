@@ -35,6 +35,10 @@
 
                 <category android:name="android.intent.category.DEFAULT"/>
 
+                <!-- TODO
+                 1. both domains
+                 2. prefix = /sell/login
+                 -->
                 <data
                         android:host="www.honarnama.net"
                         android:pathPrefix="/app_landing"
