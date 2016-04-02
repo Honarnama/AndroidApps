@@ -9,12 +9,18 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.nano.AuthServiceGrpc;
+import net.honarnama.nano.CreateAccountReply;
+import net.honarnama.nano.CreateAccountRequest;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
@@ -142,49 +148,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         }
     }
 
-    /*
-        public void registerUser() {
-            final File nationalCardImageFile = new File(mNationalCardImageView.getFinalImageUri().getPath());
-            try {
-                final ParseFile parseFile = ParseIO.getParseFileFromFile("nationalCardImageFile.jpeg", nationalCardImageFile);
-
-                parseFile.saveInBackground(new SaveCallback() {
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            try {
-                                ParseIO.copyFile(nationalCardImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.NATIONAL_CARD_FILE_NAME));
-                            } catch (IOException e1) {
-                                if (BuildConfig.DEBUG) {
-                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                                            "Error copying national card image to sd card " + e1, e1);
-                                } else {
-                                    Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying national card image to sd card"
-                                            + e1.getMessage());
-                                }
-                            }
-                            signUserUpInParse(parseFile, sendingDataProgressDialog);
-                        } else {
-                            Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
-                            logE("Uploading National Card Image Failed. Code: " + e.getCode(),
-                                    e.getMessage(), e);
-                            sendingDataProgressDialog.dismiss();
-                        }
-                    }
-                }, new ProgressCallback() {
-                    public void done(Integer percentDone) {
-
-                        logD(null, "Uploading National Card Image - percentDone= " + percentDone);
-                        // Update your progress spinner here. percentDone will be between 0 and 100.
-                    }
-                });
-
-            } catch (IOException ioe) {
-                Toast.makeText(RegisterActivity.this, " خطا در ارسال تصویر. لطفاً دوباره تلاش کنید. ", Toast.LENGTH_LONG).show();
-                logE("IOException while uploading file: " + ioe.getMessage(), "nationalCardImageFile= " + nationalCardImageFile, ioe);
-                sendingDataProgressDialog.dismiss();
-            }
-        }
-    */
     private void signUserUpInParse() {
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return;
@@ -194,65 +157,73 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             return; // TODO: feedback
         }
 
-        if (HonarnamaUser.isLoggedIn()) {
-            // TODO
+        // TODO
+//        if (HonarnamaUser.isLoggedIn()) {
 //            HonarnamaUser.logOut();
-        }
+//        }
 
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);
         sendingDataProgressDialog.setCancelable(false);
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
-        final String activationMethod = mActivateWithEmail.isChecked() ? "email" : "mobileNumber";
+        final int activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
 
-        final ParseUser user = new ParseUser();
+        final CreateAccountRequest car = new CreateAccountRequest();
 
-        if ("email".equals(activationMethod)) {
-            user.setUsername(mEmailAddressEditText.getText().toString().trim());
-        } else {
-            user.setUsername(mMobileNumberEditText.getText().toString().trim());
+        if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
+            car.email = mEmailAddressEditText.getText().toString().trim();
         }
 
-        if (mEmailAddressEditText.getText().toString().trim().length() == 0 || "mobileNumber".equals(activationMethod)) {
-            user.setEmail(mMobileNumberEditText.getText().toString().trim() + "@" + HonarnamaBaseApp.DOMAIN);
-        } else {
-            user.setEmail(mEmailAddressEditText.getText().toString().trim());
+        car.mobileNumber = mMobileNumberEditText.getText().toString().trim();
+        car.name = mNameEditText.getText().toString().trim();
+        car.activationMethod = activationMethod;
+
+        int genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE: CreateAccountRequest.UNSPECIFIED);
+        car.gender = genderCode;
+
+        RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+        car.requestProperties = rp;
+
+        AuthServiceGrpc.AuthServiceBlockingStub stub;
+        try {
+            stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+        } catch (InterruptedException ie) {
+            logE("Error occured trying to send register request. Error:"+ ie);
+            Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+            return;
         }
 
-        user.put("userEnteredEmailAddress", mEmailAddressEditText.getText().toString().trim());
-        user.put("mobileNumber", mMobileNumberEditText.getText().toString().trim());
-        user.put("name", mNameEditText.getText().toString().trim());
-        user.put("activationMethod", activationMethod);
+        CreateAccountReply cap = stub.createAccount(car);
 
-        int genderCode = mGenderWoman.isChecked() ? HonarnamaBaseApp.GENDER_CODE_WOMAN : (mGenderMan.isChecked() ? HonarnamaBaseApp.GENDER_CODE_MAN : HonarnamaBaseApp.GENDER_CODE_NOT_SAID);
-        user.put("gender", genderCode);
+        sendingDataProgressDialog.dismiss();
 
-        user.signUpInBackground(new SignUpCallback() {
-            public void done(ParseException e) {
-                sendingDataProgressDialog.dismiss();
-                if (e == null) {
-                    user.fetchInBackground(new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject parseObject, ParseException e) {
-                            sendUserBackToCallingActivity();
-                        }
-                    });
-                } else {
-                    if (e.getCode() == 202) {
-                        if ("email".equals(activationMethod)) {
-                            mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
-                        } else {
-                            mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
-                        }
-                    }
+        if (cap.replyProperties.statusCode == ReplyProperties.OK) {
+            sendUserBackToCallingActivity(activationMethod, cap.telegramActivationCode);
+        } else if (cap.replyProperties.statusCode == ReplyProperties.SERVER_ERROR) {
 
-                    Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
-                    logE("Sign-up Failed. Code: " + e.getCode() +
-                            " // Error Msg: " + e.getMessage(), "", e);
-                }
+        } else {
+            switch (cap.errorCode) {
+                case CreateAccountReply.DUPLICATE_EMAIL:
+                    mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
+                    break;
+                case CreateAccountReply.INVALID_EMAIL:
+                    mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
+                    break;
+                case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
+                    mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
+                    break;
+                case CreateAccountReply.INVALID_MOBILE_NUMBER:
+                    mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
+                    break;
             }
-        });
+
+            Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+            logE("Sign-up Failed. errorCode: " + cap.errorCode +
+                    " // statusCode: " + cap.replyProperties.statusCode +
+                    " // Error Msg: " + cap.replyProperties.errorMessage);
+        }
+
     }
 
     private void changeMandatoryFieldsStarMarker() {
@@ -305,39 +276,12 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
         }
 
-
-
-        /*
-        if (mNationalCardImageView.getFinalImageUri() == null) {
-            mNationalCardImageView.requestFocus();
-            TextView nationalCardTitleTextView = (TextView) findViewById(R.id.register_national_card_title_text_view);
-            nationalCardTitleTextView.setError(getString(R.string.error_national_card_image_is_not_set));
-            return false;
-        }
-        if (mBankCardNumberEditText.getText().toString().trim().length() == 0) {
-            mBankCardNumberEditText.requestFocus();
-            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_cant_be_empty));
-            return false;
-        }
-
-        String bankCardNumberPattern = "^((\\d{4}-\\d{4}-\\d{4}-\\d{4})|(\\d{4}\\s{1}\\d{4}\\s{1}\\d{4}\\s{1}\\d{4})|(\\d{16}))$";
-        if (!mBankCardNumberEditText.getText().toString().matches(bankCardNumberPattern)) {
-            mBankCardNumberEditText.requestFocus();
-            mBankCardNumberEditText.setError(getString(R.string.error_bank_card_number_is_not_valid));
-            return false;
-        }
-        */
         return true;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        /*
-        if ((mNationalCardImageView != null) &&
-                mNationalCardImageView.onActivityResult(requestCode, resultCode, intent)) {
-            return;
-        }
-        */
+
         switch (requestCode) {
             default:
                 if (BuildConfig.DEBUG) {
@@ -349,25 +293,20 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        /*
-        if (mNationalCardImageView != null) {
-            mNationalCardImageView.onSaveInstanceState(outState);
-        }
-        */
     }
 
-    private void sendUserBackToCallingActivity() {
+    private void sendUserBackToCallingActivity(int activationMethod, String telegramCode) {
         Intent intent = new Intent();
 
-        switch (HonarnamaUser.getActivationMethod()) {
-            case EMAIL:
+        switch (activationMethod) {
+            case CreateAccountRequest.EMAIL:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
                 break;
 
-            case MOBILE_NUMBER:
+            case CreateAccountRequest.TELEGRAM:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE, telegramCode);
                 break;
-
         }
 
         setResult(Activity.RESULT_OK, intent);

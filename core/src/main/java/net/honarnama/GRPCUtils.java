@@ -1,5 +1,6 @@
 package net.honarnama;
 
+import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.EventCategory;
 import net.honarnama.nano.MetaServiceGrpc;
 import net.honarnama.nano.MetaRequest;
@@ -49,7 +50,7 @@ public class GRPCUtils {
         mChannel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
     }
 
-    public RequestProperties newRPWithDeviceInfo() {
+    public static RequestProperties newRPWithDeviceInfo() {
         RequestProperties rp = new RequestProperties();
 
         Application app = HonarnamaBaseApp.getInstance();
@@ -74,6 +75,8 @@ public class GRPCUtils {
 
         // TODO: rp.userAuthToken
 
+        // TODO: cache static values
+
         return rp;
     }
 
@@ -87,7 +90,7 @@ public class GRPCUtils {
 
         Log.w("GRPC-HN", "updateMetaData :: rp= " + rp);
 
-        MetaServiceGrpc.MetaServiceBlockingStub stub = MetaServiceGrpc.newBlockingStub(mChannel);
+        MetaServiceGrpc.MetaServiceBlockingStub stub = getMetaServiceGrpc();
         Log.w("GRPC-HN", "updateMetaData :: stub= " + stub);
         MetaReply reply = stub.meta(req);
         Log.w("GRPC-HN", "updateMetaData :: Got Reply");
@@ -103,5 +106,15 @@ public class GRPCUtils {
 //            sb.append(" / ");
 //        }
         return reply;
+    }
+
+    public MetaServiceGrpc.MetaServiceBlockingStub getMetaServiceGrpc() {
+        // TODO: cache
+        return MetaServiceGrpc.newBlockingStub(mChannel);
+    }
+
+    public AuthServiceGrpc.AuthServiceBlockingStub getAuthServiceGrpc() {
+        // TODO: cache
+        return AuthServiceGrpc.newBlockingStub(mChannel);
     }
 }

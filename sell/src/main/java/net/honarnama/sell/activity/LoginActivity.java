@@ -83,39 +83,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);
 
-//        final ParseUser user = HonarnamaUser.getCurrentUser();
-//        if (user != null) {
-//            if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
-//                return;
-//            }
-//            showLoadingDialog();
-//            if (BuildConfig.DEBUG) {
-//                logD("Parse user is not empty", "user= " + user.getEmail());
-//            }
-//            user.fetchInBackground(new GetCallback<ParseObject>() {
-//                @Override
-//                public void done(ParseObject parseObject, ParseException parseException) {
-//                    //checkIfUserStillExistOnParse
-//                    ParseQuery<ParseUser> query = ParseUser.getQuery();
-//                    query.whereEqualTo("username", user.getUsername());
-//                    query.findInBackground(new FindCallback<ParseUser>() {
-//                        public void done(List<ParseUser> objects, ParseException e) {
-//                            if (e == null) {
-//                                // User Exist On Parse
-//                                gotoControlPanelOrRaiseError();
-//                            } else {
-//                                user.logOut();
-//                            }
-//                            hideLoadingDialog();
-//                        }
-//                    });
-//                }
-//            });
-//        }
-
         //TODO if user is loggedin
-        if (true) {
-            gotoControlPanelOrRaiseError();
+        if (HonarnamaUser.isLoggedIn()) {
+            gotoControlPanel();
         } else {
             processIntent(getIntent());
         }
@@ -166,7 +136,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                                 @Override
                                 public void done(ParseObject object, ParseException e) {
                                     hideLoadingDialog();
-                                    gotoControlPanelOrRaiseError();
+                                    gotoControlPanel();
                                 }
                             });
 
@@ -185,6 +155,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void gotoControlPanel() {
+        // TODO: getMe
+
         Intent intent = new Intent(this, ControlPanelActivity.class);
         startActivity(intent);
         finish();
@@ -193,7 +165,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        if (HonarnamaUser.isVerified()) {
+        if (HonarnamaUser.isLoggedIn()) {
             gotoControlPanel();
         }
     }
@@ -211,17 +183,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 break;
             case R.id.telegram_login_container:
                 Intent telegramIntent;
-                if (HonarnamaUser.isLoggedIn()) {
-                    String telegramCode = HonarnamaUser.getTelegramCode();
-
-                    if (HonarnamaUser.getActivationMethod() != HonarnamaUser.ActivationMethod.MOBILE_NUMBER || telegramCode == null) {
-                        telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
-                    } else {
-                        telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + telegramCode));
-                    }
-                } else {
-                    telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
-                }
+                telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
 
                 if (telegramIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(telegramIntent);
@@ -273,7 +235,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         public void done(ParseObject object, ParseException e) {
 //                            user.pinInBackground();
                             progressDialog.dismiss();
-                            gotoControlPanelOrRaiseError();
+                            gotoControlPanel();
                         }
                     });
 
@@ -296,24 +258,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             mLoadingDialog.dismiss();
         }
 
-    }
-
-    private void gotoControlPanelOrRaiseError() {
-        if (!HonarnamaUser.isVerified()) {
-            logE("Login Failed. Account is not activated");
-            switch (HonarnamaUser.getActivationMethod()) {
-                case EMAIL:
-                    mMessageContainer.setVisibility(View.VISIBLE);
-                    mLoginMessageTextView.setText(getString(R.string.not_verified));
-//                    mResendActivationLinkButton.setVisibility(View.VISIBLE);
-                    break;
-                default:
-//                    mResendActivationLinkButton.setVisibility(View.GONE);
-                    break;
-            }
-        } else {
-            gotoControlPanel();
-        }
     }
 
     private void showTelegramActivationDialog(final String activationCode) {
@@ -348,24 +292,16 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         mLoginMessageTextView.setText(getString(R.string.verification_email_sent));
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
-//                    if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, false)) {
-//                        mMessageContainer.setVisibility(View.VISIBLE);
-//                        mLoginMessageTextView.setText("لینک فعال‌سازی حساب به تلگرام شما ارسال شد.");
-//                        mResendActivationLinkButton.setVisibility(View.GONE);
-//                    }
                     mMessageContainer.setVisibility(View.VISIBLE);
                     mLoginMessageTextView.setText(getString(R.string.telegram_activation_timeout_message));
-                    String telegramToken = "";
-                    if (HonarnamaUser.isLoggedIn()) {
-                        telegramToken = HonarnamaUser.getTelegramCode();
-                    }
+                    String telegramToken = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE);
                     showTelegramActivationDialog(telegramToken);
                 }
             }
 
             if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
                 //finish();
-                gotoControlPanelOrRaiseError();
+                gotoControlPanel();
             }
         }
 

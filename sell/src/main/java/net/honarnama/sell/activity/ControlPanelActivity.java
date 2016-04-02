@@ -98,9 +98,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);
-        if (!HonarnamaUser.isAuthenticatedUser()) {
+        if (!HonarnamaUser.isLoggedIn()) {
             if (BuildConfig.DEBUG) {
-                logD("User was not authenticated!");
+                logD("User was not logged in!");
             }
             return;
         }

@@ -131,16 +131,16 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         mGenderWoman.setChecked(false);
         mGenderMan.setChecked(false);
         mGenderNotSaid.setChecked(false);
-        switch (mCurrentUser.getInt("gender")) {
-            case HonarnamaBaseApp.GENDER_CODE_WOMAN:
-                mGenderWoman.setChecked(true);
-                break;
-            case HonarnamaBaseApp.GENDER_CODE_MAN:
-                mGenderMan.setChecked(true);
-                break;
-            default:
-                mGenderNotSaid.setChecked(true);
-        }
+//        switch (mCurrentUser.getInt("gender")) {
+//            case HonarnamaBaseApp.GENDER_CODE_WOMAN:
+//                mGenderWoman.setChecked(true);
+//                break;
+//            case HonarnamaBaseApp.GENDER_CODE_MAN:
+//                mGenderMan.setChecked(true);
+//                break;
+//            default:
+//                mGenderNotSaid.setChecked(true);
+//        }
 
         mNewPasswordEditText.setText("");
     }

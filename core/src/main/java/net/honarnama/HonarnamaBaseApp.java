@@ -36,6 +36,7 @@ public abstract class HonarnamaBaseApp extends Application {
 
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
+    public static final String EXTRA_KEY_TELEGRAM_CODE = "EXTRA_KEY_TELEGRAM_CODE";
     public static final String EXTRA_KEY_UNCAUGHT_EXCEPTION = "EXTRA_KEY_UNCAUGHT_EXCEPTION";
     public static final String EXTRA_KEY_INTENT_ORIGIN = "intent_origin";
     public static final String EXTRA_KEY_PROVINCE_ID = "selectedProvinceId";
@@ -64,11 +65,6 @@ public abstract class HonarnamaBaseApp extends Application {
 
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
-
-
-    public static final int GENDER_CODE_WOMAN = 0;
-    public static final int GENDER_CODE_MAN = 1;
-    public static final int GENDER_CODE_NOT_SAID = 2;
 
     public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
     public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED = "local_data_store_for_event_categories_synced";

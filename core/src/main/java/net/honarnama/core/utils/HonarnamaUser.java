@@ -13,15 +13,7 @@ import java.util.HashMap;
  */
 public class HonarnamaUser {
 
-    public static boolean isAuthenticatedUser() {
-//        ParseUser user = HonarnamaUser.getCurrentUser();
-//        if ((isVerified()) && user.isAuthenticated()) {
-//            return true;
-//        }
-//        return false;
-        //TODO
-        return true;
-    }
+    private static String token;
 
     public static String getUserEnteredEmailAddress() {
 //        return getCurrentUser().get("userEnteredEmailAddress").toString();
@@ -67,22 +59,13 @@ public class HonarnamaUser {
         return ActivationMethod.MOBILE_NUMBER;
     }
 
-    public static boolean isVerified() {
-//        if (getCurrentUser() == null) {
-//            return false;
-//        }
-//        return getActivationMethod().isUserVerified(getCurrentUser());
-        //TODO
-        return true;
-    }
-
     public static boolean isLoggedIn() {
 //        if (getCurrentUser() == null) {
 //            return false;
 //        }
 //        return getActivationMethod().isUserVerified(getCurrentUser());
         //TODO
-        return true;
+        return false;
     }
 
     public static enum ActivationMethod {
@@ -103,12 +86,6 @@ public class HonarnamaUser {
             return false;
         }
     }
-
-    public static String getTelegramCode() {
-        //TODO
-        return "abcdef";
-    }
-
 
     public static String getUsername() {
         //TODO
