@@ -32,21 +32,34 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-
                 <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <!-- TODO
-                 1. both domains
-                 2. prefix = /sell/login
-                 -->
                 <data
-                        android:host="www.honarnama.net"
+                        android:host="*honarnama.net"
+                        android:pathPrefix="/sell/login"
+                        android:scheme="http"/>
+                <data
+                        android:host="*honarnama.net"
+                        android:pathPrefix="/sell/login"
+                        android:scheme="https"/>
+            </intent-filter>
+
+            <!-- TODO
+              Where app_landing come from, should it open browse app or sell app
+              -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                        android:host="*honarnama.net"
                         android:pathPrefix="/app_landing"
                         android:scheme="http"/>
                 <data
-                        android:host="www.honarnama.net"
+                        android:host="*honarnama.net"
                         android:pathPrefix="/app_landing"
                         android:scheme="https"/>
+
             </intent-filter>
         </activity>
         <activity
@@ -74,8 +87,8 @@
         </activity>
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="bfd2de2b7ac2ce16acc26914dde9c0cea6796d39" />
+                android:name="io.fabric.ApiKey"
+                android:value="bfd2de2b7ac2ce16acc26914dde9c0cea6796d39"/>
     </application>
 
 </manifest>

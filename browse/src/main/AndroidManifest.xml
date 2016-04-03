@@ -33,8 +33,6 @@
 
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
                 <data
                         android:host="*honarnama.net"
                         android:pathPrefix="/shop/"
@@ -48,8 +46,12 @@
                         android:host="shop"
                         android:pathPrefix="/"
                         android:scheme="honarnama"/>
-                <!---->
+            </intent-filter>
+            <!---->
+            <intent-filter>
 
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <data
                         android:host="*honarnama.net"
                         android:pathPrefix="/item/"
@@ -63,6 +65,11 @@
                         android:host="item"
                         android:pathPrefix="/"
                         android:scheme="honarnama"/>
+            </intent-filter>
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <!---->
                 <data
                         android:host="*honarnama.net"
