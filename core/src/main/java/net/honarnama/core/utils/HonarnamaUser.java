@@ -6,14 +6,34 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.core.activity.HonarnamaBaseActivity;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
 import java.util.HashMap;
 
 /**
  * Created by elnaz on 7/26/15.
  */
 public class HonarnamaUser {
+    private static String mToken;
 
-    private static String token;
+    public static void login(String token) {
+        SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+        editor.putString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, token);
+        editor.commit();
+        mToken = token;
+    }
+
+    public static void logout() {
+        SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+        editor.putString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, "");
+        editor.commit();
+        mToken = null;
+    }
 
     public static String getUserEnteredEmailAddress() {
 //        return getCurrentUser().get("userEnteredEmailAddress").toString();
@@ -28,7 +48,7 @@ public class HonarnamaUser {
     }
 
     public static void telegramLogInInBackground(String token, final LogInCallback logInCallback) {
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("token", token);
         ParseCloud.callFunctionInBackground("telegramLogin", params, new FunctionCallback<String>() {
             @Override
@@ -60,13 +80,19 @@ public class HonarnamaUser {
     }
 
     public static boolean isLoggedIn() {
-//        if (getCurrentUser() == null) {
-//            return false;
-//        }
-//        return getActivationMethod().isUserVerified(getCurrentUser());
-        //TODO
-        return false;
+        if (!TextUtils.isEmpty(mToken)) {
+            return true;
+        } else {
+            String loginToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, "");
+            if (TextUtils.isEmpty(loginToken)) {
+                return false;
+            } else {
+                mToken = loginToken;
+                return true;
+            }
+        }
     }
+
 
     public static enum ActivationMethod {
         EMAIL("emailVerified"),

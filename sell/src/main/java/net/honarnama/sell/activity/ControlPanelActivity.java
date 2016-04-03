@@ -7,8 +7,6 @@ import com.crashlytics.android.Crashlytics;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
-import com.parse.LogOutCallback;
-import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -367,7 +365,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     .setPositiveButton("بله", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
-                            if (!sharedPref.getBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, false)) {
+                            if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
                                 askToRate();
                             } else {
                                 finish();
@@ -543,7 +541,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                                 .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_info_outline);
                 menuItem.setIcon(aboutDrawable);
-                fragment = AboutFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
+                fragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 break;
 
             case R.id.item_contact_us:
@@ -553,7 +551,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                                 .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_email);
                 menuItem.setIcon(contactDrawable);
-                fragment = ContactFragment.getInstance(HonarnamaBaseApp.SELL_APP_KEY);
+                fragment = ContactFragment.getInstance(HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 break;
 
             case R.id.item_rules:
@@ -594,9 +592,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_nav_title_exit_app:
-                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
-                mWaitingProgressDialog.setCancelable(false);
-                mWaitingProgressDialog.show();
+//                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
+//                mWaitingProgressDialog.setCancelable(false);
+//                mWaitingProgressDialog.show();
                 //TODO
 //                HonarnamaUser.logOutInBackground(new LogOutCallback() {
 //                    @Override
@@ -613,6 +611,10 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 //                        startActivity(intent);
 //                    }
 //                });
+                HonarnamaUser.logout();
+                Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+                finish();
+                startActivity(intent);
                 break;
 
         }
@@ -669,7 +671,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
                 final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_SELL_APP_RATED, true);
+                editor.putBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, true);
                 editor.commit();
 
                 dialog.dismiss();

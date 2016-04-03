@@ -108,7 +108,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
         processIntent(intent);
     }
 
@@ -120,13 +119,16 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         }
 
         if (data != null) {
-            final String telegramToken = data.getQueryParameter("telegramToken");
+            final String loginToken = data.getQueryParameter("token"); //login with email
+            final String telegramToken = data.getQueryParameter("telegramToken"); // login with telegram
             final String register = data.getQueryParameter("register");
             if (BuildConfig.DEBUG) {
-                logD("telegramToken= " + telegramToken + ", register= " + register);
+                logD("token= " + loginToken + ", telegramToken= " + telegramToken + ", register= " + register);
             }
-
-            if (telegramToken != null && telegramToken.length() > 0) {
+            if (loginToken != null && loginToken.length() > 0) {
+                HonarnamaUser.login(loginToken);
+                gotoControlPanel();
+            } else if (telegramToken != null && telegramToken.length() > 0) {
                 showLoadingDialog();
                 HonarnamaUser.telegramLogInInBackground(telegramToken, new LogInCallback() {
                     @Override

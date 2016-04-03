@@ -3,8 +3,6 @@ package net.honarnama.browse.fragment;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -15,10 +13,7 @@ import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
-import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.model.City;
 import net.honarnama.core.model.Province;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
@@ -144,7 +139,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onClick(View v) {
         if (v.getId() == R.id.category_filter_btn) {
             Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.BROWSE_APP_KEY);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }

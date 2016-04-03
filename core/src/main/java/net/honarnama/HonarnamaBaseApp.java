@@ -8,6 +8,8 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.helper.DatabaseHelper;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -47,18 +49,16 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_SUB_CATS = "subCats";
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
     public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
-
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province_id";
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME = "default_province_name";
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_ID = "default_city_id";
-    public static final String EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME = "default_city_name";
-
-    public static final String EXTRA_KEY_BROWSE_APP_RATED = "browse_app_rated";
-    public static final String EXTRA_KEY_SELL_APP_RATED = "sell_app_rated";
-
-
     public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
     public static final String EXTRA_KEY_CATEGORY_NAME = "selectedCategoryName";
+
+    public static final String PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province_id";
+    public static final String PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME = "default_province_name";
+    public static final String PREF_KEY_DEFAULT_LOCATION_CITY_ID = "default_city_id";
+    public static final String PREF_KEY_DEFAULT_LOCATION_CITY_NAME = "default_city_name";
+    public static final String PREF_KEY_BROWSE_APP_RATED = "browse_app_rated";
+    public static final String PREF_KEY_SELL_APP_RATED = "sell_app_rated";
+    public static final String PREF_KEY_LOGIN_TOKEN = "login_token";
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;
@@ -66,16 +66,14 @@ public abstract class HonarnamaBaseApp extends Application {
     private static final String PARSE_APPLICATION_ID = "RgwhQeuzLGKtYyS1mkkIkKVtST3hMamyXyJzP8Cu";
     private static final String PARSE_CLIENT_KEY = "1izVO8rxN6x28PEjgDCZSeXdVPfHxskX3ECKvcrg";
 
-    public static String PREF_LOCAL_DATA_STORE_FOR_CATEGORIES_SYNCED = "local_data_store_for_categories_synced";
-    public static String PREF_LOCAL_DATA_STORE_FOR_EVENT_CATEGORIES_SYNCED = "local_data_store_for_event_categories_synced";
+    public static String PREF_KEY_META_VERSION = "meta_version";
 
-    public static String PREF_META_VERSION = "meta_version";
-
-    public static String SELL_APP_KEY = "honarnama_sell";
-    public static String BROWSE_APP_KEY = "honarnama_browse";
-    public static String COMMON_KEY = "honarnama_apps";
+    public static String PREF_NAME_SELL_APP = "honarnama_sell";
+    public static String PREF_NAME_BROWSE_APP = "honarnama_browse";
+    public static String PREF_NAME_COMMON = "honarnama_apps";
 
     private static HonarnamaBaseApp singleton;
+    private static SharedPreferences mCommonSharedPref;
 
     public synchronized static HonarnamaBaseApp getInstance() {
         return singleton;
@@ -109,6 +107,15 @@ public abstract class HonarnamaBaseApp extends Application {
             APP_IMAGES_FOLDER.mkdirs();
         }
         DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance());
+        setCommonSharedPref(getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE));
+    }
+
+    public static void setCommonSharedPref(SharedPreferences commonSharedPref) {
+        mCommonSharedPref = commonSharedPref;
+    }
+
+    public static SharedPreferences getCommonSharedPref() {
+        return mCommonSharedPref;
     }
 
     public static String getParseApplicationId() {

@@ -18,24 +18,24 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.BROWSE_APP_KEY, Context.MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_BROWSE_APP, Context.MODE_PRIVATE);
     }
 
     public int getDefaultLocationProvinceId() {
-        return mSharedPreferences.getInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, 0);
+        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, 0);
     }
 
     public int getDefaultLocationCityId() {
-        return mSharedPreferences.getInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, 0);
+        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, 0);
     }
 
 
     public String getDefaultLocationProvinceName() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, "");
+        return mSharedPreferences.getString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME, "");
     }
 
     public String getDefaultLocationCityName() {
-        return mSharedPreferences.getString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, "");
+        return mSharedPreferences.getString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, "");
     }
 
 }

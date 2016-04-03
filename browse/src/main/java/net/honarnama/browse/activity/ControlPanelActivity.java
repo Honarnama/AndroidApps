@@ -4,7 +4,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
-import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -139,8 +138,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
-        mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+        mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+        mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
         mBookmarksFragment = BookmarksFragment.getInstance();
 
         mMainFragmentAdapter =
@@ -348,7 +347,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .color(getResources().getColor(R.color.dark_cyan))
                                     .icon(GoogleMaterial.Icon.gmd_email);
                     menuItem.setIcon(contactDrawable);
-                    ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                    ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
                     switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
                     break;
                 } else {
@@ -370,7 +369,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .color(getResources().getColor(R.color.dark_cyan))
                                     .icon(GoogleMaterial.Icon.gmd_info_outline);
                     menuItem.setIcon(aboutDrawable);
-                    AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.BROWSE_APP_KEY);
+                    AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
                     switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
                     break;
                 } else {
@@ -407,7 +406,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_nav_title_exit_app:
-                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, false)) {
+                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
                     askToRate();
                 } else {
                     finish();
@@ -627,7 +626,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (mActiveTab != TAB_ITEMS) {
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
-                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, false)) {
+                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
                     askToRate();
                 } else {
                     finish();
@@ -824,7 +823,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             public void onClick(View v) {
                 callBazaarRateIntent();
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putBoolean(HonarnamaBaseApp.EXTRA_KEY_BROWSE_APP_RATED, true);
+                editor.putBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, true);
                 editor.commit();
 
                 dialog.dismiss();
@@ -884,10 +883,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     mDefaultLocationCityId = mSelectedDefaultLocationCityId;
                     mDefaultLocationCityName = mSelectedDefaultLocationCityName;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
-                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
-                    editor.putInt(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
-                    editor.putString(HonarnamaBaseApp.EXTRA_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
+                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
+                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
+                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
+                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
                     editor.commit();
                     changeLocationTitle();
                 } else {

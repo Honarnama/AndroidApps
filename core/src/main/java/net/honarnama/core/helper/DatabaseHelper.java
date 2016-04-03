@@ -39,19 +39,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_ART_CAT_ID = "id";
     public static final String COL_ART_CAT_PARENT_ID = "parent_id";
     public static final String COL_ART_CAT_NAME = "name";
-    public static final String COL_ART_CAT_ORDER = "order";
+    public static final String COL_ART_CAT_ORDER = "art_cat_order";
     public static final String COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE = "all_subcat_filter_type";
 
     // Event Categories Table Columns
     public static final String COL_EVENT_CAT_ID = "id";
     public static final String COL_EVENT_CAT_NAME = "name";
-    public static final String COL_EVENT_CAT_ORDER = "order";
+    public static final String COL_EVENT_CAT_ORDER = "event_cat_order";
 
     // Locations Table Columns
     public static final String COL_LOCATIONS_ID = "id";
     public static final String COL_LOCATIONS_PARENT_ID = "parent_id";
     public static final String COL_LOCATIONS_NAME = "name";
-    public static final String COL_LOCATIONS_ORDER = "order";
+    public static final String COL_LOCATIONS_ORDER = "location_order";
     public static final String COL_LOCATIONS_TYPE = "type";
 
 

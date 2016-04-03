@@ -3,12 +3,7 @@ package net.honarnama.sell.fragments;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.GetCallback;
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseQuery;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -29,7 +24,6 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -413,7 +407,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 break;
             case R.id.edit_item_category_semi_button:
                 Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
-                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.SELL_APP_KEY);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
             default:

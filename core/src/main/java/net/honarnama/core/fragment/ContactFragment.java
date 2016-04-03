@@ -74,11 +74,11 @@ public class ContactFragment extends HonarnamaBaseFragment {
         mSubject.setError(null);
         mBody.setError(null);
 
-        if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+        if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
             mEmail.setText(HonarnamaUser.getUserEnteredEmailAddress());
         }
 
-        if (getArguments().getString("appKey") == HonarnamaBaseApp.BROWSE_APP_KEY) {
+        if (getArguments().getString("appKey") == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
             mContactButton.setBackgroundColor(getResources().getColor(R.color.dark_cyan));
         }
         mContactButton.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +145,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("text", body + "\n \n Phone: " + phone);
                 params.put("subject", subject);
                 params.put("fromEmail", email);
-                if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.BROWSE_APP_KEY) {
+                if (HonarnamaUser.isLoggedIn() && getArguments().getString("appKey") != HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
                     params.put("fromName", HonarnamaUser.getName());
                 }
 

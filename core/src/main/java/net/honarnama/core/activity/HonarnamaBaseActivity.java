@@ -5,6 +5,8 @@ import com.crashlytics.android.Crashlytics;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;

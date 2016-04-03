@@ -30,7 +30,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
 
     public MetaUpdater(Context context) {
         mContext = context;
-        mSharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaBaseApp.COMMON_KEY, Context.MODE_PRIVATE);
+        mSharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE);
 
 
     }
@@ -38,7 +38,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
     @Override
     protected MetaReply doInBackground(Void... param) {
 
-        long metaVersion = mSharedPref.getLong(HonarnamaBaseApp.PREF_META_VERSION, 0);
+        long metaVersion = mSharedPref.getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
         Log.e("inja", "current meta version is: " + metaVersion);
 
         try {
@@ -94,7 +94,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                             }
                         } else {
                             SharedPreferences.Editor editor = mSharedPref.edit();
-                            editor.putLong(HonarnamaBaseApp.PREF_META_VERSION, reply.replyProperties.etag);
+                            editor.putLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, reply.replyProperties.etag);
                             editor.commit();
                             return null;
                         }
