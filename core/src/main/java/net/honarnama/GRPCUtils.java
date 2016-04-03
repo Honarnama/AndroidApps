@@ -1,5 +1,6 @@
 package net.honarnama;
 
+import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.EventCategory;
 import net.honarnama.nano.MetaServiceGrpc;
@@ -52,6 +53,7 @@ public class GRPCUtils {
 
     public static RequestProperties newRPWithDeviceInfo() {
         RequestProperties rp = new RequestProperties();
+        rp.androidClientInfo = new AndroidClientInfo();
 
         Application app = HonarnamaBaseApp.getInstance();
         String packageName = app.getPackageName();
@@ -65,9 +67,8 @@ public class GRPCUtils {
 
         TelephonyManager tel = (TelephonyManager) HonarnamaBaseApp.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
         String networkOperator = tel.getNetworkOperator();
-        if (TextUtils.isEmpty(networkOperator) == false) {
-            rp.mcc = Integer.parseInt(networkOperator.substring(0, 3));
-            rp.mnc = Integer.parseInt(networkOperator.substring(3));
+        if (!TextUtils.isEmpty(networkOperator)) {
+            rp.androidClientInfo.mccMnc = networkOperator;
         }
 
         // TODO: rp.userLanguage;

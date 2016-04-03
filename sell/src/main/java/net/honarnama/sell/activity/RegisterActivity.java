@@ -19,6 +19,8 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CreateAccountReply;
 import net.honarnama.nano.CreateAccountRequest;
+import net.honarnama.nano.CreateOrUpdateAccountReply;
+import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -169,21 +171,21 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
         final int activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
 
-        final CreateAccountRequest car = new CreateAccountRequest();
+        final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
 
         if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
-            car.email = mEmailAddressEditText.getText().toString().trim();
+            createOrUpdateAccountRequest.account.email =  mEmailAddressEditText.getText().toString().trim();
         }
 
-        car.mobileNumber = mMobileNumberEditText.getText().toString().trim();
-        car.name = mNameEditText.getText().toString().trim();
-        car.activationMethod = activationMethod;
+        createOrUpdateAccountRequest.account.mobileNumber = mMobileNumberEditText.getText().toString().trim();
+        createOrUpdateAccountRequest.account.name = mNameEditText.getText().toString().trim();
+        createOrUpdateAccountRequest.account.activationMethod = activationMethod;
 
         int genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE: CreateAccountRequest.UNSPECIFIED);
-        car.gender = genderCode;
+        createOrUpdateAccountRequest.account.gender = genderCode;
 
         RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-        car.requestProperties = rp;
+        createOrUpdateAccountRequest.requestProperties = rp;
 
         AuthServiceGrpc.AuthServiceBlockingStub stub;
         try {
@@ -194,16 +196,16 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             return;
         }
 
-        CreateAccountReply cap = stub.createAccount(car);
+        CreateOrUpdateAccountReply createOrUpdateAccountReply = stub.createAccount(createOrUpdateAccountRequest);
 
         sendingDataProgressDialog.dismiss();
 
-        if (cap.replyProperties.statusCode == ReplyProperties.OK) {
-            sendUserBackToCallingActivity(activationMethod, cap.telegramActivationCode);
-        } else if (cap.replyProperties.statusCode == ReplyProperties.SERVER_ERROR) {
+        if (createOrUpdateAccountReply.replyProperties.statusCode == ReplyProperties.OK) {
+            sendUserBackToCallingActivity(activationMethod, createOrUpdateAccountReply.telegramActivationCode);
+        } else if (createOrUpdateAccountReply.replyProperties.statusCode == ReplyProperties.SERVER_ERROR) {
 
         } else {
-            switch (cap.errorCode) {
+            switch (createOrUpdateAccountReply.errorCode) {
                 case CreateAccountReply.DUPLICATE_EMAIL:
                     mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
                     break;
@@ -219,9 +221,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             }
 
             Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
-            logE("Sign-up Failed. errorCode: " + cap.errorCode +
-                    " // statusCode: " + cap.replyProperties.statusCode +
-                    " // Error Msg: " + cap.replyProperties.errorMessage);
+            logE("Sign-up Failed. errorCode: " + createOrUpdateAccountReply.errorCode +
+                    " // statusCode: " + createOrUpdateAccountReply.replyProperties.statusCode +
+                    " // Error Msg: " + createOrUpdateAccountReply.replyProperties.errorMessage);
         }
 
     }
