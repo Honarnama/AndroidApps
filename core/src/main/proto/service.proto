@@ -9,15 +9,24 @@ package protobuf;
 import "google/api/annotations.proto";
 
 /// Commons /////////////////////////////////////////////////////////////////
+message AndroidClientInfo {
+  int32 sdkVersion = 1;
+  string model = 2;
+  string product = 3;
+  string osBuild = 4;
+  string hardware = 5;
+  string device = 6;
+  string mccMnc = 7;
+  string locale = 8;
+  string country = 9;
+}
+
 message RequestProperties {
   uint64 ifNotMatchEtag = 1;
   string userAuthToken = 2;
   string clientId = 3;
   int32 clientVersion = 4;
-  string userLanguage = 5;
-  string userCountry = 6;
-  int32 mcc = 7;
-  int32 mnc = 8;
+  AndroidClientInfo androidClientInfo = 5;
 }
 
 message ReplyProperties {
@@ -102,16 +111,27 @@ message MetaReply {
 
 /////////////////////////////////////////////////////////////////////////////
 service AuthService {
-  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountReply) {
+  rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
+    option (google.api.http) = {
+      get: "/v1/whoami"
+    };
+  }
+  rpc CreateAccount(CreateOrUpdateAccountRequest) returns (CreateOrUpdateAccountReply) {
     option (google.api.http) = {
       post: "/v1/accounts"
       body: "*"
     };
   }
+  rpc UpdateAccount(CreateOrUpdateAccountRequest) returns (CreateOrUpdateAccountReply) {
+    option (google.api.http) = {
+      put: "/v1/account/{account.id}"
+      body: "*"
+    };
+  }
 }
 
-message CreateAccountRequest {
-  RequestProperties requestProperties = 1;
+message Account {
+  uint32 id = 1; // Will be ignored in create
   string name = 2;
   string email = 3;
   string mobileNumber = 4;
@@ -128,7 +148,17 @@ message CreateAccountRequest {
   ActivationMethod activationMethod = 6;
 }
 
-message CreateAccountReply {
+message WhoAmIReply {
+  ReplyProperties replyProperties = 1;
+  Account account = 2;
+}
+
+message CreateOrUpdateAccountRequest {
+  RequestProperties requestProperties = 1;
+  Account account = 2;
+}
+
+message CreateOrUpdateAccountReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
@@ -136,6 +166,7 @@ message CreateAccountReply {
     DUPLICATE_EMAIL = 2;
     INVALID_MOBILE_NUMBER = 3;
     DUPLICATE_MOBILE_NUMBER = 4;
+    ACCOUNT_NOT_FOUND = 5; // Only for update
   }
   ErrorCode errorCode = 2;
   string telegramActivationCode = 3;
@@ -151,9 +182,9 @@ service SellService {
     };
   }
 
-  rpc GetMyStore(SimpleRequest) returns (GetMyStoreReply) {
+  rpc GetStore(GetStoreRequest) returns (GetStoreReply) {
     option (google.api.http) = {
-      get: "/v1/my-store"
+      get: "/v1/store/{id}"
     };
   }
   rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
@@ -174,9 +205,9 @@ service SellService {
       get: "/v1/items"
     };
   }
-  rpc GetItem(GetItemRequest) returns (GetItemReply) {
+  rpc GetItem(GetOrDeleteItemRequest) returns (GetItemReply) {
     option (google.api.http) = {
-      get: "/v1/item/id"
+      get: "/v1/item/{id}"
     };
   }
   rpc CreateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
@@ -189,6 +220,11 @@ service SellService {
     option (google.api.http) = {
       put: "/v1/item/{item.id}"
       body: "*"
+    };
+  }
+  rpc DeleteItem(GetOrDeleteItemRequest) returns (DeleteItemReply) {
+    option (google.api.http) = {
+      delete: "/v1/item/{id}"
     };
   }
 }
@@ -224,7 +260,7 @@ message ImageMetaData {
 /// Store -------------------------------------------------
 message Store {
   uint32 id = 1; // Will be ignored in create
-  uint32 ownerId = 2;
+  uint32 ownerId = 2; // Will be ignored in update
   LocationId locationId = 3;
   string name = 4;
   string description = 5;
@@ -235,12 +271,17 @@ message Store {
   ReviewStatus reviewStatus = 10; // Will be ignored in create and update
 }
 
-message GetMyStoreReply {
+message GetStoreRequest {
+  RequestProperties requestProperties = 1;
+  uint32 id = 2;
+}
+
+message GetStoreReply {
   ReplyProperties replyProperties = 1;
   Store store = 2;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    STORE_NOT_FOUND = 1;
+    STORE_NOT_FOUND = 1; // Only for update
   }
   ErrorCode errorCode = 3;
 }
@@ -271,8 +312,8 @@ message CreateOrUpdateStoreReply {
 /// Item --------------------------------------------------
 message Item {
   uint64 id = 1; // Will be ignored in create
-  uint32 ownerId = 2;
-  uint32 storeId = 3;
+  uint32 ownerId = 2; // Will be ignored in update
+  uint32 storeId = 3; // Will be ignored in update
   ArtCategoryId artCategoryId = 4;
   string name = 5;
   string description = 6;
@@ -291,7 +332,7 @@ message GetItemsReply {
   ErrorCode errorCode = 3;
 }
 
-message GetItemRequest {
+message GetOrDeleteItemRequest {
   RequestProperties requestProperties = 1;
   uint64 id = 2;
 }
@@ -321,6 +362,16 @@ message CreateOrUpdateItemReply {
     INVALID_DESC = 3;
     INVALID_CATEGORY = 4;
     INVALID_PRICE = 5;
+  }
+  ErrorCode errorCode = 2;
+}
+
+message DeleteItemReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    ITEM_NOT_FOUND = 1;
+    FORBIDDEN = 2;
   }
   ErrorCode errorCode = 2;
 }
