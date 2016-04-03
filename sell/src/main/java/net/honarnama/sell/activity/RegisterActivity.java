@@ -3,23 +3,15 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
-import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CreateAccountReply;
 import net.honarnama.nano.CreateAccountRequest;
-import net.honarnama.nano.CreateOrUpdateAccountReply;
 import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
@@ -196,7 +188,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             return;
         }
 
-        CreateOrUpdateAccountReply createOrUpdateAccountReply = stub.createAccount(createOrUpdateAccountRequest);
+        CreateAccountReply createOrUpdateAccountReply = stub.createAccount(createOrUpdateAccountRequest);
 
         sendingDataProgressDialog.dismiss();
 

@@ -111,27 +111,27 @@ message MetaReply {
 
 /////////////////////////////////////////////////////////////////////////////
 service AuthService {
-  rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
-    option (google.api.http) = {
-      get: "/v1/whoami"
-    };
-  }
-  rpc CreateAccount(CreateOrUpdateAccountRequest) returns (CreateOrUpdateAccountReply) {
+  rpc CreateAccount(CreateOrUpdateAccountRequest) returns (CreateAccountReply) {
     option (google.api.http) = {
       post: "/v1/accounts"
       body: "*"
     };
   }
-  rpc UpdateAccount(CreateOrUpdateAccountRequest) returns (CreateOrUpdateAccountReply) {
+  rpc UpdateAccount(CreateOrUpdateAccountRequest) returns (UpdateAccountReply) {
     option (google.api.http) = {
       put: "/v1/account/{account.id}"
       body: "*"
     };
   }
+  rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
+    option (google.api.http) = {
+      get: "/v1/whoami"
+    };
+  }
 }
 
 message Account {
-  uint32 id = 1; // Will be ignored in create
+  uint64 id = 1; // Will be ignored in create
   string name = 2;
   string email = 3;
   string mobileNumber = 4;
@@ -158,7 +158,7 @@ message CreateOrUpdateAccountRequest {
   Account account = 2;
 }
 
-message CreateOrUpdateAccountReply {
+message CreateAccountReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
@@ -166,10 +166,19 @@ message CreateOrUpdateAccountReply {
     DUPLICATE_EMAIL = 2;
     INVALID_MOBILE_NUMBER = 3;
     DUPLICATE_MOBILE_NUMBER = 4;
-    ACCOUNT_NOT_FOUND = 5; // Only for update
   }
   ErrorCode errorCode = 2;
   string telegramActivationCode = 3;
+}
+
+message UpdateAccountReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    ACCOUNT_NOT_FOUND = 1;
+    FORBIDDEN = 2;
+  }
+  ErrorCode errorCode = 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -259,8 +268,8 @@ message ImageMetaData {
 
 /// Store -------------------------------------------------
 message Store {
-  uint32 id = 1; // Will be ignored in create
-  uint32 ownerId = 2; // Will be ignored in update
+  uint64 id = 1; // Will be ignored in create
+  uint64 ownerId = 2; // Will be ignored in update
   LocationId locationId = 3;
   string name = 4;
   string description = 5;
@@ -273,7 +282,7 @@ message Store {
 
 message GetStoreRequest {
   RequestProperties requestProperties = 1;
-  uint32 id = 2;
+  uint64 id = 2;
 }
 
 message GetStoreReply {
@@ -312,8 +321,8 @@ message CreateOrUpdateStoreReply {
 /// Item --------------------------------------------------
 message Item {
   uint64 id = 1; // Will be ignored in create
-  uint32 ownerId = 2; // Will be ignored in update
-  uint32 storeId = 3; // Will be ignored in update
+  uint64 ownerId = 2; // Will be ignored in update
+  uint64 storeId = 3; // Will be ignored in update
   ArtCategoryId artCategoryId = 4;
   string name = 5;
   string description = 6;
@@ -357,11 +366,12 @@ message CreateOrUpdateItemReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    INVALID_OWNER = 1;
+    INVALID_OWNER = 1; // for create
     INVALID_NAME = 2;
     INVALID_DESC = 3;
     INVALID_CATEGORY = 4;
     INVALID_PRICE = 5;
+    FORBIDDEN = 6; // for update
   }
   ErrorCode errorCode = 2;
 }
