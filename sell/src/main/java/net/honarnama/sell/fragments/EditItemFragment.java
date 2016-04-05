@@ -13,7 +13,7 @@ import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
-import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
 import net.honarnama.core.utils.TextUtil;
@@ -495,7 +495,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         sendingDataProgressDialog.show();
 
         try {
-            Store.getStoreByOwner(HonarnamaUser.getUserId()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
+            Store.getStoreByOwner(HonarnamaUser.getId()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
                 @Override
                 public Task<ArtCategory> then(Task<Store> task) throws Exception {
                     if (task.isFaulted()) {

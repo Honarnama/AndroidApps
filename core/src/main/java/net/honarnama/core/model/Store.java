@@ -1,23 +1,12 @@
 package net.honarnama.core.model;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.GetCallback;
 import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -164,7 +153,7 @@ public class Store {
     }
 
 
-    public static Task<Store> getStoreByOwner(final int userId) {
+    public static Task<Store> getStoreByOwner(final long userId) {
         final TaskCompletionSource<Store> tcs = new TaskCompletionSource<>();
 
 //        final ParseQuery<Store> parseQuery = ParseQuery.getQuery(Store.class);

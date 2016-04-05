@@ -3,19 +3,23 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
-import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.nano.AuthServiceGrpc;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SimpleRequest;
+import net.honarnama.nano.WhoAmIReply;
+import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -35,7 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 //TODO ersale mojadad link faal sazi baraye email
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
@@ -64,21 +68,17 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
         mRegisterAsSellerTextView.setOnClickListener(this);
 
-        mLoginButton = (Button) findViewById(R.id.login_button);
+        mLoginButton = (Button) findViewById(R.id.send_login_link_btn);
         mLoginButton.setOnClickListener(this);
 
         mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
-        mPasswordEditText = (EditText) findViewById(R.id.login_password_edit_text);
         mMessageContainer = findViewById(R.id.login_message_container);
         mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
 //        mResendActivationLinkButton = findViewById(R.id.resend_activation_link);
 //        mResendActivationLinkButton.setOnClickListener(this);
 
-        mForgotPasswordTextView = (TextView) findViewById(R.id.forgot_password_text_view);
-        mForgotPasswordTextView.setOnClickListener(this);
 
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
-        mPasswordEditText.addTextChangedListener(new GenericGravityTextWatcher(mPasswordEditText));
 
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);
@@ -157,11 +157,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void gotoControlPanel() {
-        // TODO: getMe
-
-        Intent intent = new Intent(this, ControlPanelActivity.class);
-        startActivity(intent);
-        finish();
+        new getMeAsyncTask().execute();
     }
 
     @Override
@@ -179,9 +175,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
-            case R.id.login_button:
+            case R.id.send_login_link_btn:
                 mMessageContainer.setVisibility(View.GONE);
-                signUserIn();
+                Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(forgotPasswordIntent);
                 break;
             case R.id.telegram_login_container:
                 Intent telegramIntent;
@@ -192,11 +189,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 } else {
                     Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
                 }
-                break;
-
-            case R.id.forgot_password_text_view:
-                Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-                startActivity(forgotPasswordIntent);
                 break;
 
             default:
@@ -310,5 +302,73 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
+
+    public class getMeAsyncTask extends AsyncTask<Void, Void, WhoAmIReply> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(LoginActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.show();
+        }
+
+        @Override
+        protected WhoAmIReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            SimpleRequest simpleRequest = new SimpleRequest();
+
+            simpleRequest.requestProperties = rp;
+
+            WhoAmIReply whoAmIReply;
+            try {
+                AuthServiceGrpc.AuthServiceBlockingStub stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+                whoAmIReply = stub.whoAmI(simpleRequest);
+                return whoAmIReply;
+            } catch (InterruptedException e) {
+                logE("Error getting user info. Error: " + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(WhoAmIReply whoAmI) {
+            super.onPostExecute(whoAmI);
+            progressDialog.dismiss();
+            if (whoAmI != null) {
+                logE("inja whoAmI is: " + whoAmI);
+                switch (whoAmI.replyProperties.statusCode) {
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        //TODO
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        //TODO
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO toast
+                        HonarnamaUser.logout(null);
+                        break;
+
+                    case ReplyProperties.OK:
+                        HonarnamaUser.setName(whoAmI.account.name);
+                        HonarnamaUser.setGender(whoAmI.account.gender);
+                        HonarnamaUser.setId(whoAmI.account.id);
+                        Intent intent = new Intent(LoginActivity.this, ControlPanelActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                }
+
+            } else {
+                //TODO toast
+            }
+        }
+    }
 
 }

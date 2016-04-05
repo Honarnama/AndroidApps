@@ -31,8 +31,6 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
     public MetaUpdater(Context context) {
         mContext = context;
         mSharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE);
-
-
     }
 
     @Override

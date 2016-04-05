@@ -9,6 +9,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CreateAccountReply;
 import net.honarnama.nano.CreateAccountRequest;
@@ -135,14 +136,15 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == mRegisterButton.getId()) {
-            signUserUpInParse();
+
+            signUserUp();
         }
         if (viewId == R.id.register_activate_with_email || viewId == R.id.register_activate_with_telegram) {
             changeMandatoryFieldsStarMarker();
         }
     }
 
-    private void signUserUpInParse() {
+    private void signUserUp() {
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return;
         }
@@ -156,24 +158,28 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 //            HonarnamaUser.logOut();
 //        }
 
+
+        //TODO pu it in asynctask tamae unaee ke tu UI hast bere toye pre exec
+
         final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);
         sendingDataProgressDialog.setCancelable(false);
         sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
         sendingDataProgressDialog.show();
 
+
         final int activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
 
         final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
-
+        createOrUpdateAccountRequest.account = new Account();
         if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
-            createOrUpdateAccountRequest.account.email =  mEmailAddressEditText.getText().toString().trim();
+            createOrUpdateAccountRequest.account.email = mEmailAddressEditText.getText().toString().trim();
         }
 
         createOrUpdateAccountRequest.account.mobileNumber = mMobileNumberEditText.getText().toString().trim();
         createOrUpdateAccountRequest.account.name = mNameEditText.getText().toString().trim();
         createOrUpdateAccountRequest.account.activationMethod = activationMethod;
 
-        int genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE: CreateAccountRequest.UNSPECIFIED);
+        int genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE : CreateAccountRequest.UNSPECIFIED);
         createOrUpdateAccountRequest.account.gender = genderCode;
 
         RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
@@ -183,7 +189,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         try {
             stub = GRPCUtils.getInstance().getAuthServiceGrpc();
         } catch (InterruptedException ie) {
-            logE("Error occured trying to send register request. Error:"+ ie);
+            logE("Error occured trying to send register request. Error:" + ie);
             Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
             return;
         }

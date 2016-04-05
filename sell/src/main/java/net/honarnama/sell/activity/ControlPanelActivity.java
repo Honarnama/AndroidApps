@@ -16,7 +16,7 @@ import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.loader.MetaUpdater;
 import net.honarnama.core.utils.CommonUtil;
-import net.honarnama.core.utils.HonarnamaUser;
+import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -592,29 +592,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_nav_title_exit_app:
-//                mWaitingProgressDialog.setMessage(getString(R.string.please_wait));
-//                mWaitingProgressDialog.setCancelable(false);
-//                mWaitingProgressDialog.show();
-                //TODO
-//                HonarnamaUser.logOutInBackground(new LogOutCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        if (e != null) {
-//                            logE("Error logging user out." + " Error Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                        }
-//                        if (mWaitingProgressDialog.isShowing()) {
-//                            mWaitingProgressDialog.dismiss();
-//                        }
-//
-//                        Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-//                        finish();
-//                        startActivity(intent);
-//                    }
-//                });
-                HonarnamaUser.logout();
-                Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
-                finish();
-                startActivity(intent);
+                HonarnamaUser.logout(ControlPanelActivity.this);
                 break;
 
         }

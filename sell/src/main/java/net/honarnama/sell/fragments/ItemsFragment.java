@@ -3,11 +3,9 @@ package net.honarnama.sell.fragments;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -16,7 +14,6 @@ import net.honarnama.sell.adapter.ItemsAdapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;

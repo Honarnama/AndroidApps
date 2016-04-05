@@ -3,27 +3,18 @@ package net.honarnama.sell.fragments;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.DeleteCallback;
-import com.parse.GetCallback;
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
-import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
-import net.honarnama.core.utils.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.ParseIO;
@@ -31,19 +22,13 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,9 +45,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;

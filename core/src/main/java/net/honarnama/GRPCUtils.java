@@ -71,11 +71,11 @@ public class GRPCUtils {
             rp.androidClientInfo.mccMnc = networkOperator;
         }
 
+        String loginToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, "");
+        rp.userAuthToken = loginToken;
+
         // TODO: rp.userLanguage;
         // TODO: rp.userCountry
-
-        // TODO: rp.userAuthToken
-
         // TODO: cache static values
 
         return rp;
@@ -84,7 +84,6 @@ public class GRPCUtils {
     // Not to be run in the UI thread
     public MetaReply getMetaData(long currentMetaVersion) {
         RequestProperties rp = newRPWithDeviceInfo();
-        // TODO: read current meta and extract the etag
         rp.ifNotMatchEtag = currentMetaVersion;
         SimpleRequest req = new SimpleRequest();
         req.requestProperties = rp;
@@ -117,5 +116,10 @@ public class GRPCUtils {
     public AuthServiceGrpc.AuthServiceBlockingStub getAuthServiceGrpc() {
         // TODO: cache
         return AuthServiceGrpc.newBlockingStub(mChannel);
+    }
+
+    public void processReplyProperties()
+    {
+        //TODO
     }
 }
