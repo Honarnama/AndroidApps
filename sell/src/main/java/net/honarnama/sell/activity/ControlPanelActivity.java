@@ -16,6 +16,7 @@ import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.loader.MetaUpdater;
 import net.honarnama.core.utils.CommonUtil;
+import net.honarnama.sell.fragments.StoreFragment;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
@@ -25,7 +26,6 @@ import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
-import net.honarnama.sell.fragments.StoreInfoFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
 
 import android.app.AlertDialog;
@@ -501,7 +501,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                                 .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_store);
                 menuItem.setIcon(storeDrawable);
-                fragment = StoreInfoFragment.getInstance();
+                fragment = StoreFragment.getInstance();
                 break;
 
             case R.id.item_items:

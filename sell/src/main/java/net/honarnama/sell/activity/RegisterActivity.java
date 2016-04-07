@@ -311,7 +311,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                 switch (createAccountReply.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:
-                        switch (ReplyProperties.CLIENT_ERROR) {
+                        switch (createAccountReply.errorCode) {
                             case CreateAccountReply.DUPLICATE_EMAIL:
                                 mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
                                 break;

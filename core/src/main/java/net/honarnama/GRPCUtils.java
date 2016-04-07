@@ -5,6 +5,7 @@ import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.MetaServiceGrpc;
 import net.honarnama.nano.MetaReply;
 import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SellServiceGrpc;
 import net.honarnama.nano.SimpleRequest;
 
 import android.app.Application;
@@ -114,6 +115,11 @@ public class GRPCUtils {
     public AuthServiceGrpc.AuthServiceBlockingStub getAuthServiceGrpc() {
         // TODO: cache
         return AuthServiceGrpc.newBlockingStub(mChannel);
+    }
+
+    public SellServiceGrpc.SellServiceBlockingStub getSellServiceGrpc() {
+        // TODO: cache
+        return SellServiceGrpc.newBlockingStub(mChannel);
     }
 
     public void processReplyProperties()
