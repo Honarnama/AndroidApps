@@ -174,7 +174,6 @@ message CreateAccountReply {
 message UpdateAccountReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
-    //If ReplyProperties.statusCode is client_error then  check below codes
     NO_CLIENT_ERROR = 0;
     ACCOUNT_NOT_FOUND = 1;
     FORBIDDEN = 2;
@@ -185,16 +184,9 @@ message UpdateAccountReply {
 /////////////////////////////////////////////////////////////////////////////
 service SellService {
 
-  rpc PrepareToUploadPhoto(UploadPhotoRequest) returns (UploadPhotoReply) {
+  rpc GetMyStore(SimpleRequest) returns (GetStoreReply) {
     option (google.api.http) = {
-      post: "/v1/prepare-to-upload-photo"
-      body: "*"
-    };
-  }
-
-  rpc GetStore(GetStoreRequest) returns (GetStoreReply) {
-    option (google.api.http) = {
-      get: "/v1/store/{id}"
+      get: "/v1/my-store"
     };
   }
   rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
@@ -245,28 +237,6 @@ enum ReviewStatus {
   APPROVED = 2;
 }
 
-/// Upload ------------------------------------------------
-enum ImageBucket {
-  STORE_LOGO = 0;
-  STORE_BANNER = 1;
-  ITEM_PICTURE = 2;
-}
-
-message UploadPhotoRequest {
-  RequestProperties requestProperties = 1;
-  ImageBucket bucket = 2;
-}
-message UploadPhotoReply {
-  ReplyProperties replyProperties = 1;
-  string uploadUrl = 2;
-  uint64 imageId = 3;
-}
-
-message ImageMetaData {
-  uint64 id = 1;
-  string url = 2;
-}
-
 /// Store -------------------------------------------------
 message Store {
   uint64 id = 1; // Will be ignored in create
@@ -276,8 +246,8 @@ message Store {
   string description = 5;
   string publicCellNumber = 6;
   string publicPhoneNumber = 7;
-  ImageMetaData logo = 8;
-  ImageMetaData banner = 9;
+  string logo = 8; // Just for gets
+  string banner = 9; // Just for gets
   ReviewStatus reviewStatus = 10; // Will be ignored in create and update
 }
 
@@ -299,6 +269,8 @@ message GetStoreReply {
 message CreateOrUpdateStoreRequest {
   RequestProperties requestProperties = 1;
   Store store = 2;
+  bool changingLogo = 3;
+  bool changingBanner = 4;
 }
 
 message CreateOrUpdateStoreReply {
@@ -311,12 +283,12 @@ message CreateOrUpdateStoreReply {
     INVALID_DESC = 4;
     INVALID_PUBLIC_CELL_NUMBRT = 5;
     INVALID_PUBLIC_PHONE_NUMBRT = 6;
-    INVALID_LOGO_IMAGE_ID = 7;
-    INVALID_BANNER_IMAGE_ID = 8;
-    ALREADY_CREATED = 9; // Only while creating
-    STORE_NOT_FOUND = 10; // Only while updating
+    ALREADY_CREATED = 7; // Only while creating
+    STORE_NOT_FOUND = 8; // Only while updating
   }
   ErrorCode errorCode = 2;
+  string logoUploadUrl = 3;
+  string bannerUploadUrl = 4;
 }
 
 /// Item --------------------------------------------------
@@ -328,7 +300,7 @@ message Item {
   string name = 5;
   string description = 6;
   uint64 price = 7;
-  repeated ImageMetaData images = 8;
+  repeated string images = 8; // Just for gets
   ReviewStatus reviewStatus = 9; // Will be ignored in create and update
 }
 
@@ -361,6 +333,7 @@ message GetItemReply {
 message CreateOrUpdateItemRequest {
   RequestProperties requestProperties = 1;
   Item item = 2;
+  repeated bool changingImage = 3;
 }
 
 message CreateOrUpdateItemReply {
@@ -375,6 +348,7 @@ message CreateOrUpdateItemReply {
     FORBIDDEN = 6; // for update
   }
   ErrorCode errorCode = 2;
+  repeated string imageUploadUrl = 3;
 }
 
 message DeleteItemReply {

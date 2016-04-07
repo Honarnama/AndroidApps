@@ -12,11 +12,9 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CreateAccountReply;
-import net.honarnama.nano.CreateAccountRequest;
 import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
-import net.honarnama.nano.UpdateAccountReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.model.HonarnamaUser;
@@ -238,11 +236,11 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         Intent intent = new Intent();
 
         switch (activationMethod) {
-            case CreateAccountRequest.EMAIL:
+            case Account.EMAIL:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
                 break;
 
-            case CreateAccountRequest.TELEGRAM:
+            case Account.TELEGRAM:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE, telegramCode);
                 break;
@@ -263,9 +261,9 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         protected void onPreExecute() {
             super.onPreExecute();
 
-            genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE : CreateAccountRequest.UNSPECIFIED);
+            genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             name = mNameEditText.getText().toString().trim();
-            activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
+            activationMethod = mActivateWithEmail.isChecked() ? Account.EMAIL : Account.TELEGRAM;
             if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
                 email = mEmailAddressEditText.getText().toString().trim();
             }

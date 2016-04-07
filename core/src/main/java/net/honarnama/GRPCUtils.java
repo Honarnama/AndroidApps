@@ -2,9 +2,7 @@ package net.honarnama;
 
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
-import net.honarnama.nano.EventCategory;
 import net.honarnama.nano.MetaServiceGrpc;
-import net.honarnama.nano.MetaRequest;
 import net.honarnama.nano.MetaReply;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SimpleRequest;

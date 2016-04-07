@@ -8,16 +8,10 @@ import net.honarnama.GRPCUtils;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
-import net.honarnama.nano.CreateAccountReply;
-import net.honarnama.nano.CreateAccountRequest;
 import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
-import net.honarnama.nano.SimpleRequest;
 import net.honarnama.nano.UpdateAccountReply;
-import net.honarnama.nano.WhoAmIReply;
-import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.sell.activity.LoginActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -180,7 +174,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         protected void onPreExecute() {
             super.onPreExecute();
 
-            genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE : CreateAccountRequest.UNSPECIFIED);
+            genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             name = mNameEditText.getText().toString().trim();
 
             progressDialog = new ProgressDialog(getActivity());
