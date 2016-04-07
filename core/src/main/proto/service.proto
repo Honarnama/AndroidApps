@@ -49,6 +49,12 @@ message SimpleRequest {
   RequestProperties requestProperties = 1;
 }
 
+message UploadInfo {
+  string bucketName = 1;
+  string key = 2;
+  string id = 3;
+}
+
 /// Meta --------------------------------------------------
 message Location {
   uint32 id = 1;
@@ -166,6 +172,7 @@ message CreateAccountReply {
     DUPLICATE_EMAIL = 2;
     INVALID_MOBILE_NUMBER = 3;
     DUPLICATE_MOBILE_NUMBER = 4;
+    EMPTY_ACCOUNT = 5;
   }
   ErrorCode errorCode = 2;
   string telegramActivationCode = 3;
@@ -177,6 +184,7 @@ message UpdateAccountReply {
     NO_CLIENT_ERROR = 0;
     ACCOUNT_NOT_FOUND = 1;
     FORBIDDEN = 2;
+    EMPTY_ACCOUNT = 3;
   }
   ErrorCode errorCode = 2;
 }
@@ -232,7 +240,7 @@ service SellService {
 }
 
 enum ReviewStatus {
-  NOT_REVIEW = 0;
+  NOT_REVIEWED = 0;
   CHANGES_NEEDED = 1;
   APPROVED = 2;
 }
@@ -285,10 +293,12 @@ message CreateOrUpdateStoreReply {
     INVALID_PUBLIC_PHONE_NUMBRT = 6;
     ALREADY_CREATED = 7; // Only while creating
     STORE_NOT_FOUND = 8; // Only while updating
+    EMPTY_STORE = 9;
   }
   ErrorCode errorCode = 2;
-  string logoUploadUrl = 3;
-  string bannerUploadUrl = 4;
+  uint64 id = 3;
+  UploadInfo logoUploadInfo = 4;
+  UploadInfo bannerUploadInfo = 5;
 }
 
 /// Item --------------------------------------------------
