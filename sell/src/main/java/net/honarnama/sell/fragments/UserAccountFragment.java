@@ -215,7 +215,9 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         @Override
         protected void onPostExecute(UpdateAccountReply updateAccountReply) {
             super.onPostExecute(updateAccountReply);
-            progressDialog.dismiss();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             if (updateAccountReply != null) {
                 logE("inja updateAccountReply is: " + updateAccountReply);
                 switch (updateAccountReply.replyProperties.statusCode) {
@@ -256,6 +258,4 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             }
         }
     }
-
-
 }

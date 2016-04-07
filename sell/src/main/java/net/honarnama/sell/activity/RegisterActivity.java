@@ -16,8 +16,10 @@ import net.honarnama.nano.CreateAccountRequest;
 import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.UpdateAccountReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -33,6 +35,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by elnaz on 2/13/16.
@@ -158,72 +162,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 //            HonarnamaUser.logOut();
 //        }
 
-
-        //TODO pu it in asynctask tamae unaee ke tu UI hast bere toye pre exec
-
-        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(RegisterActivity.this);
-        sendingDataProgressDialog.setCancelable(false);
-        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
-        sendingDataProgressDialog.show();
-
-
-        final int activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
-
-        final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
-        createOrUpdateAccountRequest.account = new Account();
-        if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
-            createOrUpdateAccountRequest.account.email = mEmailAddressEditText.getText().toString().trim();
-        }
-
-        createOrUpdateAccountRequest.account.mobileNumber = mMobileNumberEditText.getText().toString().trim();
-        createOrUpdateAccountRequest.account.name = mNameEditText.getText().toString().trim();
-        createOrUpdateAccountRequest.account.activationMethod = activationMethod;
-
-        int genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE : CreateAccountRequest.UNSPECIFIED);
-        createOrUpdateAccountRequest.account.gender = genderCode;
-
-        RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-        createOrUpdateAccountRequest.requestProperties = rp;
-
-        AuthServiceGrpc.AuthServiceBlockingStub stub;
-        try {
-            stub = GRPCUtils.getInstance().getAuthServiceGrpc();
-        } catch (InterruptedException ie) {
-            logE("Error occured trying to send register request. Error:" + ie);
-            Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        CreateAccountReply createOrUpdateAccountReply = stub.createAccount(createOrUpdateAccountRequest);
-
-        sendingDataProgressDialog.dismiss();
-
-        if (createOrUpdateAccountReply.replyProperties.statusCode == ReplyProperties.OK) {
-            sendUserBackToCallingActivity(activationMethod, createOrUpdateAccountReply.telegramActivationCode);
-        } else if (createOrUpdateAccountReply.replyProperties.statusCode == ReplyProperties.SERVER_ERROR) {
-
-        } else {
-            switch (createOrUpdateAccountReply.errorCode) {
-                case CreateAccountReply.DUPLICATE_EMAIL:
-                    mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
-                    break;
-                case CreateAccountReply.INVALID_EMAIL:
-                    mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
-                    break;
-                case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
-                    mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
-                    break;
-                case CreateAccountReply.INVALID_MOBILE_NUMBER:
-                    mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
-                    break;
-            }
-
-            Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
-            logE("Sign-up Failed. errorCode: " + createOrUpdateAccountReply.errorCode +
-                    " // statusCode: " + createOrUpdateAccountReply.replyProperties.statusCode +
-                    " // Error Msg: " + createOrUpdateAccountReply.replyProperties.errorMessage);
-        }
-
+        new CreateAccountAsync().execute();
     }
 
     private void changeMandatoryFieldsStarMarker() {
@@ -311,5 +250,105 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    public class CreateAccountAsync extends AsyncTask<Void, Void, CreateAccountReply> {
+        ProgressDialog progressDialog;
+        String name;
+        int genderCode;
+        int activationMethod;
+        String email;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            genderCode = mGenderWoman.isChecked() ? CreateAccountRequest.FEMALE : (mGenderMan.isChecked() ? CreateAccountRequest.MALE : CreateAccountRequest.UNSPECIFIED);
+            name = mNameEditText.getText().toString().trim();
+            activationMethod = mActivateWithEmail.isChecked() ? CreateAccountRequest.EMAIL : CreateAccountRequest.TELEGRAM;
+            if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
+                email = mEmailAddressEditText.getText().toString().trim();
+            }
+
+            progressDialog = new ProgressDialog(RegisterActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.show();
+        }
+
+        @Override
+        protected CreateAccountReply doInBackground(Void... voids) {
+            final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
+            createOrUpdateAccountRequest.account = new Account();
+
+            createOrUpdateAccountRequest.account.mobileNumber = mMobileNumberEditText.getText().toString().trim();
+            createOrUpdateAccountRequest.account.name = mNameEditText.getText().toString().trim();
+            createOrUpdateAccountRequest.account.activationMethod = activationMethod;
+            createOrUpdateAccountRequest.account.email = email;
+            createOrUpdateAccountRequest.account.gender = genderCode;
+
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            createOrUpdateAccountRequest.requestProperties = rp;
+
+            AuthServiceGrpc.AuthServiceBlockingStub stub;
+            try {
+                stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+            } catch (InterruptedException ie) {
+                logE("Error occured trying to send register request. Error:" + ie);
+                return null;
+            }
+
+            CreateAccountReply createAccountReply = stub.createAccount(createOrUpdateAccountRequest);
+            return createAccountReply;
+        }
+
+        @Override
+        protected void onPostExecute(CreateAccountReply createAccountReply) {
+            super.onPostExecute(createAccountReply);
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (createAccountReply != null) {
+                logE("inja createAccountReply is: " + createAccountReply);
+                switch (createAccountReply.replyProperties.statusCode) {
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (ReplyProperties.CLIENT_ERROR) {
+                            case CreateAccountReply.DUPLICATE_EMAIL:
+                                mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
+                                break;
+                            case CreateAccountReply.INVALID_EMAIL:
+                                mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
+                                break;
+                            case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
+                                mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
+                                break;
+                            case CreateAccountReply.INVALID_MOBILE_NUMBER:
+                                mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
+                                break;
+                        }
+                        Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+                        logE("Sign-up Failed. errorCode: " + createAccountReply.errorCode +
+                                " // statusCode: " + createAccountReply.replyProperties.statusCode +
+                                " // Error Msg: " + createAccountReply.replyProperties.errorMessage);
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        //TODO
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO toast
+                        HonarnamaUser.logout(RegisterActivity.this);
+                        break;
+
+                    case ReplyProperties.OK:
+                        sendUserBackToCallingActivity(activationMethod, createAccountReply.telegramActivationCode);
+                        break;
+                }
+            } else {
+                //TODO toast
+            }
+        }
     }
 }

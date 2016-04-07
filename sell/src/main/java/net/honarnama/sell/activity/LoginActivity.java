@@ -337,7 +337,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         @Override
         protected void onPostExecute(WhoAmIReply whoAmI) {
             super.onPostExecute(whoAmI);
-            progressDialog.dismiss();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             if (whoAmI != null) {
                 logE("inja whoAmI is: " + whoAmI);
                 switch (whoAmI.replyProperties.statusCode) {
