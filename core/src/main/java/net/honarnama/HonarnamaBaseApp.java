@@ -59,6 +59,8 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String PREF_KEY_BROWSE_APP_RATED = "browse_app_rated";
     public static final String PREF_KEY_SELL_APP_RATED = "sell_app_rated";
     public static final String PREF_KEY_LOGIN_TOKEN = "login_token";
+    public static final String PREF_KEY_TELEGRAM_TOKEN = "telegram_token";
+    public static final String PREF_KEY_TELEGRAM_TOKEN_SET_DATE = "telegram_token_set_date";
 
     public static File APP_FOLDER;
     public static File APP_IMAGES_FOLDER;

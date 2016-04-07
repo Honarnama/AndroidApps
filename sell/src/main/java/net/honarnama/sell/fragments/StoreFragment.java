@@ -14,12 +14,12 @@ import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Province;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.core.utils.ParseIO;
-import net.honarnama.nano.AuthServiceGrpc;
+import net.honarnama.nano.CreateOrUpdateStoreReply;
+import net.honarnama.nano.CreateOrUpdateStoreRequest;
 import net.honarnama.nano.GetStoreReply;
 import net.honarnama.nano.HonarnamaProto;
 import net.honarnama.nano.LocationId;
@@ -27,7 +27,6 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
 import net.honarnama.nano.SimpleRequest;
-import net.honarnama.nano.WhoAmIReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
@@ -63,7 +62,6 @@ import java.util.TreeMap;
 
 import bolts.Continuation;
 import bolts.Task;
-import bolts.TaskCompletionSource;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
@@ -109,6 +107,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private Tracker mTracker;
 
     public boolean mIsNew = true;
+    private long mStoreId = -1;
 
     @Override
     public String getTitle(Context context) {
@@ -259,7 +258,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     mSendingDataProgressDialog.setCancelable(false);
                     mSendingDataProgressDialog.setMessage(getString(R.string.sending_data));
                     mSendingDataProgressDialog.show();
-                    uploadStoreLogo();
+
+                    new CreateOrUpdateStoreAsync().execute();
                 }
                 break;
             case R.id.store_province_edit_text:
@@ -483,7 +483,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
 
         if (!mBannerImageView.isChanged() || mBannerImageView.getFinalImageUri() == null) {
-            saveStore();
+//            saveStore();
             return;
         }
         final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
@@ -493,7 +493,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mParseFileBanner.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        saveStore();
+//                        saveStore();
 //                        try {
 //                            ParseIO.copyFile(storeBannerImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_BANNER_FILE_NAME));
 //                        } catch (IOException e1) {
@@ -525,7 +525,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
 
-    private void saveStore() {
+    private void saveStore_() {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
             mSendingDataProgressDialog.dismiss();
@@ -638,29 +638,28 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     private void setStoreInfo(GetStoreReply getStoreReply) {
-
-
-        final Province provinces = new Province();
-        final City city = new City();
-
         net.honarnama.nano.Store store = getStoreReply.store;
 
         if (store != null) {
             mNameEditText.setText(store.name);
             mDescriptionEditText.setText(store.description);
 
+            mStoreId = store.id;
+
             mPhoneNumberEditText.setText(store.publicPhoneNumber);
             mCellNumberEditText.setText(store.publicCellNumber);
 
             LocationId storeLocation = store.locationId;
-//            mSelectedProvinceId = ...
-//            mSelectedCityId = store.getCity().getObjectId();
-//
-//            mCityEditEext.setText(getString(R.string.getting_information));
-//            mProvinceEditEext.setText(getString(R.string.getting_information));
+            City city = City.getCityById(storeLocation.cityId);
+            Province province = Province.getProvinceById(storeLocation.provinceId);
 
+            mCityEditEext.setText(city.getName());
+            mSelectedCityId = city.getId();
 
-            if (store.reviewStatus == HonarnamaProto.NOT_REVIEW) {
+            mProvinceEditEext.setText(province.getName());
+            mSelectedProvinceId = province.getId();
+
+            if (store.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
                 mStatusBarTextView.setVisibility(View.VISIBLE);
             }
 
@@ -669,6 +668,28 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mStatusBarTextView.setVisibility(View.VISIBLE);
                 mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
             }
+
+            new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
+                @Override
+                public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
+                    if (task.isFaulted()) {
+                        //TODO
+                    } else {
+                        mProvinceObjectsTreeMap = task.getResult();
+                        for (Province province : mProvinceObjectsTreeMap.values()) {
+                            if (mSelectedProvinceId < 0) {
+                                mSelectedProvinceId = province.getId();
+                                mSelectedProvinceName = province.getName();
+                            }
+                            mProvincesHashMap.put(province.getId(), province.getName());
+                        }
+                        mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    }
+                    return null;
+                }
+            });
+
+
 
             mLogoProgressBar.setVisibility(View.VISIBLE);
             //TODO load logo
@@ -780,6 +801,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getStoreReply.errorCode) {
                             case GetStoreReply.STORE_NOT_FOUND:
+                                mIsNew = true;
                                 logE("inja Store not found");
                                 break;
 
@@ -800,6 +822,120 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.OK:
                         setStoreInfo(getStoreReply);
+                        break;
+                }
+
+            } else {
+                //TODO toast
+            }
+        }
+    }
+
+
+    public class CreateOrUpdateStoreAsync extends AsyncTask<Void, Void, CreateOrUpdateStoreReply> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected CreateOrUpdateStoreReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            SimpleRequest simpleRequest = new SimpleRequest();
+
+            simpleRequest.requestProperties = rp;
+
+            CreateOrUpdateStoreRequest createOrUpdateStoreRequest = new CreateOrUpdateStoreRequest();
+            createOrUpdateStoreRequest.store = new net.honarnama.nano.Store();
+            createOrUpdateStoreRequest.store.name = mNameEditText.getText().toString().trim();
+            createOrUpdateStoreRequest.store.description = mDescriptionEditText.getText().toString().trim();
+            createOrUpdateStoreRequest.store.publicPhoneNumber = mPhoneNumberEditText.getText().toString().trim();
+            createOrUpdateStoreRequest.store.publicCellNumber = mCellNumberEditText.getText().toString().trim();
+            //TODO set location
+
+
+            CreateOrUpdateStoreReply createOrUpdateStoreReply;
+            try {
+                SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
+
+                if (mStoreId > 0) {
+                    createOrUpdateStoreRequest.store.id = mStoreId;
+                    createOrUpdateStoreReply = stub.updateStore(createOrUpdateStoreRequest);
+                } else {
+                    createOrUpdateStoreReply = stub.createStore(createOrUpdateStoreRequest);
+                }
+
+                return createOrUpdateStoreReply;
+            } catch (InterruptedException e) {
+                logE("Error getting user info. Error: " + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(CreateOrUpdateStoreReply createOrUpdateStoreReply) {
+            super.onPostExecute(createOrUpdateStoreReply);
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (createOrUpdateStoreReply != null) {
+                logE("inja createOrUpdateStoreReply is: " + createOrUpdateStoreReply);
+                switch (createOrUpdateStoreReply.replyProperties.statusCode) {
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (createOrUpdateStoreReply.errorCode) {
+                            case CreateOrUpdateStoreReply.INVALID_OWNER:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.INVALID_NAME:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.INVALID_DESC:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.INVALID_LOCATION:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.INVALID_PUBLIC_PHONE_NUMBRT:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.INVALID_PUBLIC_CELL_NUMBRT:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.ALREADY_CREATED:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.STORE_NOT_FOUND:
+                                //TODO
+                                break;
+                            case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
+                                //TODO bug report
+                                break;
+                        }
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        //TODO
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO toast
+                        HonarnamaUser.logout(getActivity());
+                        break;
+
+                    case ReplyProperties.OK:
+                        mIsNew = false;
+                        mStoreId = createOrUpdateStoreReply.id;
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_SHORT).show();
+                        }
                         break;
                 }
 

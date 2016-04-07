@@ -3,12 +3,6 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.GetCallback;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -19,18 +13,19 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SimpleRequest;
 import net.honarnama.nano.WhoAmIReply;
-import net.honarnama.sell.model.HonarnamaUser;
-import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +33,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -53,6 +50,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private ProgressDialog mLoadingDialog;
     private TextView mForgotPasswordTextView;
     private LinearLayout mTelegramLoginContainer;
+
+    ProgressDialog mProgressDialog;
 
     private Tracker mTracker;
 
@@ -94,7 +93,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
     private void showLoadingDialog() {
         if (mLoadingDialog == null || !mLoadingDialog.isShowing()) {
-            mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.login_dialog_text), false);
+            mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.please_wait), false);
             mLoadingDialog.setCancelable(false);
         }
     }
@@ -120,35 +119,13 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         if (data != null) {
             final String loginToken = data.getQueryParameter("token"); //login with email
-            final String telegramToken = data.getQueryParameter("telegramToken"); // login with telegram
             final String register = data.getQueryParameter("register");
             if (BuildConfig.DEBUG) {
-                logD("token= " + loginToken + ", telegramToken= " + telegramToken + ", register= " + register);
+                logD("token= " + loginToken + ", register= " + register);
             }
             if (loginToken != null && loginToken.length() > 0) {
                 HonarnamaUser.login(loginToken);
                 gotoControlPanel();
-            } else if (telegramToken != null && telegramToken.length() > 0) {
-                showLoadingDialog();
-                HonarnamaUser.telegramLogInInBackground(telegramToken, new LogInCallback() {
-                    @Override
-                    public void done(ParseUser parseUser, ParseException e) {
-                        if (e == null) {
-                            parseUser.fetchInBackground(new GetCallback<ParseObject>() {
-                                @Override
-                                public void done(ParseObject object, ParseException e) {
-                                    hideLoadingDialog();
-                                    gotoControlPanel();
-                                }
-                            });
-
-                        } else {
-                            hideLoadingDialog();
-                            logE("Error while logging in using token. " + " // telegramToken= " + telegramToken + " // Error: " + e, "", e);
-                            Toast.makeText(LoginActivity.this, getString(R.string.error_login_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
             } else if ("true".equals(register)) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(registerIntent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
@@ -181,68 +158,39 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 startActivity(forgotPasswordIntent);
                 break;
             case R.id.telegram_login_container:
-                Intent telegramIntent;
-                telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
 
-                if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(telegramIntent);
+                String telegramToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
+
+                if (!TextUtils.isEmpty(telegramToken)) {
+                    long millis = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0L);
+                    long diff = (new Date().getTime()) - millis;
+
+                    long seconds = diff / 1000;
+                    long minutes = seconds / 60;
+                    long hours = minutes / 60;
+
+                    if (minutes < 24 * 60) {
+                        ((TextView) findViewById(R.id.telegram_login_text_view)).setText(getString(R.string.telegram_activation_dialog_title));
+                        showTelegramActivationDialog(telegramToken);
+                    } else {
+                        unsetTelegramTempInfo();
+                    }
                 } else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
+                    Intent telegramIntent;
+                    telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
+
+                    if (telegramIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(telegramIntent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
+                    }
                 }
+
                 break;
 
             default:
                 break;
         }
-    }
-
-    private void signUserIn() {
-        String username = mUsernameEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
-
-        if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
-            return;
-        }
-
-        if (username.trim().length() == 0) {
-            mUsernameEditText.requestFocus();
-            mUsernameEditText.setError(getString(R.string.error_login_username_is_empty));
-            return;
-        }
-
-        if (password.trim().length() == 0) {
-            mPasswordEditText.requestFocus();
-            mPasswordEditText.setError(getString(R.string.error_register_password_is_empty));
-            return;
-        }
-
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setMessage(getString(R.string.sending_data));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            public void done(final ParseUser user, ParseException e) {
-                if (user != null) {
-                    user.fetchInBackground(new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject object, ParseException e) {
-//                            user.pinInBackground();
-                            progressDialog.dismiss();
-                            gotoControlPanel();
-                        }
-                    });
-
-                } else {
-                    progressDialog.dismiss();
-                    // Signup failed. Look at the ParseException to see what happened.
-                    logE("logInInBackground Failed. Code: " + e.getCode() + " // Msg: " + e.getMessage(), "", e);
-                    mMessageContainer.setVisibility(View.VISIBLE);
-                    mLoginMessageTextView.setText(getString(R.string.error_login_invalid_user_or_password));
-//                    mResendActivationLinkButton.setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     @Override
@@ -251,7 +199,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
-
+        dismissProgressDialog();
     }
 
     private void showTelegramActivationDialog(final String activationCode) {
@@ -294,7 +242,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             }
 
             if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
-                //finish();
+                unsetTelegramTempInfo();
                 gotoControlPanel();
             }
         }
@@ -304,16 +252,18 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
 
     public class getMeAsyncTask extends AsyncTask<Void, Void, WhoAmIReply> {
-        ProgressDialog progressDialog;
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.show();
+            if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(LoginActivity.this);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.setMessage(getString(R.string.please_wait));
+            }
+            mProgressDialog.show();
         }
 
         @Override
@@ -337,9 +287,12 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         @Override
         protected void onPostExecute(WhoAmIReply whoAmI) {
             super.onPostExecute(whoAmI);
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
+
+            if (!LoginActivity.this.isFinishing()) { // or call isFinishing() if min sdk version < 17
+                //TODO add this to other async task too
+                dismissProgressDialog();
             }
+
             if (whoAmI != null) {
                 logE("inja whoAmI is: " + whoAmI);
                 switch (whoAmI.replyProperties.statusCode) {
@@ -370,6 +323,19 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             } else {
                 //TODO toast
             }
+        }
+    }
+
+    public void unsetTelegramTempInfo() {
+        SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+        editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
+        editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0);
+        editor.commit();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 

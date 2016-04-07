@@ -386,7 +386,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private void showLoadingDialog() {
         if (mLoadingDialog == null || !mLoadingDialog.isShowing()) {
-            mLoadingDialog = ProgressDialog.show(getActivity(), "", getString(R.string.login_dialog_text), false);
+            mLoadingDialog = ProgressDialog.show(getActivity(), "", getString(R.string.please_wait), false);
             mLoadingDialog.setCancelable(false);
         }
     }

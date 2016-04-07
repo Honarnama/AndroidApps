@@ -24,6 +24,7 @@ public class HonarnamaUser {
     private static String Name;
     private static int Gender;
     private static long Id;
+    private static String TelegramToken;
 
     public static void login(String token) {
         SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
@@ -69,20 +70,8 @@ public class HonarnamaUser {
         Id = id;
     }
 
-
-    public static void telegramLogInInBackground(String token, final LogInCallback logInCallback) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("token", token);
-        ParseCloud.callFunctionInBackground("telegramLogin", params, new FunctionCallback<String>() {
-            @Override
-            public void done(String sessionToken, ParseException e) {
-                if (e == null && (sessionToken != null)) {
-                    ParseUser.becomeInBackground(sessionToken, logInCallback);
-                } else {
-                    logInCallback.done(null, e);
-                }
-            }
-        });
+    public static void setTelegramToken(String telegramToken) {
+        TelegramToken = telegramToken;
     }
 
     public static ActivationMethod getActivationMethod() {

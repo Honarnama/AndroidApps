@@ -22,6 +22,7 @@ import net.honarnama.sell.model.HonarnamaUser;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -33,6 +34,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -243,6 +246,13 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             case Account.TELEGRAM:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE, telegramCode);
+
+                SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+                editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, telegramCode);
+                Date currentDate = new Date();
+                editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, currentDate.getTime());
+                editor.commit();
+
                 break;
         }
 
@@ -252,10 +262,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
     public class CreateAccountAsync extends AsyncTask<Void, Void, CreateAccountReply> {
         ProgressDialog progressDialog;
-        String name;
+        String name = "";
         int genderCode;
         int activationMethod;
-        String email;
+        String email = "";
 
         @Override
         protected void onPreExecute() {
