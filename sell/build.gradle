@@ -13,6 +13,10 @@ android {
         versionName "0.9"
     }
     buildTypes {
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
+        }
         release {
             minifyEnabled true
             shrinkResources true
@@ -30,6 +34,10 @@ dependencies {
 //    compile('com.mikepenz:materialdrawer:4.4.6@aar') {
 //        transitive = true
 //    }
+
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.14'
+    compile 'com.amazonaws:aws-android-sdk-cognito:2+'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.14'
 }
 
 apply plugin: 'com.google.gms.google-services'

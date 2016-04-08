@@ -26,3 +26,4 @@
 -keep class **.R$* {
     <fields>;
 }
+
