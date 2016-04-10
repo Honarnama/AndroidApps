@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.logging.Level;
+
 /**
  * Created by reza on 7/23/15.
  */
@@ -24,7 +26,17 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG && !announced) {
             Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Activity created,\tadb catlog tag:   'Honarnama/" + getLocalClassName() + ":V'");
             announced = true;
+
+            //TODO
+            java.util.logging.Logger.getLogger("org.apache.http").setLevel(Level.FINEST);
+            System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+            System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+            System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
+            System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "debug");
+            System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "debug");
+
         }
+
     }
 
     String getDebugTag() {

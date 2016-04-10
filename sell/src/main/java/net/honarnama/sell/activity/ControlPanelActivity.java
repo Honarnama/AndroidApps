@@ -58,6 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
+import java.util.logging.Level;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements View.OnClickListener {
 
@@ -93,6 +94,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);

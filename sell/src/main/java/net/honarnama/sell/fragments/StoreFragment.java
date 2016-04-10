@@ -690,8 +690,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mNameEditText.setText(store.name);
             mDescriptionEditText.setText(store.description);
 
-            logE("inja Store ID is " + mStoreId);
-
             mPhoneNumberEditText.setText(store.publicPhoneNumber);
             mCellNumberEditText.setText(store.publicCellNumber);
 
@@ -830,9 +828,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 dismissProgressDialog();
             }
             if (getStoreReply != null) {
-                logE("inja getStoreReply is: " + getStoreReply);
                 switch (getStoreReply.replyProperties.statusCode) {
 
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        //TODO
+                        break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getStoreReply.errorCode) {
                             case GetStoreReply.STORE_NOT_FOUND:
@@ -930,9 +930,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             super.onPostExecute(createOrUpdateStoreReply);
 
             if (createOrUpdateStoreReply != null) {
-                logE("inja createOrUpdateStoreReply is: " + createOrUpdateStoreReply);
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
 
+                    //TODO upgrade needed
                     case ReplyProperties.CLIENT_ERROR:
                         if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
                             dismissProgressDialog();
@@ -940,9 +940,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
                                 //TODO bug report
-                                break;
-
-                            case CreateOrUpdateStoreReply.NOT_ALLOWED:
                                 break;
 
                             case CreateOrUpdateStoreReply.DUPLICATE_NAME:

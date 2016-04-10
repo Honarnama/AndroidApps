@@ -31,13 +31,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:recyclerview-v7:23.2.0'
     compile 'com.makeramen:roundedimageview:2.1.2'
-//    compile('com.mikepenz:materialdrawer:4.4.6@aar') {
-//        transitive = true
-//    }
-
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.14'
-    compile 'com.amazonaws:aws-android-sdk-cognito:2+'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.14'
 }
 
 apply plugin: 'com.google.gms.google-services'
