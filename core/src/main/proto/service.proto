@@ -50,11 +50,6 @@ message SimpleRequest {
   RequestProperties requestProperties = 1;
 }
 
-message UploadInfo {
-  string url = 1;
-  string uploadId = 2;
-}
-
 /// Meta --------------------------------------------------
 message Location {
   uint32 id = 1;
@@ -292,8 +287,8 @@ message CreateOrUpdateStoreReply {
   }
   ErrorCode errorCode = 2;
   Store uptodateStore = 3;
-  UploadInfo logoUploadInfo = 4;
-  UploadInfo bannerUploadInfo = 5;
+  string logoModificationUrl = 4;
+  string bannerModificationUrl = 5;
 }
 
 /// Item --------------------------------------------------
@@ -356,7 +351,7 @@ message CreateOrUpdateItemReply {
   }
   ErrorCode errorCode = 2;
   Item uptodateItem = 3;
-  repeated string imageUploadUrl = 4;
+  repeated string imageModificationUrl = 4;
 }
 
 message DeleteItemReply {
