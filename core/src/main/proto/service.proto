@@ -36,6 +36,7 @@ message ReplyProperties {
     CLIENT_ERROR = 2;
     SERVER_ERROR = 3;
     NOT_AUTHORIZED = 4;
+    UPGRADE_REQUIRED = 5;
   }
   StatusCode statusCode = 1;
   uint32 maxAgeMinutes = 2;
@@ -50,9 +51,8 @@ message SimpleRequest {
 }
 
 message UploadInfo {
-  string bucketName = 1;
-  string key = 2;
-  string id = 3;
+  string url = 1;
+  string uploadId = 2;
 }
 
 /// Meta --------------------------------------------------
