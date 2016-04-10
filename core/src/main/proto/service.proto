@@ -50,6 +50,12 @@ message SimpleRequest {
   RequestProperties requestProperties = 1;
 }
 
+enum RemoteFileActions {
+  NOOP = 0;
+  PUT = 1;
+  DELETE = 2;
+}
+
 /// Meta --------------------------------------------------
 message Location {
   uint32 id = 1;
@@ -272,8 +278,8 @@ message GetStoreReply {
 message CreateOrUpdateStoreRequest {
   RequestProperties requestProperties = 1;
   Store store = 2;
-  bool changingLogo = 3;
-  bool changingBanner = 4;
+  RemoteFileActions changingLogo = 3;
+  RemoteFileActions changingBanner = 4;
 }
 
 message CreateOrUpdateStoreReply {
@@ -333,7 +339,7 @@ message GetItemReply {
 message CreateOrUpdateItemRequest {
   RequestProperties requestProperties = 1;
   Item item = 2;
-  repeated bool changingImage = 3;
+  repeated RemoteFileActions changingImage = 3;
 }
 
 message CreateOrUpdateItemReply {
