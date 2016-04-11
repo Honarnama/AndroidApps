@@ -1,7 +1,6 @@
 package net.honarnama.browse.adapter;
 
 import com.parse.ImageSelector;
-import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -12,7 +11,6 @@ import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,19 +101,19 @@ public class ItemsAdapter extends BaseAdapter {
 //                        }
 //                    });
 //        } else {
-            Picasso.with(mContext).load(R.drawable.camera_insta)
-                    .error(R.drawable.camera_insta)
-                    .into(mViewHolder.icon, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                        }
+        Picasso.with(mContext).load(R.drawable.camera_insta)
+                .error(R.drawable.camera_insta)
+                .into(mViewHolder.icon, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                    }
 
-                        @Override
-                        public void onError() {
-                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                        }
-                    });
+                    @Override
+                    public void onError() {
+                        mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                    }
+                });
 //        }
         return convertView;
 

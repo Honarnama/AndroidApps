@@ -2,24 +2,19 @@ package net.honarnama.sell.utils;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-
-import net.honarnama.nano.UploadInfo;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
-import okio.BufferedSink;
 
 
 /**
@@ -27,12 +22,14 @@ import okio.BufferedSink;
  */
 public class AwsUploader {
     File mFile;
-    UploadInfo mUploadInfo;
+    String mUploadUrl;
     TaskCompletionSource<Void> mTcs;
 
-    public AwsUploader(File file, UploadInfo uploadInfo) {
+    public AwsUploader(File file, String uploadUrl) {
         mFile = file;
-        mUploadInfo = uploadInfo;
+        mUploadUrl = uploadUrl;
+
+        Log.e("inja", "mUploadUrl is: " + mUploadUrl);
         mTcs = new TaskCompletionSource<>();
     }
 
@@ -62,10 +59,10 @@ public class AwsUploader {
                 Log.e("inja", "requestBody=" + requestBody.toString());
 
                 final Request request = new Request.Builder()
-                        .url(mUploadInfo.url)
+                        .url(mUploadUrl)
                         .put(requestBody)
                         .header("Content-Type", MEDIA_TYPE_JPEG.toString())
-                        .header("Host", Uri.parse(mUploadInfo.url).getHost())
+                        .header("Host", Uri.parse(mUploadUrl).getHost())
                         .build();
                 Log.e("inja", "request=" + request.toString());
                 Log.e("inja", "headers=" + request.headers());

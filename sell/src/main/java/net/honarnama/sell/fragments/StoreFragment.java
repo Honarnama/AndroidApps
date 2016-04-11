@@ -7,6 +7,8 @@ import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.core.adapter.CityAdapter;
@@ -735,6 +737,21 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 //                                }
 //                            }
 //                        });
+
+                Picasso.with(getActivity()).load(store.logo)
+                        .error(R.drawable.default_logo_hand)
+                        .into(mLogoImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                mLogoProgressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                mLogoProgressBar.setVisibility(View.GONE);
+                            }
+                        });
+
             }
             //TODO load banner
 
@@ -755,6 +772,20 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 //                                }
 //                            }
 //                        });
+
+                Picasso.with(getActivity()).load(store.banner)
+                        .error(R.drawable.party_flags)
+                        .into(mBannerImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                mBannerProgressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                mBannerProgressBar.setVisibility(View.GONE);
+                            }
+                        });
             }
         } else {
             resetFields();
@@ -824,7 +855,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         protected void onPostExecute(GetStoreReply getStoreReply) {
             super.onPostExecute(getStoreReply);
             if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                //TODO add this to other async task too
                 dismissProgressDialog();
             }
             if (getStoreReply != null) {
@@ -900,11 +930,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest.store.id = mStoreId;
 
             if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
-                createOrUpdateStoreRequest.changingLogo = true;
+                createOrUpdateStoreRequest.changingLogo = HonarnamaProto.PUT;
             }
 
             if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
-                createOrUpdateStoreRequest.changingBanner = true;
+                createOrUpdateStoreRequest.changingBanner = HonarnamaProto.PUT;
             }
 
             CreateOrUpdateStoreReply createOrUpdateStoreReply;
@@ -929,6 +959,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         protected void onPostExecute(final CreateOrUpdateStoreReply createOrUpdateStoreReply) {
             super.onPostExecute(createOrUpdateStoreReply);
 
+            logE("inja", "createOrUpdateStoreReply is " + createOrUpdateStoreReply);
             if (createOrUpdateStoreReply != null) {
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
 
@@ -976,7 +1007,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.OK:
                         setStoreInfo(createOrUpdateStoreReply.uptodateStore, true);
 
-                        if (createOrUpdateStoreReply.bannerUploadInfo == null && createOrUpdateStoreReply.logoUploadInfo == null) {
+                        if (createOrUpdateStoreReply.bannerModificationUrl == null && createOrUpdateStoreReply.logoModificationUrl == null) {
                             if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
                                 dismissProgressDialog();
                             }
@@ -986,14 +1017,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         }
 
                         ArrayList<Task<Void>> tasks = new ArrayList<>();
-                        if (createOrUpdateStoreReply.bannerUploadInfo != null && mBannerImageView.getFinalImageUri() != null) {
+                        if (createOrUpdateStoreReply.bannerModificationUrl != null && mBannerImageView.getFinalImageUri() != null) {
                             final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
-                            final AwsUploader aws = new AwsUploader(storeBannerImageFile, createOrUpdateStoreReply.bannerUploadInfo);
+                            final AwsUploader aws = new AwsUploader(storeBannerImageFile, createOrUpdateStoreReply.bannerModificationUrl);
                             tasks.add(aws.upload());
                         }
-                        if (createOrUpdateStoreReply.logoUploadInfo != null && mLogoImageView.getFinalImageUri() != null) {
+                        if (createOrUpdateStoreReply.logoModificationUrl != null && mLogoImageView.getFinalImageUri() != null) {
                             final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
-                            final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoUploadInfo);
+                            final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
                             tasks.add(aws.upload());
                         }
 
