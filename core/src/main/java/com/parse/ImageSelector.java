@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,9 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import bolts.Continuation;
-import bolts.Task;
 
 
 public class ImageSelector extends RoundedImageView implements View.OnClickListener {
@@ -63,21 +59,30 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mTempImageUriCrop;
     private Uri mFinalImageUri;
 
-    private File mFile;
     private boolean mChanged = false;
-    private boolean mImageIsLoaded = false;
+    private boolean mLoaded = false;
 
     private static boolean announced = false;
 
-    public boolean mIsDeleted;
+    public boolean mDeleted;
 
-
-    public boolean getImageIsLoaded() {
-        return mImageIsLoaded;
+    public boolean isFileSet() {
+        return mFileSet;
     }
 
-    public void setImageIsLoaded(boolean imageIsLoaded) {
-        mImageIsLoaded = imageIsLoaded;
+    public void setFileSet(boolean fileSet) {
+        mFileSet = fileSet;
+    }
+
+    private boolean mFileSet;
+
+
+    public boolean getLoaded() {
+        return mLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        mLoaded = loaded;
     }
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -150,7 +155,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 mContext.getString(R.string.select_national_card_image_dialog_title));
 
         String[] imageSourceProviders;
-        if (mIncludeRemoveImage && (mFile != null)) {
+        if (mIncludeRemoveImage && isFileSet()) {
             imageSourceProviders = new String[3];
             imageSourceProviders[2] = mContext.getString(R.string.image_selector_option_text_remove);
         } else {
@@ -200,7 +205,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public void removeSelectedImage() {
         mFinalImageUri = null;
-        mFile = null;
+        setFileSet(false);
         setFinalImageUri(null);
         if (mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageRemoved();
@@ -209,11 +214,11 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             setImageDrawable(mDefaultDrawable);
         }
         mChanged = true;
-        mIsDeleted = true;
+        mDeleted = true;
     }
 
     public boolean isDeleted() {
-        return mIsDeleted;
+        return mDeleted;
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -238,7 +243,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 (mOnImageSelectedListener.onImageSelected(selectedImage, cropped))) {
             mFinalImageUri = selectedImage;
             mChanged = true;
-            mIsDeleted = false;
+            mDeleted = false;
+            setFileSet(true);
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Image is set (through imageSelected)");
             }
@@ -480,7 +486,5 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mChanged;
     }
 
-    public File getFile() {
-        return mFile;
-    }
+
 }

@@ -4,9 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.SaveCallback;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -19,7 +17,6 @@ import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
-import net.honarnama.core.utils.ParseIO;
 import net.honarnama.nano.CreateOrUpdateStoreReply;
 import net.honarnama.nano.CreateOrUpdateStoreRequest;
 import net.honarnama.nano.GetStoreReply;
@@ -58,7 +55,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -147,7 +143,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             startActivity(intent);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_store_info, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_store, container, false);
         // Inflate the layout for this fragment
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
@@ -471,108 +467,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mBannerImageView.onActivityResult(requestCode, resultCode, intent);
     }
 
-    public void uploadStoreLogo() {
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-
-        if (!mLogoImageView.isChanged() || mLogoImageView.getFinalImageUri() == null) {
-//            saveStore(null);
-            uploadStoreBanner();
-            return;
-        }
-
-        final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
-        try {
-            mParseFileLogo = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_LOGO_FILE_NAME,
-                    storeLogoImageFile);
-            mParseFileLogo.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-//                        saveStore(parseFile);
-                        uploadStoreBanner();
-//                        try {
-//                            ParseIO.copyFile(storeLogoImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_LOGO_FILE_NAME));
-//                        } catch (IOException e1) {
-//                            if (BuildConfig.DEBUG) {
-//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-//                                        "Error copying store logo to sd card " + e1, e1);
-//                            } else {
-//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store logo to sd card"
-//                                        + e1.getMessage());
-//                            }
-//                        }
-                    } else {
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
-                        }
-                        logE("Uploading Store Logo Failed. Code: " + e.getCode() + " // Msg:" + e.getMessage() + " // Error: " + e, "", e);
-                    }
-                }
-            });
-        } catch (IOException ioe) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_uploading_logo) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
-            }
-            logE("Failed on preparing store logo image. ioe=" + ioe.getMessage() + " // Error: " + ioe, "", ioe);
-        }
-    }
-
-    public void uploadStoreBanner() {
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-
-
-        if (!mBannerImageView.isChanged() || mBannerImageView.getFinalImageUri() == null) {
-//            saveStore();
-            return;
-        }
-        final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
-        try {
-            mParseFileBanner = ParseIO.getParseFileFromFile(HonarnamaSellApp.STORE_BANNER_FILE_NAME,
-                    storeBannerImageFile);
-            mParseFileBanner.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-//                        saveStore();
-//                        try {
-//                            ParseIO.copyFile(storeBannerImageFile, new File(HonarnamaBaseApp.APP_IMAGES_FOLDER, HonarnamaSellApp.STORE_BANNER_FILE_NAME));
-//                        } catch (IOException e1) {
-//                            if (BuildConfig.DEBUG) {
-//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-//                                        "Error copying store banner to sd card " + e1, e1);
-//                            } else {
-//                                Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Error copying store banner to sd card"
-//                                        + e1.getMessage());
-//                            }
-//                        }
-                    } else {
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
-                        }
-                        logE("Uploading Store Banner Failed. Code: " + e.getCode()
-                                + "// Msg: " + e.getMessage() + " // Error: " + e, "", e);
-                    }
-                }
-            });
-        } catch (IOException ioe) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_uploading_banner) + getString(R.string.please_try_again), Toast.LENGTH_LONG).show();
-            }
-            logE("Failed on preparing store banner image. ioe=" + ioe.getMessage() + " // Error: " + ioe, "", ioe);
-        }
-    }
-
-
     private void saveStore_() {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
@@ -685,7 +579,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     private void setStoreInfo(net.honarnama.nano.Store store, boolean postExecuteOfCreateOrUpdateStore) {
-
+        logE("inja", "store is: " + store.toString());
         if (store != null) {
             mIsNew = false;
             mStoreId = store.id;
@@ -719,7 +613,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
             }
 
-            if (!postExecuteOfCreateOrUpdateStore && TextUtils.isEmpty(store.logo)) {
+            if (!postExecuteOfCreateOrUpdateStore && !TextUtils.isEmpty(store.logo)) {
+                logE("inja", "start loading logo is...");
+
                 mLogoProgressBar.setVisibility(View.VISIBLE);
                 //TODO load logo
 //                        mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
@@ -744,6 +640,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             @Override
                             public void onSuccess() {
                                 mLogoProgressBar.setVisibility(View.GONE);
+                                mLogoImageView.setFileSet(true);
                             }
 
                             @Override
@@ -755,7 +652,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
             //TODO load banner
 
-            if (!postExecuteOfCreateOrUpdateStore && TextUtils.isEmpty(store.banner)) {
+            if (!postExecuteOfCreateOrUpdateStore && !TextUtils.isEmpty(store.banner)) {
+                logE("inja", "start loading banner is...");
                 mBannerProgressBar.setVisibility(View.VISIBLE);
 //                        mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
 //                            @Override
@@ -779,6 +677,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             @Override
                             public void onSuccess() {
                                 mBannerProgressBar.setVisibility(View.GONE);
+                                mBannerImageView.setFileSet(true);
                             }
 
                             @Override
@@ -929,11 +828,15 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             createOrUpdateStoreRequest.store.id = mStoreId;
 
-            if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
+            if (mLogoImageView.isDeleted()) {
+                createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
+            } else if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.PUT;
             }
 
-            if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
+            if (mBannerImageView.isDeleted()) {
+                createOrUpdateStoreRequest.changingBanner = HonarnamaProto.DELETE;
+            } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.PUT;
             }
 

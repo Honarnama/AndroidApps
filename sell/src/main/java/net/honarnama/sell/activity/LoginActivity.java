@@ -294,7 +294,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             }
 
             if (whoAmI != null) {
-                logE("inja whoAmI is: " + whoAmI);
                 switch (whoAmI.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:

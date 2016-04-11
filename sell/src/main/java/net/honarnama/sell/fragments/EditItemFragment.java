@@ -430,7 +430,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
-            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.getFile() != null && !imageSelector.isDeleted())) {
+            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
                 noImage = false;
                 break;
             }
