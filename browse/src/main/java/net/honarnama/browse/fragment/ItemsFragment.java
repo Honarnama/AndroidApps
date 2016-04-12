@@ -139,7 +139,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onClick(View v) {
         if (v.getId() == R.id.category_filter_btn) {
             Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }

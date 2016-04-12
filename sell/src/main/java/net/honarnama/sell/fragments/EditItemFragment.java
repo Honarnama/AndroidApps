@@ -5,6 +5,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
@@ -13,6 +14,13 @@ import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.nano.CreateOrUpdateItemReply;
+import net.honarnama.nano.CreateOrUpdateItemRequest;
+import net.honarnama.nano.GetItemReply;
+import net.honarnama.nano.GetOrDeleteItemRequest;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SellServiceGrpc;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
@@ -39,6 +47,7 @@ import android.widget.Toast;
 
 import bolts.Continuation;
 import bolts.Task;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 
 public class EditItemFragment extends HonarnamaBaseFragment implements View.OnClickListener {
@@ -78,6 +87,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private boolean mFragmentHasView = false;
 
     private Tracker mTracker;
+
+    ProgressDialog mProgressDialog;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -214,7 +225,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 (ImageSelector) rootView.findViewById(R.id.itemImage4)
         };
         for (ImageSelector imageSelector : mItemImages) {
-            imageSelector.setActivity(this.getActivity());
+            imageSelector.setActivity(getActivity());
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
         }
 
@@ -240,7 +251,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTracker.setScreenName("AddItem");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         } else {
-
             mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
             mTracker.setScreenName("EditItem");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -268,6 +278,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mCategoryId = savedInstanceState.getInt("categoryId");
                 mPriceEditText.setText(savedInstanceState.getString("price"));
             } else {
+                if (mItemId >= 0) {
+                    new getItemAsync().execute();
+                }
+
 //                if (mItemId >= 0) {
 //                    showLoadingDialog();
 //
@@ -285,7 +299,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 //                                    Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
 //                                }
 //                            } else {
-//                                // TODO: check if still we are need this
+//                                // TODO: check if still we need this
 //                                mItem = item;
 //                                mTitleEditText.setText(mItem.getName());
 //                                mDescriptionEditText.setText(mItem.getDescription());
@@ -402,12 +416,16 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         switch (view.getId()) {
             case R.id.saveItemButton:
                 if (isFormInputsValid()) {
-                    saveItem();
+//                    saveItem();
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return;
+                    }
+                    new CreateOrUpdateItemAsync().execute();
                 }
                 break;
             case R.id.edit_item_category_semi_button:
                 Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
-                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN, HonarnamaBaseApp.PREF_NAME_SELL_APP);
+                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
             default:
@@ -620,6 +638,225 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, mPriceEditText.getText().toString().trim());
             outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
             outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, mChooseCategoryButton.getText().toString());
+        }
+    }
+
+    public class getItemAsync extends AsyncTask<Void, Void, GetItemReply> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(getActivity());
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.setMessage(getString(R.string.please_wait));
+            }
+            if (getActivity() != null && isVisible()) {
+                //TODO check if this checking prevents exception or not
+                //TODO  if this checking prevents add to others dialog too
+                mProgressDialog.show();
+            }
+        }
+
+        @Override
+        protected GetItemReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+
+            GetOrDeleteItemRequest getOrDeleteItemRequest = new GetOrDeleteItemRequest();
+            getOrDeleteItemRequest.id = mItemId;
+            getOrDeleteItemRequest.requestProperties = rp;
+            GetItemReply getItemReply;
+
+            try {
+                SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
+                getItemReply = stub.getItem(getOrDeleteItemRequest);
+                return getItemReply;
+            } catch (InterruptedException e) {
+                logE("Error getting user info. Error: " + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(GetItemReply getItemReply) {
+            super.onPostExecute(getItemReply);
+            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
+                dismissProgressDialog();
+            }
+            if (getItemReply != null) {
+                switch (getItemReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (getItemReply.errorCode) {
+                            case GetItemReply.ITEM_NOT_FOUND:
+                                logE("inja Store not found");
+                                break;
+
+                            case GetItemReply.NO_CLIENT_ERROR:
+                                //TODO bug report
+                                break;
+                        }
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        //TODO
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO toast
+                        HonarnamaUser.logout(getActivity());
+                        break;
+
+                    case ReplyProperties.OK:
+                        setItemInfo(getItemReply.item);
+                        break;
+                }
+
+            } else {
+                //TODO toast
+            }
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (!getActivity().isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
+    public void setItemInfo(net.honarnama.nano.Item item) {
+        mTitleEditText.setText(item.name);
+        mDescriptionEditText.setText(item.description);
+        mPriceEditText.setText(item.price + "");
+        if (item.artCategoryId.level2Id > 0) {
+            mCategoryId = item.artCategoryId.level2Id;
+        } else if (item.artCategoryId.level1Id > 0) {
+            mCategoryId = item.artCategoryId.level1Id;
+        }
+        mChooseCategoryButton.setText(getString(R.string.getting_information));
+        new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
+            @Override
+            public Object then(Task<String> task) throws Exception {
+                if (task.isFaulted()) {
+                    if (isVisible()) {
+                        Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    mChooseCategoryButton.setText(task.getResult());
+                }
+                return null;
+            }
+        });
+    }
+
+    public class CreateOrUpdateItemAsync extends AsyncTask<Void, Void, CreateOrUpdateItemReply> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(getActivity());
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.setMessage(getString(R.string.please_wait));
+            }
+            mProgressDialog.show();
+        }
+
+
+        @Override
+        protected CreateOrUpdateItemReply doInBackground(Void... voids) {
+
+            final String title = mTitleEditText.getText().toString().trim();
+            final String description = mDescriptionEditText.getText().toString().trim();
+            final long price = Integer.valueOf(TextUtil.normalizePrice(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim())));
+            final int catId = mCategoryId;
+
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+
+            CreateOrUpdateItemRequest createOrUpdateItemRequest = new CreateOrUpdateItemRequest();
+            createOrUpdateItemRequest.item = new net.honarnama.nano.Item();
+            createOrUpdateItemRequest.item.name = title;
+            createOrUpdateItemRequest.item.description = description;
+            createOrUpdateItemRequest.item.price = price;
+            createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryId;
+            createOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
+            createOrUpdateItemRequest.requestProperties = rp;
+
+            CreateOrUpdateItemReply createOrUpdateItemReply;
+            try {
+                SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
+                if (mItemId > 0) {
+                    createOrUpdateItemReply = stub.updateItem(createOrUpdateItemRequest);
+                } else {
+                    createOrUpdateItemReply = stub.createItem(createOrUpdateItemRequest);
+                }
+
+                return createOrUpdateItemReply;
+            } catch (InterruptedException e) {
+                logE("Error getting user info. Error: " + e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final CreateOrUpdateItemReply createOrUpdateItemReply) {
+            super.onPostExecute(createOrUpdateItemReply);
+            logE("inja", "createOrUpdateItemReply is " + createOrUpdateItemReply);
+            if (createOrUpdateItemReply != null) {
+                switch (createOrUpdateItemReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        dismissProgressDialog();
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        dismissProgressDialog();
+                        switch (createOrUpdateItemReply.errorCode) {
+                            case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
+                                //TODO bug report
+                                break;
+                            case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
+                                //TODO
+                                break;
+                            case CreateOrUpdateItemReply.EMPTY_Item:
+                                //TODO
+                                break;
+                        }
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        dismissProgressDialog();
+                        //TODO
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        dismissProgressDialog();
+                        //TODO toast
+                        HonarnamaUser.logout(getActivity());
+                        break;
+
+                    case ReplyProperties.OK:
+                        setItemInfo(createOrUpdateItemReply.uptodateItem);
+
+                        dismissProgressDialog();
+                        if (isVisible()) {
+                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+
+            } else {
+                //TODO toast
+            }
         }
     }
 

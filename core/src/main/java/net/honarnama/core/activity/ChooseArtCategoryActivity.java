@@ -46,8 +46,8 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN)) {
-            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_ORIGIN);
+        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER)) {
+            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER);
         }
         setIntent(intent);
     }
@@ -84,7 +84,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             mCategoriesNameHashMap.put(artCategories.get(i).getId(), artCategories.get(i).getName());
             mCategoriesOrderHashMap.put(artCategories.get(i).getId(), artCategories.get(i).getOrder());
 
-            if (artCategory.getAllSubCatFilterType() == true) {
+            if (artCategory.isAllSubCatFilterType() == true) {
                 mFilterSubCatParentHashMap.put(artCategory.getId(), artCategory.getParentId());
             }
 
@@ -120,6 +120,8 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         mCurrentArtCategoriesObjectIds = new HashMap<>();
 
         if (mSelectedCategoryObjectId == null) {
+            logE("inja, no category is selected yet. mCategoriesHierarchyHashMap size is "+ mCategoriesHierarchyHashMap.size());
+
             //nothing is selected yet
             for (Integer key : mCategoriesHierarchyHashMap.keySet()) {
 
@@ -130,7 +132,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
                 mCurrentArtCategoriesObjectIds.put(index, key);
                 mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(key));
             }
-
+            logE("inja, no category is selected yet. mCurrentArtCategoriesName is "+ mCurrentArtCategoriesName);
         } else {
             ArrayList<Integer> notSortedCurrentCategoryObjectIds = mCategoriesHierarchyHashMap.get(mSelectedCategoryObjectId);
             for (int i = 0; i < notSortedCurrentCategoryObjectIds.size(); i++) {

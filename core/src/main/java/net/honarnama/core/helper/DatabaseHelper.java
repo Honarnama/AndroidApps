@@ -61,7 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_ART_CAT_PARENT_ID + " INTEGER," +
             COL_ART_CAT_NAME + " TEXT," +
             COL_ART_CAT_ORDER + " INTEGER," +
-            COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE + " BOOLEAN" +
+            COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE + " INTEGER" +
             ")";
 
     public static final String CREATE_TABLE_EVENT_CATEGORIES = "CREATE TABLE " + TABLE_EVENT_CATEGORIES +

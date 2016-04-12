@@ -43,7 +43,7 @@ public class ArtCategory {
         super();
     }
 
-    public boolean getAllSubCatFilterType() {
+    public boolean isAllSubCatFilterType() {
         return mAllSubCatFilterType;
     }
 
@@ -122,7 +122,7 @@ public class ArtCategory {
         return tcs.getTask();
     }
 
-    public static Task<String> getCategoryNameById(String categoryId) {
+    public static Task<String> getCategoryNameById(int categoryId) {
         final TaskCompletionSource<String> tcs = new TaskCompletionSource<>();
 
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
@@ -194,7 +194,7 @@ public class ArtCategory {
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
         if (!includeAllSubCatFiltertypes) {
-            query = query + " WHERE " + COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE + " = false ";
+            query = query + " WHERE " + COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE + " = 0 ";
         }
         query = query + " ORDER BY " + COL_ART_CAT_ORDER + " ASC";
         Cursor cursor = db.rawQuery(query, null);

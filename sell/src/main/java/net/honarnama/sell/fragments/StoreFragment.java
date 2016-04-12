@@ -6,6 +6,9 @@ import com.google.android.gms.analytics.Tracker;
 import com.parse.ImageSelector;
 import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
@@ -64,6 +67,7 @@ import java.util.TreeMap;
 import bolts.Continuation;
 import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
+import io.fabric.sdk.android.services.network.NetworkUtils;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
@@ -636,6 +640,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                 Picasso.with(getActivity()).load(store.logo)
                         .error(R.drawable.default_logo_hand)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
                         .into(mLogoImageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -673,6 +679,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                 Picasso.with(getActivity()).load(store.banner)
                         .error(R.drawable.party_flags)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
                         .into(mBannerImageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -833,12 +841,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest.store.id = mStoreId;
 
             if (mLogoImageView.isDeleted()) {
+                //TODO test
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
             } else if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.PUT;
             }
 
             if (mBannerImageView.isDeleted()) {
+                //TODO test
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.PUT;
@@ -870,15 +880,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (createOrUpdateStoreReply != null) {
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
+                        dismissProgressDialog();
                         ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
-                        if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                            dismissProgressDialog();
-                        }
+                        dismissProgressDialog();
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
                                 //TODO bug report
@@ -901,16 +910,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                            dismissProgressDialog();
-                        }
+                        dismissProgressDialog();
                         //TODO
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                            dismissProgressDialog();
-                        }
+                        dismissProgressDialog();
                         //TODO toast
                         HonarnamaUser.logout(getActivity());
                         break;
