@@ -6,12 +6,16 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.picasso.Picasso;
+
+import net.honarnama.HonarnamaBaseApp;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -67,12 +71,20 @@ public class AwsUploader {
                 Log.e("inja", "request=" + request.toString());
                 Log.e("inja", "headers=" + request.headers());
 
-                OkHttpClient client = new OkHttpClient();
-                Call call = client.newCall(request);
+                OkHttpClient okHttpClient = new OkHttpClient();
+                okHttpClient.setCache(null);
+                Call call = okHttpClient.newCall(request);
                 Log.e("inja", "call=" + call.toString());
                 Response response = call.execute();
                 Log.e("inja", "Uploading image response. " + response.toString());
 
+                if (response.isSuccessful()) {
+                    Picasso.with(HonarnamaBaseApp.getInstance()).invalidate(mFile);
+                    mTcs.trySetResult(null);
+                } else {
+                    //TODO log
+                    mTcs.trySetError(new IOException("Unexpected code " + response));
+                }
             } catch (Exception e) {
                 //TODO log
                 Log.e("inja", "Error Uploading image. ", e);

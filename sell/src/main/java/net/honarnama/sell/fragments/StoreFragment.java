@@ -727,7 +727,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.setMessage(getString(R.string.please_wait));
             }
-            if (!getActivity().isFinishing()) {
+            if (getActivity() != null && isVisible()) {
+                //TODO check if this checking prevents exception or not
+                //TODO  if this checking prevents add to others dialog too
                 mProgressDialog.show();
             }
         }
@@ -758,9 +760,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
             if (getStoreReply != null) {
                 switch (getStoreReply.replyProperties.statusCode) {
-
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        //TODO
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getStoreReply.errorCode) {
@@ -865,8 +869,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             logE("inja", "createOrUpdateStoreReply is " + createOrUpdateStoreReply);
             if (createOrUpdateStoreReply != null) {
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
-
-                    //TODO upgrade needed
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
+                        break;
                     case ReplyProperties.CLIENT_ERROR:
                         if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
                             dismissProgressDialog();
@@ -910,7 +918,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.OK:
                         setStoreInfo(createOrUpdateStoreReply.uptodateStore, true);
 
-                        if (createOrUpdateStoreReply.bannerModificationUrl == null && createOrUpdateStoreReply.logoModificationUrl == null) {
+                        if (TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl)) {
                             if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
                                 dismissProgressDialog();
                             }
@@ -919,38 +927,67 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             }
                         }
 
-                        ArrayList<Task<Void>> tasks = new ArrayList<>();
-                        if (createOrUpdateStoreReply.bannerModificationUrl != null && mBannerImageView.getFinalImageUri() != null) {
+                        if (!TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && mBannerImageView.getFinalImageUri() != null) {
                             final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
                             final AwsUploader aws = new AwsUploader(storeBannerImageFile, createOrUpdateStoreReply.bannerModificationUrl);
-                            tasks.add(aws.upload());
-                        }
-                        if (createOrUpdateStoreReply.logoModificationUrl != null && mLogoImageView.getFinalImageUri() != null) {
+
+                            if (!TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl) && mLogoImageView.getFinalImageUri() != null) {
+                                aws.upload().onSuccessTask(new Continuation<Void, Task<Void>>() {
+                                    @Override
+                                    public Task<Void> then(Task<Void> task) throws Exception {
+                                        final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
+                                        final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
+                                        return aws.upload();
+                                    }
+                                }).continueWith(new Continuation<Void, Object>() {
+                                    @Override
+                                    public Object then(Task<Void> task) throws Exception {
+                                        dismissProgressDialog();
+                                        if (task.isFaulted()) {
+                                            if (isVisible()) {
+                                                Toast.makeText(getActivity(),
+                                                        "خطا در ارسال تصاویر."
+                                                                + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        return null;
+                                    }
+                                });
+
+                            } else {
+                                aws.upload().continueWith(new Continuation<Void, Object>() {
+                                    @Override
+                                    public Object then(Task<Void> task) throws Exception {
+                                        dismissProgressDialog();
+                                        if (task.isFaulted()) {
+                                            if (isVisible()) {
+                                                Toast.makeText(getActivity(),
+                                                        "خطا در ارسال تصاویر."
+                                                                + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        return null;
+                                    }
+                                });
+                            }
+                        } else if (!TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl) && mLogoImageView.getFinalImageUri() != null) {
                             final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
                             final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
-                            tasks.add(aws.upload());
-                        }
-
-                        Task.whenAll(tasks).continueWith(new Continuation<Void, Object>() {
-                            @Override
-                            public Object then(Task<Void> task) throws Exception {
-                                if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
+                            aws.upload().continueWith(new Continuation<Void, Object>() {
+                                @Override
+                                public Object then(Task<Void> task) throws Exception {
                                     dismissProgressDialog();
-                                }
-                                if (task.isFaulted()) {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(),
-                                                "خطا در ارسال تصاویر." +
-                                                        getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                    if (task.isFaulted()) {
+                                        if (isVisible()) {
+                                            Toast.makeText(getActivity(),
+                                                    "خطا در ارسال تصاویر."
+                                                            + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                } else {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_SHORT).show();
-                                    }
+                                    return null;
                                 }
-                                return null;
-                            }
-                        });
+                            });
+                        }
                         break;
                 }
 
@@ -962,8 +999,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
 
     private void dismissProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        if (!getActivity().isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
         }
     }
 

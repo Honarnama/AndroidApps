@@ -1,0 +1,125 @@
+<net.honarnama.core.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+        >
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:layoutDirection="rtl"
+            >
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/bordered_edit_text"
+                android:layout_below="@+id/fav_icon_container"
+                android:id="@+id/filter_fields_container"
+                android:padding="0dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                >
+            <TextView
+                    style="@style/section_title"
+                    android:text="نیاز به به‌روزرسانی برنامه"
+                    android:textColor="@color/dark_cyan"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/liked_title"
+                    android:layout_marginTop="40dp"
+                    android:layout_width="match_parent"
+                    />
+
+            <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/support_us_text"
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="برای استفاده از تمامی امکانات برنامه، لطفا نسخه جدید آن را از کافه بازار بگیرید."
+                    android:singleLine="false"
+                    android:layout_below="@id/liked_title"
+                    android:textColor="@color/gray"
+                    android:lineSpacingExtra="10dp"
+                    />
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@id/support_us_text"
+                          android:id="@+id/filter_buttons_container"
+                          android:gravity="center"
+                          android:orientation="horizontal"
+                    >
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="بزن بریم"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/lets_rate"
+                        android:gravity="center"
+                        android:layout_height="45dp"
+                        style="@style/core_wrap_button"
+                        android:background="@drawable/round_corner_cyan_back"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="20dp"
+                        />
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="فعلا نه"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/rate_later"
+                        android:gravity="center"
+                        android:layout_height="45dp"
+                        style="@style/core_wrap_button"
+                        android:background="@drawable/round_corner_red_back"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="20dp"
+                        />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="-24dp"
+                        android:clickable="true"
+                        android:id="@+id/fav_icon_container"
+                >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:iiv_icon="gmd-lens"
+                    app:iiv_color="@color/amber_primary_dark"
+                    android:layout_centerInParent="true"
+                    />
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_icon="gmd-update"
+                    app:iiv_color="@color/white"
+                    android:layout_centerInParent="true"
+                    />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</net.honarnama.core.utils.ObservableScrollView>

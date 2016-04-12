@@ -815,7 +815,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.ask_for_starts);
+        dialog.setContentView(R.layout.ask_for_starts_dialog);
         Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
         Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
         letsRateBtn.setOnClickListener(new View.OnClickListener() {

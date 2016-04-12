@@ -58,7 +58,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
-import java.util.logging.Level;
 
 public class ControlPanelActivity extends HonarnamaBaseActivity implements View.OnClickListener {
 
@@ -91,6 +90,14 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     public NavigationView mNavigationView;
     public RelativeLayout mNavFooter;
 
+//    public IUpdateCheckService iUpdateCheckService;
+//    public UpdateServiceConnection mUpdateServiceConnection;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        initUpdateCheckService();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +200,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         MetaUpdater metaUpdater = new MetaUpdater(ControlPanelActivity.this);
         metaUpdater.execute();
     }
+
 
     private void setupDrawerContent() {
         mNavigationView.setNavigationItemSelectedListener(
@@ -574,7 +582,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_support_us:
-                callBazaarRateIntent();
+                callBazaarRatingIntent();
                 break;
 
             case R.id.item_switch_app:
@@ -635,19 +643,20 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+//        releaseUpdateCheckService();
     }
 
     public void askToRate() {
         final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.ask_for_starts);
+        dialog.setContentView(R.layout.ask_for_starts_dialog);
         Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
         Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
         letsRateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callBazaarRateIntent();
+                callBazaarRatingIntent();
 
                 final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -668,10 +677,79 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         dialog.show();
     }
 
-    public void callBazaarRateIntent() {
+    public void callBazaarRatingIntent() {
+        //TODO check if bazaar is not installed
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
         intent.setPackage("com.farsitel.bazaar");
         startActivity(intent);
+    }
+
+    public void callBazaarViewAppPageIntent() {
+        //TODO check if bazaar is not installed
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
+        intent.setPackage("com.farsitel.bazaar");
+        startActivity(intent);
+    }
+//    class UpdateServiceConnection implements ServiceConnection {
+//        public void onServiceConnected(ComponentName name, IBinder boundService) {
+//            iUpdateCheckService = IUpdateCheckService.Stub
+//                    .asInterface((IBinder) boundService);
+//            try {
+//                long vCode = iUpdateCheckService.getVersionCode("net.honarnama.sell");
+//                Toast.makeText(ControlPanelActivity.this, "Version Code:" + vCode,
+//                        Toast.LENGTH_LONG).show();
+//            } catch (Exception e) {
+//                logE("Error getting version code from cafebazzar. Error: " + e);
+//            }
+//            logD("onServiceConnected(): Connected");
+//        }
+//
+//        public void onServiceDisconnected(ComponentName name) {
+//            iUpdateCheckService = null;
+//            logD("onServiceDisconnected(): Disconnected");
+//        }
+//    }
+//
+//    private void initUpdateCheckService() {
+//        logD("initUpdateCheckService()");
+//        mUpdateServiceConnection = new UpdateServiceConnection();
+//        Intent i = new Intent(
+//                "com.farsitel.bazaar.service.UpdateCheckService.BIND");
+//        i.setPackage("com.farsitel.bazaar");
+//        boolean ret = bindService(i, mUpdateServiceConnection, Context.BIND_AUTO_CREATE);
+//        logD("initUpdateCheckService() bound value: " + ret);
+//    }
+//
+//    /** This is our function to un-binds this activity from our service. */
+//    private void releaseUpdateCheckService() {
+//        unbindService(mUpdateServiceConnection);
+//        mUpdateServiceConnection = null;
+//        logD("releaseUpdateCheckService(): unbound.");
+//    }
+
+    public void displayUpgradeRequiredDialog() {
+        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.upgrade_required_dialog);
+        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
+        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
+        letsRateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callBazaarViewAppPageIntent();
+                dialog.dismiss();
+                finish();
+            }
+        });
+        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }
