@@ -200,13 +200,13 @@ service SellService {
   }
   rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
     option (google.api.http) = {
-      post: "/v1/stores"
+      post: "/v1/my-store"
       body: "*"
     };
   }
   rpc UpdateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
     option (google.api.http) = {
-      put: "/v1/store/{store.id}"
+      put: "/v1/my-store"
       body: "*"
     };
   }
@@ -238,6 +238,24 @@ service SellService {
       delete: "/v1/item/{id}"
     };
   }
+
+  rpc GetMyEvent(SimpleRequest) returns (GetEventReply) {
+    option (google.api.http) = {
+      get: "/v1/my-event"
+    };
+  }
+  rpc CreateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
+    option (google.api.http) = {
+      post: "/v1/my-event"
+      body: "*"
+    };
+  }
+  rpc UpdateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
+    option (google.api.http) = {
+      put: "/v1/my-event"
+      body: "*"
+    };
+  }
 }
 
 enum ReviewStatus {
@@ -248,7 +266,7 @@ enum ReviewStatus {
 
 /// Store -------------------------------------------------
 message Store {
-  uint64 id = 1; // Will be ignored in create
+  uint64 id = 1; // Just for gets
   uint64 ownerId = 2; // Will be ignored in update
   LocationId locationId = 3;
   string name = 4;
@@ -260,17 +278,12 @@ message Store {
   ReviewStatus reviewStatus = 10; // Will be ignored in create and update
 }
 
-message GetStoreRequest {
-  RequestProperties requestProperties = 1;
-  uint64 id = 2;
-}
-
 message GetStoreReply {
   ReplyProperties replyProperties = 1;
   Store store = 2;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    STORE_NOT_FOUND = 1; // Only for update
+    STORE_NOT_FOUND = 1;
   }
   ErrorCode errorCode = 3;
 }
@@ -301,7 +314,7 @@ message CreateOrUpdateStoreReply {
 message Item {
   uint64 id = 1; // Will be ignored in create
   uint64 ownerId = 2; // Will be ignored in update
-  uint64 storeId = 3; // Will be ignored in update
+  uint64 storeId = 3; // Just for gets
   ArtCategoryId artCategoryId = 4;
   string name = 5;
   string description = 6;
@@ -368,4 +381,52 @@ message DeleteItemReply {
     FORBIDDEN = 2;
   }
   ErrorCode errorCode = 2;
+}
+
+/// Event --------------------------------------------------
+message Event {
+  uint64 id = 1; // Will be ignored in create
+  uint64 ownerId = 2; // Will be ignored in update
+  uint64 storeId = 3; // Just for gets
+  uint32 eventCategoryId = 4;
+  string name = 5;
+  string description = 6;
+  bool active = 7;
+  LocationId locationId = 8;
+  string address = 9;
+  // Represents seconds of UTC time since Unix epoch
+  int64 StartAt = 10;
+  int64 EndAt = 11;
+  string banner = 12; // Just for gets
+  ReviewStatus reviewStatus = 13; // Will be ignored in create and update
+}
+
+message GetEventReply {
+  ReplyProperties replyProperties = 1;
+  Event event = 2;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    EVENT_NOT_FOUND = 1;
+  }
+  ErrorCode errorCode = 3;
+}
+
+message CreateOrUpdateEventRequest {
+  RequestProperties requestProperties = 1;
+  Event event = 2;
+  RemoteFileActions changingBanner = 3;
+}
+
+message CreateOrUpdateEventReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    FORBIDDEN = 1;
+    DUPLICATE_NAME = 2;
+    EVENT_NOT_FOUND = 3; // Only while updating
+    EMPTY_EVENT = 4; // Only while updating
+  }
+  ErrorCode errorCode = 2;
+  Event uptodateEvent = 3;
+  string bannerModificationUrl = 4;
 }
