@@ -19,6 +19,7 @@ import net.honarnama.nano.CreateOrUpdateItemReply;
 import net.honarnama.nano.CreateOrUpdateItemRequest;
 import net.honarnama.nano.GetItemReply;
 import net.honarnama.nano.GetOrDeleteItemRequest;
+import net.honarnama.nano.HonarnamaProto;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
@@ -29,6 +30,7 @@ import net.honarnama.core.utils.TextUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
+import net.honarnama.sell.utils.AwsUploader;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,6 +38,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +48,9 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -76,8 +82,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private ImageSelector[] mItemImages;
 
-    private Item mItem;
-    private int mItemId;
+    private net.honarnama.nano.Item mItem;
+    private long mItemId;
 
     private boolean mDirty = false;
     private boolean mCreateNew = false;
@@ -260,10 +266,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
             boolean savedDirty = false;
-            int savedItemId = -1;
+            long savedItemId = -1;
             if (savedInstanceState != null) {
                 savedDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
-                savedItemId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
+                savedItemId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
             }
 
             if (BuildConfig.DEBUG) {
@@ -451,20 +457,19 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
-        //TODO add image check
-//        boolean noImage = true;
-//        for (ImageSelector imageSelector : mItemImages) {
-//            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
-//                noImage = false;
-//                break;
-//            }
-//        }
-//        if (noImage) {
-//            mImagesTitleTextView.requestFocus();
-//            mImagesTitleTextView.setError(getString(R.string.error_edit_item_no_image));
-//            mScrollView.fullScroll(ScrollView.FOCUS_UP);
-//            return false;
-//        }
+        boolean noImage = true;
+        for (ImageSelector imageSelector : mItemImages) {
+            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
+                noImage = false;
+                break;
+            }
+        }
+        if (noImage) {
+            mImagesTitleTextView.requestFocus();
+            mImagesTitleTextView.setError(getString(R.string.error_edit_item_no_image));
+            mScrollView.fullScroll(ScrollView.FOCUS_UP);
+            return false;
+        }
 
         if (title.trim().length() == 0) {
             mTitleEditText.requestFocus();
@@ -507,104 +512,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         return true;
     }
 
-    private void saveItem() {
-        final String title = mTitleEditText.getText().toString().trim();
-        final String description = mDescriptionEditText.getText().toString().trim();
-        final Number price = Integer.valueOf(TextUtil.normalizePrice(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim())));
-        final int catId = mCategoryId;
-
-        final ProgressDialog sendingDataProgressDialog = new ProgressDialog(getActivity());
-        sendingDataProgressDialog.setCancelable(false);
-        sendingDataProgressDialog.setMessage(getString(R.string.sending_data));
-        sendingDataProgressDialog.show();
-
-        try {
-            Store.getStoreByOwner(HonarnamaUser.getId()).continueWithTask(new Continuation<Store, Task<ArtCategory>>() {
-                @Override
-                public Task<ArtCategory> then(Task<Store> task) throws Exception {
-                    if (task.isFaulted()) {
-                        mDirty = true;
-                        if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
-                            sendingDataProgressDialog.dismiss();
-                        }
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                        return Task.forError(task.getError());
-                    } else {
-                        mStore = task.getResult();
-                        return ArtCategory.getCategoryById(catId);
-                    }
-                }
-            }).continueWithTask(new Continuation<ArtCategory, Task<Item>>() {
-                @Override
-                public Task<Item> then(Task<ArtCategory> task) throws Exception {
-
-                    if (task.isFaulted()) {
-                        mDirty = true;
-                        if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
-                            sendingDataProgressDialog.dismiss();
-                        }
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                        return Task.forError(task.getError());
-                    } else {
-                        return Item.saveWithImages(mItem, title, description, task.getResult(), price, mItemImages, mStore);
-                    }
-                }
-            }).continueWith(new Continuation<Item, Void>() {
-                @Override
-                public Void then(Task<Item> task) throws Exception {
-                    if (BuildConfig.DEBUG) {
-                        logD("saveItem, Back to then");
-                    }
-                    if (sendingDataProgressDialog != null && sendingDataProgressDialog.isShowing()) {
-                        sendingDataProgressDialog.dismiss();
-                    }
-                    if (task.isCompleted()) {
-                        if (BuildConfig.DEBUG) {
-                            logD("saveItem, task.isCompleted()");
-                        }
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.item_saved_successfully), Toast.LENGTH_LONG).show();
-                        }
-                        mDirty = false;
-                        mItem = task.getResult();
-                        mItemId = mItem.getId();
-                        if (BuildConfig.DEBUG) {
-                            logD("saveItem, mItem= " + mItem + ", mItemId= " + mItemId);
-                        }
-                    } else {
-                        if (task.isFaulted()) {
-                            mDirty = true;
-                            logE("Fault while saveItem. Error: " + task.getError(), "", task.getError());
-                        } else {
-                            if (BuildConfig.DEBUG) {
-                                logD("Canceled while saveItem", "");
-                            }
-                        }
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    ControlPanelActivity activity = (ControlPanelActivity) getActivity();
-                    activity.switchFragment(ItemsFragment.getInstance());
-                    return null;
-                }
-            }, Task.UI_THREAD_EXECUTOR);
-        } catch (Exception e) {
-            logE("Exception while saveItem. Error: " + e, "", e);
-            if (sendingDataProgressDialog.isShowing()) {
-                sendingDataProgressDialog.dismiss();
-            }
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_saving_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -639,7 +546,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 imageSelector.onSaveInstanceState(outState);
             }
             outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
-            outState.putInt(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
+            outState.putLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
             outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, mTitleEditText.getText().toString().trim());
             outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, mDescriptionEditText.getText().toString().trim());
             outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, mPriceEditText.getText().toString().trim());
@@ -740,6 +647,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public void setItemInfo(net.honarnama.nano.Item item) {
+        mItem = item;
+        mItemId = item.id;
+
         mTitleEditText.setText(item.name);
         mDescriptionEditText.setText(item.description);
         mPriceEditText.setText(item.price + "");
@@ -802,6 +712,19 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryParentId;
                 createOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
             }
+
+            createOrUpdateItemRequest.changingImage = new int[4];
+            for (int i = 0; i < mItemImages.length; i++) {
+                if (mItemImages[i].isDeleted()) {
+                    logE("inja Delete item image " + i);
+                    createOrUpdateItemRequest.changingImage[i] = HonarnamaProto.DELETE;
+                } else if (mItemImages[i].isChanged() && mItemImages[i].getFinalImageUri() != null) {
+                    createOrUpdateItemRequest.changingImage[i] = HonarnamaProto.PUT;
+                } else {
+                    createOrUpdateItemRequest.changingImage[i] = HonarnamaProto.NOOP;
+                }
+            }
+
             createOrUpdateItemRequest.requestProperties = rp;
 
             CreateOrUpdateItemReply createOrUpdateItemReply;
@@ -827,6 +750,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (createOrUpdateItemReply != null) {
                 switch (createOrUpdateItemReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
+
                         dismissProgressDialog();
                         ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
                         if (controlPanelActivity != null) {
@@ -834,6 +758,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
+                        mDirty = true;
                         dismissProgressDialog();
                         switch (createOrUpdateItemReply.errorCode) {
                             case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
@@ -852,6 +777,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        mDirty = true;
                         dismissProgressDialog();
                         //TODO
                         break;
@@ -865,10 +791,36 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     case ReplyProperties.OK:
                         setItemInfo(createOrUpdateItemReply.uptodateItem);
 
-                        dismissProgressDialog();
-                        if (isVisible()) {
-                            //TODO toats
+                        ArrayList<Task<Void>> tasks = new ArrayList<>();
+                        for (int i = 0; i < mItemImages.length; i++) {
+                            if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i].getFinalImageUri() != null) {
+                                logE("inja Adding item " + i + "to upload task.");
+                                final File storeBannerImageFile = new File(mItemImages[i].getFinalImageUri().getPath());
+                                tasks.add(new AwsUploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
+                            }
                         }
+
+                        Task.whenAll(tasks).continueWith(new Continuation<Void, Object>() {
+                            @Override
+                            public Object then(Task<Void> task) throws Exception {
+                                dismissProgressDialog();
+                                if (task.isFaulted()) {
+                                    mDirty = true;
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), getString(R.string.error_sending_images) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    mDirty = false;
+                                    if (isVisible()) {
+                                        Toast.makeText(getActivity(), getString(R.string.item_saved_successfully), Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                                return null;
+                            }
+                        });
+
+
                         break;
                 }
 

@@ -1,8 +1,6 @@
 package net.honarnama.sell.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -17,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +23,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by reza on 11/5/15.
@@ -88,29 +82,34 @@ public class ItemsAdapter extends BaseAdapter {
             mViewHolder.waitingToBeConfirmedTextView.setText("این آگهی تایید نشد");
         }
 
-        mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
-        mViewHolder.icon.setVisibility(View.GONE);
+        String itemImage = "";
+        for (int i = 0; i < 4; i++) {
+            if (!TextUtils.isEmpty(item.images[i])) {
+                itemImage = item.images[i];
+                break;
+            }
+        }
+        if (!TextUtils.isEmpty(itemImage)) {
+            mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
+            mViewHolder.icon.setVisibility(View.GONE);
+            Picasso.with(mContext).load(itemImage)
+                    .error(R.drawable.camera_insta)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+                            mViewHolder.icon.setVisibility(View.VISIBLE);
+                        }
 
-//        Picasso.with(mContext).load(item.images[0])
-        //TODO load item image instead of camera insta
-        Picasso.with(mContext).load(R.drawable.camera_insta)
-                .error(R.drawable.camera_insta)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
-                .into(mViewHolder.icon, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
-                        mViewHolder.icon.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onError() {
-                        mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
-                        mViewHolder.icon.setVisibility(View.VISIBLE);
-                    }
-                });
-
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+                            mViewHolder.icon.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
         mViewHolder.deleteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

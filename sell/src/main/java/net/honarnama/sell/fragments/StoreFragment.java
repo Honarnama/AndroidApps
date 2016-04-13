@@ -834,7 +834,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             createOrUpdateStoreRequest.store.id = mStoreId;
 
-            //TODO ask whay it not get uploaded
             if (mLogoImageView.isDeleted()) {
                 logE("inja Delete logo");
                 //TODO test
