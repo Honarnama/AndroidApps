@@ -299,7 +299,6 @@ message CreateOrUpdateStoreReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    FORBIDDEN = 1;
     DUPLICATE_NAME = 2;
     STORE_NOT_FOUND = 3; // Only while updating
     EMPTY_STORE = 4; // Only while updating
@@ -395,8 +394,8 @@ message Event {
   LocationId locationId = 8;
   string address = 9;
   // Represents seconds of UTC time since Unix epoch
-  int64 StartAt = 10;
-  int64 EndAt = 11;
+  int64 startAt = 10;
+  int64 endAt = 11;
   string banner = 12; // Just for gets
   ReviewStatus reviewStatus = 13; // Will be ignored in create and update
 }
@@ -421,10 +420,10 @@ message CreateOrUpdateEventReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    FORBIDDEN = 1;
     DUPLICATE_NAME = 2;
-    EVENT_NOT_FOUND = 3; // Only while updating
-    EMPTY_EVENT = 4; // Only while updating
+    STORE_NOT_CREATED = 3; // Only while creating
+    EVENT_NOT_FOUND = 4; // Only while updating
+    EMPTY_EVENT = 5; // Only while updating
   }
   ErrorCode errorCode = 2;
   Event uptodateEvent = 3;
