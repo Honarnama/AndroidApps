@@ -6,7 +6,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.parse.ImageSelector;
 import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.LruCache;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -58,7 +57,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +65,6 @@ import java.util.TreeMap;
 import bolts.Continuation;
 import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
-import io.fabric.sdk.android.services.network.NetworkUtils;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
@@ -90,9 +87,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private EditText mCityEditEext;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
-
-    ParseFile mParseFileLogo;
-    ParseFile mParseFileBanner;
 
     public int mSelectedProvinceId = -1;
     public String mSelectedProvinceName;
@@ -840,7 +834,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             createOrUpdateStoreRequest.store.id = mStoreId;
 
+            //TODO ask whay it not get uploaded
             if (mLogoImageView.isDeleted()) {
+                logE("inja Delete logo");
                 //TODO test
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
             } else if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
@@ -848,6 +844,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (mBannerImageView.isDeleted()) {
+                logE("inja Delete banner");
                 //TODO test
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {

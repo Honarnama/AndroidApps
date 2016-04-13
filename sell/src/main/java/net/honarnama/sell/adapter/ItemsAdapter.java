@@ -3,8 +3,13 @@ package net.honarnama.sell.adapter;
 import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.core.model.Item;
+import net.honarnama.nano.HonarnamaProto;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 
@@ -33,12 +38,12 @@ import bolts.Task;
 public class ItemsAdapter extends BaseAdapter {
 
     Context mContext;
-    List<Item> mItems;
+    ArrayList<net.honarnama.nano.Item> mItems;
     private static LayoutInflater mInflater = null;
 
     public ItemsAdapter(Context context) {
         mContext = context;
-        mItems = new ArrayList<Item>();
+        mItems = new ArrayList();
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -69,30 +74,42 @@ public class ItemsAdapter extends BaseAdapter {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final Item item = mItems.get(position);
+        final net.honarnama.nano.Item item = mItems.get(position);
         // Setting all values in listview
-        mViewHolder.title.setText(item.getName());
+        mViewHolder.title.setText(item.name);
 
-        if (item.getStatus() == Item.STATUS_CODE_CONFIRMATION_WAITING) {
+        if (item.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
         }
 
-        if (item.getStatus() == Item.STATUS_CODE_NOT_VERIFIED) {
+        if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
             mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
             mViewHolder.waitingToBeConfirmedTextView.setText("این آگهی تایید نشد");
-
         }
 
         mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
         mViewHolder.icon.setVisibility(View.GONE);
-//        mViewHolder.icon.loadInBackground(item.getImage1(), new GetDataCallback() {
-//            @Override
-//            public void done(byte[] data, ParseException e) {
-//                mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
-//                mViewHolder.icon.setVisibility(View.VISIBLE);
-//            }
-//        });
+
+//        Picasso.with(mContext).load(item.images[0])
+        //TODO load item image instead of camera insta
+        Picasso.with(mContext).load(R.drawable.camera_insta)
+                .error(R.drawable.camera_insta)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .into(mViewHolder.icon, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+                        mViewHolder.icon.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
+                        mViewHolder.icon.setVisibility(View.VISIBLE);
+                    }
+                });
 
         mViewHolder.deleteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +117,7 @@ public class ItemsAdapter extends BaseAdapter {
 
                 new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle))
                         .setTitle("تایید حذف")
-                        .setMessage("آگهی " + item.getName() + " را حذف میکنید؟")
+                        .setMessage("آگهی " + item.name + " را حذف میکنید؟")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -109,22 +126,22 @@ public class ItemsAdapter extends BaseAdapter {
                                 progressDialog.setMessage(mContext.getString(R.string.please_wait));
                                 progressDialog.show();
 
-
-                                Item.deleteItem(mContext, item.getId()).continueWith(new Continuation<Void, Object>() {
-                                    @Override
-                                    public Object then(Task<Void> task) throws Exception {
-                                        progressDialog.dismiss();
-                                        if (task.isFaulted()) {
-                                            if (mContext != null) {
-                                                Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                                            }
-                                        } else {
-                                            mItems.remove(position);
-                                            notifyDataSetChanged();
-                                        }
-                                        return null;
-                                    }
-                                });
+//TODO item delete
+//                                Item.deleteItem(mContext, item.id).continueWith(new Continuation<Void, Object>() {
+//                                    @Override
+//                                    public Object then(Task<Void> task) throws Exception {
+//                                        progressDialog.dismiss();
+//                                        if (task.isFaulted()) {
+//                                            if (mContext != null) {
+//                                                Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        } else {
+//                                            mItems.remove(position);
+//                                            notifyDataSetChanged();
+//                                        }
+//                                        return null;
+//                                    }
+//                                });
 
                             }
                         })
@@ -145,8 +162,10 @@ public class ItemsAdapter extends BaseAdapter {
 
     }
 
-    public void setItems(List<Item> itemList) {
-        mItems = itemList;
+    public void setItems(net.honarnama.nano.Item[] itemsArray) {
+        for (int i = 0; i < itemsArray.length; i++) {
+            mItems.add(itemsArray[i]);
+        }
     }
 
     private class MyViewHolder {

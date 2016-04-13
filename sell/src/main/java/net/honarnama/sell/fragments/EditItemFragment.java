@@ -14,6 +14,7 @@ import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.nano.ArtCategoryId;
 import net.honarnama.nano.CreateOrUpdateItemReply;
 import net.honarnama.nano.CreateOrUpdateItemRequest;
 import net.honarnama.nano.GetItemReply;
@@ -60,6 +61,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private static final String SAVE_INSTANCE_STATE_KEY_DESCRIPTION = "description";
     private static final String SAVE_INSTANCE_STATE_KEY_PRICE = "price";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_ID = "categoryId";
+    private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID = "categoryParentId";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME = "categoryName";
 
     private EditText mTitleEditText;
@@ -81,6 +83,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private boolean mCreateNew = false;
 
     private int mCategoryId = -1;
+    private int mCategoryParentId = -1;
     private String mCategoryName;
 
     public Store mStore = null;
@@ -116,6 +119,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mItem = null;
         mItemId = -1;
         mCategoryId = -1;
+        mCategoryParentId = -1;
         mCategoryName = null;
         setDirty(false);
         mCreateNew = createNew;
@@ -276,6 +280,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mDescriptionEditText.setText(savedInstanceState.getString("description"));
                 mChooseCategoryButton.setText(savedInstanceState.getString("categoryName"));
                 mCategoryId = savedInstanceState.getInt("categoryId");
+                mCategoryParentId = savedInstanceState.getInt("categoryParentId");
                 mPriceEditText.setText(savedInstanceState.getString("price"));
             } else {
                 if (mItemId >= 0) {
@@ -446,19 +451,20 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
-        boolean noImage = true;
-        for (ImageSelector imageSelector : mItemImages) {
-            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
-                noImage = false;
-                break;
-            }
-        }
-        if (noImage) {
-            mImagesTitleTextView.requestFocus();
-            mImagesTitleTextView.setError(getString(R.string.error_edit_item_no_image));
-            mScrollView.fullScroll(ScrollView.FOCUS_UP);
-            return false;
-        }
+        //TODO add image check
+//        boolean noImage = true;
+//        for (ImageSelector imageSelector : mItemImages) {
+//            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
+//                noImage = false;
+//                break;
+//            }
+//        }
+//        if (noImage) {
+//            mImagesTitleTextView.requestFocus();
+//            mImagesTitleTextView.setError(getString(R.string.error_edit_item_no_image));
+//            mScrollView.fullScroll(ScrollView.FOCUS_UP);
+//            return false;
+//        }
 
         if (title.trim().length() == 0) {
             mTitleEditText.requestFocus();
@@ -610,6 +616,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     mCategoryTextView.setError(null);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
+                    mCategoryParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
                     setDirty(true);
                     mChooseCategoryButton.setText(mCategoryName);
                 }
@@ -637,6 +644,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, mDescriptionEditText.getText().toString().trim());
             outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, mPriceEditText.getText().toString().trim());
             outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
+            outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID, mCategoryId);
             outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, mChooseCategoryButton.getText().toString());
         }
     }
@@ -735,9 +743,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mTitleEditText.setText(item.name);
         mDescriptionEditText.setText(item.description);
         mPriceEditText.setText(item.price + "");
+
         if (item.artCategoryId.level2Id > 0) {
+            mCategoryParentId = item.artCategoryId.level1Id;
             mCategoryId = item.artCategoryId.level2Id;
-        } else if (item.artCategoryId.level1Id > 0) {
+        } else {
+            mCategoryParentId = 0;
             mCategoryId = item.artCategoryId.level1Id;
         }
         mChooseCategoryButton.setText(getString(R.string.getting_information));
@@ -776,7 +787,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             final String title = mTitleEditText.getText().toString().trim();
             final String description = mDescriptionEditText.getText().toString().trim();
             final long price = Integer.valueOf(TextUtil.normalizePrice(TextUtil.convertFaNumberToEn(mPriceEditText.getText().toString().trim())));
-            final int catId = mCategoryId;
 
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
@@ -785,8 +795,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             createOrUpdateItemRequest.item.name = title;
             createOrUpdateItemRequest.item.description = description;
             createOrUpdateItemRequest.item.price = price;
-            createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryId;
-            createOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
+            createOrUpdateItemRequest.item.artCategoryId = new ArtCategoryId();
+            if (mCategoryParentId == 0) {
+                createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryId;
+            } else {
+                createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryParentId;
+                createOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
+            }
             createOrUpdateItemRequest.requestProperties = rp;
 
             CreateOrUpdateItemReply createOrUpdateItemReply;
@@ -827,6 +842,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
                                 //TODO
                                 break;
+                            case CreateOrUpdateItemReply.STORE_NOT_CREATED:
+                                //TODO
+                                break;
                             case CreateOrUpdateItemReply.EMPTY_Item:
                                 //TODO
                                 break;
@@ -849,7 +867,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                         dismissProgressDialog();
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_SHORT).show();
+                            //TODO toats
                         }
                         break;
                 }

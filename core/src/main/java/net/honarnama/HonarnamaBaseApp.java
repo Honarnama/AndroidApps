@@ -49,7 +49,8 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String EXTRA_KEY_SUB_CATS = "subCats";
     public static final String EXTRA_KEY_ALL_IRAN = "all_iran";
     public static final String EXTRA_KEY_FILTER_APPLIED = "filter_applied";
-    public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryObjectId";
+    public static final String EXTRA_KEY_CATEGORY_ID = "selectedCategoryId";
+    public static final String EXTRA_KEY_CATEGORY_PARENT_ID = "selectedCategoryParentId";
     public static final String EXTRA_KEY_CATEGORY_NAME = "selectedCategoryName";
 
     public static final String PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID = "default_province_id";

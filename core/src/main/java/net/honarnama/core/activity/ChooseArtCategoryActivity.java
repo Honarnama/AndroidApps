@@ -25,7 +25,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     private Integer mSelectedCategoryObjectId;
     public HashMap<Integer, ArrayList<Integer>> mCategoriesHierarchyHashMap = new HashMap<>();
     public HashMap<Integer, String> mCategoriesNameHashMap = new HashMap<>();
-    public HashMap<Integer, Number> mCategoriesOrderHashMap = new HashMap<>();
+    public HashMap<Integer, Integer> mCategoriesOrderHashMap = new HashMap<>();
 
     public ArrayList<Integer> mNodeCategories = new ArrayList();
     public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap<>();
@@ -78,17 +78,16 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
 
         for (int i = 0; i < artCategories.size(); i++) {
-
             ArtCategory artCategory = artCategories.get(i);
 
-            mCategoriesNameHashMap.put(artCategories.get(i).getId(), artCategories.get(i).getName());
-            mCategoriesOrderHashMap.put(artCategories.get(i).getId(), artCategories.get(i).getOrder());
+            mCategoriesNameHashMap.put(artCategory.getId(), artCategory.getName());
+            mCategoriesOrderHashMap.put(artCategory.getId(), artCategory.getOrder());
 
             if (artCategory.isAllSubCatFilterType() == true) {
                 mFilterSubCatParentHashMap.put(artCategory.getId(), artCategory.getParentId());
             }
 
-            if (artCategory.getParentId() > 0 && artCategory.getParentId() == 0) { //Zero belongs to all categories filter type
+            if (artCategory.getId() == 0) { //Zero belongs to all categories filter type
                 mAllSubCategoriesFilterObjectId = artCategory.getId();
             }
 
@@ -120,19 +119,19 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         mCurrentArtCategoriesObjectIds = new HashMap<>();
 
         if (mSelectedCategoryObjectId == null) {
-            logE("inja, no category is selected yet. mCategoriesHierarchyHashMap size is "+ mCategoriesHierarchyHashMap.size());
+            logE("inja, no category is selected yet. mCategoriesHierarchyHashMap size is " + mCategoriesHierarchyHashMap.size());
 
             //nothing is selected yet
             for (Integer key : mCategoriesHierarchyHashMap.keySet()) {
 
-                int index = mCategoriesOrderHashMap.get(key).intValue();
+                int index = mCategoriesOrderHashMap.get(key);
                 if (mCallingApp.equals(HonarnamaBaseApp.PREF_NAME_SELL_APP)) {
                     index = index - 1;
                 }
                 mCurrentArtCategoriesObjectIds.put(index, key);
                 mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(key));
             }
-            logE("inja, no category is selected yet. mCurrentArtCategoriesName is "+ mCurrentArtCategoriesName);
+            logE("inja, no category is selected yet. mCurrentArtCategoriesName is " + mCurrentArtCategoriesName);
         } else {
             ArrayList<Integer> notSortedCurrentCategoryObjectIds = mCategoriesHierarchyHashMap.get(mSelectedCategoryObjectId);
             for (int i = 0; i < notSortedCurrentCategoryObjectIds.size(); i++) {
@@ -180,7 +179,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         }
 
         for (int key : mCategoriesNameHashMap.keySet()) {
-
             if (!mCategoriesHierarchyHashMap.containsKey(key)) {
                 mNodeCategories.add(key);
             }
@@ -188,17 +186,29 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
     }
 
-    public boolean isNodeCategory(int categoryObjectId) {
-
-        if (mNodeCategories.contains(categoryObjectId)) {
+    public boolean isNodeCategory(int categoryId) {
+        if (mNodeCategories.contains(categoryId)) {
             return true;
         }
         return false;
     }
 
-    public boolean isFilterSubCategoryRowSelected(int categoryObjectId) {
+    public int getParentId(int categoryId) {
+        for (HashMap.Entry<Integer, ArrayList<Integer>> entry : mCategoriesHierarchyHashMap.entrySet()) {
+            int key = entry.getKey();
+            ArrayList<Integer> childs = entry.getValue();
+            if (childs != null) {
+                if (childs.contains(categoryId)) {
+                    return key;
+                }
+            }
+        }
+        return 0;
+    }
 
-        if (mFilterSubCatParentHashMap.containsKey(categoryObjectId)) {
+    public boolean isFilterSubCategoryRowSelected(int categoryId) {
+
+        if (mFilterSubCatParentHashMap.containsKey(categoryId)) {
             return true;
         }
         return false;
@@ -220,6 +230,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME, mCategoriesNameHashMap.get(mSelectedCategoryObjectId));
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, mSelectedCategoryObjectId);
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, getParentId(mSelectedCategoryObjectId));
 
         setResult(RESULT_OK, data);
         finish();

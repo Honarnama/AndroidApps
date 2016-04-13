@@ -32,22 +32,18 @@ public class ArtCategory {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/artCatModel";
 
     public static String TABLE_NAME = DatabaseHelper.TABLE_ART_CATEGORIES;
-    public static String mName;
-    public static int mOrder;
-    public static int mId;
-    public static int mParentId;
-    public static boolean mAllSubCatFilterType;
 
-
-    public ArtCategory() {
-        super();
-    }
+    public String mName;
+    public int mOrder;
+    public int mId;
+    public int mParentId;
+    public int mAllSubCatFilterType;
 
     public boolean isAllSubCatFilterType() {
-        return mAllSubCatFilterType;
+        return (mAllSubCatFilterType == 1) ? true : false;
     }
 
-    public void setAllSubCatFilterType(boolean allSubCatFilterType) {
+    public void setAllSubCatFilterType(int allSubCatFilterType) {
         mAllSubCatFilterType = allSubCatFilterType;
     }
 
@@ -104,7 +100,7 @@ public class ArtCategory {
                 values.put(COL_ART_CAT_PARENT_ID, artCategory.parentId);
                 values.put(COL_ART_CAT_NAME, artCategory.name);
                 values.put(COL_ART_CAT_ORDER, artCategory.order);
-                values.put(COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE, artCategory.allSubCatFilterType);
+                values.put(COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE, (artCategory.allSubCatFilterType == true) ? 1 : 0);
                 db.insertOrThrow(TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
@@ -165,8 +161,7 @@ public class ArtCategory {
                 artCategory.setName(cursor.getString(cursor.getColumnIndex(COL_ART_CAT_NAME)));
                 artCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ORDER)));
                 artCategory.setParentId(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_PARENT_ID)));
-                boolean isAllSubCatFilterType = cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE)) > 0;
-                artCategory.setAllSubCatFilterType(isAllSubCatFilterType);
+                artCategory.setAllSubCatFilterType(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE)));
                 tcs.trySetResult(artCategory);
             } else {
                 tcs.trySetError(new Exception("ArtCatNotFound"));
@@ -201,13 +196,16 @@ public class ArtCategory {
 
         try {
             if (cursor.moveToFirst()) {
-                do {
+                while (!cursor.isAfterLast()) {
                     ArtCategory artCategory = new ArtCategory();
                     artCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ID)));
+                    artCategory.setParentId(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_PARENT_ID)));
+                    artCategory.setAllSubCatFilterType(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE)));
                     artCategory.setName(cursor.getString(cursor.getColumnIndex(COL_ART_CAT_NAME)));
                     artCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_ART_CAT_ORDER)));
                     artCategories.add(artCategory);
-                } while (cursor.moveToNext());
+                    cursor.moveToNext();
+                }
             }
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
