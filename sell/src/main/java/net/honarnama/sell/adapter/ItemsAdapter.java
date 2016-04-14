@@ -6,16 +6,25 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.core.model.Item;
+import net.honarnama.nano.DeleteItemReply;
+import net.honarnama.nano.GetOrDeleteItemRequest;
 import net.honarnama.nano.HonarnamaProto;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SellServiceGrpc;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
+import net.honarnama.sell.fragments.ItemsFragment;
+import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +34,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by reza on 11/5/15.
@@ -120,28 +131,7 @@ public class ItemsAdapter extends BaseAdapter {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                final ProgressDialog progressDialog = new ProgressDialog(mContext);
-                                progressDialog.setCancelable(false);
-                                progressDialog.setMessage(mContext.getString(R.string.please_wait));
-                                progressDialog.show();
-
-//TODO item delete
-//                                Item.deleteItem(mContext, item.id).continueWith(new Continuation<Void, Object>() {
-//                                    @Override
-//                                    public Object then(Task<Void> task) throws Exception {
-//                                        progressDialog.dismiss();
-//                                        if (task.isFaulted()) {
-//                                            if (mContext != null) {
-//                                                Toast.makeText(mContext, "حذف محصول با خطا مواجه شد." + mContext.getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        } else {
-//                                            mItems.remove(position);
-//                                            notifyDataSetChanged();
-//                                        }
-//                                        return null;
-//                                    }
-//                                });
-
+                                new deleteItemAsync().execute(position);
                             }
                         })
                         .setNegativeButton("نه اشتباه شد.", null).show();
@@ -184,6 +174,99 @@ public class ItemsAdapter extends BaseAdapter {
             waitingToBeConfirmedTextView = (TextView) view.findViewById(R.id.waiting_to_be_confirmed_text_view);
             itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_container);
             itemIcomLoadingPanel = (RelativeLayout) view.findViewById(R.id.item_icon_loading_panel);
+        }
+    }
+
+
+    public class deleteItemAsync extends AsyncTask<Integer, Void, DeleteItemReply> {
+        ProgressDialog progressDialog;
+        ItemsFragment itemsFragment = ItemsFragment.getInstance();
+        int itemPosition;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(mContext.getString(R.string.please_wait));
+            if (ItemsFragment.getInstance().getActivity() != null && ItemsFragment.getInstance().isVisible()) {
+                progressDialog.show();
+            }
+        }
+
+        @Override
+        protected DeleteItemReply doInBackground(Integer... position) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+
+            GetOrDeleteItemRequest getOrDeleteItemRequest = new GetOrDeleteItemRequest();
+            getOrDeleteItemRequest.requestProperties = rp;
+            itemPosition = position[0];
+            getOrDeleteItemRequest.id = mItems.get(itemPosition).id;
+            DeleteItemReply deleteItemReply;
+
+            try {
+                SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
+                deleteItemReply = stub.deleteItem(getOrDeleteItemRequest);
+                return deleteItemReply;
+            } catch (InterruptedException e) {
+                //TODO log
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(DeleteItemReply deleteItemReply) {
+            super.onPostExecute(deleteItemReply);
+            Log.e("inja", "deleteItemReply is " + deleteItemReply);
+            //TODO use this checking in other async too (In others it is reversed!!!!
+            if (itemsFragment.getActivity() != null) {
+                if (!itemsFragment.getActivity().isFinishing() && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            }
+            if (deleteItemReply != null) {
+                switch (deleteItemReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) itemsFragment.getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (deleteItemReply.errorCode) {
+                            case DeleteItemReply.ITEM_NOT_FOUND:
+                                //TODO does this error arise at all?
+                                break;
+                            case DeleteItemReply.FORBIDDEN:
+                                //TODO
+                                break;
+                            case DeleteItemReply.NO_CLIENT_ERROR:
+                                //TODO bug report
+                                break;
+                        }
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        if (itemsFragment.isVisible()) {
+                            //TODO
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO toast
+                        HonarnamaUser.logout(itemsFragment.getActivity());
+                        break;
+
+                    case ReplyProperties.OK:
+                        mItems.remove(itemPosition);
+                        notifyDataSetChanged();
+                        //TODO toast
+                        break;
+                }
+
+            } else {
+                //TODO toast
+            }
         }
     }
 }
