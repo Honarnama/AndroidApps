@@ -396,8 +396,10 @@ message Event {
   // Represents seconds of UTC time since Unix epoch
   int64 startAt = 10;
   int64 endAt = 11;
-  string banner = 12; // Just for gets
-  ReviewStatus reviewStatus = 13; // Will be ignored in create and update
+  string cellNumber = 12;
+  string phoneNumber = 13;
+  string banner = 14; // Just for gets
+  ReviewStatus reviewStatus = 15; // Will be ignored in create and update
 }
 
 message GetEventReply {
