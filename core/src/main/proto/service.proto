@@ -360,7 +360,7 @@ message CreateOrUpdateItemReply {
     NO_CLIENT_ERROR = 0;
     FORBIDDEN = 1;
     ITEM_NOT_FOUND = 2; // Only while updating
-    EMPTY_Item = 3; // Only while updating
+    EMPTY_ITEM = 3; // Only while updating
     STORE_NOT_CREATED = 4;
     // INVALID_NAME = 5;
     // INVALID_DESC = 6;
