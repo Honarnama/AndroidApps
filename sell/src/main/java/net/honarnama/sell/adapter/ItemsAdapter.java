@@ -58,7 +58,7 @@ public class ItemsAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public net.honarnama.nano.Item getItem(int position) {
         return mItems.get(position);
     }
 
@@ -142,9 +142,8 @@ public class ItemsAdapter extends BaseAdapter {
         mViewHolder.editContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Item item = (Item) getItem(position);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
-                controlPanelActivity.switchFragmentToEditItem(item.getId());
+                controlPanelActivity.switchFragmentToEditItem(mItems.get(position).id);
             }
         });
         return convertView;

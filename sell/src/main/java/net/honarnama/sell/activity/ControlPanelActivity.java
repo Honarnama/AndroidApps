@@ -341,7 +341,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
     }
 
-    public void switchFragmentToEditItem(int itemId) {
+    public void switchFragmentToEditItem(long itemId) {
         mEditItemFragment.setItemId(ControlPanelActivity.this, itemId);
         switchFragment(mEditItemFragment);
     }

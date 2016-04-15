@@ -4,6 +4,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
@@ -11,9 +15,11 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.model.Item;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.PriceFormatterTextWatcher;
+import net.honarnama.core.utils.TextUtil;
 import net.honarnama.nano.ArtCategoryId;
 import net.honarnama.nano.CreateOrUpdateItemReply;
 import net.honarnama.nano.CreateOrUpdateItemRequest;
@@ -23,13 +29,10 @@ import net.honarnama.nano.HonarnamaProto;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
-import net.honarnama.sell.model.HonarnamaUser;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.PriceFormatterTextWatcher;
-import net.honarnama.core.utils.TextUtil;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
+import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.AwsUploader;
 
 import android.app.ProgressDialog;
@@ -45,6 +48,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +103,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private Tracker mTracker;
 
     ProgressDialog mProgressDialog;
+    private RelativeLayout[] mItemImageLoadingPannel;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -131,7 +137,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mCreateNew = createNew;
     }
 
-    public void setItemId(Context context, int itemId) {
+    public void setItemId(Context context, long itemId) {
         reset(context, false);
         mItemId = itemId;
     }
@@ -191,6 +197,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             startActivity(intent);
         }
 
+
         mFragmentHasView = true;
         final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
@@ -234,6 +241,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 (ImageSelector) rootView.findViewById(R.id.itemImage3),
                 (ImageSelector) rootView.findViewById(R.id.itemImage4)
         };
+
+        mItemImageLoadingPannel = new RelativeLayout[]{
+                (RelativeLayout) rootView.findViewById(R.id.loadingPanel_1),
+                (RelativeLayout) rootView.findViewById(R.id.loadingPanel_2),
+                (RelativeLayout) rootView.findViewById(R.id.loadingPanel_3),
+                (RelativeLayout) rootView.findViewById(R.id.loadingPanel_4)
+        };
+
         for (ImageSelector imageSelector : mItemImages) {
             imageSelector.setActivity(getActivity());
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
@@ -628,7 +643,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
-                        setItemInfo(getItemReply.item);
+                        setItemInfo(getItemReply.item, true);
                         break;
                 }
 
@@ -646,7 +661,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
     }
 
-    public void setItemInfo(net.honarnama.nano.Item item) {
+    public void setItemInfo(net.honarnama.nano.Item item, boolean loadImages) {
         mItem = item;
         mItemId = item.id;
 
@@ -675,6 +690,46 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 return null;
             }
         });
+
+        logE("inja item is: " + item);
+
+        if (loadImages) {
+            for (int i = 0; i < 4; i++) {
+                if (!TextUtils.isEmpty(item.images[i])) {
+                    String itemImage = item.images[i];
+
+                    mItemImageLoadingPannel[i].setVisibility(View.VISIBLE);
+                    mItemImages[i].setVisibility(View.GONE);
+
+                    final int index = i;
+
+                    Picasso.with(getActivity()).load(itemImage)
+                            .error(R.drawable.camera_insta)
+                            .memoryPolicy(MemoryPolicy.NO_CACHE)
+                            .networkPolicy(NetworkPolicy.NO_CACHE)
+                            .into(mItemImages[i], new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    logE("inja , image load succeed");
+                                    mItemImageLoadingPannel[index].setVisibility(View.GONE);
+                                    mItemImages[index].setVisibility(View.VISIBLE);
+                                    mItemImages[index].setFileSet(true);
+                                }
+
+                                @Override
+                                public void onError() {
+                                    //TODO toast
+                                    logE("inja , image load failed");
+//                                    mItemImageLoadingPannel[index].setVisibility(View.GONE);
+                                    mItemImages[index].setVisibility(View.VISIBLE);
+                                }
+                            });
+
+                }
+
+            }
+        }
+
     }
 
     public class CreateOrUpdateItemAsync extends AsyncTask<Void, Void, CreateOrUpdateItemReply> {
@@ -702,6 +757,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             CreateOrUpdateItemRequest createOrUpdateItemRequest = new CreateOrUpdateItemRequest();
             createOrUpdateItemRequest.item = new net.honarnama.nano.Item();
+            createOrUpdateItemRequest.item.id = mItemId;
             createOrUpdateItemRequest.item.name = title;
             createOrUpdateItemRequest.item.description = description;
             createOrUpdateItemRequest.item.price = price;
@@ -727,6 +783,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             createOrUpdateItemRequest.requestProperties = rp;
 
+            logE("inja createOrUpdateItemRequest is " + createOrUpdateItemRequest);
             CreateOrUpdateItemReply createOrUpdateItemReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -789,7 +846,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
-                        setItemInfo(createOrUpdateItemReply.uptodateItem);
+                        setItemInfo(createOrUpdateItemReply.uptodateItem, false);
 
                         ArrayList<Task<Void>> tasks = new ArrayList<>();
                         for (int i = 0; i < mItemImages.length; i++) {
