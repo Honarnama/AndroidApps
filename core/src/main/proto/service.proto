@@ -422,7 +422,6 @@ message CreateOrUpdateEventReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    DUPLICATE_NAME = 2;
     STORE_NOT_CREATED = 3; // Only while creating
     EVENT_NOT_FOUND = 4; // Only while updating
     EMPTY_EVENT = 5; // Only while updating
