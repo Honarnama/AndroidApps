@@ -181,8 +181,7 @@ public class ArtCategory {
         return tcs.getTask();
     }
 
-    public static List<ArtCategory> getAllArtCategories(boolean includeAllSubCatFiltertypes) {
-//        final TaskCompletionSource<List<ArtCategory>> tcs = new TaskCompletionSource<>();
+    public static List<ArtCategory> getAllArtCategoriesSorted(boolean includeAllSubCatFiltertypes) {
 
         List<ArtCategory> artCategories = new ArrayList<>();
 

@@ -23,6 +23,7 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
  * Created by elnaz on 3/28/16.
  */
 public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
+    //TODO why meta upadating freezez ui at first time loading
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/metaUpdater";
 
     public Context mContext;

@@ -71,9 +71,9 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
 
         List<ArtCategory> artCategories;
         if (mCallingApp == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
-            artCategories = ArtCategory.getAllArtCategories(true);
+            artCategories = ArtCategory.getAllArtCategoriesSorted(true);
         } else {
-            artCategories = ArtCategory.getAllArtCategories(false);
+            artCategories = ArtCategory.getAllArtCategoriesSorted(false);
         }
 
 

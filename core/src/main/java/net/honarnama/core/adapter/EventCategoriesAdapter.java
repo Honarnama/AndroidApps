@@ -20,29 +20,18 @@ import java.util.TreeMap;
  */
 public class EventCategoriesAdapter extends BaseAdapter {
     private final Context mContext;
-    public TreeMap<Number, EventCategory> mEventCategoryObjectsTreeMap;
-    public List<String> mCategoryNameList = new ArrayList<>();
-    public List<Integer> mCategoryIdsList = new ArrayList<>();
+    List<EventCategory> mEventCategories = new ArrayList<>();
 
-    public EventCategoriesAdapter(Context context, TreeMap<Number, EventCategory> categoryTreeMap) {
+    public EventCategoriesAdapter(Context context, List<EventCategory> categories) {
         super();
         mContext = context;
-        mEventCategoryObjectsTreeMap = categoryTreeMap;
-
-        if (mEventCategoryObjectsTreeMap != null) {
-            for (EventCategory eventCategory : mEventCategoryObjectsTreeMap.values()) {
-                mCategoryIdsList.add(eventCategory.getId());
-                mCategoryNameList.add(eventCategory.getName());
-            }
-        }
-
-
+        mEventCategories = categories;
     }
 
     @Override
     public int getCount() {
-        if (mEventCategoryObjectsTreeMap != null) {
-            return mEventCategoryObjectsTreeMap.size();
+        if (mEventCategories != null) {
+            return mEventCategories.size();
         }
         return 0;
     }
@@ -62,12 +51,12 @@ public class EventCategoriesAdapter extends BaseAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = layoutInflater.inflate(R.layout.province_row, parent, false);
 
-        TextView provinceNameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
+        TextView nameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
         if (position == 0) {
-            provinceNameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
+            nameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
         }
 
-        provinceNameTextView.setText(mCategoryNameList.get(position));
+        nameTextView.setText(mEventCategories.get(position).getName());
         return rowView;
     }
 }

@@ -308,114 +308,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     new getItemAsync().execute();
                 }
 
-//                if (mItemId >= 0) {
-//                    showLoadingDialog();
-//
-//                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//                        return null;
-//                    }
-//
-//                    query.getInBackground(mItemId, new GetCallback<Item>() {
-//                        @Override
-//                        public void done(Item item, ParseException e) {
-//                            hideLoadingDialog();
-//                            if (e != null) {
-//                                logE("Exception while loading item_row. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "mItemId= " + mItemId, e);
-//                                if (isVisible()) {
-//                                    Toast.makeText(getActivity(), getString(R.string.error_loading_item) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                }
-//                            } else {
-//                                // TODO: check if still we need this
-//                                mItem = item;
-//                                mTitleEditText.setText(mItem.getName());
-//                                mDescriptionEditText.setText(mItem.getDescription());
-//                                mPriceEditText.setText(mItem.getPrice() + "");
-//                                mCategoryId = mItem.getCategory().getId();
-//                                mChooseCategoryButton.setText(getString(R.string.getting_information));
-//                                new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
-//                                    @Override
-//                                    public Object then(Task<String> task) throws Exception {
-//                                        if (task.isFaulted()) {
-//                                            if (isVisible()) {
-//                                                Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        } else {
-//                                            mChooseCategoryButton.setText(task.getResult());
-//                                        }
-//                                        return null;
-//                                    }
-//                                });
-//
-//                                ParseFile[] images = mItem.getImages();
-//
-//                                int counter = -1;
-//                                for (int i = 0; i < Item.NUMBER_OF_IMAGES; i++) {
-//                                    if (images[i] != null) {
-//                                        counter++;
-//                                        switch (counter) {
-//                                            case 0:
-//                                                rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.VISIBLE);
-//                                                rootView.findViewById(R.id.itemImage1).setVisibility(View.GONE);
-//                                                break;
-//                                            case 1:
-//                                                rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.VISIBLE);
-//                                                rootView.findViewById(R.id.itemImage2).setVisibility(View.GONE);
-//                                                break;
-//                                            case 2:
-//                                                rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.VISIBLE);
-//                                                rootView.findViewById(R.id.itemImage3).setVisibility(View.GONE);
-//                                                break;
-//                                            case 3:
-//                                                rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.VISIBLE);
-//                                                rootView.findViewById(R.id.itemImage4).setVisibility(View.GONE);
-//                                                break;
-//                                        }
-//                                        final int finalCounter = counter;
-//                                        mItemImages[counter].loadInBackground(images[i], new GetDataCallback() {
-//                                            @Override
-//                                            public void done(byte[] data, ParseException e) {
-//                                                switch (finalCounter) {
-//                                                    case 0:
-//                                                        rootView.findViewById(R.id.loadingPanel_1).setVisibility(View.GONE);
-//                                                        rootView.findViewById(R.id.itemImage1).setVisibility(View.VISIBLE);
-//                                                        break;
-//                                                    case 1:
-//                                                        rootView.findViewById(R.id.loadingPanel_2).setVisibility(View.GONE);
-//                                                        rootView.findViewById(R.id.itemImage2).setVisibility(View.VISIBLE);
-//                                                        break;
-//                                                    case 2:
-//                                                        rootView.findViewById(R.id.loadingPanel_3).setVisibility(View.GONE);
-//                                                        rootView.findViewById(R.id.itemImage3).setVisibility(View.VISIBLE);
-//                                                        break;
-//                                                    case 3:
-//                                                        rootView.findViewById(R.id.loadingPanel_4).setVisibility(View.GONE);
-//                                                        rootView.findViewById(R.id.itemImage4).setVisibility(View.VISIBLE);
-//                                                        break;
-//                                                }
-//                                                if (e == null) {
-//                                                    if (data != null) {
-//                                                        if (BuildConfig.DEBUG) {
-//                                                            logD("Fetched! Data length: " + data.length);
-//                                                        }
-//                                                    }
-//                                                } else {
-//                                                    if (isVisible()) {
-//                                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_image) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-//                                                    }
-//
-//                                                    logE("Exception while loading image. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                                                }
-//                                            }
-//                                        });
-//                                    }
-//                                }
-//                                mDirty = false;
-//                            }
-//                        }
-//                    });
-//                } else {
-////                    logE("Unexpected state!");
-//                }
             }
         }
 
@@ -424,18 +316,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         return rootView;
     }
 
-    private void showLoadingDialog() {
-        if (mLoadingDialog == null || !mLoadingDialog.isShowing()) {
-            mLoadingDialog = ProgressDialog.show(getActivity(), "", getString(R.string.please_wait), false);
-            mLoadingDialog.setCancelable(false);
-        }
-    }
-
-    private void hideLoadingDialog() {
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.hide();
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -533,7 +413,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         switch (requestCode) {
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
-
                 if (resultCode == getActivity().RESULT_OK) {
                     mCategoryTextView.setError(null);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
@@ -827,7 +706,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             case CreateOrUpdateItemReply.STORE_NOT_CREATED:
                                 //TODO
                                 break;
-                            case CreateOrUpdateItemReply.EMPTY_Item:
+                            case CreateOrUpdateItemReply.EMPTY_ITEM:
                                 //TODO
                                 break;
                         }

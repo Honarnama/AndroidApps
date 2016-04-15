@@ -102,6 +102,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //TODO test network connectivity
+        //TODO fix progress dialog exception in all fragemnts
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);

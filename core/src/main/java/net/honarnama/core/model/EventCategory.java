@@ -29,13 +29,9 @@ public class EventCategory {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventCatModel";
 
     public static String TABLE_NAME = DatabaseHelper.TABLE_EVENT_CATEGORIES;
-    public static int mOrder;
-    public static String mName;
-    public static int mId;
-
-
-    public TreeMap<Number, HashMap<String, String>> mEventCatsTreeMap = new TreeMap<Number, HashMap<String, String>>();
-    public TreeMap<Number, EventCategory> mEventCatObjectTreeMap = new TreeMap<Number, EventCategory>();
+    public int mOrder;
+    public String mName;
+    public int mId;
 
     public EventCategory() {
         super();
@@ -82,11 +78,31 @@ public class EventCategory {
             for (int i = 0; i < eventCategories.length; i++) {
                 ContentValues values = new ContentValues();
                 net.honarnama.nano.EventCategory eventCategory = eventCategories[i];
+
+                Log.e("inja", "eventCategory name " + eventCategory.name);
                 values.put(COL_EVENT_CAT_ID, eventCategory.id);
                 values.put(COL_EVENT_CAT_NAME, eventCategory.name);
                 db.insertOrThrow(TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
+            db.endTransaction();
+
+            //TODO remove below test block
+            SQLiteDatabase db2 = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+            String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
+            Cursor cursor = db2.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    EventCategory eventCategory = new EventCategory();
+                    eventCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ID)));
+                    eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
+                    eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
+                    Log.e("inja", "1/eventCategory is" + eventCategory.getName());
+                    cursor.moveToNext();
+                }
+            }
+
             tcs.trySetResult(null);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
@@ -94,41 +110,15 @@ public class EventCategory {
             } else {
                 Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e);
             }
+            db.endTransaction();
             tcs.trySetError(e);
         } finally {
-            db.endTransaction();
+
         }
         return tcs.getTask();
     }
 
-    public Task<TreeMap<Number, EventCategory>> getAllEventCategoriesSorted() {
-
-        final TaskCompletionSource<TreeMap<Number, EventCategory>> tcs = new TaskCompletionSource<>();
-
-        findEventCatsAsync().continueWith(new Continuation<List<EventCategory>, Object>() {
-            @Override
-            public Object then(Task<List<EventCategory>> task) throws Exception {
-                if (task.isFaulted()) {
-                    tcs.trySetError(task.getError());
-                } else {
-                    List<EventCategory> categories = task.getResult();
-                    for (int i = 0; i < categories.size(); i++) {
-                        EventCategory eventCategory = categories.get(i);
-                        mEventCatObjectTreeMap.put(eventCategory.getOrder(), eventCategory);
-                    }
-                    tcs.trySetResult(mEventCatObjectTreeMap);
-                }
-
-                return null;
-            }
-        });
-
-        return tcs.getTask();
-    }
-
-
-    public Task<List<EventCategory>> findEventCatsAsync() {
-        final TaskCompletionSource<List<EventCategory>> tcs = new TaskCompletionSource<>();
+    public static List<EventCategory> getAllEventCategoriesSorted() {
 
         List<EventCategory> eventCategories = new ArrayList<>();
 
@@ -138,29 +128,31 @@ public class EventCategory {
 
         try {
             if (cursor.moveToFirst()) {
-                do {
+                while (!cursor.isAfterLast()) {
                     EventCategory eventCategory = new EventCategory();
                     eventCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ID)));
                     eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
                     eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
                     eventCategories.add(eventCategory);
-                } while (cursor.moveToNext());
+                    Log.e("inja", "2/eventCategory is" + eventCategory.getName());
+//                    eventCategoryTreeMap.put(eventCategory.getOrder(), eventCategory);
+                    cursor.moveToNext();
+                }
             }
-            tcs.trySetResult(eventCategories);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get event categories from database", e);
             } else {
                 Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event categories from database // Error: " + e);
             }
-            tcs.trySetError(e);
         } finally {
             if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
             }
         }
 
-        return tcs.getTask();
+        Log.e("inja", "eventCategories in model is :" + eventCategories);
+        return eventCategories;
     }
 
     public static EventCategory getCategoryById(int categoryId) {

@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
-import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -80,7 +79,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     private View mBannerFrameLayout;
 
-    private EditText mProvinceEditEext;
+    private EditText mProvinceEditText;
     public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
@@ -159,9 +158,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
 
-        mProvinceEditEext = (EditText) rootView.findViewById(R.id.store_province_edit_text);
-        mProvinceEditEext.setOnClickListener(this);
-        mProvinceEditEext.setKeyListener(null);
+        mProvinceEditText = (EditText) rootView.findViewById(R.id.store_province_edit_text);
+        mProvinceEditText.setOnClickListener(this);
+        mProvinceEditText.setKeyListener(null);
 
         mCityEditEext = (EditText) rootView.findViewById(R.id.store_city_edit_text);
         mCityEditEext.setOnClickListener(this);
@@ -207,7 +206,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
 
-        new getStoreAsync().execute();
+
         new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
             //TODO if meta is not updated
             @Override
@@ -223,7 +222,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         }
                         mProvincesHashMap.put(province.getId(), province.getName());
                     }
-                    mProvinceEditEext.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
                 }
                 return null;
             }
@@ -261,6 +260,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 return null;
             }
         });
+
+        new getStoreAsync().execute();
 
         return rootView;
     }
@@ -339,7 +340,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
                 mSelectedProvinceId = selectedProvince.getId();
                 mSelectedProvinceName = selectedProvince.getName();
-                mProvinceEditEext.setText(mSelectedProvinceName);
+                mProvinceEditText.setText(mSelectedProvinceName);
                 rePopulateCityList();
                 provinceDialog.dismiss();
             }
@@ -415,8 +416,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }
 
         if (mSelectedProvinceId < 0) {
-            mProvinceEditEext.requestFocus();
-            mProvinceEditEext.setError(getString(R.string.error_store_province_not_set));
+            mProvinceEditText.requestFocus();
+            mProvinceEditText.setError(getString(R.string.error_store_province_not_set));
         }
 
         if (mSelectedCityId < 0) {
@@ -465,118 +466,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mBannerImageView.onActivityResult(requestCode, resultCode, intent);
     }
 
-    private void saveStore_() {
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-
-//        ParseQuery<Store> query = ParseQuery.getQuery(Store.class);
-//        query.whereEqualTo(Store.OWNER, HonarnamaUser.getCurrentUser());
-//        query.getFirstInBackground(
-//                new GetCallback<Store>() {
-//                    @Override
-//                    public void done(final Store store, ParseException e) {
-//                        final Store storeObject;
-//                        if (e == null) {
-//                            storeObject = store;
-//                            mIsNew = false;
-//                        } else {
-//                            if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-//                                storeObject = new Store();
-//                                storeObject.setOwner(HonarnamaUser.getCurrentUser());
-//                                mIsNew = true;
-//                            } else {
-//                                mSendingDataProgressDialog.dismiss();
-//                                if (isVisible()) {
-//                                    Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                }
-//                                logE("Error changing Store Info. Code: " + e.getCode() + " //  Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                                return;
-//                            }
-//                        }
-//
-//                        Province province = Province.getProvinceById(mSelectedProvinceId);
-//                        City city = City.getCityById(mSelectedCityId);
-//
-//                        if (province == null || city == null) {
-//                            mSendingDataProgressDialog.dismiss();
-//                            if (isVisible()) {
-//                                Toast.makeText(getActivity(), getString(R.string.error_updating_store_info) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                            }
-//                        } else {
-//                            storeObject.setProvince(province);
-//                            storeObject.setCity(city);
-//
-//
-//                            storeObject.setName(mNameEditText.getText().toString().trim());
-//                            storeObject.setDescription(mDescriptionEditText.getText().toString().trim());
-//                            storeObject.setPhoneNumber(mPhoneNumberEditText.getText().toString().trim());
-//                            storeObject.setCellNumber(mCellNumberEditText.getText().toString().trim());
-//
-//                            if (mLogoImageView.isDeleted()) {
-//                                storeObject.remove(Store.LOGO);
-//                            } else if (mLogoImageView.isChanged() && mParseFileLogo != null) {
-//                                storeObject.setLogo(mParseFileLogo);
-//                            }
-//
-//                            if (mBannerImageView.isDeleted()) {
-//                                storeObject.remove(Store.BANNER);
-//                            } else if (mBannerImageView.isChanged() && mParseFileBanner != null) {
-//                                storeObject.setBanner(mParseFileBanner);
-//                            }
-//
-//                            storeObject.saveInBackground(new SaveCallback() {
-//                                @Override
-//                                public void done(ParseException e) {
-//                                    mSendingDataProgressDialog.dismiss();
-//                                    if (e == null) {
-//                                        if (isVisible()) {
-//                                            Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_LONG).show();
-//                                        }
-//                                        storeObject.pinInBackground();
-//                                        if (mIsNew) {
-//                                            Item.setUserItemsStore(storeObject);
-//                                        }
-//                                    } else {
-//                                        logE("Saving store failed. Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-//                                        try {
-//                                            JSONObject error = new JSONObject(e.getMessage());
-//                                            if ((error.has("code")) && error.get("code").toString().equals("3001")) {
-//                                                if (isVisible()) {
-//                                                    Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_LONG).show();
-//                                                    mNameEditText.setError(getString(R.string.store_name_already_exists));
-//                                                }
-//                                            } else if ((error.has("code")) && error.get("code").toString().equals("3002")) {
-//                                                Toast.makeText(getActivity(), getString(R.string.you_own_another_store_or_u_r_not_the_right_owner), Toast.LENGTH_LONG).show();
-//                                            } else {
-//                                                if (isVisible()) {
-//                                                    Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                                }
-//                                            }
-//                                        } catch (JSONException e1) {
-//                                            logE("Saving store failed (JSONException). Code" + e.getCode() + "// Msg: " + e.getMessage() + " // error: " + e, "", e);
-//                                            if (isVisible()) {
-//                                                Toast.makeText(getActivity(), getString(R.string.saving_store_info_failed) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                            }
-//                                        }
-//                                    }
-//
-//                                }
-//                            });
-//
-//                        }
-//                    }
-//
-//                }
-//        );
-        // TODO save store
-    }
-
-    private void setStoreInfo(net.honarnama.nano.Store store, boolean postExecuteOfCreateOrUpdateStore) {
+    private void setStoreInfo(net.honarnama.nano.Store store, boolean loadImages) {
         logE("inja", "store is: " + store.toString());
         if (store != null) {
             mIsNew = false;
@@ -597,7 +487,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (province != null) {
-                mProvinceEditEext.setText(province.getName());
+                mProvinceEditText.setText(province.getName());
                 mSelectedProvinceId = province.getId();
             }
 
@@ -611,27 +501,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
             }
 
-            if (!postExecuteOfCreateOrUpdateStore && !TextUtils.isEmpty(store.logo)) {
+            if (loadImages && !TextUtils.isEmpty(store.logo)) {
                 logE("inja", "start loading logo is...");
 
                 mLogoProgressBar.setVisibility(View.VISIBLE);
-                //TODO load logo
-//                        mLogoImageView.loadInBackground(store.getLogo(), new GetDataCallback() {
-//                            @Override
-//                            public void done(byte[] data, ParseException e) {
-//                                mLogoProgressBar.setVisibility(View.GONE);
-//                                if (e != null) {
-//                                    logE("Getting  logo image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
-//                                    if (progressDialog.isShowing()) {
-//                                        progressDialog.dismiss();
-//                                    }
-//                                    if (isVisible()) {
-//                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                    }
-//                                }
-//                            }
-//                        });
-
                 Picasso.with(getActivity()).load(store.logo)
                         .error(R.drawable.default_logo_hand)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -652,24 +525,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
             //TODO load banner
 
-            if (!postExecuteOfCreateOrUpdateStore && !TextUtils.isEmpty(store.banner)) {
+            if (loadImages && !TextUtils.isEmpty(store.banner)) {
                 logE("inja", "start loading banner is...");
                 mBannerProgressBar.setVisibility(View.VISIBLE);
-//                        mBannerImageView.loadInBackground(store.getBanner(), new GetDataCallback() {
-//                            @Override
-//                            public void done(byte[] data, ParseException e) {
-//                                mBannerProgressBar.setVisibility(View.GONE);
-//                                if (e != null) {
-//                                    logE("Getting  banner image failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                                    if (progressDialog.isShowing()) {
-//                                        progressDialog.dismiss();
-//                                    }
-//                                    if (isVisible()) {
-//                                        Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                    }
-//                                }
-//                            }
-//                        });
 
                 Picasso.with(getActivity()).load(store.banner)
                         .error(R.drawable.party_flags)
@@ -791,7 +649,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.OK:
-                        setStoreInfo(getStoreReply.store, false);
+                        setStoreInfo(getStoreReply.store, true);
                         break;
                 }
 
@@ -831,8 +689,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest.store.locationId = new LocationId();
             createOrUpdateStoreRequest.store.locationId.provinceId = mSelectedProvinceId;
             createOrUpdateStoreRequest.store.locationId.cityId = mSelectedCityId;
-
-            createOrUpdateStoreRequest.store.id = mStoreId;
 
             if (mLogoImageView.isDeleted()) {
                 logE("inja Delete logo");
@@ -917,7 +773,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.OK:
-                        setStoreInfo(createOrUpdateStoreReply.uptodateStore, true);
+                        setStoreInfo(createOrUpdateStoreReply.uptodateStore, false);
 
                         if (TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl)) {
                             if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
