@@ -1,10 +1,5 @@
 package net.honarnama.core.fragment;
 
-
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -142,33 +137,33 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 params.put("subject", subject);
                 params.put("fromEmail", email);
 
-                ParseCloud.callFunctionInBackground("sendMail", params, new FunctionCallback<Object>() {
-                    @Override
-                    public void done(Object response, ParseException parseException) {
-
-                        mContactButton.setText(getString(R.string.send));
-                        mContactButton.setEnabled(true);
-                        mContactButton.setClickable(true);
-
-                        mSubject.setEnabled(true);
-                        mBody.setEnabled(true);
-                        mPhone.setEnabled(true);
-                        mEmail.setEnabled(true);
-
-                        if (parseException != null) {
-                            logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            mSubject.setText("");
-                            mBody.setText("");
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.contact_sent_successfully), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                });
+//                ParseCloud.callFunctionInBackground("sendMail", params, new FunctionCallback<Object>() {
+//                    @Override
+//                    public void done(Object response, ParseException parseException) {
+//
+//                        mContactButton.setText(getString(R.string.send));
+//                        mContactButton.setEnabled(true);
+//                        mContactButton.setClickable(true);
+//
+//                        mSubject.setEnabled(true);
+//                        mBody.setEnabled(true);
+//                        mPhone.setEnabled(true);
+//                        mEmail.setEnabled(true);
+//
+//                        if (parseException != null) {
+//                            logE("Sending Mail Failed. " + "Response: " + response, "", parseException);
+//                            if (isVisible()) {
+//                                Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                            }
+//                        } else {
+//                            mSubject.setText("");
+//                            mBody.setText("");
+//                            if (isVisible()) {
+//                                Toast.makeText(getActivity(), getString(R.string.contact_sent_successfully), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    }
+//                });
 
 
             }

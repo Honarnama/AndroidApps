@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
-import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -116,7 +115,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public TextView mEndLabelTextView;
 
     ProgressDialog mSendingDataProgressDialog;
-    ParseFile mParseFileBanner;
 
     public int mSelectedProvinceId = -1;
     public String mSelectedProvinceName;

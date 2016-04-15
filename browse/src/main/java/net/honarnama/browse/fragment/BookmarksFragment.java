@@ -1,8 +1,6 @@
 package net.honarnama.browse.fragment;
 
 
-import com.parse.ParseQueryAdapter;
-
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -20,8 +18,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import java.util.List;
 
 /**
  * Created by elnaz on 2/11/16.

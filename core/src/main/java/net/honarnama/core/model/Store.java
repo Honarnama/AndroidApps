@@ -1,7 +1,5 @@
 package net.honarnama.core.model;
 
-import com.parse.ParseClassName;
-
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.core.utils.NetworkManager;
 
@@ -14,7 +12,6 @@ import bolts.TaskCompletionSource;
 /**
  * Created by elnaz on 1/5/16.
  */
-@ParseClassName("Store")
 public class Store {
 
     public Store() {

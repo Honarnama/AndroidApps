@@ -1,11 +1,5 @@
 package net.honarnama.sell.model;
 
-import com.parse.FunctionCallback;
-import com.parse.LogInCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.sell.activity.LoginActivity;
 
@@ -13,8 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-
-import java.util.HashMap;
 
 /**
  * Created by elnaz on 7/26/15.
@@ -115,13 +107,13 @@ public class HonarnamaUser {
         ActivationMethod(String verificationFieldName) {
             this.verificationFieldName = verificationFieldName;
         }
-
-        public boolean isUserVerified(ParseUser user) {
-            if (verificationFieldName != null) {
-                return user.getBoolean(verificationFieldName);
-            }
-            return false;
-        }
+//
+//        public boolean isUserVerified(ParseUser user) {
+//            if (verificationFieldName != null) {
+//                return user.getBoolean(verificationFieldName);
+//            }
+//            return false;
+//        }
     }
 
     public static String getUsername() {

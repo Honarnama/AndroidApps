@@ -3,10 +3,6 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.RequestPasswordResetCallback;
-
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
@@ -67,23 +63,23 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
                 mWaitingProgressDialog.setCancelable(false);
                 mWaitingProgressDialog.show();
 
-                ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        mWaitingProgressDialog.dismiss();
-                        if (e == null) {
-                            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.password_reset_link_sent), Toast.LENGTH_LONG).show();
-                            kill_activity();
-                        } else {
-                            if (e.getCode() == ParseException.EMAIL_NOT_FOUND) {
-                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.no_user_found_matching_email), Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.error_sending_reset_pass_link) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                                logE("Error sending request for forgot password link" + " // Error Code: " + e.getCode() + "// Error Message: " + e.getMessage(), "", e);
-                            }
-                        }
-                    }
-                });
+//                ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        mWaitingProgressDialog.dismiss();
+//                        if (e == null) {
+//                            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.password_reset_link_sent), Toast.LENGTH_LONG).show();
+//                            kill_activity();
+//                        } else {
+//                            if (e.getCode() == ParseException.EMAIL_NOT_FOUND) {
+//                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.no_user_found_matching_email), Toast.LENGTH_LONG).show();
+//                            } else {
+//                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.error_sending_reset_pass_link) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+//                                logE("Error sending request for forgot password link" + " // Error Code: " + e.getCode() + "// Error Message: " + e.getMessage(), "", e);
+//                            }
+//                        }
+//                    }
+//                });
             }
         });
     }

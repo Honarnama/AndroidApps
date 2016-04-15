@@ -5,7 +5,6 @@ import com.parse.ImageSelector;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;

@@ -5,7 +5,6 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ParseException;
-import com.parse.ParseQueryAdapter;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;

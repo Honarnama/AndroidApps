@@ -4,24 +4,16 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
 import com.crashlytics.android.Crashlytics;
-import com.parse.ParseObject;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.model.Item;
 import net.honarnama.sell.activity.ControlPanelActivity;
-import net.honarnama.sell.activity.LoginActivity;
 
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Application;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.Build;
 import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -33,7 +25,6 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
     private Thread.UncaughtExceptionHandler defaultUEH;
 
     public static final String PRODUCTION_TAG = "HonarnamaSell";
-
 
 
     // handler listener
