@@ -37,4 +37,5 @@
         <item name="android:scrollbars">vertical</item>
         <item name="android:fadeScrollbars">false</item>
     </style>
+
 </resources>

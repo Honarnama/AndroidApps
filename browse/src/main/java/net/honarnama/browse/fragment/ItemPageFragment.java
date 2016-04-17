@@ -12,6 +12,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -413,7 +414,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
             sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "این محصول هنری تو برنامه‌ی هنرنما رو می‌خواستم بهت پیشنهاد بدم." + "\n" + mNameTextView.getText() +
-                    "\n" + "http://www.honarnama.net/item/" + mItemId);
+                    "\n" + HonarnamaBaseApp.WEB_ADDRESS + "/item/" + mItemId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

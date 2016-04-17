@@ -221,7 +221,6 @@
     <string name="contact_body">متن پیام</string>
     <string name="contact_sent_successfully">پیام شما با موفقیت ارسال شد. با تشکر.</string>
     <string name="error_occured">خطا در دریافت اطلاعات.</string>
-    <string name="site_url">www.honarnama.net</string>
     <string name="sending">در حال ارسال...</string>
     <string name="uncaught_exception_msg">متاسفانه خطایی رخ داد. این مشکل در نسخه بعد برطرف خواهد
         شد.
@@ -256,4 +255,6 @@
     <string name="category_label">دسته‌بندی:</string>
     <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
     <string name="no_event_found">رویدادی یافت نشد.</string>
+    <string name="bazaar_is_not_installed">متاسفانه برنامه بازار بر روی گوشی شما نصب نیست.</string>
+    <string name="site_url">https://www.honarnama.net</string>
 </resources>

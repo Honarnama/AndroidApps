@@ -25,6 +25,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
     public static ContactFragment mContactFragment;
 
+    //TODO implement this
     private TextView mContactText;
     private EditText mSubject;
     private EditText mBody;

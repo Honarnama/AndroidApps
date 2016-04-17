@@ -66,7 +66,7 @@ public class HonarnamaUser {
         TelegramToken = telegramToken;
     }
 
-    public static ActivationMethod getActivationMethod() {
+//    public static ActivationMethod getActivationMethod() {
 //        ParseUser user = getCurrentUser();
 //        String activationMethod = "";
 //        if (user != null) {
@@ -79,9 +79,8 @@ public class HonarnamaUser {
 //        } else {
 //            return ActivationMethod.UNKNOWN;
 //        }
-        //TODO
-        return ActivationMethod.MOBILE_NUMBER;
-    }
+//        return ActivationMethod.MOBILE_NUMBER;
+//    }
 
     public static boolean isLoggedIn() {
         if (!TextUtils.isEmpty(mToken)) {
@@ -115,11 +114,5 @@ public class HonarnamaUser {
 //            return false;
 //        }
     }
-
-    public static String getUsername() {
-        //TODO
-        return "mojahedi.elnaz@gmail.com";
-    }
-
 
 }

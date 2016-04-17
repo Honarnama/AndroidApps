@@ -80,33 +80,6 @@ public class GRPCUtils {
         return rp;
     }
 
-    // Not to be run in the UI thread
-    public MetaReply getMetaData(long currentMetaVersion) {
-        RequestProperties rp = newRPWithDeviceInfo();
-        rp.ifNotMatchEtag = currentMetaVersion;
-        SimpleRequest req = new SimpleRequest();
-        req.requestProperties = rp;
-
-        Log.w("GRPC-HN", "updateMetaData :: rp= " + rp);
-
-        MetaServiceGrpc.MetaServiceBlockingStub stub = getMetaServiceGrpc();
-        Log.w("GRPC-HN", "updateMetaData :: stub= " + stub);
-        MetaReply reply = stub.meta(req);
-        Log.w("GRPC-HN", "updateMetaData :: Got Reply");
-        if (reply.replyProperties != null) {
-            Log.w("GRPC-HN", "updateMetaData :: reply.statusCode= " + reply.replyProperties.statusCode);
-            Log.w("GRPC-HN", "updateMetaData :: reply.serverVersion= " + reply.replyProperties.serverVersion);
-        }
-//
-//        // Test Part
-//        StringBuilder sb = new StringBuilder();
-//        for (EventCategory ev : reply.eventCategories) {
-//            sb.append(ev.name);
-//            sb.append(" / ");
-//        }
-        return reply;
-    }
-
     public MetaServiceGrpc.MetaServiceBlockingStub getMetaServiceGrpc() {
         // TODO: cache
         return MetaServiceGrpc.newBlockingStub(mChannel);

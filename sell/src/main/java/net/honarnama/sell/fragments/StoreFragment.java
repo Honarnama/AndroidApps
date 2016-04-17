@@ -31,7 +31,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
-import net.honarnama.sell.utils.AwsUploader;
+import net.honarnama.sell.utils.Uploader;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -786,14 +786,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                         if (!TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && mBannerImageView.getFinalImageUri() != null) {
                             final File storeBannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
-                            final AwsUploader aws = new AwsUploader(storeBannerImageFile, createOrUpdateStoreReply.bannerModificationUrl);
+                            final Uploader aws = new Uploader(storeBannerImageFile, createOrUpdateStoreReply.bannerModificationUrl);
 
                             if (!TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl) && mLogoImageView.getFinalImageUri() != null) {
                                 aws.upload().onSuccessTask(new Continuation<Void, Task<Void>>() {
                                     @Override
                                     public Task<Void> then(Task<Void> task) throws Exception {
                                         final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
-                                        final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
+                                        final Uploader aws = new Uploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
                                         return aws.upload();
                                     }
                                 }).continueWith(new Continuation<Void, Object>() {
@@ -829,7 +829,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             }
                         } else if (!TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl) && mLogoImageView.getFinalImageUri() != null) {
                             final File storeLogoImageFile = new File(mLogoImageView.getFinalImageUri().getPath());
-                            final AwsUploader aws = new AwsUploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
+                            final Uploader aws = new Uploader(storeLogoImageFile, createOrUpdateStoreReply.logoModificationUrl);
                             aws.upload().continueWith(new Continuation<Void, Object>() {
                                 @Override
                                 public Object then(Task<Void> task) throws Exception {

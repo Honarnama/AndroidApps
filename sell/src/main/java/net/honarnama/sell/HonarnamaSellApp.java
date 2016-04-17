@@ -7,7 +7,7 @@ import com.crashlytics.android.Crashlytics;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.sell.activity.ControlPanelActivity;
+import net.honarnama.sell.activity.LoginActivity;
 
 import android.app.Application;
 import android.content.Intent;
@@ -33,15 +33,20 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                 @Override
                 public void uncaughtException(Thread thread, Throwable ex) {
 
+                    if (BuildConfig.DEBUG) {
+                        Log.e(PRODUCTION_TAG, "Uncaught Exception arosed. Exception: " + ex, ex);
+                    } else {
+                        Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Uncaught Exception arised. Exception: " + ex);
+                    }
+
                     //TODO inja display a dialog to restart app
                     // here I do logging of exception to a db
-                    Intent restartIntent = new Intent(getApplicationContext(), ControlPanelActivity.class);
+                    Intent restartIntent = new Intent(getApplicationContext(), LoginActivity.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     }
                     restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    restartIntent.putExtra(EXTRA_KEY_UNCAUGHT_EXCEPTION, "Uncaught Exception is: " + ex);
 
                     startActivity(restartIntent);
                     android.os.Process.killProcess(Process.myPid());
@@ -54,7 +59,7 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
         defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         // setup handler for uncaught exception
         //TODO
-//        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
+        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
     }
 
     @Override

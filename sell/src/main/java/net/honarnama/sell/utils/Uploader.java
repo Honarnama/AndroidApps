@@ -24,12 +24,12 @@ import bolts.TaskCompletionSource;
 /**
  * Created by elnaz on 4/8/16.
  */
-public class AwsUploader {
+public class Uploader {
     File mFile;
     String mUploadUrl;
     TaskCompletionSource<Void> mTcs;
 
-    public AwsUploader(File file, String uploadUrl) {
+    public Uploader(File file, String uploadUrl) {
         mFile = file;
         mUploadUrl = uploadUrl;
 

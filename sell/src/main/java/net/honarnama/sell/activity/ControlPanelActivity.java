@@ -14,10 +14,7 @@ import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.loader.MetaUpdater;
 import net.honarnama.core.utils.CommonUtil;
-import net.honarnama.sell.fragments.StoreFragment;
-import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -26,10 +23,11 @@ import net.honarnama.sell.fragments.EditItemFragment;
 import net.honarnama.sell.fragments.EventManagerFragment;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.fragments.NoNetworkFragment;
+import net.honarnama.sell.fragments.StoreFragment;
 import net.honarnama.sell.fragments.UserAccountFragment;
+import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,11 +49,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.InputStream;
 
@@ -90,33 +85,27 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     public NavigationView mNavigationView;
     public RelativeLayout mNavFooter;
 
-//    public IUpdateCheckService iUpdateCheckService;
-//    public UpdateServiceConnection mUpdateServiceConnection;
+    SharedPreferences mCommonSharedPref;
 
     @Override
     protected void onResume() {
         super.onResume();
-//        initUpdateCheckService();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //TODO test network connectivity
         //TODO fix progress dialog exception in all fragemnts
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);
         if (!HonarnamaUser.isLoggedIn()) {
             if (BuildConfig.DEBUG) {
-                logD("User was not logged in!");
+                logD("User is not logged in!");
             }
-            return;
-        }
-
-        if (getIntent().hasExtra(HonarnamaSellApp.EXTRA_KEY_UNCAUGHT_EXCEPTION)) {
-            Toast.makeText(ControlPanelActivity.this, R.string.uncaught_exception_msg, Toast.LENGTH_SHORT).show();
-            logE(getIntent().getStringExtra(HonarnamaSellApp.EXTRA_KEY_UNCAUGHT_EXCEPTION));
+            Intent intent = new Intent(ControlPanelActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
@@ -169,37 +158,9 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             return;
         }
 
-//        final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getCurrentUser().getUsername(), Context.MODE_PRIVATE);
-//        if (!sharedPref.getBoolean(HonarnamaSellApp.PREF_LOCAL_DATA_STORE_SYNCED, false)) {
-//            new CacheData(ControlPanelActivity.this).startSyncing().continueWith(new Continuation<Void, Object>() {
-//                @Override
-//                public Object then(Task<Void> task) throws Exception {
-//                    if (task.isFaulted()) {
-//                        HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
-//                        switchFragment(fragment);
-//                        Toast.makeText(ControlPanelActivity.this, R.string.syncing_data_failed, Toast.LENGTH_LONG).show();
-//                    }
-//                    return null;
-//                }
-//            });
-//        }
-
-//        Task.callInBackground(new Callable<Void>() {
-//            public Void call() {
-//                String metaResult = "";
-//                try {
-//                    metaResult = GRPCUtils.getInstance().getMetaData();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                Log.e("inja ", metaResult);
-//                return null;
-//            }
-//        });
-
         mDrawer.openDrawer(Gravity.RIGHT);
 
-        MetaUpdater metaUpdater = new MetaUpdater(ControlPanelActivity.this);
+        MetaUpdater metaUpdater = new MetaUpdater(HonarnamaBaseApp.PREF_NAME_SELL_APP);
         metaUpdater.execute();
     }
 
@@ -296,7 +257,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.footer_container:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(HonarnamaBaseApp.WEB_ADDRESS)));
                 break;
         }
     }
@@ -376,9 +337,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton("بله", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
-                            if (!sharedPref.getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
-                                askToRate();
+                            if (!HonarnamaBaseApp.getCommonSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
+                                askToRate(HonarnamaBaseApp.PREF_NAME_SELL_APP);
                             } else {
                                 finish();
                             }
@@ -567,9 +527,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_rules:
-                String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
+                i.setData(Uri.parse(HonarnamaBaseApp.WEB_ADDRESS));
                 startActivity(i);
                 break;
 
@@ -584,7 +543,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_support_us:
-                callBazaarRatingIntent();
+                callBazaarRatingIntent(HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 break;
 
             case R.id.item_switch_app:
@@ -593,10 +552,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
                         startActivity(launchIntent);
                     } else {
-                        Intent browseAppIntent = new Intent(Intent.ACTION_VIEW);
-                        browseAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.browse"));
-                        browseAppIntent.setPackage("com.farsitel.bazaar");
-                        startActivity(browseAppIntent);
+                        callBazaarViewAppPageIntent();
                     }
                 } catch (Exception e) {
                     logE("Error switching from sell app to browse. Error: " + e);
@@ -648,110 +604,4 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 //        releaseUpdateCheckService();
     }
 
-    public void askToRate() {
-        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
-        dialog.setCancelable(false);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.ask_for_starts_dialog);
-        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
-        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
-        letsRateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callBazaarRatingIntent();
-
-                final SharedPreferences sharedPref = HonarnamaBaseApp.getInstance().getSharedPreferences(HonarnamaUser.getUsername(), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, true);
-                editor.commit();
-
-                dialog.dismiss();
-                finish();
-            }
-        });
-        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.show();
-    }
-
-    public void callBazaarRatingIntent() {
-        //TODO check if bazaar is not installed
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
-        intent.setPackage("com.farsitel.bazaar");
-        startActivity(intent);
-    }
-
-    public void callBazaarViewAppPageIntent() {
-        //TODO check if bazaar is not installed
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaSellApp.getInstance().getPackageName()));
-        intent.setPackage("com.farsitel.bazaar");
-        startActivity(intent);
-    }
-//    class UpdateServiceConnection implements ServiceConnection {
-//        public void onServiceConnected(ComponentName name, IBinder boundService) {
-//            iUpdateCheckService = IUpdateCheckService.Stub
-//                    .asInterface((IBinder) boundService);
-//            try {
-//                long vCode = iUpdateCheckService.getVersionCode("net.honarnama.sell");
-//                Toast.makeText(ControlPanelActivity.this, "Version Code:" + vCode,
-//                        Toast.LENGTH_LONG).show();
-//            } catch (Exception e) {
-//                logE("Error getting version code from cafebazzar. Error: " + e);
-//            }
-//            logD("onServiceConnected(): Connected");
-//        }
-//
-//        public void onServiceDisconnected(ComponentName name) {
-//            iUpdateCheckService = null;
-//            logD("onServiceDisconnected(): Disconnected");
-//        }
-//    }
-//
-//    private void initUpdateCheckService() {
-//        logD("initUpdateCheckService()");
-//        mUpdateServiceConnection = new UpdateServiceConnection();
-//        Intent i = new Intent(
-//                "com.farsitel.bazaar.service.UpdateCheckService.BIND");
-//        i.setPackage("com.farsitel.bazaar");
-//        boolean ret = bindService(i, mUpdateServiceConnection, Context.BIND_AUTO_CREATE);
-//        logD("initUpdateCheckService() bound value: " + ret);
-//    }
-//
-//    /** This is our function to un-binds this activity from our service. */
-//    private void releaseUpdateCheckService() {
-//        unbindService(mUpdateServiceConnection);
-//        mUpdateServiceConnection = null;
-//        logD("releaseUpdateCheckService(): unbound.");
-//    }
-
-    public void displayUpgradeRequiredDialog() {
-        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
-        dialog.setCancelable(false);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.upgrade_required_dialog);
-        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
-        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
-        letsRateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callBazaarViewAppPageIntent();
-                dialog.dismiss();
-                finish();
-            }
-        });
-        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 }

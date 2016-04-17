@@ -34,7 +34,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
-import net.honarnama.sell.utils.AwsUploader;
+import net.honarnama.sell.utils.Uploader;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -978,7 +978,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
                         if (!TextUtils.isEmpty(createOrUpdateEventReply.bannerModificationUrl) && mBannerImageView.getFinalImageUri() != null) {
                             final File bannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
-                            final AwsUploader aws = new AwsUploader(bannerImageFile, createOrUpdateEventReply.bannerModificationUrl);
+                            final Uploader aws = new Uploader(bannerImageFile, createOrUpdateEventReply.bannerModificationUrl);
                             aws.upload().continueWith(new Continuation<Void, Object>() {
                                 @Override
                                 public Object then(Task<Void> task) throws Exception {

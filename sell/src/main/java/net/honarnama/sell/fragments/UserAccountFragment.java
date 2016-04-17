@@ -12,10 +12,10 @@ import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.UpdateAccountReply;
-import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;

@@ -7,7 +7,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
-import net.honarnama.core.model.Item;
 import net.honarnama.nano.DeleteItemReply;
 import net.honarnama.nano.GetOrDeleteItemRequest;
 import net.honarnama.nano.HonarnamaProto;

@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -39,16 +40,13 @@ import java.util.Date;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 //TODO ersale mojadad link faal sazi baraye email
+//TODO what is the whilte page at first launch
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
     private Button mLoginButton;
     private EditText mUsernameEditText;
-    private EditText mPasswordEditText;
     private View mMessageContainer;
     private TextView mLoginMessageTextView;
-    //    private View mResendActivationLinkButton;
-    private ProgressDialog mLoadingDialog;
-    private TextView mForgotPasswordTextView;
     private LinearLayout mTelegramLoginContainer;
 
     ProgressDialog mProgressDialog;
@@ -58,6 +56,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (BuildConfig.DEBUG) {
+            logD("LoginActivity created.");
+        }
 
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("LoginActivity");
@@ -73,16 +74,12 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
         mMessageContainer = findViewById(R.id.login_message_container);
         mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
-//        mResendActivationLinkButton = findViewById(R.id.resend_activation_link);
-//        mResendActivationLinkButton.setOnClickListener(this);
-
 
         mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
 
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);
 
-        //TODO if user is loggedin
         if (HonarnamaUser.isLoggedIn()) {
             gotoControlPanel();
         } else {
@@ -91,18 +88,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
     }
 
-    private void showLoadingDialog() {
-        if (mLoadingDialog == null || !mLoadingDialog.isShowing()) {
-            mLoadingDialog = ProgressDialog.show(this, "", getString(R.string.please_wait), false);
-            mLoadingDialog.setCancelable(false);
-        }
-    }
-
-    private void hideLoadingDialog() {
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.hide();
-        }
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -113,9 +98,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
         mLoginMessageTextView.setText("");
         Uri data = intent.getData();
-        if (BuildConfig.DEBUG) {
-            logD("processIntent :: data= " + data);
-        }
+        logD("processIntent :: data= " + data);
 
         if (data != null) {
             final String loginToken = data.getQueryParameter("token"); //login with email
@@ -173,7 +156,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         ((TextView) findViewById(R.id.telegram_login_text_view)).setText(getString(R.string.telegram_activation_dialog_title));
                         showTelegramActivationDialog(telegramToken);
                     } else {
-                        unsetTelegramTempInfo();
+                        removeTelegramTempInfo();
                     }
                 } else {
                     Intent telegramIntent;
@@ -196,9 +179,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mLoadingDialog != null) {
-            mLoadingDialog.dismiss();
-        }
         dismissProgressDialog();
     }
 
@@ -242,7 +222,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             }
 
             if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
-                unsetTelegramTempInfo();
+                removeTelegramTempInfo();
                 gotoControlPanel();
             }
         }
@@ -252,7 +232,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
 
     public class getMeAsyncTask extends AsyncTask<Void, Void, WhoAmIReply> {
-
 
         @Override
         protected void onPreExecute() {
@@ -325,7 +304,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         }
     }
 
-    public void unsetTelegramTempInfo() {
+    public void removeTelegramTempInfo() {
         SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
         editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
         editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0);

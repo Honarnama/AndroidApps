@@ -10,6 +10,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -230,7 +231,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     "تو برنامه هنرنما ثبت شده. "
                     +
                     "جزئیاتشو اینجا میتونی ببینی:"
-                    + "\n" + "http://www.honarnama.net/event/" + mEventId);
+                    + "\n" + HonarnamaBaseApp.WEB_ADDRESS+"/event/" + mEventId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

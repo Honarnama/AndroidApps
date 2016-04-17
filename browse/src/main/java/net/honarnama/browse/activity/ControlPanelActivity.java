@@ -354,9 +354,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     menuItem.setChecked(false);
                 }
             case R.id.item_rules:
-                String url = "http://www.honarnama.net/terms";
                 Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
+                i.setData(Uri.parse(HonarnamaBaseApp.WEB_ADDRESS));
                 startActivity(i);
                 break;
 
@@ -715,7 +714,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.footer_container:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.honarnama.net")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(HonarnamaBaseApp.WEB_ADDRESS)));
                 break;
 
             case R.id.province_edit_text:

@@ -9,6 +9,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -266,7 +267,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             sendIntent.putExtra(Intent.EXTRA_SUBJECT,
                     getString(R.string.art_shop) + " " + mShopName.getText());
             sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "غرفه هنری " + mShopName.getText() + " تو برنامه هنرما رو ببین: " +
-                    "\n" + "http://www.honarnama.net/shop/" + mShopId);
+                    "\n" + HonarnamaBaseApp.WEB_ADDRESS + "/shop/" + mShopId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }

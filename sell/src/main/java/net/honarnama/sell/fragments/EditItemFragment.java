@@ -33,7 +33,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
-import net.honarnama.sell.utils.AwsUploader;
+import net.honarnama.sell.utils.Uploader;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -48,7 +48,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -732,7 +731,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i].getFinalImageUri() != null) {
                                 logE("inja Adding item " + i + "to upload task.");
                                 final File storeBannerImageFile = new File(mItemImages[i].getFinalImageUri().getPath());
-                                tasks.add(new AwsUploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
+                                tasks.add(new Uploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
                             }
                         }
 
