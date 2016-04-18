@@ -32,7 +32,7 @@ message RequestProperties {
 message ReplyProperties {
   enum StatusCode {
     OK = 0;
-    NOT_MODIFIED = 1;
+    NOT_MODIFIED = 1;  // Only if ifNotMatchEtag was set
     CLIENT_ERROR = 2;
     SERVER_ERROR = 3;
     NOT_AUTHORIZED = 4;
