@@ -85,7 +85,7 @@
                   android:paddingBottom="2dp"
                   android:paddingLeft="10dp"
                   android:paddingRight="30dp"
-                  android:text="@string/no_item_found"
+                  android:text="@string/item_not_found"
                 />
 
         <com.mikepenz.iconics.view.IconicsImageView

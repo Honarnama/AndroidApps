@@ -132,7 +132,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 if (task.isFaulted()) {
                     logE("Getting Event Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_getting_event_cat_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_getting_event_cat_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mEventCategoryObjectsTreeMap = task.getResult();
@@ -277,7 +277,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     }
                 } else {
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                     }
                     mOnErrorRetry.setVisibility(View.VISIBLE);
                 }

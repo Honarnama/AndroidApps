@@ -251,19 +251,19 @@ public class ItemsAdapter extends BaseAdapter {
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(itemsFragment.getActivity());
                         break;
 
                     case ReplyProperties.OK:
                         mItems.remove(itemPosition);
                         notifyDataSetChanged();
-                        //TODO toast
+                        //TODO displayToast
                         break;
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }

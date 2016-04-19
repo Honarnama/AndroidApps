@@ -189,7 +189,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
                     logE("Error Querying Items: " + e);
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                     }
                     mOnErrorRetry.setVisibility(View.VISIBLE);
                 }

@@ -236,18 +236,18 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
                     case ReplyProperties.OK:
                         HonarnamaUser.setName(name);
                         HonarnamaUser.setGender(genderCode);
-                        //TODO toast
+                        //TODO displayToast
                         break;
                 }
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }

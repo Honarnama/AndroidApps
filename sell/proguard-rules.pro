@@ -27,3 +27,4 @@
     <fields>;
 }
 
+-dontwarn sun.misc.Unsafe

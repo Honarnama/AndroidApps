@@ -1,12 +1,16 @@
 package net.honarnama.core.fragment;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.R;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by reza on 11/23/15.
@@ -70,7 +74,7 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            Log.e(getDebugTag(), sharedMsg);
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
         }
     }
 
@@ -91,7 +95,21 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     }
 
     public void logD(String debugMsg) {
-        Log.d(getDebugTag(), getMessage(null, debugMsg));
+        if (BuildConfig.DEBUG) {
+            Log.d(getDebugTag(), getMessage(null, debugMsg));
+        }
     }
 
+
+    public void displayLongToast(String message) {
+        if (isVisible()) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void displayShortToast(String message) {
+        if (isVisible()) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

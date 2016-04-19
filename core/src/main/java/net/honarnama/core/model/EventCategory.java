@@ -118,7 +118,9 @@ public class EventCategory {
         return tcs.getTask();
     }
 
-    public static List<EventCategory> getAllEventCategoriesSorted() {
+    public static Task<List<EventCategory>> getAllEventCategoriesSorted() {
+
+        final TaskCompletionSource<List<EventCategory>> tcs = new TaskCompletionSource<>();
 
         List<EventCategory> eventCategories = new ArrayList<>();
 
@@ -134,30 +136,27 @@ public class EventCategory {
                     eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
                     eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
                     eventCategories.add(eventCategory);
-                    Log.e("inja", "2/eventCategory is" + eventCategory.getName());
-//                    eventCategoryTreeMap.put(eventCategory.getOrder(), eventCategory);
                     cursor.moveToNext();
                 }
             }
+            tcs.trySetResult(eventCategories);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get event categories from database", e);
             } else {
                 Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event categories from database // Error: " + e);
             }
+            tcs.trySetError(e);
         } finally {
             if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
             }
         }
 
-        Log.e("inja", "eventCategories in model is :" + eventCategories);
-        return eventCategories;
+        return tcs.getTask();
     }
 
     public static EventCategory getCategoryById(int categoryId) {
-//        final TaskCompletionSource<EventCategory> tcs = new TaskCompletionSource<>();
-
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EVENT_CAT_ID + " = " + categoryId;
         Cursor cursor = db.rawQuery(query, null);

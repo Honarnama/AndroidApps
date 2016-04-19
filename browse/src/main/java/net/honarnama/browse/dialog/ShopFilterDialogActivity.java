@@ -19,7 +19,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -221,7 +220,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if ((mDialog.isShowing())) {
-                        Toast.makeText(mActivity, mActivity.getString(R.string.error_getting_city_list) + mActivity.getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        Toast.makeText(mActivity, mActivity.getString(R.string.error_getting_city_list) + mActivity.getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
@@ -327,7 +326,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                             mRefetchCities.setVisibility(View.VISIBLE);
                             mProvinceEditText.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
-                            Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Province province : mProvincesObjectsTreeMap.values()) {
@@ -353,7 +352,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                     mRefetchCities.setVisibility(View.VISIBLE);
                     mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {

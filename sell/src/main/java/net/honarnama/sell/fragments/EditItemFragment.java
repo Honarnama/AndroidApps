@@ -15,7 +15,6 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
@@ -35,6 +34,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.Uploader;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -80,13 +80,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private TextView mImagesTitleTextView;
     private ScrollView mScrollView;
 
-    private ProgressDialog mLoadingDialog;
     private Button mChooseCategoryButton;
     private TextView mCategoryTextView;
 
     private ImageSelector[] mItemImages;
 
-    private net.honarnama.nano.Item mItem;
     private long mItemId;
 
     private boolean mDirty = false;
@@ -95,9 +93,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private int mCategoryId = -1;
     private int mCategoryParentId = -1;
     private String mCategoryName;
-
-    public Store mStore = null;
-    private boolean mFragmentHasView = false;
 
     private Tracker mTracker;
 
@@ -113,7 +108,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     public void reset(Context context, boolean createNew) {
 
-        if (mFragmentHasView) {
+        if (mTitleEditText != null) {
             mTitleEditText.setText("");
             mDescriptionEditText.setText("");
             mPriceEditText.setText("");
@@ -127,7 +122,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mCategoryTextView.setError(null);
             mImagesTitleTextView.setError(null);
         }
-        mItem = null;
         mItemId = -1;
         mCategoryId = -1;
         mCategoryParentId = -1;
@@ -196,8 +190,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             startActivity(intent);
         }
 
-
-        mFragmentHasView = true;
         final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
         mTitleEditText = (EditText) rootView.findViewById(R.id.editProductTitle);
@@ -211,7 +203,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mScrollView = (ScrollView) rootView.findViewById(R.id.edit_item_scroll_view);
 
         mCategoryTextView = (TextView) rootView.findViewById(R.id.edit_item_category_text_view);
-        mChooseCategoryButton = (Button) rootView.findViewById(R.id.edit_item_category_semi_button);
+        mChooseCategoryButton = (Button) rootView.findViewById(R.id.choose_art_category_btn);
 
         mChooseCategoryButton.setOnClickListener(this);
 
@@ -296,17 +288,16 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     imageSelector.restore(savedInstanceState);
                 }
                 mItemId = savedItemId;
-                mTitleEditText.setText(savedInstanceState.getString("title"));
-                mDescriptionEditText.setText(savedInstanceState.getString("description"));
-                mChooseCategoryButton.setText(savedInstanceState.getString("categoryName"));
-                mCategoryId = savedInstanceState.getInt("categoryId");
-                mCategoryParentId = savedInstanceState.getInt("categoryParentId");
-                mPriceEditText.setText(savedInstanceState.getString("price"));
+                mTitleEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_TITLE));
+                mDescriptionEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION));
+                mChooseCategoryButton.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME));
+                mCategoryId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID);
+                mCategoryParentId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID);
+                mPriceEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
             } else {
                 if (mItemId >= 0) {
                     new getItemAsync().execute();
                 }
-
             }
         }
 
@@ -320,15 +311,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
-                if (isFormInputsValid()) {
-//                    saveItem();
+                if (formInputsAreValid()) {
                     if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                         return;
                     }
                     new CreateOrUpdateItemAsync().execute();
                 }
                 break;
-            case R.id.edit_item_category_semi_button:
+            case R.id.choose_art_category_btn:
                 Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
@@ -338,14 +328,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
     }
 
-    private boolean isFormInputsValid() {
+    private boolean formInputsAreValid() {
 
         final String title = mTitleEditText.getText().toString();
-
         final String price = TextUtil.normalizePrice(mPriceEditText.getText().toString());
-
         final String description = mDescriptionEditText.getText().toString();
-
 
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
@@ -454,16 +441,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            if (getActivity() != null && isVisible()) {
-                //TODO check if this checking prevents exception or not
-                //TODO  if this checking prevents add to others dialog too
-                mProgressDialog.show();
-            }
+            displayProgressDialog();
         }
 
         @Override
@@ -480,7 +458,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 getItemReply = stub.getItem(getOrDeleteItemRequest);
                 return getItemReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logD("Error getting user info. Error: " + e);
             }
             return null;
         }
@@ -488,9 +466,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(GetItemReply getItemReply) {
             super.onPostExecute(getItemReply);
-            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                dismissProgressDialog();
-            }
+            dismissProgressDialog();
             if (getItemReply != null) {
                 switch (getItemReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -501,22 +477,27 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getItemReply.errorCode) {
-                            case GetItemReply.ITEM_NOT_FOUND:
-                                logE("inja Store not found");
-                                break;
 
                             case GetItemReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                logE("Got NO_CLIENT_ERROR code for getting item in EditItemFragment. Item id: " + mItemId);
+                                displayShortToast(getString(R.string.error_occured));
+                                break;
+
+                            case GetItemReply.ITEM_NOT_FOUND:
+                                displayLongToast(getString(R.string.item_not_found));
+                                break;
+
+                            case GetItemReply.FORBIDDEN:
+                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
                                 break;
                         }
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO
+                        displayShortToast(getString(R.string.error_occured));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -526,21 +507,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
-                //TODO toast
+                displayLongToast(getString(R.string.error_getting_item_info) + getString(R.string.check_net_connection));
             }
         }
     }
 
-    private void dismissProgressDialog() {
-        if (!getActivity().isFinishing()) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    }
 
     public void setItemInfo(net.honarnama.nano.Item item, boolean loadImages) {
-        mItem = item;
         mItemId = item.id;
 
         mTitleEditText.setText(item.name);
@@ -559,17 +532,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             @Override
             public Object then(Task<String> task) throws Exception {
                 if (task.isFaulted()) {
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-                    }
+                    displayLongToast(getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection));
                 } else {
                     mChooseCategoryButton.setText(task.getResult());
                 }
                 return null;
             }
         });
-
-        logE("inja item is: " + item);
 
         if (loadImages) {
             for (int i = 0; i < 4; i++) {
@@ -588,7 +557,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             .into(mItemImages[i], new Callback() {
                                 @Override
                                 public void onSuccess() {
-                                    logE("inja , image load succeed");
                                     mItemImageLoadingPannel[index].setVisibility(View.GONE);
                                     mItemImages[index].setVisibility(View.VISIBLE);
                                     mItemImages[index].setFileSet(true);
@@ -596,9 +564,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                                 @Override
                                 public void onError() {
-                                    //TODO toast
-                                    logE("inja , image load failed");
-//                                    mItemImageLoadingPannel[index].setVisibility(View.GONE);
+                                    displayShortToast(getString(R.string.error_displaying_image) + getString(R.string.check_net_connection));
                                     mItemImages[index].setVisibility(View.VISIBLE);
                                 }
                             });
@@ -615,12 +581,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            mProgressDialog.show();
+            displayProgressDialog();
         }
 
 
@@ -650,7 +611,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             createOrUpdateItemRequest.changingImage = new int[4];
             for (int i = 0; i < mItemImages.length; i++) {
                 if (mItemImages[i].isDeleted()) {
-                    logE("inja Delete item image " + i);
                     createOrUpdateItemRequest.changingImage[i] = HonarnamaProto.DELETE;
                 } else if (mItemImages[i].isChanged() && mItemImages[i].getFinalImageUri() != null) {
                     createOrUpdateItemRequest.changingImage[i] = HonarnamaProto.PUT;
@@ -660,8 +620,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
 
             createOrUpdateItemRequest.requestProperties = rp;
-
-            logE("inja createOrUpdateItemRequest is " + createOrUpdateItemRequest);
             CreateOrUpdateItemReply createOrUpdateItemReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -670,10 +628,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 } else {
                     createOrUpdateItemReply = stub.createItem(createOrUpdateItemRequest);
                 }
-
                 return createOrUpdateItemReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logD("Error getting creating or updating item. Error: " + e);
             }
             return null;
         }
@@ -681,47 +638,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(final CreateOrUpdateItemReply createOrUpdateItemReply) {
             super.onPostExecute(createOrUpdateItemReply);
-            logE("inja", "createOrUpdateItemReply is " + createOrUpdateItemReply);
+            logD("createOrUpdateItemReply is " + createOrUpdateItemReply);
             if (createOrUpdateItemReply != null) {
                 switch (createOrUpdateItemReply.replyProperties.statusCode) {
-                    case ReplyProperties.UPGRADE_REQUIRED:
-
-                        dismissProgressDialog();
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
-                        if (controlPanelActivity != null) {
-                            controlPanelActivity.displayUpgradeRequiredDialog();
-                        }
-                        break;
-                    case ReplyProperties.CLIENT_ERROR:
-                        mDirty = true;
-                        dismissProgressDialog();
-                        switch (createOrUpdateItemReply.errorCode) {
-                            case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
-                                //TODO bug report
-                                break;
-                            case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
-                                //TODO
-                                break;
-                            case CreateOrUpdateItemReply.STORE_NOT_CREATED:
-                                //TODO
-                                break;
-                            case CreateOrUpdateItemReply.EMPTY_ITEM:
-                                //TODO
-                                break;
-                        }
-                        break;
-
-                    case ReplyProperties.SERVER_ERROR:
-                        mDirty = true;
-                        dismissProgressDialog();
-                        //TODO
-                        break;
-
-                    case ReplyProperties.NOT_AUTHORIZED:
-                        dismissProgressDialog();
-                        //TODO toast
-                        HonarnamaUser.logout(getActivity());
-                        break;
 
                     case ReplyProperties.OK:
                         setItemInfo(createOrUpdateItemReply.uptodateItem, false);
@@ -729,7 +648,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         ArrayList<Task<Void>> tasks = new ArrayList<>();
                         for (int i = 0; i < mItemImages.length; i++) {
                             if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i].getFinalImageUri() != null) {
-                                logE("inja Adding item " + i + "to upload task.");
                                 final File storeBannerImageFile = new File(mItemImages[i].getFinalImageUri().getPath());
                                 tasks.add(new Uploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
                             }
@@ -740,9 +658,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             public Object then(Task<Void> task) throws Exception {
                                 dismissProgressDialog();
                                 if (task.isFaulted()) {
-                                    mDirty = true;
                                     if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_sending_images) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), getString(R.string.error_sending_images) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
                                     mDirty = false;
@@ -754,14 +671,72 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 return null;
                             }
                         });
+                        break;
 
+                    case ReplyProperties.CLIENT_ERROR:
+                        dismissProgressDialog();
+                        switch (createOrUpdateItemReply.errorCode) {
+                            case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
+                                logE("Got NO_CLIENT_ERROR code for updating item with id: " + mItemId);
+                                displayShortToast(getString(R.string.error_occured));
+                                break;
+                            case CreateOrUpdateItemReply.FORBIDDEN:
+                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
+                                break;
+                            case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
+                                displayLongToast(getString(R.string.item_not_found));
+                                break;
+                            case CreateOrUpdateItemReply.EMPTY_ITEM:
+                                //TODO
+                                break;
+                            case CreateOrUpdateItemReply.STORE_NOT_CREATED:
+                                displayLongToast(getString(R.string.store_not_created));
+                                break;
+                        }
+                        break;
 
+                    case ReplyProperties.SERVER_ERROR:
+                        dismissProgressDialog();
+                        displayShortToast(getString(R.string.error_occured));
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        dismissProgressDialog();
+                        HonarnamaUser.logout(getActivity());
+                        break;
+
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        dismissProgressDialog();
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        if (controlPanelActivity != null) {
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        }
                         break;
                 }
 
             } else {
-                //TODO toast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
+        }
+    }
+
+    private void dismissProgressDialog() {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (getActivity() != null && isVisible()) {
+            mProgressDialog.show();
         }
     }
 

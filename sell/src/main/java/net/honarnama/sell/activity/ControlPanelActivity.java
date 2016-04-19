@@ -14,9 +14,12 @@ import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.helper.MetaUpdater;
+import net.honarnama.core.interfaces.MetaUpdateListener;
 import net.honarnama.core.utils.CommonUtil;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
+import net.honarnama.nano.ReplyProperties;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.EditItemFragment;
@@ -29,7 +32,6 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -160,7 +162,18 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
         mDrawer.openDrawer(Gravity.RIGHT);
 
-        MetaUpdater metaUpdater = new MetaUpdater(HonarnamaBaseApp.PREF_NAME_SELL_APP);
+        MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
+            @Override
+            public void onMetaUpdateDone(int replyCode) {
+                switch (replyCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
+                        break;
+                }
+            }
+        };
+        long metaVersion = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
+        MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
         metaUpdater.execute();
     }
 

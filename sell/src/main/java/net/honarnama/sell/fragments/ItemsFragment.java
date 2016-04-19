@@ -18,6 +18,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 import net.honarnama.sell.model.HonarnamaUser;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -163,12 +164,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
                     case ReplyProperties.SERVER_ERROR:
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG);
+                            Toast.makeText(getActivity(), getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG);
                         }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -182,13 +183,14 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }
 
     private void dismissProgressDialog() {
-        if (!getActivity().isFinishing()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }

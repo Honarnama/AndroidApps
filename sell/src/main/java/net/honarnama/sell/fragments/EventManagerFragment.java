@@ -14,6 +14,8 @@ import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.EventCategoriesAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.helper.MetaUpdater;
+import net.honarnama.core.interfaces.MetaUpdateListener;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.EventCategory;
 import net.honarnama.core.model.Province;
@@ -93,7 +95,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     private Button mEventCatBtn;
     private TextView mEventCatLabel;
-    //    public TreeMap<Number, EventCategory> mEventCategoryObjectsTreeMap = new TreeMap<Number, EventCategory>();
     List<EventCategory> mEventCategories = new ArrayList<>();
     public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
 
@@ -139,6 +140,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private long mEventId = -1;
 
     ProgressDialog mProgressDialog;
+
+    public MetaUpdateListener mMetaUpdateListener;
 
     @Override
     public String getTitle(Context context) {
@@ -207,13 +210,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mStartYearSpinner.setAdapter(yearsAdapter);
         mEndYearSpinner.setAdapter(yearsAdapter);
 
-
         mActive = (RadioButton) rootView.findViewById(R.id.active_event);
         mPassive = (RadioButton) rootView.findViewById(R.id.passive_event);
 
         mActive.setOnClickListener(this);
         mPassive.setOnClickListener(this);
-
 
         mStatusBarTextView = (TextView) rootView.findViewById(R.id.event_status_bar_text_view);
         mEventNotVerifiedNotif = (RelativeLayout) rootView.findViewById(R.id.event_not_verified_notif_container);
@@ -221,7 +222,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mBannerFrameLayout = rootView.findViewById(R.id.event_banner_frame_layout);
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.event_manager_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
-
 
         mEventCatBtn = (Button) rootView.findViewById(R.id.event_cat_button);
         mEventCatLabel = (TextView) rootView.findViewById(R.id.event_cat_label);
@@ -234,7 +234,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mCityEditEext = (EditText) rootView.findViewById(R.id.event_city_edit_text);
         mCityEditEext.setOnClickListener(this);
         mCityEditEext.setKeyListener(null);
-
 
         mRegisterEventButton = (Button) rootView.findViewById(R.id.register_event_button);
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
@@ -256,13 +255,38 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         });
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
+        loadOfflineData();
+        new getEventAsync().execute();
 
+        mMetaUpdateListener = new MetaUpdateListener() {
+            @Override
+            public void onMetaUpdateDone(int replyCode) {
+                dismissProgressDialog();
+                switch (replyCode) {
+                    case ReplyProperties.OK:
+                        loadOfflineData();
+                        break;
+
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        ((ControlPanelActivity) getActivity()).displayUpgradeRequiredDialog();
+                        break;
+
+                    default:
+                        displayLongToast(getString(R.string.error_occured) + getString(R.string.check_net_connection));
+                        break;
+                }
+            }
+        };
+
+        return rootView;
+    }
+
+    public void loadOfflineData() {
         new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
-            //TODO if meta is not updated
             @Override
             public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
                 if (task.isFaulted()) {
-                    //TODO
+                    displayShortToast(getString(R.string.error_getting_province_list));
                 } else {
                     mProvincesObjectsTreeMap = task.getResult();
                     for (Province province : mProvincesObjectsTreeMap.values()) {
@@ -272,7 +296,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                         mProvincesHashMap.put(province.getId(), province.getName());
                     }
-                    mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+
+                    if (mSelectedProvinceId > 0) {
+                        mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    }
                 }
                 return null;
             }
@@ -284,12 +311,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
-
                 if (task.isFaulted()) {
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-                    }
+                    displayShortToast(getString(R.string.error_getting_city_list));
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
@@ -301,33 +324,35 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
-                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
-
+                    if (mSelectedCityId > 0) {
+                        mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
+                    }
                 }
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<List<EventCategory>>>() {
+            @Override
+            public Task<List<EventCategory>> then(Task<Object> task) throws Exception {
+                return EventCategory.getAllEventCategoriesSorted();
+            }
+        }).continueWith(new Continuation<List<EventCategory>, Object>() {
+            @Override
+            public Object then(Task<List<EventCategory>> task) throws Exception {
+                if (task.isFaulted()) {
+                    displayShortToast(getString(R.string.error_getting_event_cat_list));
+                } else {
+                    mEventCategories = task.getResult();
+                    for (int i = 0; i < mEventCategories.size(); i++) {
+                        mEventCategoriesHashMap.put(mEventCategories.get(i).getId(), mEventCategories.get(i).getName());
+                    }
+                    if (mSelectedCatId > 0) {
+                        mEventCatBtn.setText(mEventCategoriesHashMap.get(mSelectedCatId));
+                    }
                 }
                 return null;
             }
         });
 
-        mEventCategories = EventCategory.getAllEventCategoriesSorted();
-
-        logE("inja allEventCategoriesSorted is: " + mEventCategories);
-        if (mEventCategories.isEmpty()) {
-            logE("Getting Event Task Failed.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.error_getting_event_cat_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            for (int i = 0; i < mEventCategories.size(); i++) {
-                mEventCategoriesHashMap.put(mEventCategories.get(i).getId(), mEventCategories.get(i).getName());
-            }
-        }
-
-
-        new getEventAsync().execute();
-        return rootView;
     }
 
     @Override
@@ -362,13 +387,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //TODO remove if not needed
-//        (ControlPanelActivity)activity).onSectionAttached(1);
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
     }
@@ -377,10 +395,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_event_button:
-                if (AreFormInputsValid()) {
-                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                        return;
-                    }
+                if (formInputsAreValid()) {
                     new CreateOrUpdateEventAsync().execute();
                 }
                 break;
@@ -389,7 +404,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 displayChooseEventCategoryDialog();
                 break;
 
-
             case R.id.event_province_edit_text:
                 displayProvinceDialog();
                 break;
@@ -397,7 +411,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             case R.id.event_city_edit_text:
                 displayCityDialog();
                 break;
-
         }
     }
 
@@ -408,22 +421,40 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
 
-        provinceDialog.setContentView(R.layout.choose_province);
+        if (mProvincesObjectsTreeMap.isEmpty()) {
 
-        provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-        provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesObjectsTreeMap);
-        provincesListView.setAdapter(provincesAdapter);
-        provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Province selectedProvince = mProvincesObjectsTreeMap.get(position + 1);
-                mSelectedProvinceId = selectedProvince.getId();
-                mSelectedProvinceName = selectedProvince.getName();
-                mProvinceEditText.setText(mSelectedProvinceName);
-                rePopulateCityList();
-                provinceDialog.dismiss();
-            }
-        });
+            provinceDialog.setContentView(R.layout.dialog_no_data_found);
+            provinceDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return;
+                    }
+                    provinceDialog.dismiss();
+                    displayProgressDialog();
+                    new MetaUpdater(mMetaUpdateListener, 0).execute();
+
+                }
+            });
+
+        } else {
+            provinceDialog.setContentView(R.layout.choose_province);
+
+            provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
+            provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesObjectsTreeMap);
+            provincesListView.setAdapter(provincesAdapter);
+            provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Province selectedProvince = mProvincesObjectsTreeMap.get(position + 1);
+                    mSelectedProvinceId = selectedProvince.getId();
+                    mSelectedProvinceName = selectedProvince.getName();
+                    mProvinceEditText.setText(mSelectedProvinceName);
+                    rePopulateCityList();
+                    provinceDialog.dismiss();
+                }
+            });
+        }
         provinceDialog.setCancelable(true);
         provinceDialog.setTitle(getString(R.string.select_province));
         provinceDialog.show();
@@ -436,7 +467,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
@@ -463,25 +494,44 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         CityAdapter cityAdapter;
 
         final Dialog cityDialog = new Dialog(getActivity(), R.style.DialogStyle);
-        cityDialog.setContentView(R.layout.choose_city);
-        cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
 
-        cityAdapter = new CityAdapter(getActivity(), mCityOrderedTreeMap);
-        cityListView.setAdapter(cityAdapter);
-        cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                for (int key : selectedCity.keySet()) {
-                    mSelectedCityId = key;
+        if (mCityOrderedTreeMap.isEmpty()) {
+
+            cityDialog.setContentView(R.layout.dialog_no_data_found);
+            cityDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return;
+                    }
+                    cityDialog.dismiss();
+                    displayProgressDialog();
+                    new MetaUpdater(mMetaUpdateListener, 0).execute();
+
                 }
-                for (String value : selectedCity.values()) {
-                    mSelectedCityName = value;
-                    mCityEditEext.setText(mSelectedCityName);
+            });
+
+        } else {
+            cityDialog.setContentView(R.layout.choose_city);
+            cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
+
+            cityAdapter = new CityAdapter(getActivity(), mCityOrderedTreeMap);
+            cityListView.setAdapter(cityAdapter);
+            cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+                    for (int key : selectedCity.keySet()) {
+                        mSelectedCityId = key;
+                    }
+                    for (String value : selectedCity.values()) {
+                        mSelectedCityName = value;
+                        mCityEditEext.setText(mSelectedCityName);
+                    }
+                    cityDialog.dismiss();
                 }
-                cityDialog.dismiss();
-            }
-        });
+            });
+        }
         cityDialog.setCancelable(true);
         cityDialog.setTitle(getString(R.string.select_city));
         cityDialog.show();
@@ -495,27 +545,47 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         final Dialog eventCatDialog = new Dialog(getActivity(), R.style.DialogStyle);
 
-        eventCatDialog.setContentView(R.layout.choose_event_category);
+        if (mEventCategories.isEmpty()) {
 
-        eventCatsListView = (ListView) eventCatDialog.findViewById(net.honarnama.base.R.id.event_category_list_view);
-        eventCatsAdapter = new EventCategoriesAdapter(getActivity(), mEventCategories);
-        eventCatsListView.setAdapter(eventCatsAdapter);
-        eventCatsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EventCategory eventCategory = mEventCategories.get(position);
-                mSelectedCatId = eventCategory.getId();
-                mSelectedCatName = eventCategory.getName();
-                mEventCatBtn.setText(mSelectedCatName);
-                eventCatDialog.dismiss();
-            }
-        });
+            eventCatDialog.setContentView(R.layout.dialog_no_data_found);
+            eventCatDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return;
+                    }
+                    eventCatDialog.dismiss();
+                    displayProgressDialog();
+                    new MetaUpdater(mMetaUpdateListener, 0).execute();
+
+                }
+            });
+
+        } else {
+            eventCatDialog.setContentView(R.layout.choose_event_category);
+            eventCatsListView = (ListView) eventCatDialog.findViewById(net.honarnama.base.R.id.event_category_list_view);
+            eventCatsAdapter = new EventCategoriesAdapter(getActivity(), mEventCategories);
+            eventCatsListView.setAdapter(eventCatsAdapter);
+            eventCatsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    EventCategory eventCategory = mEventCategories.get(position);
+                    mSelectedCatId = eventCategory.getId();
+                    mSelectedCatName = eventCategory.getName();
+                    mEventCatBtn.setText(mSelectedCatName);
+                    eventCatDialog.dismiss();
+                }
+            });
+        }
         eventCatDialog.setCancelable(true);
         eventCatDialog.setTitle(getString(R.string.select_event_cat));
         eventCatDialog.show();
     }
 
-    private boolean AreFormInputsValid() {
+    private boolean formInputsAreValid() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            return false;
+        }
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_event_name_cant_be_empty));
@@ -716,7 +786,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             if (eventCategory == null) {
                 if (isVisible()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 mEventCatBtn.setText(eventCategory.getName());
@@ -800,7 +870,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mProgressDialog.setMessage(getString(R.string.please_wait));
             }
             if (getActivity() != null && isVisible()) {
-                mProgressDialog.show();
+                if (!mProgressDialog.isShowing()) {
+                    mProgressDialog.show();
+                }
             }
         }
 
@@ -852,7 +924,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -862,7 +934,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }
@@ -909,7 +981,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.PUT;
             }
 
-            logE("inja createOrUpdateEventRequest is "+ createOrUpdateEventRequest);
+            logE("inja createOrUpdateEventRequest is " + createOrUpdateEventRequest);
 
             CreateOrUpdateEventReply createOrUpdateEventReply;
             try {
@@ -969,7 +1041,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -987,7 +1059,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                         if (isVisible()) {
                                             Toast.makeText(getActivity(),
                                                     "خطا در ارسال تصاویر."
-                                                            + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                            + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     return null;
@@ -1005,17 +1077,29 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
 
     }
 
     private void dismissProgressDialog() {
-        if (!getActivity().isFinishing()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (getActivity() != null && isVisible()) {
+            mProgressDialog.show();
         }
     }
 }

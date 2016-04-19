@@ -1,64 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:gravity="top"
                 android:layoutDirection="rtl"
                 android:background="@color/gray_super_extra_light"
                 android:clickable="true"
-        >
+                android:paddingTop="50dp"
+                android:paddingBottom="50dp"
+>
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:orientation="horizontal"
-                  android:id="@+id/no_network_fragment_title_container"
+                  android:id="@+id/no_data_title_container"
                   android:gravity="center"
-                  android:layout_marginTop="50dp"
-            >
+
+    >
 
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_centerHorizontal="true"
-                android:id="@+id/no_network_fragment_error_icon"
+                android:id="@+id/no_data_error_icon"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 app:iiv_icon="gmd-warning"
                 app:iiv_color="@color/super_extra_dark_red"
-                />
+        />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/default_text_view"
-                  android:text="@string/error_stablishing_connection"
-                  android:id="@+id/no_network_fragment_title"
-                  android:layout_toLeftOf="@id/no_network_fragment_error_icon"
+                  android:text="@string/no_data_found"
+                  android:id="@+id/no_data_title"
+                  android:layout_toLeftOf="@id/no_data_error_icon"
                   android:textStyle="bold"
-                />
+        />
     </LinearLayout>
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
               style="@style/default_text_view"
               android:text="@string/check_net_connection"
-              android:layout_below="@id/no_network_fragment_title_container"
+              android:layout_below="@id/no_data_title_container"
               android:gravity="center"
               android:layout_marginTop="10dp"
-              android:id="@+id/no_network_fragment_sub_title"
-            />
+              android:id="@+id/no_data_sub_title"
+    />
 
     <com.mikepenz.iconics.view.IconicsImageView
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:id="@+id/no_network_fragment_retry_icon"
+            android:id="@+id/no_data_retry_icon"
             android:layout_width="152dp"
             android:layout_height="152dp"
             app:iiv_icon="gmd-sync"
             app:iiv_color="@color/gray_dark"
-            android:layout_below="@id/no_network_fragment_sub_title"/>
+            android:layout_below="@id/no_data_sub_title"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               style="@style/tiny_text_view"
               android:text="@string/retry"
               android:id="@+id/no_network_fragment_retry"
-              android:layout_below="@id/no_network_fragment_retry_icon"
+              android:layout_below="@id/no_data_retry_icon"
               android:layout_centerHorizontal="true"
-            />
+    />
 
 </RelativeLayout>

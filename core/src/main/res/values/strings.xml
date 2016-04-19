@@ -86,7 +86,7 @@
         بررسی کنید.
     </string>
 
-    <string name="please_check_internet_connection">" لطفا اینترنت دستگاه خود را بررسی کنید. "
+    <string name="check_net_connection">" لطفا اینترنت دستگاه خود را بررسی کنید. "
     </string>
     <string name="sending_data">" در حال ارسال اطلاعات... "</string>
 
@@ -138,7 +138,7 @@
     <string name="error_saving_item">"خطا در هنگام ذخیره‌سازی محصول."</string>
     <string name="item_not_changed">از آخرین ذخیره‌سازی تغییری در اطلاعات محصول ایجاد نشده است.
     </string>
-    <string name="error_loading_item">خطا در خواندن اطلاعات محصول</string>
+    <string name="error_getting_item_info">خطا در گرفتن اطلاعات محصول.</string>
     <string name="error_sending_images">خطا در ارسال تصاویر. لطفا دوباره تلاش کنید</string>
 
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
@@ -182,7 +182,8 @@
     <string name="getting_information">در حال گرفتن اطلاعات...</string>
     <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
     <string name="error_getting_items_list">خطا در گرفتن فهرست محصولات.</string>
-    <string name="no_item_found">"محصولی یافت نشد."</string>
+    <string name="item_not_found">"محصولی یافت نشد."</string>
+    <string name="not_allowed_to_do_this_action">شما مجاز به این عمل نیستید.</string>
     <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
     <string name="error_displaying_image">خطا در نمایش تصویر.</string>
     <string name="connect_to_see_most_updated_info">برای مشاهده به‌روزترین اطلاعات دستگاه خود را
@@ -254,7 +255,9 @@
     <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="category_label">دسته‌بندی:</string>
     <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
+    <string name="error_connecting_to_Server">خطا در برقراری ارتباط.</string>
     <string name="no_event_found">رویدادی یافت نشد.</string>
     <string name="bazaar_is_not_installed">متاسفانه برنامه بازار بر روی گوشی شما نصب نیست.</string>
     <string name="site_url">https://www.honarnama.net</string>
+    <string name="no_data_found">داده‌ای پیدا نشد.</string>
 </resources>

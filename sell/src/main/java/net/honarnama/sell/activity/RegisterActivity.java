@@ -346,7 +346,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(RegisterActivity.this);
                         break;
 
@@ -355,7 +355,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         break;
                 }
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }

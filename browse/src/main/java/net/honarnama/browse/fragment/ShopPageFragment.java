@@ -17,8 +17,6 @@ import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.City;
-import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -155,7 +153,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     } else {
                         logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
                         if (isVisible()) {
-                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                         }
                         mOnErrorRetry.setVisibility(View.VISIBLE);
                     }
@@ -235,7 +233,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                 if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
                     logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     List<Item> shopItems = task.getResult();

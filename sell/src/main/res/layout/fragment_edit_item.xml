@@ -369,7 +369,7 @@
                     android:text="@string/select"
                     android:layout_gravity="right"
                     android:layout_marginRight="5dp"
-                    android:id="@+id/edit_item_category_semi_button"
+                    android:id="@+id/choose_art_category_btn"
                     android:background="@color/extra_dark_green"
                     android:textColor="@color/white"
                     android:textStyle="bold"

@@ -284,7 +284,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(null);
                         break;
 
@@ -299,7 +299,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }

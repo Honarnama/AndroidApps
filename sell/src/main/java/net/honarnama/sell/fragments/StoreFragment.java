@@ -238,7 +238,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 if (task.isFaulted()) {
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
@@ -357,7 +357,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
                     if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     mCityOrderedTreeMap = task.getResult();
@@ -644,7 +644,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -654,7 +654,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }
@@ -670,7 +670,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.setMessage(getString(R.string.please_wait));
             }
-            mProgressDialog.show();
+            if (getActivity() != null && isVisible()) {
+                mProgressDialog.show();
+            }
         }
 
 
@@ -768,7 +770,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        //TODO toast
+                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -804,7 +806,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                             if (isVisible()) {
                                                 Toast.makeText(getActivity(),
                                                         "خطا در ارسال تصاویر."
-                                                                + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                                + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         return null;
@@ -820,7 +822,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                             if (isVisible()) {
                                                 Toast.makeText(getActivity(),
                                                         "خطا در ارسال تصاویر."
-                                                                + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                                + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         return null;
@@ -838,7 +840,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                         if (isVisible()) {
                                             Toast.makeText(getActivity(),
                                                     "خطا در ارسال تصاویر."
-                                                            + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
+                                                            + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     return null;
@@ -849,14 +851,15 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
-                //TODO toast
+                //TODO displayToast
             }
         }
     }
 
 
     private void dismissProgressDialog() {
-        if (!getActivity().isFinishing()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
