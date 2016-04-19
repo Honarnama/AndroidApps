@@ -232,7 +232,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

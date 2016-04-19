@@ -640,7 +640,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -765,7 +765,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.SERVER_ERROR:
                         dismissProgressDialog();
-                        //TODO
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

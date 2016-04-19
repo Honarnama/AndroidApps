@@ -256,6 +256,7 @@
     <string name="category_label">دسته‌بندی:</string>
     <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
     <string name="error_connecting_to_Server">خطا در برقراری ارتباط.</string>
+    <string name="server_error_try_again">خطای سرور. لطفا دوباره تلاش کنید.</string>
     <string name="no_event_found">رویدادی یافت نشد.</string>
     <string name="bazaar_is_not_installed">متاسفانه برنامه بازار بر روی گوشی شما نصب نیست.</string>
     <string name="site_url">https://www.honarnama.net</string>

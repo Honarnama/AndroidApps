@@ -439,7 +439,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         } else {
             provinceDialog.setContentView(R.layout.choose_province);
-
             provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
             provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesObjectsTreeMap);
             provincesListView.setAdapter(provincesAdapter);
@@ -466,23 +465,23 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                    }
+                    displayLongToast(getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection));
                 } else {
                     mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
+                    if (!mCityOrderedTreeMap.isEmpty()) {
+                        for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                            for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+                                mCityHashMap.put(citySet.getKey(), citySet.getValue());
+                            }
+                        }
 
+                        Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                        for (Integer key : tempSet) {
+                            mSelectedCityId = key;
+                            mCityEditEext.setText(mCityHashMap.get(key));
                         }
                     }
 
-                    Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                    for (Integer key : tempSet) {
-                        mSelectedCityId = key;
-                        mCityEditEext.setText(mCityHashMap.get(key));
-                    }
                 }
                 return null;
             }
@@ -604,7 +603,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         } else {
             mEventCatLabel.setError(null);
         }
-
 
         if (mSelectedProvinceId < 0) {
             mProvinceEditText.requestFocus();
@@ -811,7 +809,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
 
             if (loadImages && !TextUtils.isEmpty(event.banner)) {
-                logE("inja", "start loading banner is...");
                 mBannerProgressBar.setVisibility(View.VISIBLE);
 
                 Picasso.with(getActivity()).load(event.banner)
@@ -864,16 +861,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            if (getActivity() != null && isVisible()) {
-                if (!mProgressDialog.isShowing()) {
-                    mProgressDialog.show();
-                }
-            }
+            displayProgressDialog();
         }
 
         @Override
@@ -881,6 +869,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             SimpleRequest simpleRequest = new SimpleRequest();
             simpleRequest.requestProperties = rp;
+
+            logD("simpleRequest for getting myEvent is: " + simpleRequest);
             GetEventReply getEventReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -895,46 +885,47 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPostExecute(GetEventReply getEventReply) {
             super.onPostExecute(getEventReply);
-            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                dismissProgressDialog();
-            }
+            logD("getEventReply is: " + getEventReply);
+
+            dismissProgressDialog();
             if (getEventReply != null) {
                 switch (getEventReply.replyProperties.statusCode) {
+                    case ReplyProperties.OK:
+                        setEventInfo(getEventReply.event, true);
+                        break;
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (getEventReply.errorCode) {
+                            case GetEventReply.NO_CLIENT_ERROR:
+                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") event.");
+                                displayShortToast(getString(R.string.error_occured));
+                                break;
+
+                            case GetEventReply.EVENT_NOT_FOUND:
+                                mIsNew = true;
+                                logD("Event not found.");
+                                break;
+                        }
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        displayShortToast(getString(R.string.server_error_try_again));
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        HonarnamaUser.logout(getActivity());
+                        break;
+
                     case ReplyProperties.UPGRADE_REQUIRED:
                         ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
                         break;
-                    case ReplyProperties.CLIENT_ERROR:
-                        switch (getEventReply.errorCode) {
-                            case GetEventReply.EVENT_NOT_FOUND:
-                                mIsNew = true;
-                                logE("inja Store event found");
-                                break;
-
-                            case GetEventReply.NO_CLIENT_ERROR:
-                                //TODO bug report
-                                break;
-                        }
-                        break;
-
-                    case ReplyProperties.SERVER_ERROR:
-                        //TODO
-                        break;
-
-                    case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
-                        HonarnamaUser.logout(getActivity());
-                        break;
-
-                    case ReplyProperties.OK:
-                        setEventInfo(getEventReply.event, true);
-                        break;
                 }
 
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
     }
@@ -944,14 +935,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            mProgressDialog.show();
+            displayProgressDialog();
         }
-
 
         @Override
         protected CreateOrUpdateEventReply doInBackground(Void... voids) {
@@ -974,14 +959,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             createOrUpdateEventRequest.requestProperties = rp;
 
             if (mBannerImageView.isDeleted()) {
-                logE("inja Delete banner");
-                //TODO test
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.PUT;
             }
 
-            logE("inja createOrUpdateEventRequest is " + createOrUpdateEventRequest);
+            logD("createOrUpdateEventRequest is: " + createOrUpdateEventRequest);
 
             CreateOrUpdateEventReply createOrUpdateEventReply;
             try {
@@ -995,7 +978,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
                 return createOrUpdateEventReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error running createOrUpdateEventReply. Error: " + e);
             }
             return null;
         }
@@ -1004,7 +987,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         protected void onPostExecute(final CreateOrUpdateEventReply createOrUpdateEventReply) {
             super.onPostExecute(createOrUpdateEventReply);
 
-            logE("inja", "createOrUpdateEventReply is " + createOrUpdateEventReply);
+            logD("createOrUpdateEventReply is: " + createOrUpdateEventReply);
             if (createOrUpdateEventReply != null) {
                 switch (createOrUpdateEventReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -1018,30 +1001,29 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         dismissProgressDialog();
                         switch (createOrUpdateEventReply.errorCode) {
                             case CreateOrUpdateEventReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                logE("Got NO_CLIENT_ERROR code for createOrUpdateEventReply. Event Id: " + mEventId + ". User id: " + HonarnamaUser.getId());
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateEventReply.EVENT_NOT_FOUND:
-                                //TODO
+                                displayShortToast(getString(R.string.event_not_found));
                                 break;
-
                             case CreateOrUpdateEventReply.EMPTY_EVENT:
-                                //TODO
+                                logE("createOrUpdateEventReply was EMPTY_EVENT!");
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
-
                             case CreateOrUpdateEventReply.STORE_NOT_CREATED:
-                                //TODO
+                                displayLongToast(getString(R.string.store_not_created));
                                 break;
                         }
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
                         dismissProgressDialog();
-                        //TODO
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -1056,28 +1038,22 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 public Object then(Task<Void> task) throws Exception {
                                     dismissProgressDialog();
                                     if (task.isFaulted()) {
-                                        if (isVisible()) {
-                                            Toast.makeText(getActivity(),
-                                                    "خطا در ارسال تصاویر."
-                                                            + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                                        }
+                                        displayLongToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
+                                    } else {
+                                        displayLongToast(getString(R.string.successfully_changed_event_info));
                                     }
                                     return null;
                                 }
                             });
                         } else {
-                            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                                dismissProgressDialog();
-                            }
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_event_info), Toast.LENGTH_SHORT).show();
-                            }
+                            dismissProgressDialog();
+                            displayLongToast(getString(R.string.successfully_changed_event_info));
                         }
                         break;
                 }
 
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
 

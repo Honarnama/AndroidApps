@@ -247,6 +247,7 @@ public class ItemsAdapter extends BaseAdapter {
                     case ReplyProperties.SERVER_ERROR:
                         if (itemsFragment.isVisible()) {
                             //TODO
+//                            displayShortToast(getString(R.string.server_error_try_again));
                         }
                         break;
 

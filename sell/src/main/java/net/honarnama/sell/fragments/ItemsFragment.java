@@ -163,9 +163,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG);
-                        }
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

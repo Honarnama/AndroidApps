@@ -452,13 +452,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             getOrDeleteItemRequest.id = mItemId;
             getOrDeleteItemRequest.requestProperties = rp;
             GetItemReply getItemReply;
+            logD("getOrDeleteItemRequest is: " + getOrDeleteItemRequest);
 
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getItemReply = stub.getItem(getOrDeleteItemRequest);
                 return getItemReply;
             } catch (InterruptedException e) {
-                logD("Error getting user info. Error: " + e);
+                logE("Error getting item info. Error: " + e);
             }
             return null;
         }
@@ -466,6 +467,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(GetItemReply getItemReply) {
             super.onPostExecute(getItemReply);
+            logD("getItemReply is: " + getItemReply);
             dismissProgressDialog();
             if (getItemReply != null) {
                 switch (getItemReply.replyProperties.statusCode) {
@@ -494,7 +496,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displayShortToast(getString(R.string.error_occured));
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -620,6 +622,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
 
             createOrUpdateItemRequest.requestProperties = rp;
+            logD("createOrUpdateItemRequest is: " + createOrUpdateItemRequest);
             CreateOrUpdateItemReply createOrUpdateItemReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -638,7 +641,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(final CreateOrUpdateItemReply createOrUpdateItemReply) {
             super.onPostExecute(createOrUpdateItemReply);
-            logD("createOrUpdateItemReply is " + createOrUpdateItemReply);
+            logD("createOrUpdateItemReply is: " + createOrUpdateItemReply);
             if (createOrUpdateItemReply != null) {
                 switch (createOrUpdateItemReply.replyProperties.statusCode) {
 
@@ -658,15 +661,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             public Object then(Task<Void> task) throws Exception {
                                 dismissProgressDialog();
                                 if (task.isFaulted()) {
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.error_sending_images) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                                    }
+                                    displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
                                 } else {
                                     mDirty = false;
-                                    if (isVisible()) {
-                                        Toast.makeText(getActivity(), getString(R.string.item_saved_successfully), Toast.LENGTH_LONG).show();
-                                    }
-
+                                    displayShortToast(getString(R.string.item_saved_successfully));
                                 }
                                 return null;
                             }
@@ -687,7 +685,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 displayLongToast(getString(R.string.item_not_found));
                                 break;
                             case CreateOrUpdateItemReply.EMPTY_ITEM:
-                                //TODO
+                                logE("CreateOrUpdateItemReply was EMPTY_ITEM!");
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateItemReply.STORE_NOT_CREATED:
                                 displayLongToast(getString(R.string.store_not_created));
@@ -697,7 +696,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                     case ReplyProperties.SERVER_ERROR:
                         dismissProgressDialog();
-                        displayShortToast(getString(R.string.error_occured));
+                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

@@ -343,6 +343,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
                     case ReplyProperties.SERVER_ERROR:
                         //TODO
+//                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
