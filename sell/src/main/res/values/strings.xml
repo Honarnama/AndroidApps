@@ -130,7 +130,5 @@
     <string name="error_event_cat_is_not_selected">دسته‌بندی رویداد مشخص نشده است.</string>
     <string name="error_event_address_is_not_specified">آدرس رویداد مشخص نشده است.</string>
     <string name="store_not_created">شما هنوز فروشگاهی نساخته‌اید.</string>
-    <string name="event_not_found">رویداد مورد نظر موجود نیست.</string>
-    <!-- navigation drawer item_row labels  -->
 
 </resources>

@@ -10,9 +10,12 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.core.helper.MetaUpdater;
+import net.honarnama.core.interfaces.MetaUpdateListener;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.GenericGravityTextWatcher;
@@ -83,7 +86,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
-    private EditText mCityEditEext;
+    private EditText mCityEditText;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
 
@@ -107,6 +110,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private long mStoreId = -1;
 
     ProgressDialog mProgressDialog;
+
+    public MetaUpdateListener mMetaUpdateListener;
 
     @Override
     public String getTitle(Context context) {
@@ -141,7 +146,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }
 
         View rootView = inflater.inflate(R.layout.fragment_store, container, false);
-        // Inflate the layout for this fragment
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
         mLogoProgressBar = (ProgressBar) rootView.findViewById(R.id.logo_progress_bar);
@@ -162,9 +166,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mProvinceEditText.setOnClickListener(this);
         mProvinceEditText.setKeyListener(null);
 
-        mCityEditEext = (EditText) rootView.findViewById(R.id.store_city_edit_text);
-        mCityEditEext.setOnClickListener(this);
-        mCityEditEext.setKeyListener(null);
+        mCityEditText = (EditText) rootView.findViewById(R.id.store_city_edit_text);
+        mCityEditText.setOnClickListener(this);
+        mCityEditText.setKeyListener(null);
 
 
         mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
@@ -206,63 +210,28 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mBannerImageView.setActivity(this.getActivity());
         mBannerImageView.restore(savedInstanceState);
 
-
-        new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
-            //TODO if meta is not updated
-            @Override
-            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
-                if (task.isFaulted()) {
-                    //TODO
-                } else {
-                    mProvinceObjectsTreeMap = task.getResult();
-                    for (Province province : mProvinceObjectsTreeMap.values()) {
-                        if (mSelectedProvinceId < 0) {
-                            mSelectedProvinceId = province.getId();
-                            mSelectedProvinceName = province.getName();
-                        }
-                        mProvincesHashMap.put(province.getId(), province.getName());
-                    }
-                    mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
-                }
-                return null;
-            }
-        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
-            @Override
-            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
-                return new City().getAllCitiesSorted(getActivity(), mSelectedProvinceId);
-            }
-        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
-            @Override
-            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
-
-                if (task.isFaulted()) {
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
-                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            if (mSelectedCityId < 0) {
-                                mSelectedCityId = citySet.getKey();
-                                mSelectedCityName = citySet.getValue();
-                            }
-                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
-                        }
-                    }
-                    mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
-
-                }
-                if ((isVisible()) && !NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    Toast.makeText(getActivity(), getString(R.string.connect_to_see_most_updated_info), Toast.LENGTH_LONG).show();
-                }
-                return null;
-            }
-        });
-
+        loadOfflineData();
         new getStoreAsync().execute();
 
+        mMetaUpdateListener = new MetaUpdateListener() {
+            @Override
+            public void onMetaUpdateDone(int replyCode) {
+                dismissProgressDialog();
+                switch (replyCode) {
+                    case ReplyProperties.OK:
+                        loadOfflineData();
+                        break;
+
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        ((ControlPanelActivity) getActivity()).displayUpgradeRequiredDialog();
+                        break;
+
+                    default:
+                        displayLongToast(getString(R.string.error_occured) + getString(R.string.check_net_connection));
+                        break;
+                }
+            }
+        };
         return rootView;
     }
 
@@ -287,14 +256,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }
     }
 
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //TODO remove if not needed
-//        (ControlPanelActivity)activity).onSectionAttached(1);
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -304,10 +265,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_store_button:
-                if (AreFormInputsValid()) {
-                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                        return;
-                    }
+                if (formInputsAreValid()) {
                     new CreateOrUpdateStoreAsync().execute();
                 }
                 break;
@@ -329,22 +287,39 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
         final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
 
-        provinceDialog.setContentView(R.layout.choose_province);
+        if (mProvinceObjectsTreeMap.isEmpty()) {
 
-        provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-        provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
-        provincesListView.setAdapter(provincesAdapter);
-        provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
-                mSelectedProvinceId = selectedProvince.getId();
-                mSelectedProvinceName = selectedProvince.getName();
-                mProvinceEditText.setText(mSelectedProvinceName);
-                rePopulateCityList();
-                provinceDialog.dismiss();
-            }
-        });
+            provinceDialog.setContentView(R.layout.dialog_no_data_found);
+            provinceDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        return;
+                    }
+                    provinceDialog.dismiss();
+                    displayProgressDialog();
+                    new MetaUpdater(mMetaUpdateListener, 0).execute();
+
+                }
+            });
+
+        } else {
+            provinceDialog.setContentView(R.layout.choose_province);
+            provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
+            provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
+            provincesListView.setAdapter(provincesAdapter);
+            provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
+                    mSelectedProvinceId = selectedProvince.getId();
+                    mSelectedProvinceName = selectedProvince.getName();
+                    mProvinceEditText.setText(mSelectedProvinceName);
+                    rePopulateCityList();
+                    provinceDialog.dismiss();
+                }
+            });
+        }
         provinceDialog.setCancelable(true);
         provinceDialog.setTitle(getString(R.string.select_province));
         provinceDialog.show();
@@ -371,7 +346,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
                     for (int key : tempSet) {
                         mSelectedCityId = key;
-                        mCityEditEext.setText(mCityHashMap.get(key));
+                        mCityEditText.setText(mCityHashMap.get(key));
                     }
                 }
                 return null;
@@ -398,7 +373,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
                 for (String value : selectedCity.values()) {
                     mSelectedCityName = value;
-                    mCityEditEext.setText(mSelectedCityName);
+                    mCityEditText.setText(mSelectedCityName);
                 }
                 cityDialog.dismiss();
             }
@@ -408,7 +383,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         cityDialog.show();
     }
 
-    private boolean AreFormInputsValid() {
+    private boolean formInputsAreValid() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            return false;
+        }
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_store_name_cant_be_empty));
@@ -418,11 +396,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (mSelectedProvinceId < 0) {
             mProvinceEditText.requestFocus();
             mProvinceEditText.setError(getString(R.string.error_store_province_not_set));
+            return false;
         }
 
         if (mSelectedCityId < 0) {
-            mCityEditEext.requestFocus();
-            mCityEditEext.setError(getString(R.string.error_store_city_not_set));
+            mCityEditText.requestFocus();
+            mCityEditText.setError(getString(R.string.error_store_city_not_set));
+            return false;
         }
 
         if (mDescriptionEditText.getText().toString().trim().length() == 0) {
@@ -467,8 +447,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     private void setStoreInfo(net.honarnama.nano.Store store, boolean loadImages) {
-        logE("inja", "store is: " + store.toString());
         if (store != null) {
+            logD("store info: " + store);
             mIsNew = false;
             mStoreId = store.id;
             mNameEditText.setText(store.name);
@@ -482,7 +462,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             Province province = Province.getProvinceById(storeLocation.provinceId);
 
             if (city != null) {
-                mCityEditEext.setText(city.getName());
+                mCityEditText.setText(city.getName());
                 mSelectedCityId = city.getId();
             }
 
@@ -502,7 +482,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (loadImages && !TextUtils.isEmpty(store.logo)) {
-                logE("inja", "start loading logo is...");
+                logD("Loading logo ...");
 
                 mLogoProgressBar.setVisibility(View.VISIBLE);
                 Picasso.with(getActivity()).load(store.logo)
@@ -523,10 +503,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         });
 
             }
-            //TODO load banner
 
             if (loadImages && !TextUtils.isEmpty(store.banner)) {
-                logE("inja", "start loading banner is...");
+                logD("Loading logo ...");
                 mBannerProgressBar.setVisibility(View.VISIBLE);
 
                 Picasso.with(getActivity()).load(store.banner)
@@ -582,16 +561,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            if (getActivity() != null && isVisible()) {
-                //TODO check if this checking prevents exception or not
-                //TODO  if this checking prevents add to others dialog too
-                mProgressDialog.show();
-            }
+            displayProgressDialog();
         }
 
         @Override
@@ -601,6 +571,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             simpleRequest.requestProperties = rp;
 
+            if (BuildConfig.DEBUG) {
+                logD("Get store request is: " + simpleRequest);
+            }
             GetStoreReply getStoreReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -615,9 +588,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected void onPostExecute(GetStoreReply getStoreReply) {
             super.onPostExecute(getStoreReply);
-            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                dismissProgressDialog();
+            if (BuildConfig.DEBUG) {
+                logD("getStoreReply is: " + getStoreReply);
             }
+            dismissProgressDialog();
             if (getStoreReply != null) {
                 switch (getStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -630,11 +604,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         switch (getStoreReply.errorCode) {
                             case GetStoreReply.STORE_NOT_FOUND:
                                 mIsNew = true;
-                                logE("inja Store not found");
+                                displayLongToast(getString(R.string.store_not_found));
                                 break;
 
                             case GetStoreReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") store.");
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
                         break;
@@ -644,7 +619,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -654,7 +628,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
     }
@@ -665,16 +639,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            if (getActivity() != null && isVisible()) {
-                mProgressDialog.show();
-            }
+            displayProgressDialog();
         }
-
 
         @Override
         protected CreateOrUpdateStoreReply doInBackground(Void... voids) {
@@ -693,16 +659,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest.store.locationId.cityId = mSelectedCityId;
 
             if (mLogoImageView.isDeleted()) {
-                logE("inja Delete logo");
-                //TODO test
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
             } else if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.PUT;
             }
 
             if (mBannerImageView.isDeleted()) {
-                logE("inja Delete banner");
-                //TODO test
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.PUT;
@@ -721,7 +683,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                 return createOrUpdateStoreReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error running createOrUpdateStoreRequest. Error: " + e);
             }
             return null;
         }
@@ -730,7 +692,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         protected void onPostExecute(final CreateOrUpdateStoreReply createOrUpdateStoreReply) {
             super.onPostExecute(createOrUpdateStoreReply);
 
-            logE("inja", "createOrUpdateStoreReply is " + createOrUpdateStoreReply);
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateStoreReply is: " + createOrUpdateStoreReply);
+            }
+
             if (createOrUpdateStoreReply != null) {
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -744,21 +709,22 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         dismissProgressDialog();
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                logE("Got NO_CLIENT_ERROR code for createOrUpdate user (id " + HonarnamaUser.getId() + ") store.");
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
 
                             case CreateOrUpdateStoreReply.DUPLICATE_NAME:
-                                if (isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.store_name_already_exists), Toast.LENGTH_SHORT).show();
-                                    mNameEditText.setError(getString(R.string.store_name_already_exists));
-                                }
+                                displayLongToast(getString(R.string.store_name_already_exists));
+                                mNameEditText.setError(getString(R.string.store_name_already_exists));
                                 break;
 
                             case CreateOrUpdateStoreReply.STORE_NOT_FOUND:
-                                //TODO
+                                displayShortToast(getString(R.string.store_not_found));
                                 break;
 
                             case CreateOrUpdateStoreReply.EMPTY_STORE:
+                                logE("createOrUpdateStoreReply was EMPTY_STORE!");
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
                         break;
@@ -770,7 +736,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -778,12 +743,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         setStoreInfo(createOrUpdateStoreReply.uptodateStore, false);
 
                         if (TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl)) {
-                            if (!getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
-                                dismissProgressDialog();
-                            }
-                            if (isVisible()) {
-                                Toast.makeText(getActivity(), getString(R.string.successfully_changed_store_info), Toast.LENGTH_SHORT).show();
-                            }
+                            dismissProgressDialog();
+                            displayShortToast(getString(R.string.successfully_changed_store_info));
                         }
 
                         if (!TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && mBannerImageView.getFinalImageUri() != null) {
@@ -803,11 +764,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                     public Object then(Task<Void> task) throws Exception {
                                         dismissProgressDialog();
                                         if (task.isFaulted()) {
-                                            if (isVisible()) {
-                                                Toast.makeText(getActivity(),
-                                                        "خطا در ارسال تصاویر."
-                                                                + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                                            }
+                                            displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
+                                        } else {
+                                            displayShortToast(getString(R.string.successfully_changed_store_info));
                                         }
                                         return null;
                                     }
@@ -819,11 +778,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                     public Object then(Task<Void> task) throws Exception {
                                         dismissProgressDialog();
                                         if (task.isFaulted()) {
-                                            if (isVisible()) {
-                                                Toast.makeText(getActivity(),
-                                                        "خطا در ارسال تصاویر."
-                                                                + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                                            }
+                                            displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
+                                        } else {
+                                            displayShortToast(getString(R.string.successfully_changed_store_info));
                                         }
                                         return null;
                                     }
@@ -837,11 +794,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 public Object then(Task<Void> task) throws Exception {
                                     dismissProgressDialog();
                                     if (task.isFaulted()) {
-                                        if (isVisible()) {
-                                            Toast.makeText(getActivity(),
-                                                    "خطا در ارسال تصاویر."
-                                                            + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                                        }
+                                        displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
+                                    } else {
+                                        displayShortToast(getString(R.string.successfully_changed_store_info));
                                     }
                                     return null;
                                 }
@@ -851,11 +806,62 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
     }
 
+    public void loadOfflineData() {
+        new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
+            @Override
+            public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
+                if (task.isFaulted()) {
+                    displayShortToast(getString(R.string.error_getting_province_list));
+                } else {
+                    mProvinceObjectsTreeMap = task.getResult();
+                    for (Province province : mProvinceObjectsTreeMap.values()) {
+                        if (mSelectedProvinceId < 0) {
+                            mSelectedProvinceId = province.getId();
+                            mSelectedProvinceName = province.getName();
+                        }
+                        mProvincesHashMap.put(province.getId(), province.getName());
+                    }
+
+                    if (mSelectedProvinceId > 0) {
+                        mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    }
+                }
+                return null;
+            }
+        }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
+            @Override
+            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
+                return new City().getAllCitiesSorted(getActivity(), mSelectedProvinceId);
+            }
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+            @Override
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
+                if (task.isFaulted()) {
+                    displayShortToast(getString(R.string.error_getting_city_list));
+                } else {
+                    mCityOrderedTreeMap = task.getResult();
+                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+                            if (mSelectedCityId < 0) {
+                                mSelectedCityId = citySet.getKey();
+                                mSelectedCityName = citySet.getValue();
+                            }
+                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
+                        }
+                    }
+                    if (mSelectedCityId > 0) {
+                        mCityEditText.setText(mCityHashMap.get(mSelectedCityId));
+                    }
+                }
+                return null;
+            }
+        });
+    }
 
     private void dismissProgressDialog() {
         Activity activity = getActivity();
@@ -863,6 +869,17 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (getActivity() != null && isVisible()) {
+            mProgressDialog.show();
         }
     }
 

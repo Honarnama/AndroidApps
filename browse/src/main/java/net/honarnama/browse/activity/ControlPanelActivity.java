@@ -76,6 +76,9 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener, View.OnClickListener {
 
+    //TODO add crashlytics
+    //TODO add Analytics
+
     public static Button btnRed; // Works as a badge
     //Declared static; so it can be accessed from all other Activities
 

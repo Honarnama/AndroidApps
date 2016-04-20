@@ -183,6 +183,8 @@
     <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
     <string name="error_getting_items_list">خطا در گرفتن فهرست محصولات.</string>
     <string name="item_not_found">"محصولی یافت نشد."</string>
+    <string name="store_not_found">فروشگاهی یافت نشد.</string>
+    <string name="event_not_found">رویدادی یافت نشد.</string>
     <string name="not_allowed_to_do_this_action">شما مجاز به این عمل نیستید.</string>
     <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
     <string name="error_displaying_image">خطا در نمایش تصویر.</string>

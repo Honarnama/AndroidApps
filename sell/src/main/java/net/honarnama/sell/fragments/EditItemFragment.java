@@ -586,7 +586,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             displayProgressDialog();
         }
 
-
         @Override
         protected CreateOrUpdateItemReply doInBackground(Void... voids) {
 
@@ -633,7 +632,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
                 return createOrUpdateItemReply;
             } catch (InterruptedException e) {
-                logD("Error getting creating or updating item. Error: " + e);
+                logD("Error running createOrUpdateItemRequest. Error: " + e);
             }
             return null;
         }

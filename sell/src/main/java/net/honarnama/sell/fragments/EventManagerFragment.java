@@ -99,10 +99,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
 
     private EditText mProvinceEditText;
-    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<>();
+    public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
-    private EditText mCityEditEext;
+    private EditText mCityEditText;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
 
@@ -231,9 +231,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mProvinceEditText.setOnClickListener(this);
         mProvinceEditText.setKeyListener(null);
 
-        mCityEditEext = (EditText) rootView.findViewById(R.id.event_city_edit_text);
-        mCityEditEext.setOnClickListener(this);
-        mCityEditEext.setKeyListener(null);
+        mCityEditText = (EditText) rootView.findViewById(R.id.event_city_edit_text);
+        mCityEditText.setOnClickListener(this);
+        mCityEditText.setKeyListener(null);
 
         mRegisterEventButton = (Button) rootView.findViewById(R.id.register_event_button);
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
@@ -288,8 +288,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 if (task.isFaulted()) {
                     displayShortToast(getString(R.string.error_getting_province_list));
                 } else {
-                    mProvincesObjectsTreeMap = task.getResult();
-                    for (Province province : mProvincesObjectsTreeMap.values()) {
+                    mProvinceObjectsTreeMap = task.getResult();
+                    for (Province province : mProvinceObjectsTreeMap.values()) {
                         if (mSelectedProvinceId < 0) {
                             mSelectedProvinceId = province.getId();
                             mSelectedProvinceName = province.getName();
@@ -325,7 +325,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                     }
                     if (mSelectedCityId > 0) {
-                        mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
+                        mCityEditText.setText(mCityHashMap.get(mSelectedCityId));
                     }
                 }
                 return null;
@@ -421,7 +421,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
 
-        if (mProvincesObjectsTreeMap.isEmpty()) {
+        if (mProvinceObjectsTreeMap.isEmpty()) {
 
             provinceDialog.setContentView(R.layout.dialog_no_data_found);
             provinceDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
@@ -440,12 +440,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         } else {
             provinceDialog.setContentView(R.layout.choose_province);
             provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-            provincesAdapter = new ProvincesAdapter(getActivity(), mProvincesObjectsTreeMap);
+            provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
             provincesListView.setAdapter(provincesAdapter);
             provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Province selectedProvince = mProvincesObjectsTreeMap.get(position + 1);
+                    Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
                     mSelectedProvinceId = selectedProvince.getId();
                     mSelectedProvinceName = selectedProvince.getName();
                     mProvinceEditText.setText(mSelectedProvinceName);
@@ -478,7 +478,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
                         for (Integer key : tempSet) {
                             mSelectedCityId = key;
-                            mCityEditEext.setText(mCityHashMap.get(key));
+                            mCityEditText.setText(mCityHashMap.get(key));
                         }
                     }
 
@@ -525,7 +525,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                     for (String value : selectedCity.values()) {
                         mSelectedCityName = value;
-                        mCityEditEext.setText(mSelectedCityName);
+                        mCityEditText.setText(mSelectedCityName);
                     }
                     cityDialog.dismiss();
                 }
@@ -613,11 +613,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
 
         if (mSelectedCityId < 0) {
-            mCityEditEext.requestFocus();
-            mCityEditEext.setError(getString(R.string.error_event_city_not_set));
+            mCityEditText.requestFocus();
+            mCityEditText.setError(getString(R.string.error_event_city_not_set));
             return false;
         } else {
-            mCityEditEext.setError(null);
+            mCityEditText.setError(null);
         }
 
         if (mAddressEditText.getText().toString().trim().length() == 0) {
@@ -668,9 +668,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (mStartDate.after(mEndDate)) {
             mStartDaySpinner.requestFocus();
             mStartLabelTextView.setError("تاریخ شروع بزرگتر از تاریخ پایان است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ شروع بزرگتر از تاریخ پایان است.", Toast.LENGTH_LONG).show();
-            }
+            displayLongToast("تاریخ شروع بزرگتر از تاریخ پایان است.");
             return false;
         } else {
             mStartLabelTextView.setError(null);
@@ -679,9 +677,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (System.currentTimeMillis() > mEndDate.getTime()) {
             mEndDaySpinner.requestFocus();
             mEndLabelTextView.setError("تاریخ پایان رویداد گذشته است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ پایان رویداد گذشته است.", Toast.LENGTH_LONG).show();
-            }
+            displayLongToast("تاریخ پایان رویداد گذشته است.");
             return false;
         } else {
             mEndLabelTextView.setError(null);
@@ -736,8 +732,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     }
 
     private void setEventInfo(net.honarnama.nano.Event event, boolean loadImages) {
-
         if (event != null) {
+            logD("event info: " + event);
             mEventId = event.id;
             mIsNew = false;
             Date startDate = new Date(event.startAt * 1000);
@@ -791,7 +787,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
 
             if (!TextUtils.isEmpty(city.getName())) {
-                mCityEditEext.setText(city.getName());
+                mCityEditText.setText(city.getName());
             }
 
             if (!TextUtils.isEmpty(province.getName())) {
@@ -978,7 +974,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
                 return createOrUpdateEventReply;
             } catch (InterruptedException e) {
-                logE("Error running createOrUpdateEventReply. Error: " + e);
+                logE("Error running createOrUpdateEventRequest. Error: " + e);
             }
             return null;
         }
