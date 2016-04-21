@@ -5,6 +5,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -17,6 +18,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.model.HonarnamaUser;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +36,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 public class UserAccountFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     public static UserAccountFragment mUserAccountFragment;
-    //TODO update gender in server
     private EditText mNameEditText;
     private Button mAlterNameButton;
 
@@ -43,6 +44,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     private ToggleButton mGenderUnspecified;
 
     private Tracker mTracker;
+
+    ProgressDialog mProgressDialog;
 
     public synchronized static UserAccountFragment getInstance() {
         if (mUserAccountFragment == null) {
@@ -60,7 +63,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //TODO check if user is not logged in, return him/her to login page
+        if (!HonarnamaUser.isLoggedIn()) {
+            if (BuildConfig.DEBUG) {
+                logD("User was not logged in!");
+            }
+            HonarnamaUser.logout(getActivity());
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_user_account, container, false);
         mNameEditText = (EditText) rootView.findViewById(R.id.account_name_edit_text);
         mAlterNameButton = (Button) rootView.findViewById(R.id.alter_account_info_btn);
@@ -150,7 +159,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     private void changeUserProfile() {
-        //TODO test changing gender
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return;
         } else {
@@ -162,7 +170,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
     }
-
 
     public class UpdateAccountAsync extends AsyncTask<Void, Void, UpdateAccountReply> {
         ProgressDialog progressDialog;
@@ -176,10 +183,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             name = mNameEditText.getText().toString().trim();
 
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.show();
+            displayProgressDialog();
         }
 
         @Override
@@ -190,14 +194,18 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             createOrUpdateAccountRequest.account.name = name;
             createOrUpdateAccountRequest.account.gender = genderCode;
 
+            //TODO chaneg gender in server side
+
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             createOrUpdateAccountRequest.requestProperties = rp;
-
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateAccountRequest is: " + createOrUpdateAccountRequest);
+            }
             AuthServiceGrpc.AuthServiceBlockingStub stub;
             try {
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
             } catch (InterruptedException ie) {
-                logE("Error occured trying to send register request. Error:" + ie);
+                logE("Error running createOrUpdateAccountRequest. Error:" + ie);
                 return null;
             }
 
@@ -208,27 +216,29 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         @Override
         protected void onPostExecute(UpdateAccountReply updateAccountReply) {
             super.onPostExecute(updateAccountReply);
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
+
+            if (BuildConfig.DEBUG) {
+                logD("updateAccountReply is: " + updateAccountReply);
             }
+
+            dismissProgressDialog();
             if (updateAccountReply != null) {
-                logE("inja updateAccountReply is: " + updateAccountReply);
                 switch (updateAccountReply.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case UpdateAccountReply.NO_CLIENT_ERROR:
+                                logE("Got NO_CLIENT_ERROR code updateAccountReply. user Id: " + HonarnamaUser.getId());
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                             case UpdateAccountReply.ACCOUNT_NOT_FOUND:
-                                //TODO
-                                logE("inja ACCOUNT_NOT_FOUND");
+                                displayLongToast(getString(R.string.account_not_found));
                                 break;
                             case UpdateAccountReply.FORBIDDEN:
-                                //TODO
-                                logE("inja FORBIDDEN");
+                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
+                                logE("Got FORBIDDEN reply while trying to update user " + HonarnamaUser.getId() + ".");
                                 break;
                         }
-                        //TODO check ErrorCode
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
@@ -236,19 +246,38 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
                     case ReplyProperties.OK:
                         HonarnamaUser.setName(name);
                         HonarnamaUser.setGender(genderCode);
-                        //TODO displayToast
+                        displayShortToast(getString(R.string.successfully_changed_user_info));
                         break;
                 }
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
+        }
+    }
+
+    private void dismissProgressDialog() {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (getActivity() != null && isVisible()) {
+            mProgressDialog.show();
         }
     }
 }

@@ -4,6 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.GetItemReply;
@@ -93,7 +94,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        net.honarnama.nano.Item item = (net.honarnama.nano.Item) mAdapter.getItem(i);
+        net.honarnama.nano.Item item = mAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.switchFragmentToEditItem(item.id);
     }
@@ -108,16 +109,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            if (getActivity() != null && isVisible()) {
-                //TODO check if this checking prevents exception or not
-                //TODO  if this checking prevents add to others dialog too
-                mProgressDialog.show();
-            }
+            displayProgressDialog();
         }
 
         @Override
@@ -127,13 +119,15 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             simpleRequest.requestProperties = rp;
 
             GetItemsReply getItemsReply;
-
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting items is: " + simpleRequest);
+            }
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getItemsReply = stub.getItems(simpleRequest);
                 return getItemsReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error running getItems request. Error: " + e);
             }
             return null;
         }
@@ -153,11 +147,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getItemsReply.errorCode) {
                             case GetItemsReply.STORE_NOT_FOUND:
-                                //TODO does this error arise at all?
+                                //TODO ask server to turn this to Stroe_not_created
                                 break;
 
                             case GetItemReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                logE("Got NO_CLIENT_ERROR code for getItemsReply. User id: " + HonarnamaUser.getId());
+                                displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
                         break;
@@ -167,7 +162,6 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
                         HonarnamaUser.logout(getActivity());
                         break;
 
@@ -181,7 +175,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 }
 
             } else {
-                //TODO displayToast
+                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
     }
@@ -192,6 +186,17 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (getActivity() != null && isVisible()) {
+            mProgressDialog.show();
         }
     }
 }

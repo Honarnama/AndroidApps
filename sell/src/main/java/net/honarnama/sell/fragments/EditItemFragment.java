@@ -491,6 +491,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                             case GetItemReply.FORBIDDEN:
                                 displayLongToast(getString(R.string.not_allowed_to_do_this_action));
+                                logE("Got FORBIDDEN reply while trying to get item with id: " + mItemId + ". User Id: " + HonarnamaUser.getId() + ".");
                                 break;
                         }
                         break;
@@ -679,6 +680,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 break;
                             case CreateOrUpdateItemReply.FORBIDDEN:
                                 displayLongToast(getString(R.string.not_allowed_to_do_this_action));
+                                logE("Got FORBIDDEN reply while trying createOrUpdateItem with id: " + mItemId + ". User Id: " + HonarnamaUser.getId() + ".");
+
                                 break;
                             case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
                                 displayLongToast(getString(R.string.item_not_found));

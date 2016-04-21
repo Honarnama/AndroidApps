@@ -144,7 +144,7 @@
     <string name="please_wait">لطفاً چند لحظه صبر کنید.</string>
 
     <string name="alter_name">تغییر نام</string>
-    <string name="successfully_changed_user_name">نام شما با موفقیت تغییر یافت.</string>
+    <string name="successfully_changed_user_info">اطلاعات شما با موفقیت تغییر کرد.</string>
     <string name="choose_category_dialog_title">انتخاب دسته‌ی آگهی</string>
     <string name="choose_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="syncing_data_failed">خطا در به‌روزرسانی اطلاعات. لطفا اینترنت دستگاه خود را بررسی
@@ -185,6 +185,7 @@
     <string name="item_not_found">"محصولی یافت نشد."</string>
     <string name="store_not_found">فروشگاهی یافت نشد.</string>
     <string name="event_not_found">رویدادی یافت نشد.</string>
+    <string name="account_not_found">"حساب کاربری یافت نشد."</string>
     <string name="not_allowed_to_do_this_action">شما مجاز به این عمل نیستید.</string>
     <string name="please_try_again">" لطفا دوباره تلاش کنید. "</string>
     <string name="error_displaying_image">خطا در نمایش تصویر.</string>
