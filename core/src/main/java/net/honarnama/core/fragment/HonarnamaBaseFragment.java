@@ -4,7 +4,6 @@ import com.crashlytics.android.Crashlytics;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.base.R;
 
 import android.content.Context;
 import android.os.Bundle;

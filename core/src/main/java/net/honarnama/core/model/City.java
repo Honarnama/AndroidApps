@@ -76,8 +76,6 @@ public class City {
     public static int ALL_CITY_ID = 0;
     public static String ALL_CITY_NAME = "تمام شهرها";
 
-    public static HashMap<String, String> mDefaultCitiesHashMap = new HashMap<String, String>();
-
 
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<>();
     public Context mContext;

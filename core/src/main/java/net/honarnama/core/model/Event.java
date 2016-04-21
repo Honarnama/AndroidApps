@@ -15,8 +15,6 @@ public class Event {
 
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/eventModel";
 
-    public static String OBJECT_NAME = "Event";
-
     public String mName;
     public String mDescription;
     public String mPhoneNumber;
@@ -33,11 +31,6 @@ public class Event {
     public String mAddress;
     public Date mStartDate;
     public Date mEndDate;
-
-
-    public static int STATUS_CODE_CONFIRMATION_WAITING = 0;
-    public static int STATUS_CODE_NOT_VERIFIED = -1;
-    public static int STATUS_CODE_VERIFIED = 1;
 
     public String getName() {
         return mName;

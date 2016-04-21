@@ -1,5 +1,6 @@
 package net.honarnama.sell.adapter;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -7,6 +8,8 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.nano.DeleteItemReply;
 import net.honarnama.nano.GetOrDeleteItemRequest;
 import net.honarnama.nano.HonarnamaProto;
@@ -18,6 +21,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.fragments.ItemsFragment;
 import net.honarnama.sell.model.HonarnamaUser;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,11 +48,15 @@ public class ItemsAdapter extends BaseAdapter {
     Context mContext;
     ArrayList<net.honarnama.nano.Item> mItems;
     private static LayoutInflater mInflater = null;
+    ProgressDialog mProgressDialog;
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/itemAdapter";
+    ItemsFragment mItemsFragment;
 
     public ItemsAdapter(Context context) {
         mContext = context;
         mItems = new ArrayList();
         mInflater = LayoutInflater.from(mContext);
+        mItemsFragment = ItemsFragment.getInstance();
     }
 
     @Override
@@ -89,7 +97,7 @@ public class ItemsAdapter extends BaseAdapter {
         if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
             mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
-            mViewHolder.waitingToBeConfirmedTextView.setText("این آگهی تایید نشد");
+            mViewHolder.waitingToBeConfirmedTextView.setText(mContext.getString(R.string.changes_needed));
         }
 
         String itemImage = "";
@@ -177,19 +185,12 @@ public class ItemsAdapter extends BaseAdapter {
 
 
     public class deleteItemAsync extends AsyncTask<Integer, Void, DeleteItemReply> {
-        ProgressDialog progressDialog;
-        ItemsFragment itemsFragment = ItemsFragment.getInstance();
         int itemPosition;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(mContext.getString(R.string.please_wait));
-            if (ItemsFragment.getInstance().getActivity() != null && ItemsFragment.getInstance().isVisible()) {
-                progressDialog.show();
-            }
+            displayProgressDialog();
         }
 
         @Override
@@ -201,13 +202,19 @@ public class ItemsAdapter extends BaseAdapter {
             itemPosition = position[0];
             getOrDeleteItemRequest.id = mItems.get(itemPosition).id;
             DeleteItemReply deleteItemReply;
-
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "getOrDeleteItemRequest is: " + getOrDeleteItemRequest);
+            }
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 deleteItemReply = stub.deleteItem(getOrDeleteItemRequest);
                 return deleteItemReply;
             } catch (InterruptedException e) {
-                //TODO log
+                if (BuildConfig.DEBUG) {
+                    Log.e(DEBUG_TAG, "Error running getOrDeleteItemRequest. Error: " + e, e);
+                } else {
+                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. Error: " + e);
+                }
             }
             return null;
         }
@@ -215,17 +222,11 @@ public class ItemsAdapter extends BaseAdapter {
         @Override
         protected void onPostExecute(DeleteItemReply deleteItemReply) {
             super.onPostExecute(deleteItemReply);
-            Log.e("inja", "deleteItemReply is " + deleteItemReply);
-            //TODO use this checking in other async too (In others it is reversed!!!!
-            if (itemsFragment.getActivity() != null) {
-                if (!itemsFragment.getActivity().isFinishing() && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-            }
+            dismissProgressDialog();
             if (deleteItemReply != null) {
                 switch (deleteItemReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) itemsFragment.getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mItemsFragment.getActivity());
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -233,39 +234,59 @@ public class ItemsAdapter extends BaseAdapter {
                     case ReplyProperties.CLIENT_ERROR:
                         switch (deleteItemReply.errorCode) {
                             case DeleteItemReply.ITEM_NOT_FOUND:
-                                //TODO does this error arise at all?
+                                mItemsFragment.displayLongToast(mContext.getString(R.string.item_not_found));
                                 break;
                             case DeleteItemReply.FORBIDDEN:
-                                //TODO
+                                mItemsFragment.displayLongToast(mContext.getString(R.string.not_allowed_to_do_this_action));
+                                mItemsFragment.logE("Got FORBIDDEN reply while running deleteItem request. Item id: " + mItems.get(itemPosition).id + ". User Id: " + HonarnamaUser.getId() + ".");
                                 break;
                             case DeleteItemReply.NO_CLIENT_ERROR:
-                                //TODO bug report
+                                mItemsFragment.logE("Got NO_CLIENT_ERROR code for updating item with id: " + mItems.get(itemPosition).id + ". User Id: " + HonarnamaUser.getId() + ".");
+                                mItemsFragment.displayShortToast(mContext.getString(R.string.error_occured));
                                 break;
                         }
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (itemsFragment.isVisible()) {
-                            //TODO
-//                            displayShortToast(getString(R.string.server_error_try_again));
-                        }
+                        dismissProgressDialog();
+                        mItemsFragment.displayShortToast(mContext.getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
-                        HonarnamaUser.logout(itemsFragment.getActivity());
+                        HonarnamaUser.logout(mItemsFragment.getActivity());
                         break;
 
                     case ReplyProperties.OK:
                         mItems.remove(itemPosition);
                         notifyDataSetChanged();
-                        //TODO displayToast
+                        mItemsFragment.displayShortToast(mContext.getString(R.string.item_deleted));
                         break;
                 }
 
             } else {
-                //TODO displayToast
+                mItemsFragment.displayLongToast(mContext.getString(R.string.error_connecting_to_Server) + mContext.getString(R.string.check_net_connection));
             }
+        }
+    }
+
+    private void dismissProgressDialog() {
+        Activity activity = mItemsFragment.getActivity();
+        if (activity != null && !activity.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(mContext.getString(R.string.please_wait));
+        }
+        if (mItemsFragment.getActivity() != null && mItemsFragment.isVisible()) {
+            mProgressDialog.show();
         }
     }
 }

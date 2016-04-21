@@ -28,6 +28,7 @@ public class GenericGravityTextWatcher implements TextWatcher {
         if (s.length() > 0) {
             // position the text type in the left top corner
             editText.setGravity(Gravity.LEFT);
+            //TODO
             editText.setTextDirection(View.TEXT_DIRECTION_LTR);
 
         } else {

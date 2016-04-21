@@ -1,6 +1,7 @@
 package net.honarnama.core.activity;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.core.adapter.CategoriesAdapter;
 import net.honarnama.core.model.ArtCategory;
@@ -64,10 +65,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     }
 
     private void buildCategoriesHierarchyHashMap() {
-//
-//        final ProgressDialog receivingDataProgressDialog = new ProgressDialog(this);
-//        receivingDataProgressDialog.setCancelable(false);
-//        receivingDataProgressDialog.setMessage(getString(R.string.receiving_data));
 
         List<ArtCategory> artCategories;
         if (mCallingApp == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
@@ -75,7 +72,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         } else {
             artCategories = ArtCategory.getAllArtCategoriesSorted(false);
         }
-
 
         for (int i = 0; i < artCategories.size(); i++) {
             ArtCategory artCategory = artCategories.get(i);
@@ -106,7 +102,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
                 }
                 mCategoriesHierarchyHashMap.put(artCategory.getParentId(), tempArrayList);
             }
-
         }
 
         setNodeCategories();
@@ -119,8 +114,9 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         mCurrentArtCategoriesObjectIds = new HashMap<>();
 
         if (mSelectedCategoryObjectId == null) {
-            logE("inja, no category is selected yet. mCategoriesHierarchyHashMap size is " + mCategoriesHierarchyHashMap.size());
-
+            if (BuildConfig.DEBUG) {
+                logD("No category is selected yet. mCategoriesHierarchyHashMap size is " + mCategoriesHierarchyHashMap.size());
+            }
             //nothing is selected yet
             for (Integer key : mCategoriesHierarchyHashMap.keySet()) {
 
@@ -131,7 +127,9 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
                 mCurrentArtCategoriesObjectIds.put(index, key);
                 mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(key));
             }
-            logE("inja, no category is selected yet. mCurrentArtCategoriesName is " + mCurrentArtCategoriesName);
+            if (BuildConfig.DEBUG) {
+                logD("No category is selected yet. mCurrentArtCategoriesName is " + mCurrentArtCategoriesName);
+            }
         } else {
             ArrayList<Integer> notSortedCurrentCategoryObjectIds = mCategoriesHierarchyHashMap.get(mSelectedCategoryObjectId);
             for (int i = 0; i < notSortedCurrentCategoryObjectIds.size(); i++) {

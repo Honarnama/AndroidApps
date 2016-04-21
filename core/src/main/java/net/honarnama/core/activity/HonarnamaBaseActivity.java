@@ -2,20 +2,10 @@ package net.honarnama.core.activity;
 
 import com.crashlytics.android.Crashlytics;
 
-import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
-import net.honarnama.core.interfaces.MetaUpdateListener;
-import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.utils.CommonUtil;
-import net.honarnama.nano.EventCategory;
-import net.honarnama.nano.Location;
-import net.honarnama.nano.MetaReply;
-import net.honarnama.nano.MetaServiceGrpc;
-import net.honarnama.nano.ReplyProperties;
-import net.honarnama.nano.RequestProperties;
-import net.honarnama.nano.SimpleRequest;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -28,10 +18,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
-
-import bolts.Continuation;
-import bolts.Task;
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by reza on 7/23/15.
@@ -115,7 +101,6 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 callBazaarRatingIntent(callingApp);
-
                 SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
                 if (callingApp == HonarnamaBaseApp.PREF_NAME_SELL_APP) {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, true);
@@ -123,7 +108,6 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, true);
                 }
                 editor.commit();
-
                 dialog.dismiss();
                 finish();
             }

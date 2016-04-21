@@ -20,11 +20,6 @@ public class Store {
 
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/storeModel";
 
-    public static String OBJECT_NAME = "Store";
-
-    public static int STATUS_CODE_CONFIRMATION_WAITING = 0;
-    public static int STATUS_CODE_NOT_VERIFIED = -1;
-    public static int STATUS_CODE_VERIFIED = 1;
 
     public String mName;
     public String mDescription;

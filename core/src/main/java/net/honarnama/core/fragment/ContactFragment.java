@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,6 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
     public static ContactFragment mContactFragment;
 
-    //TODO implement this
     private TextView mContactText;
     private EditText mSubject;
     private EditText mBody;
@@ -68,7 +66,6 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
         mSubject.setError(null);
         mBody.setError(null);
-
 
         if (getArguments().getString("appKey") == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
             mContactButton.setBackgroundColor(getResources().getColor(R.color.dark_cyan));

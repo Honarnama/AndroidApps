@@ -1,16 +1,12 @@
 package net.honarnama.core.fragment;
 
 
-import com.crashlytics.android.Crashlytics;
-
-import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
