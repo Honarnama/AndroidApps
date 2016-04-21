@@ -327,7 +327,7 @@ message GetItemsReply {
   repeated Item items = 2;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    STORE_NOT_FOUND = 1;
+    STORE_NOT_CREATED = 1;
   }
   ErrorCode errorCode = 3;
 }
