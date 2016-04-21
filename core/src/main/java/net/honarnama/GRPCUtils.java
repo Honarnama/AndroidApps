@@ -3,10 +3,8 @@ package net.honarnama;
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.MetaServiceGrpc;
-import net.honarnama.nano.MetaReply;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
-import net.honarnama.nano.SimpleRequest;
 
 import android.app.Application;
 import android.content.Context;
@@ -14,8 +12,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.grpc.ManagedChannel;
@@ -73,8 +71,9 @@ public class GRPCUtils {
         String loginToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, "");
         rp.userAuthToken = loginToken;
 
-        // TODO: rp.userLanguage;
-        // TODO: rp.userCountry
+        rp.androidClientInfo.locale = Locale.getDefault().getLanguage();
+        rp.androidClientInfo.country = Locale.getDefault().getCountry();
+
         // TODO: cache static values
 
         return rp;
@@ -95,8 +94,7 @@ public class GRPCUtils {
         return SellServiceGrpc.newBlockingStub(mChannel);
     }
 
-    public void processReplyProperties()
-    {
+    public void processReplyProperties() {
         //TODO
     }
 }

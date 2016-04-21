@@ -1,7 +1,5 @@
 package net.honarnama.core.utils;
 
-import android.util.Log;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;

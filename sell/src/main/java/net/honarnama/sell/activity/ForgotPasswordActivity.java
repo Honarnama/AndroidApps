@@ -4,7 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.core.activity.HonarnamaBaseActivity;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class ForgotPasswordActivity extends HonarnamaBaseActivity {
     private Button mForgotPasswordButton;
@@ -34,7 +33,7 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
         setContentView(R.layout.activity_forgot_password);
 
         mForgotPasswordEmailEditEext = (EditText) findViewById(R.id.forgot_password_email_edit_text);
-        mForgotPasswordEmailEditEext.addTextChangedListener(new GenericGravityTextWatcher(mForgotPasswordEmailEditEext));
+        mForgotPasswordEmailEditEext.addTextChangedListener(new GravityTextWatcher(mForgotPasswordEmailEditEext));
         mForgotPasswordEmailEditEext.requestFocus();
 
         mForgotPasswordButton = (Button) findViewById(R.id.forgot_password_button);

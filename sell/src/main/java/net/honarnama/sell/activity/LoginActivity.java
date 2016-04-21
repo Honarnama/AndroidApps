@@ -7,7 +7,7 @@ import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -75,7 +74,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mMessageContainer = findViewById(R.id.login_message_container);
         mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
 
-        mUsernameEditText.addTextChangedListener(new GenericGravityTextWatcher(mUsernameEditText));
+        mUsernameEditText.addTextChangedListener(new GravityTextWatcher(mUsernameEditText));
 
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);

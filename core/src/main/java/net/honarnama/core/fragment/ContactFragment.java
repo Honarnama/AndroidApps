@@ -2,7 +2,7 @@ package net.honarnama.core.fragment;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 
 import android.content.Context;
@@ -60,8 +60,8 @@ public class ContactFragment extends HonarnamaBaseFragment {
         mContactButton = (Button) rootView.findViewById(R.id.contact_butoon);
         mSendDeviceInfo = (CheckBox) rootView.findViewById(R.id.send_device_info_check_box);
 
-        mPhone.addTextChangedListener(new GenericGravityTextWatcher(mPhone));
-        mEmail.addTextChangedListener(new GenericGravityTextWatcher(mEmail));
+        mPhone.addTextChangedListener(new GravityTextWatcher(mPhone));
+        mEmail.addTextChangedListener(new GravityTextWatcher(mEmail));
         mContactText.setMovementMethod(LinkMovementMethod.getInstance());
 
         mSubject.setError(null);

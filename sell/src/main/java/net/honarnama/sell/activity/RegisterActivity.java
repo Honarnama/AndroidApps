@@ -7,7 +7,7 @@ import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -77,8 +77,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         mActivateWithEmail = (RadioButton) findViewById(R.id.register_activate_with_email);
         mActivateWithTelegram = (RadioButton) findViewById(R.id.register_activate_with_telegram);
 
-        mMobileNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mMobileNumberEditText));
-        mEmailAddressEditText.addTextChangedListener(new GenericGravityTextWatcher(mEmailAddressEditText));
+        mMobileNumberEditText.addTextChangedListener(new GravityTextWatcher(mMobileNumberEditText));
+        mEmailAddressEditText.addTextChangedListener(new GravityTextWatcher(mEmailAddressEditText));
         mRegisterButton.setOnClickListener(this);
         mActivateWithEmail.setOnClickListener(this);
         mActivateWithTelegram.setOnClickListener(this);

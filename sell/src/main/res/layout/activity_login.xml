@@ -13,13 +13,13 @@
                 android:background="@color/main_back"
                 android:fadeScrollbars="false"
                 android:layoutDirection="rtl"
-            >
+    >
 
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".MainActivity"
-                >
+        >
             <ImageView
                     android:id="@+id/login_main_logo_image_view"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
                     android:layout_marginBottom="10dp"
-                    />
+            />
             <TextView
                     android:id="@+id/login_sell_on_honarnama_text_view"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:textStyle="bold"
-                    />
+            />
             <TextView
                     android:id="@+id/login_slogan_for_sellers_text_view"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                     android:gravity="center"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
-                    />
+            />
 
 
             <LinearLayout android:layout_width="fill_parent"
@@ -84,7 +84,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:layout_below="@id/login_message_container"
-                    >
+            >
 
                 <EditText
                         android:id="@+id/login_username_edit_text"
@@ -93,7 +93,7 @@
                         android:layout_alignParentTop="true"
                         style="@style/edit_text_default"
                         android:padding="10dp"
-                        />
+                />
                 <Button
                         android:id="@+id/send_login_link_btn"
                         android:text="ارسال لینک ورود به برنامه"
@@ -103,7 +103,7 @@
                         android:layout_margin="0dp"
                         android:layout_marginTop="10dp"
 
-                        />
+                />
             </RelativeLayout>
 
 
@@ -117,12 +117,12 @@
                           android:orientation="horizontal"
                           android:padding="10dp"
                           android:clickable="true"
-                    >
+            >
                 <ImageView android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:src="@drawable/telegram_icon"
                            android:layout_gravity="center_vertical"
-                        />
+                />
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="5dp"
                         android:textStyle="bold"
-                        />
+                />
             </LinearLayout>
 
             <TextView
@@ -147,7 +147,7 @@
                     android:textSize="16sp"
                     android:textColor="@color/dark_blue"
                     android:clickable="true"
-                    />
+            />
 
         </RelativeLayout>
     </ScrollView>

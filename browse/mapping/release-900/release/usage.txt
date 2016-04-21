@@ -6753,7 +6753,7 @@ net.honarnama.core.model.Store$1
 net.honarnama.core.model.Store$2
 net.honarnama.core.utils.CommonUtil
 net.honarnama.core.utils.FileUtil
-net.honarnama.core.utils.GenericGravityTextWatcher
+net.honarnama.core.utils.GravityTextWatcher
 net.honarnama.core.utils.HonarnamaUser:
     14:70:public HonarnamaUser()
     17:21:public static boolean isAuthenticatedUser()

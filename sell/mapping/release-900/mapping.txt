@@ -35414,7 +35414,7 @@ net.honarnama.core.utils.CommonUtil -> net.honarnama.core.utils.a:
     11:16:boolean isPackageInstalled(java.lang.String,android.content.Context) -> a
 net.honarnama.core.utils.FileUtil -> net.honarnama.core.utils.b:
     23:32:java.lang.String getRealPathFromURI(android.content.Context,android.net.Uri) -> a
-net.honarnama.core.utils.GenericGravityTextWatcher -> net.honarnama.core.utils.c:
+net.honarnama.core.utils.GravityTextWatcher -> net.honarnama.core.utils.c:
     android.widget.EditText editText -> a
     17:19:void <init>(android.widget.EditText) -> <init>
     21:21:void afterTextChanged(android.text.Editable) -> afterTextChanged

@@ -15,7 +15,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
 import net.honarnama.core.utils.TextUtil;
@@ -177,7 +177,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
         mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
         mPriceEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mPriceEditText.addTextChangedListener(new GenericGravityTextWatcher(mPriceEditText));
+        mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
     }
 
     @Override

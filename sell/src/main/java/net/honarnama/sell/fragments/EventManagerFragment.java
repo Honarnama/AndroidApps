@@ -19,7 +19,7 @@ import net.honarnama.core.interfaces.MetaUpdateListener;
 import net.honarnama.core.model.City;
 import net.honarnama.core.model.EventCategory;
 import net.honarnama.core.model.Province;
-import net.honarnama.core.utils.GenericGravityTextWatcher;
+import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -358,8 +358,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     @Override
     public void onResume() {
         super.onResume();
-        mPhoneNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mPhoneNumberEditText));
-        mCellNumberEditText.addTextChangedListener(new GenericGravityTextWatcher(mCellNumberEditText));
+        mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
+        mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
     }
 
     public void resetFields() {

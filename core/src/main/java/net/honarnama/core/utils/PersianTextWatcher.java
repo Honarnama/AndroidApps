@@ -33,7 +33,6 @@ public class PersianTextWatcher implements TextWatcher {
         try {
             String rawString = mEditText.getText().toString();
             Character lastChar = rawString.charAt(rawString.length() - 1);
-            Log.e("inja", "lastChar is" + lastChar);
             String formattedString = TextUtil.convertEnNumberToFa(rawString);
 
 //            s.replace(0, rawString.length(), formattedString, 0, formattedString.length());

@@ -146,7 +146,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getItemsReply.errorCode) {
-                            case GetItemsReply.STORE_NOT_FOUND:
+                            case GetItemsReply.STORE_NOT_CREATED:
                                 //TODO ask server to turn this to Stroe_not_created
                                 break;
 
