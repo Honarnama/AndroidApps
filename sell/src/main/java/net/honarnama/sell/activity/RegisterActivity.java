@@ -53,11 +53,13 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
     private ToggleButton mGenderWoman;
     private ToggleButton mGenderMan;
-    private ToggleButton mGenderNotSaid;
+    private ToggleButton mGenderNotSpecified;
 
     private Button mRegisterButton;
 
     private Tracker mTracker;
+
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +87,13 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
         mGenderWoman = (ToggleButton) findViewById(R.id.register_gender_woman);
         mGenderMan = (ToggleButton) findViewById(R.id.register_gender_man);
-        mGenderNotSaid = (ToggleButton) findViewById(R.id.register_gender_not_said);
+        mGenderNotSpecified = (ToggleButton) findViewById(R.id.register_gender_not_said);
         mGenderWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mGenderWoman.setChecked(true);
                 mGenderMan.setChecked(false);
-                mGenderNotSaid.setChecked(false);
+                mGenderNotSpecified.setChecked(false);
             }
         });
         mGenderMan.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +101,14 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             public void onClick(View v) {
                 mGenderMan.setChecked(true);
                 mGenderWoman.setChecked(false);
-                mGenderNotSaid.setChecked(false);
+                mGenderNotSpecified.setChecked(false);
             }
         });
 
-        mGenderNotSaid.setOnClickListener(new View.OnClickListener() {
+        mGenderNotSpecified.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGenderNotSaid.setChecked(true);
+                mGenderNotSpecified.setChecked(true);
                 mGenderWoman.setChecked(false);
                 mGenderMan.setChecked(false);
             }
@@ -145,7 +147,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             signUserUp();
         }
         if (viewId == R.id.register_activate_with_email || viewId == R.id.register_activate_with_telegram) {
-            changeMandatoryFieldsStarMarker();
+            changeMandatoryFieldsMarkers();
         }
     }
 
@@ -154,19 +156,21 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             return;
         }
 
-        if (!enteredValuesAreValid()) {
-            return; // TODO: feedback
+        if (formInputsAreValid()) {
+            new CreateAccountAsync().execute();
+        } else {
+            Toast.makeText(RegisterActivity.this, "لطفا خطاهای مشخص شده را اصلاح کنید.", Toast.LENGTH_LONG).show();
         }
 
         // TODO
-//        if (HonarnamaUser.isLoggedIn()) {
-//            HonarnamaUser.logOut();
-//        }
+        if (HonarnamaUser.isLoggedIn()) {
+            HonarnamaUser.logout(null);
+        }
 
-        new CreateAccountAsync().execute();
+
     }
 
-    private void changeMandatoryFieldsStarMarker() {
+    private void changeMandatoryFieldsMarkers() {
 
         if (mActivateWithEmail.isChecked()) {
             findViewById(R.id.register_email_star_marker).setVisibility(View.VISIBLE);
@@ -178,17 +182,19 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         }
     }
 
-    private boolean enteredValuesAreValid() {
+    private boolean formInputsAreValid() {
 
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_name_not_set));
             return false;
+        } else {
+            mNameEditText.setError(null);
         }
         if (mActivateWithEmail.isChecked()) {
             if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
                 mEmailAddressEditText.requestFocus();
-                mEmailAddressEditText.setError(getString(R.string.error_email_field_can_not_be_empty));
+                mEmailAddressEditText.setError(getString(R.string.error_email_not_set));
                 return false;
             } else {
                 boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString()).matches();
@@ -261,103 +267,135 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     }
 
     public class CreateAccountAsync extends AsyncTask<Void, Void, CreateAccountReply> {
-        ProgressDialog progressDialog;
-        String name = "";
-        int genderCode;
-        int activationMethod;
-        String email = "";
+        String cName = "";
+        int cGenderCode;
+        int cActivationMethod;
+        String cEmail = "";
+        String cMobileNumber = "";
+        CreateOrUpdateAccountRequest createOrUpdateAccountRequest;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
-            name = mNameEditText.getText().toString().trim();
-            activationMethod = mActivateWithEmail.isChecked() ? Account.EMAIL : Account.TELEGRAM;
+            cGenderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
+            cName = mNameEditText.getText().toString().trim();
+            cActivationMethod = mActivateWithEmail.isChecked() ? Account.EMAIL : Account.TELEGRAM;
             if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
-                email = mEmailAddressEditText.getText().toString().trim();
+                cEmail = mEmailAddressEditText.getText().toString().trim();
             }
-
-            progressDialog = new ProgressDialog(RegisterActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.please_wait));
-            progressDialog.show();
+            cMobileNumber = mMobileNumberEditText.getText().toString().trim();
+            displayProgressDialog();
         }
 
         @Override
         protected CreateAccountReply doInBackground(Void... voids) {
-            final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
+            createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
             createOrUpdateAccountRequest.account = new Account();
 
-            createOrUpdateAccountRequest.account.mobileNumber = mMobileNumberEditText.getText().toString().trim();
-            createOrUpdateAccountRequest.account.name = mNameEditText.getText().toString().trim();
-            createOrUpdateAccountRequest.account.activationMethod = activationMethod;
-            createOrUpdateAccountRequest.account.email = email;
-            createOrUpdateAccountRequest.account.gender = genderCode;
+            createOrUpdateAccountRequest.account.mobileNumber = cMobileNumber;
+            createOrUpdateAccountRequest.account.name = cName;
+            createOrUpdateAccountRequest.account.activationMethod = cActivationMethod;
+            createOrUpdateAccountRequest.account.email = cEmail;
+            createOrUpdateAccountRequest.account.gender = cGenderCode;
 
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             createOrUpdateAccountRequest.requestProperties = rp;
 
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+            }
+
             AuthServiceGrpc.AuthServiceBlockingStub stub;
             try {
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+                CreateAccountReply createAccountReply = stub.createAccount(createOrUpdateAccountRequest);
+                return createAccountReply;
             } catch (InterruptedException ie) {
-                logE("Error occured trying to send register request. Error:" + ie);
-                return null;
+                logE("Error trying to send register request. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + ie);
             }
-
-            CreateAccountReply createAccountReply = stub.createAccount(createOrUpdateAccountRequest);
-            return createAccountReply;
+            return null;
         }
 
         @Override
         protected void onPostExecute(CreateAccountReply createAccountReply) {
             super.onPostExecute(createAccountReply);
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
+            dismissProgressDialog();
             if (createAccountReply != null) {
-                logE("inja createAccountReply is: " + createAccountReply);
+                if (BuildConfig.DEBUG) {
+                    logD("createAccountReply is: " + createAccountReply);
+                }
                 switch (createAccountReply.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:
                         switch (createAccountReply.errorCode) {
                             case CreateAccountReply.DUPLICATE_EMAIL:
                                 mEmailAddressEditText.setError(getString(R.string.error_signup_duplicated_email));
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.INVALID_EMAIL:
                                 mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
                                 mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.INVALID_MOBILE_NUMBER:
                                 mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+                                break;
+                            case CreateAccountReply.EMPTY_ACCOUNT:
+                                logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+                                break;
+                            case CreateAccountReply.NO_CLIENT_ERROR:
+                                logE("Got NO_CLIENT_ERROR code for registering user. createAccountReply: " + createAccountReply + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
                                 break;
                         }
-                        Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
-                        logE("Sign-up Failed. errorCode: " + createAccountReply.errorCode +
-                                " // statusCode: " + createAccountReply.replyProperties.statusCode +
-                                " // Error Msg: " + createAccountReply.replyProperties.errorMessage);
+//                        logE("Sign-up Failed. errorCode: " + createAccountReply.errorCode +
+//                                " // statusCode: " + createAccountReply.replyProperties.statusCode +
+//                                " // Error Msg: " + createAccountReply.replyProperties.errorMessage);
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO
-//                        displayShortToast(getString(R.string.server_error_try_again));
+                        Toast.makeText(RegisterActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
                         HonarnamaUser.logout(RegisterActivity.this);
                         break;
 
                     case ReplyProperties.OK:
-                        sendUserBackToCallingActivity(activationMethod, createAccountReply.telegramActivationCode);
+                        sendUserBackToCallingActivity(cActivationMethod, createAccountReply.telegramActivationCode);
+                        break;
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
                         break;
                 }
             } else {
-                //TODO displayToast
+                Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (!RegisterActivity.this.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(RegisterActivity.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (!RegisterActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
+            mProgressDialog.show();
         }
     }
 }

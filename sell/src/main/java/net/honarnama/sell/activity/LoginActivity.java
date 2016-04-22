@@ -38,8 +38,8 @@ import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-//TODO ersale mojadad link faal sazi baraye email
-//TODO what is the whilte page at first launch
+//TODO ersale mojadad link faal sazi baraye cEmail
+//TODO remove unactivated account after 24 hours
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private TextView mRegisterAsSellerTextView;
     private Button mLoginButton;
@@ -97,10 +97,12 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     private void processIntent(Intent intent) {
         mLoginMessageTextView.setText("");
         Uri data = intent.getData();
-        logD("processIntent :: data= " + data);
+        if (BuildConfig.DEBUG) {
+            logD("processIntent :: data= " + data);
+        }
 
         if (data != null) {
-            final String loginToken = data.getQueryParameter("token"); //login with email
+            final String loginToken = data.getQueryParameter("token");  //login with email
             final String register = data.getQueryParameter("register");
             if (BuildConfig.DEBUG) {
                 logD("token= " + loginToken + ", register= " + register);
@@ -231,23 +233,18 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
 
     public class getMeAsyncTask extends AsyncTask<Void, Void, WhoAmIReply> {
+        SimpleRequest simpleRequest;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(LoginActivity.this);
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
-            mProgressDialog.show();
+            displayProgressDialog();
         }
 
         @Override
         protected WhoAmIReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            SimpleRequest simpleRequest = new SimpleRequest();
+            simpleRequest = new SimpleRequest();
 
             simpleRequest.requestProperties = rp;
 
@@ -257,48 +254,46 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 whoAmIReply = stub.whoAmI(simpleRequest);
                 return whoAmIReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error getting whoAmIReply. simpleRequest: " + simpleRequest + ". Error: " + e);
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(WhoAmIReply whoAmI) {
-            super.onPostExecute(whoAmI);
-
-            if (!LoginActivity.this.isFinishing()) { // or call isFinishing() if min sdk version < 17
-                //TODO add this to other async task too
-                dismissProgressDialog();
-            }
-
-            if (whoAmI != null) {
-                switch (whoAmI.replyProperties.statusCode) {
+        protected void onPostExecute(WhoAmIReply whoAmIReply) {
+            super.onPostExecute(whoAmIReply);
+            dismissProgressDialog();
+            if (whoAmIReply != null) {
+                switch (whoAmIReply.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:
-                        //TODO
+                        logE("Got CLIENT_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-//                        displayShortToast(getString(R.string.server_error_try_again));
+                        Toast.makeText(LoginActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO displayToast
                         HonarnamaUser.logout(null);
                         break;
 
                     case ReplyProperties.OK:
-                        HonarnamaUser.setName(whoAmI.account.name);
-                        HonarnamaUser.setGender(whoAmI.account.gender);
-                        HonarnamaUser.setId(whoAmI.account.id);
+                        HonarnamaUser.setName(whoAmIReply.account.name);
+                        HonarnamaUser.setGender(whoAmIReply.account.gender);
+                        HonarnamaUser.setId(whoAmIReply.account.id);
                         Intent intent = new Intent(LoginActivity.this, ControlPanelActivity.class);
                         startActivity(intent);
                         finish();
                         break;
+
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
+                        break;
                 }
 
             } else {
-                //TODO displayToast
+                Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -310,9 +305,23 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         editor.commit();
     }
 
+
     private void dismissProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        if (!LoginActivity.this.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private void displayProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(LoginActivity.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+        if (!LoginActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
+            mProgressDialog.show();
         }
     }
 

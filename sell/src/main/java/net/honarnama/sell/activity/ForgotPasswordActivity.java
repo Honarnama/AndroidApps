@@ -47,7 +47,7 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
 
                 if (email.length() == 0) {
                     mForgotPasswordEmailEditEext.requestFocus();
-                    mForgotPasswordEmailEditEext.setError(getString(R.string.error_email_field_can_not_be_empty));
+                    mForgotPasswordEmailEditEext.setError(getString(R.string.error_email_not_set));
                     return;
                 } else {
                     boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mForgotPasswordEmailEditEext.getText().toString()).matches();
@@ -62,7 +62,7 @@ public class ForgotPasswordActivity extends HonarnamaBaseActivity {
                 mWaitingProgressDialog.setCancelable(false);
                 mWaitingProgressDialog.show();
 
-//                ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+//                ParseUser.requestPasswordResetInBackground(cEmail, new RequestPasswordResetCallback() {
 //                    @Override
 //                    public void done(ParseException e) {
 //                        mWaitingProgressDialog.dismiss();

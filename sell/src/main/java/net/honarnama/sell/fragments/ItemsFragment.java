@@ -105,6 +105,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     }
 
     public class getItemsAsync extends AsyncTask<Void, Void, GetItemsReply> {
+        SimpleRequest simpleRequest;
 
         @Override
         protected void onPreExecute() {
@@ -115,7 +116,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         @Override
         protected GetItemsReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            SimpleRequest simpleRequest = new SimpleRequest();
+            simpleRequest = new SimpleRequest();
             simpleRequest.requestProperties = rp;
 
             GetItemsReply getItemsReply;
@@ -127,7 +128,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 getItemsReply = stub.getItems(simpleRequest);
                 return getItemsReply;
             } catch (InterruptedException e) {
-                logE("Error running getItems request. Error: " + e);
+                logE("Error running getItems request. simpleRequest: " + simpleRequest + ". Error: " + e);
             }
             return null;
         }
@@ -147,11 +148,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getItemsReply.errorCode) {
                             case GetItemsReply.STORE_NOT_CREATED:
-                                //TODO ask server to turn this to Stroe_not_created
+                                displayLongToast(getString(R.string.store_not_created));
                                 break;
 
                             case GetItemReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for getItemsReply. User id: " + HonarnamaUser.getId());
+                                logE("Got NO_CLIENT_ERROR code for getItemsReply. simpleRequest: " + simpleRequest + ". User id: " + HonarnamaUser.getId());
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
@@ -195,7 +196,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
-        if (getActivity() != null && isVisible()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
     }

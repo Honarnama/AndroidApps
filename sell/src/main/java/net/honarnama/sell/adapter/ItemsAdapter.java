@@ -186,6 +186,7 @@ public class ItemsAdapter extends BaseAdapter {
 
     public class deleteItemAsync extends AsyncTask<Integer, Void, DeleteItemReply> {
         int itemPosition;
+        GetOrDeleteItemRequest getOrDeleteItemRequest;
 
         @Override
         protected void onPreExecute() {
@@ -197,7 +198,7 @@ public class ItemsAdapter extends BaseAdapter {
         protected DeleteItemReply doInBackground(Integer... position) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
-            GetOrDeleteItemRequest getOrDeleteItemRequest = new GetOrDeleteItemRequest();
+            getOrDeleteItemRequest = new GetOrDeleteItemRequest();
             getOrDeleteItemRequest.requestProperties = rp;
             itemPosition = position[0];
             getOrDeleteItemRequest.id = mItems.get(itemPosition).id;
@@ -211,9 +212,9 @@ public class ItemsAdapter extends BaseAdapter {
                 return deleteItemReply;
             } catch (InterruptedException e) {
                 if (BuildConfig.DEBUG) {
-                    Log.e(DEBUG_TAG, "Error running getOrDeleteItemRequest. Error: " + e, e);
+                    Log.e(DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e, e);
                 } else {
-                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. Error: " + e);
+                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e);
                 }
             }
             return null;
@@ -238,10 +239,10 @@ public class ItemsAdapter extends BaseAdapter {
                                 break;
                             case DeleteItemReply.FORBIDDEN:
                                 mItemsFragment.displayLongToast(mContext.getString(R.string.not_allowed_to_do_this_action));
-                                mItemsFragment.logE("Got FORBIDDEN reply while running deleteItem request. Item id: " + mItems.get(itemPosition).id + ". User Id: " + HonarnamaUser.getId() + ".");
+                                mItemsFragment.logE("Got FORBIDDEN reply while running deleteItem request.  getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 break;
                             case DeleteItemReply.NO_CLIENT_ERROR:
-                                mItemsFragment.logE("Got NO_CLIENT_ERROR code for updating item with id: " + mItems.get(itemPosition).id + ". User Id: " + HonarnamaUser.getId() + ".");
+                                mItemsFragment.logE("Got NO_CLIENT_ERROR code for updating item. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 mItemsFragment.displayShortToast(mContext.getString(R.string.error_occured));
                                 break;
                         }
@@ -276,16 +277,16 @@ public class ItemsAdapter extends BaseAdapter {
                 mProgressDialog.dismiss();
             }
         }
-
     }
 
     private void displayProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mItemsFragment.getActivity());
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(mContext.getString(R.string.please_wait));
+            mProgressDialog.setMessage(mItemsFragment.getString(R.string.please_wait));
         }
-        if (mItemsFragment.getActivity() != null && mItemsFragment.isVisible()) {
+        Activity activity = mItemsFragment.getActivity();
+        if (activity != null && !activity.isFinishing() && mItemsFragment.isVisible()) {
             mProgressDialog.show();
         }
     }

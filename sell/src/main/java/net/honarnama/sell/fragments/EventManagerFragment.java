@@ -10,6 +10,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.EventCategoriesAdapter;
 import net.honarnama.core.adapter.ProvincesAdapter;
@@ -853,6 +854,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
 
     public class getEventAsync extends AsyncTask<Void, Void, GetEventReply> {
+        SimpleRequest simpleRequest;
 
         @Override
         protected void onPreExecute() {
@@ -863,7 +865,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected GetEventReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            SimpleRequest simpleRequest = new SimpleRequest();
+            simpleRequest = new SimpleRequest();
             simpleRequest.requestProperties = rp;
 
             logD("simpleRequest for getting myEvent is: " + simpleRequest);
@@ -873,7 +875,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 getEventReply = stub.getMyEvent(simpleRequest);
                 return getEventReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error getting user info. simpleRequest: " + simpleRequest + ". Error: " + e);
             }
             return null;
         }
@@ -893,7 +895,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getEventReply.errorCode) {
                             case GetEventReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") event.");
+                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") event. simpleRequest: " + simpleRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
 
@@ -927,6 +929,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     }
 
     public class CreateOrUpdateEventAsync extends AsyncTask<Void, Void, CreateOrUpdateEventReply> {
+        CreateOrUpdateEventRequest createOrUpdateEventRequest;
 
         @Override
         protected void onPreExecute() {
@@ -938,7 +941,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         protected CreateOrUpdateEventReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
-            CreateOrUpdateEventRequest createOrUpdateEventRequest = new CreateOrUpdateEventRequest();
+            createOrUpdateEventRequest = new CreateOrUpdateEventRequest();
             createOrUpdateEventRequest.event = new net.honarnama.nano.Event();
             createOrUpdateEventRequest.event.name = mNameEditText.getText().toString().trim();
             createOrUpdateEventRequest.event.description = mDescriptionEditText.getText().toString().trim();
@@ -960,7 +963,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.PUT;
             }
 
-            logD("createOrUpdateEventRequest is: " + createOrUpdateEventRequest);
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateEventRequest is: " + createOrUpdateEventRequest);
+            }
 
             CreateOrUpdateEventReply createOrUpdateEventReply;
             try {
@@ -974,7 +979,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
                 return createOrUpdateEventReply;
             } catch (InterruptedException e) {
-                logE("Error running createOrUpdateEventRequest. Error: " + e);
+                logE("Error running createOrUpdateEventRequest. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". Error: " + e);
             }
             return null;
         }
@@ -997,14 +1002,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         dismissProgressDialog();
                         switch (createOrUpdateEventReply.errorCode) {
                             case CreateOrUpdateEventReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for createOrUpdateEventReply. Event Id: " + mEventId + ". User id: " + HonarnamaUser.getId());
+                                logE("Got NO_CLIENT_ERROR code for createOrUpdateEventReply. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". User id: " + HonarnamaUser.getId());
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateEventReply.EVENT_NOT_FOUND:
                                 displayShortToast(getString(R.string.event_not_found));
                                 break;
                             case CreateOrUpdateEventReply.EMPTY_EVENT:
-                                logE("createOrUpdateEventReply was EMPTY_EVENT!");
+                                logE("createOrUpdateEventReply was EMPTY_EVENT. createOrUpdateEventRequest: " + createOrUpdateEventRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateEventReply.STORE_NOT_CREATED:
@@ -1070,7 +1075,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
-        if (getActivity() != null && isVisible()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
     }

@@ -557,6 +557,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     public class getStoreAsync extends AsyncTask<Void, Void, GetStoreReply> {
+        SimpleRequest simpleRequest;
 
         @Override
         protected void onPreExecute() {
@@ -567,7 +568,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected GetStoreReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            SimpleRequest simpleRequest = new SimpleRequest();
+            simpleRequest = new SimpleRequest();
 
             simpleRequest.requestProperties = rp;
 
@@ -580,7 +581,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 getStoreReply = stub.getMyStore(simpleRequest);
                 return getStoreReply;
             } catch (InterruptedException e) {
-                logE("Error getting user info. Error: " + e);
+                logE("Error getting user info. simpleRequest:" + simpleRequest + ". Error: " + e);
             }
             return null;
         }
@@ -608,7 +609,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 break;
 
                             case GetStoreReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") store.");
+                                logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") store. simpleRequest: " + simpleRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
@@ -635,6 +636,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
 
     public class CreateOrUpdateStoreAsync extends AsyncTask<Void, Void, CreateOrUpdateStoreReply> {
+        CreateOrUpdateStoreRequest createOrUpdateStoreRequest;
 
         @Override
         protected void onPreExecute() {
@@ -646,7 +648,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         protected CreateOrUpdateStoreReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
-            CreateOrUpdateStoreRequest createOrUpdateStoreRequest = new CreateOrUpdateStoreRequest();
+            createOrUpdateStoreRequest = new CreateOrUpdateStoreRequest();
             createOrUpdateStoreRequest.store = new net.honarnama.nano.Store();
             createOrUpdateStoreRequest.store.name = mNameEditText.getText().toString().trim();
             createOrUpdateStoreRequest.store.description = mDescriptionEditText.getText().toString().trim();
@@ -683,7 +685,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                 return createOrUpdateStoreReply;
             } catch (InterruptedException e) {
-                logE("Error running createOrUpdateStoreRequest. Error: " + e);
+                logE("Error running createOrUpdateStoreRequest. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest + ". Error: " + e);
             }
             return null;
         }
@@ -709,7 +711,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         dismissProgressDialog();
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for createOrUpdate user (id " + HonarnamaUser.getId() + ") store.");
+                                logE("Got NO_CLIENT_ERROR code for createOrUpdate user (id " + HonarnamaUser.getId() + ") store. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
 
@@ -723,7 +725,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 break;
 
                             case CreateOrUpdateStoreReply.EMPTY_STORE:
-                                logE("createOrUpdateStoreReply was EMPTY_STORE!");
+                                logE("createOrUpdateStoreReply was EMPTY_STORE. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                         }
@@ -878,7 +880,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
-        if (getActivity() != null && isVisible()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
     }

@@ -25,7 +25,7 @@ import io.grpc.ManagedChannelBuilder;
 public class GRPCUtils {
 
     private String mHost = "honarnama.net"; // TODO: read from gradle
-    private int mPort = 443; // TODO: read from gradle
+    private int mPort = 8000; // TODO: read from gradle
     private ManagedChannel mChannel;
 
     static private GRPCUtils singleton;

@@ -172,9 +172,9 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     public class UpdateAccountAsync extends AsyncTask<Void, Void, UpdateAccountReply> {
-        ProgressDialog progressDialog;
         String name;
         int genderCode;
+        CreateOrUpdateAccountRequest createOrUpdateAccountRequest;
 
         @Override
         protected void onPreExecute() {
@@ -188,7 +188,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
         @Override
         protected UpdateAccountReply doInBackground(Void... voids) {
-            final CreateOrUpdateAccountRequest createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
+            createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
             createOrUpdateAccountRequest.account = new Account();
             createOrUpdateAccountRequest.account.id = HonarnamaUser.getId();
             createOrUpdateAccountRequest.account.name = name;
@@ -205,7 +205,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             try {
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
             } catch (InterruptedException ie) {
-                logE("Error running createOrUpdateAccountRequest. Error:" + ie);
+                logE("Error running createOrUpdateAccountRequest. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + ie);
                 return null;
             }
 
@@ -228,7 +228,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                     case ReplyProperties.CLIENT_ERROR:
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case UpdateAccountReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code updateAccountReply. user Id: " + HonarnamaUser.getId());
+                                logE("Got NO_CLIENT_ERROR code updateAccountReply. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". user Id: " + HonarnamaUser.getId());
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                             case UpdateAccountReply.ACCOUNT_NOT_FOUND:
@@ -236,7 +236,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                                 break;
                             case UpdateAccountReply.FORBIDDEN:
                                 displayLongToast(getString(R.string.not_allowed_to_do_this_action));
-                                logE("Got FORBIDDEN reply while trying to update user " + HonarnamaUser.getId() + ".");
+                                logE("Got FORBIDDEN reply while trying to update user " + HonarnamaUser.getId() + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
                                 break;
                         }
                         break;
@@ -276,7 +276,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
-        if (getActivity() != null && isVisible()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
     }

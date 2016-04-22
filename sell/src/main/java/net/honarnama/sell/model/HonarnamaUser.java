@@ -27,6 +27,7 @@ public class HonarnamaUser {
 
     public static void logout(Activity activity) {
         SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+        //TODO is there something else to clear?
         editor.putString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, "");
         editor.commit();
         mToken = null;

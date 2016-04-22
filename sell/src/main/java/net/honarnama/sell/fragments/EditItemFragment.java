@@ -437,6 +437,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public class getItemAsync extends AsyncTask<Void, Void, GetItemReply> {
+        GetOrDeleteItemRequest getOrDeleteItemRequest;
 
         @Override
         protected void onPreExecute() {
@@ -448,7 +449,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         protected GetItemReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
-            GetOrDeleteItemRequest getOrDeleteItemRequest = new GetOrDeleteItemRequest();
+            getOrDeleteItemRequest = new GetOrDeleteItemRequest();
             getOrDeleteItemRequest.id = mItemId;
             getOrDeleteItemRequest.requestProperties = rp;
             GetItemReply getItemReply;
@@ -459,7 +460,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 getItemReply = stub.getItem(getOrDeleteItemRequest);
                 return getItemReply;
             } catch (InterruptedException e) {
-                logE("Error getting item info. Error: " + e);
+                logE("Error getting item info. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". Error: " + e);
             }
             return null;
         }
@@ -467,7 +468,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(GetItemReply getItemReply) {
             super.onPostExecute(getItemReply);
-            logD("getItemReply is: " + getItemReply);
+            if (BuildConfig.DEBUG) {
+                logD("getItemReply is: " + getItemReply);
+            }
             dismissProgressDialog();
             if (getItemReply != null) {
                 switch (getItemReply.replyProperties.statusCode) {
@@ -481,7 +484,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         switch (getItemReply.errorCode) {
 
                             case GetItemReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for getting item in EditItemFragment. Item id: " + mItemId);
+                                logE("Got NO_CLIENT_ERROR code for getting item in EditItemFragment. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
 
@@ -491,7 +494,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                             case GetItemReply.FORBIDDEN:
                                 displayLongToast(getString(R.string.not_allowed_to_do_this_action));
-                                logE("Got FORBIDDEN reply while trying to get item with id: " + mItemId + ". User Id: " + HonarnamaUser.getId() + ".");
+                                logE("Got FORBIDDEN reply while trying to get item. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 break;
                         }
                         break;
@@ -580,6 +583,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public class CreateOrUpdateItemAsync extends AsyncTask<Void, Void, CreateOrUpdateItemReply> {
+        CreateOrUpdateItemRequest createOrUpdateItemRequest;
 
         @Override
         protected void onPreExecute() {
@@ -596,7 +600,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
 
-            CreateOrUpdateItemRequest createOrUpdateItemRequest = new CreateOrUpdateItemRequest();
+            createOrUpdateItemRequest = new CreateOrUpdateItemRequest();
             createOrUpdateItemRequest.item = new net.honarnama.nano.Item();
             createOrUpdateItemRequest.item.id = mItemId;
             createOrUpdateItemRequest.item.name = title;
@@ -633,7 +637,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
                 return createOrUpdateItemReply;
             } catch (InterruptedException e) {
-                logD("Error running createOrUpdateItemRequest. Error: " + e);
+                logD("Error running createOrUpdateItemRequest. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". Error: " + e);
             }
             return null;
         }
@@ -675,18 +679,18 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         dismissProgressDialog();
                         switch (createOrUpdateItemReply.errorCode) {
                             case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for updating item with id: " + mItemId);
+                                logE("Got NO_CLIENT_ERROR code for updating item. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateItemReply.FORBIDDEN:
                                 displayLongToast(getString(R.string.not_allowed_to_do_this_action));
-                                logE("Got FORBIDDEN reply while trying createOrUpdateItem with id: " + mItemId + ". User Id: " + HonarnamaUser.getId() + ".");
+                                logE("Got FORBIDDEN reply while trying createOrUpdateItem. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
                                 break;
                             case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
                                 displayLongToast(getString(R.string.item_not_found));
                                 break;
                             case CreateOrUpdateItemReply.EMPTY_ITEM:
-                                logE("CreateOrUpdateItemReply was EMPTY_ITEM!");
+                                logE("CreateOrUpdateItemReply was EMPTY_ITEM. createOrUpdateItemRequest: " + createOrUpdateItemRequest);
                                 displayShortToast(getString(R.string.error_occured));
                                 break;
                             case CreateOrUpdateItemReply.STORE_NOT_CREATED:
@@ -735,7 +739,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
-        if (getActivity() != null && isVisible()) {
+        Activity activity = getActivity();
+        if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
     }
