@@ -360,6 +360,7 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        //TODO duplicate empty telegram id raises error?
                         Toast.makeText(RegisterActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
                         break;
 

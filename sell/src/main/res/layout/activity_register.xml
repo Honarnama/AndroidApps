@@ -5,7 +5,7 @@
         android:layout_width="fill_parent"
         android:fadeScrollbars="false"
         android:layoutDirection="rtl"
-        >
+>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -25,7 +25,7 @@
                 android:textStyle="bold"
                 android:textSize="25sp"
                 android:layout_alignParentRight="true"
-                />
+        />
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_below="@id/register_form_title"
                         android:id="@+id/register_important_bar_container"
-                >
+        >
             <TextView
                     android:id="@+id/register_form_subtitle"
                     android:text="@string/register_form_subtitle"
@@ -45,7 +45,7 @@
                     style="@style/tiny_text_view"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
-                    />
+            />
             <com.mikepenz.iconics.view.IconicsImageView
                     android:id="@+id/no_store_warning_image"
                     android:layout_centerVertical="true"
@@ -65,7 +65,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="right"
                 android:layout_marginTop="10dp"
-                >
+        >
 
             <TextView
                     android:id="@+id/register_name_star_marker"
@@ -75,7 +75,7 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
-                    />
+            />
 
             <EditText
                     android:id="@+id/register_name_edit_text"
@@ -87,7 +87,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_weight="2"
                     style="@style/edit_text_default"
-                    >
+            >
                 <requestFocus/>
             </EditText>
         </LinearLayout>
@@ -97,7 +97,7 @@
                 android:layout_below="@id/register_name_layout"
                 android:layout_alignParentRight="true"
                 style="@style/tiny_text_view"
-                />
+        />
 
 
         <RadioGroup android:id="@+id/register_gender_radio_group"
@@ -106,7 +106,7 @@
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal"
                     android:layout_below="@id/register_name_alert"
-                >
+        >
 
             <ToggleButton android:id="@+id/register_gender_woman"
                           android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                           style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_right"
                           android:textColor="@color/toggle_button_states_text_colors"
-                    />
+            />
             <ToggleButton android:id="@+id/register_gender_man"
                           android:layout_height="wrap_content"
                           android:layout_width="0dp"
@@ -129,7 +129,7 @@
                           style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_middle"
                           android:textColor="@color/toggle_button_states_text_colors"
-                    />
+            />
 
             <ToggleButton android:id="@+id/register_gender_not_said"
                           android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                           android:textColor="@color/toggle_button_states_text_colors"
                           android:padding="0dp"
                           android:checked="true"
-                    />
+            />
 
         </RadioGroup>
 
@@ -160,7 +160,7 @@
                 android:textStyle="bold"
                 android:layout_below="@id/register_gender_radio_group"
                 android:layout_marginTop="15dp"
-                />
+        />
         <RelativeLayout android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -169,13 +169,13 @@
                         android:paddingRight="0dp"
                         android:layout_below="@id/register_activation_method_text_view"
                         android:id="@+id/register_prefered_activate_method_layer"
-                >
+        >
 
             <RadioGroup android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="right"
-                    >
+            >
 
                 <RadioButton
                         android:id="@+id/register_activate_with_email"
@@ -185,9 +185,10 @@
                         android:textSize="14sp"
                         android:button="@null"
                         android:drawableRight="@drawable/radio_button_image"
-                        android:checked="false"
                         android:layout_marginBottom="15dp"
-                        android:textColor="@color/dark_blue"/>
+                        android:textColor="@color/dark_blue"
+                        android:checked="true"
+                />
                 <RadioButton
                         android:id="@+id/register_activate_with_telegram"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -197,8 +198,8 @@
                         android:button="@null"
                         android:drawableRight="@drawable/radio_button_image"
                         android:textColor="@color/dark_blue"
-                        android:checked="true"
-                        />
+                        android:checked="false"
+                />
             </RadioGroup>
         </RelativeLayout>
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -207,7 +208,7 @@
                       android:layout_marginTop="5dp"
                       android:id="@+id/register_email_address_layer"
                       android:gravity="right"
-                >
+        >
 
             <TextView
                     android:id="@+id/register_email_star_marker"
@@ -217,8 +218,8 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
-                    android:visibility="gone"
-                    />
+                    android:visibility="visible"
+            />
             <EditText
                     android:id="@+id/register_email_address_edit_text"
                     android:layout_width="wrap_content" android:layout_height="45dp"
@@ -230,7 +231,7 @@
                     android:ellipsize="start"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    />
+            />
         </LinearLayout>
 
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -238,7 +239,7 @@
                       android:layout_below="@id/register_email_address_layer"
                       android:layout_marginTop="5dp"
                       android:id="@+id/register_mobile_number_layer"
-                >
+        >
             <TextView
                     android:id="@+id/register_mobile_number_star_marker"
                     android:text="*"
@@ -247,7 +248,8 @@
                     android:textSize="16sp"
                     android:layout_gravity="center|top"
                     android:textStyle="bold"
-                    />
+                    android:visibility="gone"
+            />
             <EditText
                     android:id="@+id/register_mobile_number_edit_text"
                     android:layout_width="fill_parent" android:layout_height="45dp"
@@ -260,7 +262,7 @@
                     android:nextFocusForward="@+id/register_confirm_password_edit_text"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:gravity="right"
-                    />
+            />
 
         </LinearLayout>
 
@@ -271,7 +273,7 @@
                 android:layout_marginTop="10dp"
                 android:nextFocusForward="@id/register_name_edit_text"
                 style="@style/core_full_width_button"
-                />
+        />
 
         <TextView
                 android:id="@+id/honarnama_rules"
@@ -280,7 +282,7 @@
                 android:layout_below="@id/register_button"
                 style="@style/tiny_text_view"
                 android:text="@string/privacy_policy_notfi"
-                />
+        />
 
     </RelativeLayout>
 </ScrollView>
