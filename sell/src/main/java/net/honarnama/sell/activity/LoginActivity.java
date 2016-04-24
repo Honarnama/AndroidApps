@@ -85,7 +85,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTelegramLoginContainer.setOnClickListener(this);
 
         if (HonarnamaUser.isLoggedIn()) {
-            gotoControlPanel();
+            goToControlPanel();
         } else {
             processIntent(getIntent());
         }
@@ -117,7 +117,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
             }
             if (loginToken != null && loginToken.length() > 0) {
                 HonarnamaUser.login(loginToken);
-                gotoControlPanel();
+                if (BuildConfig.DEBUG) {
+                    logD("getUserInfo (Calling getMeAsyncTask...)");
+                }
+                new getMeAsyncTask().execute();
             } else if ("true".equals(register)) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(registerIntent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
@@ -125,21 +128,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         }
     }
 
-    private void gotoControlPanel() {
-        if (BuildConfig.DEBUG) {
-            logD("gotoControlPanel");
-        }
-        new getMeAsyncTask().execute();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (HonarnamaUser.isLoggedIn()) {
-            gotoControlPanel();
-        }
         mMessageContainer.setVisibility(View.GONE);
-
         WindowUtil.hideKeyboard(LoginActivity.this);
     }
 
@@ -294,7 +286,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 //
 //            if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
 //                removeTelegramTempInfo();
-//                gotoControlPanel();
+//                getUserInfo();
 //            }
         } else {
             mMessageContainer.setVisibility(View.GONE);
@@ -345,16 +337,19 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                     case ReplyProperties.CLIENT_ERROR:
                         logE("Got CLIENT_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
+                        HonarnamaUser.logout(null);
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
                         Toast.makeText(LoginActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
+                        HonarnamaUser.logout(null);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         if (BuildConfig.DEBUG) {
-                            logD("Got NOT_AUTHORIZED reply in reply to WhoAmI request => log user out.");
+                            logD("Got NOT_AUTHORIZED reply in reply to WhoAmI request.");
                         }
+                        Toast.makeText(LoginActivity.this, getString(R.string.account_not_found), Toast.LENGTH_LONG).show();
                         HonarnamaUser.logout(null);
                         break;
 
@@ -365,13 +360,12 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         if (whoAmIReply.account.activationMethod == Account.TELEGRAM) {
                             removeTelegramTempInfo();
                         }
-                        Intent intent = new Intent(LoginActivity.this, ControlPanelActivity.class);
-                        startActivity(intent);
-                        finish();
+                        goToControlPanel();
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
                         displayUpgradeRequiredDialog();
+                        HonarnamaUser.logout(null);
                         break;
                 }
 
@@ -381,9 +375,15 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         }
     }
 
+    public void goToControlPanel() {
+        Intent intent = new Intent(LoginActivity.this, ControlPanelActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     public void removeTelegramTempInfo() {
         if (BuildConfig.DEBUG) {
-            logD("Remove tleegra registeration temp data.");
+            logD("Remove telegram registeration temp data.");
         }
         SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
         editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
