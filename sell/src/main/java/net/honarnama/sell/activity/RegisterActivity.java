@@ -9,6 +9,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CreateAccountReply;
@@ -143,7 +144,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == mRegisterButton.getId()) {
-
             signUserUp();
         }
         if (viewId == R.id.register_activate_with_email || viewId == R.id.register_activate_with_telegram) {
@@ -182,44 +182,40 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         }
     }
 
-    private boolean formInputsAreValid() {
+    public void clearErrors() {
+        mNameEditText.setError(null);
+        mEmailAddressEditText.setError(null);
+        mMobileNumberEditText.setError(null);
+    }
 
+    private boolean formInputsAreValid() {
+        clearErrors();
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_name_not_set));
             return false;
-        } else {
-            mNameEditText.setError(null);
         }
-        if (mActivateWithEmail.isChecked()) {
-            if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
-                mEmailAddressEditText.requestFocus();
-                mEmailAddressEditText.setError(getString(R.string.error_email_not_set));
-                return false;
-            } else {
-                boolean isOK = android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString()).matches();
-                if (!isOK) {
-                    mEmailAddressEditText.requestFocus();
-                    mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
-                    return false;
-                }
-            }
+        if (mActivateWithEmail.isChecked() && (mEmailAddressEditText.getText().toString().trim().length() == 0)) {
+            mEmailAddressEditText.requestFocus();
+            mEmailAddressEditText.setError(getString(R.string.error_email_not_set));
+            return false;
         }
-
-        if (mActivateWithTelegram.isChecked()) {
-            if (mMobileNumberEditText.getText().toString().trim().length() == 0) {
-                mMobileNumberEditText.requestFocus();
-                mMobileNumberEditText.setError(getString(R.string.error_mobile_number_field_can_not_be_empty));
-                return false;
-            } else {
-                String mobileNumberPattern = "^09\\d{9}$";
-                if (!mMobileNumberEditText.getText().toString().matches(mobileNumberPattern)) {
-                    mMobileNumberEditText.requestFocus();
-                    mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
-                    return false;
-                }
-
-            }
+        if (mEmailAddressEditText.getText().toString().trim().length() > 0 &&
+                !(android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString().trim()).matches())) {
+            mEmailAddressEditText.requestFocus();
+            mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
+            return false;
+        }
+        if (mActivateWithTelegram.isChecked() && (mMobileNumberEditText.getText().toString().trim().length() == 0)) {
+            mMobileNumberEditText.requestFocus();
+            mMobileNumberEditText.setError(getString(R.string.error_mobile_number_field_can_not_be_empty));
+            return false;
+        }
+        String mobileNumberPattern = "^09\\d{9}$";
+        if (mMobileNumberEditText.getText().toString().trim().length() > 0 && (!mMobileNumberEditText.getText().toString().trim().matches(mobileNumberPattern))) {
+            mMobileNumberEditText.requestFocus();
+            mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
+            return false;
         }
 
         return true;
@@ -261,6 +257,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
                 break;
         }
+
+        WindowUtil.hideKeyboard(RegisterActivity.this);
 
         setResult(Activity.RESULT_OK, intent);
         finish();

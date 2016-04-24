@@ -1,12 +1,14 @@
 package net.honarnama.sell.model;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.sell.activity.LoginActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * Created by elnaz on 7/26/15.
@@ -17,8 +19,12 @@ public class HonarnamaUser {
     private static int Gender;
     private static long Id;
     private static String TelegramToken;
+    public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/user";
 
     public static void login(String token) {
+        if (BuildConfig.DEBUG) {
+            Log.d(DEBUG_TAG, "Log user in");
+        }
         SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
         editor.putString(HonarnamaBaseApp.PREF_KEY_LOGIN_TOKEN, token);
         editor.commit();

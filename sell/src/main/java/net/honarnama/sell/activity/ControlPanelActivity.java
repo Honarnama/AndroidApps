@@ -97,7 +97,6 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //TODO fix progress dialog exception in all fragemnts
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);
@@ -240,6 +239,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 mDrawer.closeDrawer(Gravity.RIGHT);
             } else {
                 mDrawer.openDrawer(Gravity.RIGHT);
+                WindowUtil.hideKeyboard(ControlPanelActivity.this);
             }
         }
         if (id == R.id.add_item_action) {
