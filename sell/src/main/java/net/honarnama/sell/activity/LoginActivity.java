@@ -45,12 +45,13 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 //TODO ersale mojadad link faal sazi baraye cEmail
 //TODO remove unactivated account after 24 hours
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
-    private TextView mRegisterAsSellerTextView;
+    private Button mRegisterAsSellerBtn;
     private Button mLoginButton;
     private EditText mUsernameEditText;
     private View mMessageContainer;
     private TextView mLoginMessageTextView;
     private LinearLayout mTelegramLoginContainer;
+    private TextView mTelegramLoginTextView;
 
     ProgressDialog mProgressDialog;
     Snackbar mSnackbar;
@@ -69,8 +70,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         setContentView(R.layout.activity_login);
-        mRegisterAsSellerTextView = (TextView) findViewById(R.id.register_as_seller_text_view);
-        mRegisterAsSellerTextView.setOnClickListener(this);
+        mRegisterAsSellerBtn = (Button) findViewById(R.id.register_as_seller_btn);
+        mRegisterAsSellerBtn.setOnClickListener(this);
 
         mLoginButton = (Button) findViewById(R.id.send_login_link_btn);
         mLoginButton.setOnClickListener(this);
@@ -92,6 +93,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .coordinatorLayout);
+
+        mTelegramLoginTextView = (TextView) findViewById(R.id.telegram_login_text_view);
 
     }
 
@@ -138,7 +141,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.register_as_seller_text_view:
+            case R.id.register_as_seller_btn:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
@@ -258,8 +261,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                     if (BuildConfig.DEBUG) {
                         logD("display telegram verification notif.");
                     }
-//                    mMessageContainer.setVisibility(View.VISIBLE);
-//                    mLoginMessageTextView.setText(getString(R.string.telegram_activation_timeout_message));
+
+                    mTelegramLoginTextView.setText(getString(R.string.telegram_activation_dialog_title));
 
                     if (mSnackbar != null && mSnackbar.isShown()) {
                         mSnackbar.dismiss();
