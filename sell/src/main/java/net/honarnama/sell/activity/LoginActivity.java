@@ -144,8 +144,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 break;
             case R.id.send_login_link_btn:
                 mMessageContainer.setVisibility(View.GONE);
-                Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-                startActivity(forgotPasswordIntent);
+                //TODO
+                Toast.makeText(LoginActivity.this, "لطفا برای ورود از لینکی که هنگام ساخت حساب به آدرس ایمیلتان فرستاده شده، استفاده کنید.", Toast.LENGTH_LONG).show();
                 break;
             case R.id.telegram_login_container:
 
