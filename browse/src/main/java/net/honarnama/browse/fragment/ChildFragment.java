@@ -231,12 +231,8 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             }
 
 //            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.getFragments().get(childFragmentManager.getBackStackEntryCount()-1);
-//
 //            HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-//
 //            Toast.makeText(getActivity(), "inja topFragment is " + topFragment.getClass().getName(), Toast.LENGTH_SHORT).show();
-//
-//
 //            topFragment.onActivityResult(requestCode, resultCode, data);
         }
 

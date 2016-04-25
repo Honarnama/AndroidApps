@@ -194,8 +194,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             createOrUpdateAccountRequest.account.name = name;
             createOrUpdateAccountRequest.account.gender = genderCode;
 
-            //TODO chaneg gender in server side
-
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             createOrUpdateAccountRequest.requestProperties = rp;
             if (BuildConfig.DEBUG) {

@@ -64,9 +64,11 @@ public class EventCategory {
 
     // Insert a post into the database
     public static Task<Void> resetEventCategories(net.honarnama.nano.EventCategory[] eventCategories) {
-
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
+        if (BuildConfig.DEBUG) {
+            Log.d(DEBUG_TAG, "eventCategories: " + eventCategories);
+        }
         // Create and/or open the database for writing
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getWritableDatabase();
         // It's a good idea to wrap our insert in a transaction. This helps with performance and ensures
@@ -79,30 +81,12 @@ public class EventCategory {
                 ContentValues values = new ContentValues();
                 net.honarnama.nano.EventCategory eventCategory = eventCategories[i];
 
-                Log.e("inja", "eventCategory name " + eventCategory.name);
                 values.put(COL_EVENT_CAT_ID, eventCategory.id);
                 values.put(COL_EVENT_CAT_NAME, eventCategory.name);
                 db.insertOrThrow(TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
             db.endTransaction();
-
-            //TODO remove below test block
-            SQLiteDatabase db2 = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
-            String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
-            Cursor cursor = db2.rawQuery(query, null);
-
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    EventCategory eventCategory = new EventCategory();
-                    eventCategory.setId(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ID)));
-                    eventCategory.setName(cursor.getString(cursor.getColumnIndex(COL_EVENT_CAT_NAME)));
-                    eventCategory.setOrder(cursor.getInt(cursor.getColumnIndex(COL_EVENT_CAT_ORDER)));
-                    Log.e("inja", "1/eventCategory is" + eventCategory.getName());
-                    cursor.moveToNext();
-                }
-            }
-
             tcs.trySetResult(null);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {

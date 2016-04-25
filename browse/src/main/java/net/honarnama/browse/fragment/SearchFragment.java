@@ -125,7 +125,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mListView.setOnItemClickListener(this);
 
-        logE("inja onCreateView call mSearchSegment");
         return rootView;
     }
 

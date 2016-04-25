@@ -39,18 +39,17 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                         Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Uncaught Exception arised. Exception: " + ex);
                     }
 
-                    //TODO inja display a dialog to restart app
-                    // here I do logging of exception to a db
-                    Intent restartIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    }
-                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    startActivity(restartIntent);
-                    android.os.Process.killProcess(Process.myPid());
-                    System.exit(0);
+                    //Restart app on unhandle exception
+//                    Intent restartIntent = new Intent(getApplicationContext(), LoginActivity.class);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//                        restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    }
+//                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                    startActivity(restartIntent);
+//                    android.os.Process.killProcess(Process.myPid());
+//                    System.exit(0);
                 }
             };
 
@@ -58,7 +57,6 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
         super();
         defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         // setup handler for uncaught exception
-        //TODO
         Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
     }
 

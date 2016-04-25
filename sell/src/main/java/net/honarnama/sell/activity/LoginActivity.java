@@ -42,8 +42,7 @@ import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-//TODO ersale mojadad link faal sazi baraye cEmail
-//TODO remove unactivated account after 24 hours
+//TODO resend login link
 public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
     private Button mRegisterAsSellerBtn;
     private Button mLoginButton;
@@ -349,7 +348,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        //TODO
+                        //TODO (1:Login link expired or 2: 24 user deleted and user got deleted)
                         if (BuildConfig.DEBUG) {
                             logD("Got NOT_AUTHORIZED reply in reply to WhoAmI request.");
                         }

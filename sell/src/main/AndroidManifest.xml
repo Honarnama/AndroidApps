@@ -44,23 +44,7 @@
                         android:pathPrefix="/sell/login"
                         android:scheme="https"/>
             </intent-filter>
-
-            <!-- TODO
-              Where app_landing come from, should it open browse app or sell app
-              -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data
-                        android:host="*honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="http"/>
-                <data
-                        android:host="*honarnama.net"
-                        android:pathPrefix="/app_landing"
-                        android:scheme="https"/>
-
-            </intent-filter>
+ 
         </activity>
         <activity
                 android:name="net.honarnama.sell.activity.RegisterActivity"

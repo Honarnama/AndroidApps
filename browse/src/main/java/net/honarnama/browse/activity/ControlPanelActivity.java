@@ -231,7 +231,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
 
     public void changeLocationTitle() {
-        logE("inja changeLocationTitle");
+        if (BuildConfig.DEBUG) {
+            logD("changeLocationTitle");
+        }
         if (!TextUtils.isEmpty(mDefaultLocationProvinceName) && !TextUtils.isEmpty(mDefaultLocationCityName)) {
             Menu menu = mNavigationView.getMenu();
             menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultLocationProvinceName + "، " + mDefaultLocationCityName);
@@ -766,12 +768,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     childFragmentManager.popBackStack();
 //                    fragmentTransaction.remove(topFragment);
 //                    fragmentTransaction.commitAllowingStateLoss();
-
                     if (childFragmentManager != null) {
                         childFragmentManager.executePendingTransactions();
                     }
                 } catch (Exception e) {
-                    logE("inja " + e);
+                    logE("Error refreshing NoNetFragment fragment while popping back stack. Error: " + e);
                 }
 
             }

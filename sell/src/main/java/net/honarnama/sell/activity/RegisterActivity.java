@@ -162,12 +162,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             Toast.makeText(RegisterActivity.this, "لطفا خطاهای مشخص شده را اصلاح کنید.", Toast.LENGTH_LONG).show();
         }
 
-        // TODO
-        if (HonarnamaUser.isLoggedIn()) {
-            HonarnamaUser.logout(null);
-        }
-
-
     }
 
     private void changeMandatoryFieldsMarkers() {
@@ -358,7 +352,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO duplicate empty telegram id raises error?
                         Toast.makeText(RegisterActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
                         break;
 
