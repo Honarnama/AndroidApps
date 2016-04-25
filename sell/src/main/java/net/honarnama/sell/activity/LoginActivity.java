@@ -349,11 +349,29 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
+                        //TODO
                         if (BuildConfig.DEBUG) {
                             logD("Got NOT_AUTHORIZED reply in reply to WhoAmI request.");
                         }
-                        Toast.makeText(LoginActivity.this, getString(R.string.account_not_found), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.account_not_found) + " یا اعتبار لینک ورود منقضی شده است.", Toast.LENGTH_LONG).show();
+
                         HonarnamaUser.logout(null);
+
+                        if (mSnackbar != null && mSnackbar.isShown()) {
+                            mSnackbar.dismiss();
+                        }
+
+                        mSnackbar = Snackbar
+                                .make(mCoordinatorLayout, "در صورتی که حسابتان را قبلا فعال کرده بودید، می‌توانید از طریق فرم بالا، درخواست لینک ورود جدید کنید.", Snackbar.LENGTH_INDEFINITE);
+
+                        View sbView = mSnackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(getResources().getColor(R.color.gray_dark));
+                        textView.setBackgroundColor(getResources().getColor(R.color.amber));
+                        textView.setSingleLine(false);
+                        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+                        mSnackbar.show();
+
                         break;
 
                     case ReplyProperties.OK:
