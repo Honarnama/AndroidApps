@@ -11,6 +11,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -109,7 +111,10 @@ public class ArtCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to reset artCategories data. ", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to reset artCategories  data. // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to reset artCategories  data. // Error: " + e + ". stackTrace: " + stackTrace);
             }
             tcs.trySetError(e);
         } finally {
@@ -135,7 +140,10 @@ public class ArtCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get art category name from database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art category name from database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art category name from database // Error: " + e + ". stackTrace: " + stackTrace);
             }
             tcs.trySetError(e);
         } finally {
@@ -170,7 +178,10 @@ public class ArtCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get art category from database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art category from database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art category from database // Error: " + e + ". stackTrace: " + stackTrace);
             }
             tcs.trySetError(e);
         } finally {
@@ -210,7 +221,10 @@ public class ArtCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get art categories from database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art categories from database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get art categories from database // Error: " + e + ". stackTrace: " + stackTrace);
             }
         } finally {
             if (cursor != null && !cursor.isClosed()) {

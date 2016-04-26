@@ -18,6 +18,9 @@ import net.honarnama.nano.SimpleRequest;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import bolts.Continuation;
 import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
@@ -160,9 +163,12 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
 //        }
         } catch (InterruptedException e) {
             if (BuildConfig.DEBUG) {
-                Log.e("GRPC-HN", "Error getting meta. Error: " + e);
+                Log.e("GRPC-HN", "Error getting meta. Error: " + e, e);
             } else {
-                Crashlytics.log(Log.ERROR, "GRPC-HN", "Error getting meta. Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, "GRPC-HN", "Error getting meta. Error: " + e + ". stackTrace: " + stackTrace);
             }
             return null;
         }

@@ -202,8 +202,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             AuthServiceGrpc.AuthServiceBlockingStub stub;
             try {
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
-            } catch (InterruptedException ie) {
-                logE("Error running createOrUpdateAccountRequest. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + ie);
+            } catch (Exception e) {
+                logE("Error running createOrUpdateAccountRequest. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + e, e);
                 return null;
             }
 

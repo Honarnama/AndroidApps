@@ -392,7 +392,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                             mRefetchProvinces.setVisibility(View.VISIBLE);
                             mRefetchCities.setVisibility(View.VISIBLE);
                             mProvinceEditText.setHint(ItemFilterDialogActivity.this.getString(R.string.error_occured));
-                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
                             Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
@@ -419,7 +419,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
                     mCityEditEext.setHint(ItemFilterDialogActivity.this.getString(R.string.error_occured));
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
+                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), task.getError());
                     Toast.makeText(ItemFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();

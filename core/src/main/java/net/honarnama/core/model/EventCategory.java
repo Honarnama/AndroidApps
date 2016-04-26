@@ -11,6 +11,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +94,10 @@ public class EventCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to add eventCategories to database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e + ". stackTrace: " + stackTrace);
             }
             db.endTransaction();
             tcs.trySetError(e);
@@ -128,7 +133,10 @@ public class EventCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get event categories from database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event categories from database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event categories from database // Error: " + e + ". stackTrace: " + stackTrace);
             }
             tcs.trySetError(e);
         } finally {
@@ -162,7 +170,10 @@ public class EventCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get event category from database", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event category from database // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to get event category from database // Error: " + e + ". stackTrace: " + stackTrace);
             }
         } finally {
             if (cursor != null && !cursor.isClosed()) {

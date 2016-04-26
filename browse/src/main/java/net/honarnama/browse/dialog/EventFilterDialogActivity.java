@@ -323,12 +323,12 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                             mRefetchProvinces.setVisibility(View.VISIBLE);
                             mRefetchCities.setVisibility(View.VISIBLE);
                             mProvinceEditText.setHint(EventFilterDialogActivity.this.getString(R.string.error_occured));
-                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
                             Toast.makeText(EventFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Province province : mProvincesObjectsTreeMap.values()) {
-                                if (mSelectedProvinceId<0) {
+                                if (mSelectedProvinceId < 0) {
                                     mSelectedProvinceId = province.getId();
                                 }
                                 mProvincesHashMap.put(province.getId(), province.getName());
@@ -349,13 +349,13 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
                     mCityEditEext.setHint(EventFilterDialogActivity.this.getString(R.string.error_occured));
-                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), "", task.getError());
+                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), task.getError());
                     Toast.makeText(EventFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            if (mSelectedCityId<0) {
+                            if (mSelectedCityId < 0) {
                                 mSelectedCityId = citySet.getKey();
                             }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());

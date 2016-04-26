@@ -127,8 +127,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getItemsReply = stub.getItems(simpleRequest);
                 return getItemsReply;
-            } catch (InterruptedException e) {
-                logE("Error running getItems request. simpleRequest: " + simpleRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error running getItems request. simpleRequest: " + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }

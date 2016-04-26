@@ -161,7 +161,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                 getChildFragmentManager().popBackStackImmediate();
             }
         } catch (Exception e) {
-            logE("Exception while popping all fragments: " + e);
+            logE("Exception while popping all fragments: " + e, e);
         }
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) getChildFragmentManager().findFragmentById(R.id.child_fragment_root);
@@ -176,9 +176,9 @@ public class ChildFragment extends HonarnamaBrowseFragment {
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {
-            logE("NoSuchFieldException" + e);
+            logE("NoSuchFieldException: " + e, e);
         } catch (IllegalAccessException e) {
-            logE("IllegalAccessException" + e);
+            logE("IllegalAccessException: " + e, e);
         }
 
     }

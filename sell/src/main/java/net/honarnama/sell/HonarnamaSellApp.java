@@ -15,6 +15,9 @@ import android.os.Build;
 import android.os.Process;
 import android.util.Log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import io.fabric.sdk.android.Fabric;
 
 public class HonarnamaSellApp extends HonarnamaBaseApp {
@@ -34,9 +37,13 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
                 public void uncaughtException(Thread thread, Throwable ex) {
 
                     if (BuildConfig.DEBUG) {
-                        Log.e(PRODUCTION_TAG, "Uncaught Exception arosed. Exception: " + ex, ex);
+                        ex.printStackTrace();
+                        Log.e(PRODUCTION_TAG, "Uncaught Exception: " + ex, ex);
                     } else {
-                        Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Uncaught Exception arised. Exception: " + ex);
+                        StringWriter sw = new StringWriter();
+                        ex.printStackTrace(new PrintWriter(sw));
+                        String stackTrace = sw.toString();
+                        Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Uncaught Exception: " + ex + ". stackTrace: " + stackTrace);
                     }
 
                     //Restart app on unhandle exception

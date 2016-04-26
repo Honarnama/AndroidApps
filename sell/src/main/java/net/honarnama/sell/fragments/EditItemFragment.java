@@ -15,6 +15,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.ArtCategory;
+import net.honarnama.core.model.Event;
 import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
@@ -459,8 +460,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getItemReply = stub.getItem(getOrDeleteItemRequest);
                 return getItemReply;
-            } catch (InterruptedException e) {
-                logE("Error getting item info. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error getting item info. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -636,8 +637,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     createOrUpdateItemReply = stub.createItem(createOrUpdateItemRequest);
                 }
                 return createOrUpdateItemReply;
-            } catch (InterruptedException e) {
-                logD("Error running createOrUpdateItemRequest. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error running createOrUpdateItemRequest. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". Error: " + e, e);
             }
             return null;
         }

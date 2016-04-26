@@ -580,8 +580,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getStoreReply = stub.getMyStore(simpleRequest);
                 return getStoreReply;
-            } catch (InterruptedException e) {
-                logE("Error getting user info. simpleRequest:" + simpleRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error getting user info. simpleRequest:" + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -684,8 +684,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
                 return createOrUpdateStoreReply;
-            } catch (InterruptedException e) {
-                logE("Error running createOrUpdateStoreRequest. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error running createOrUpdateStoreRequest. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest + ". Error: " + e, e);
             }
             return null;
         }

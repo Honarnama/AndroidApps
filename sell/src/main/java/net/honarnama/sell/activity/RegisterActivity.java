@@ -303,8 +303,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
                 CreateAccountReply createAccountReply = stub.createAccount(createOrUpdateAccountRequest);
                 return createAccountReply;
-            } catch (InterruptedException ie) {
-                logE("Error trying to send register request. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + ie);
+            } catch (Exception e) {
+                logE("Error trying to send register request. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error: " + e, e);
             }
             return null;
         }

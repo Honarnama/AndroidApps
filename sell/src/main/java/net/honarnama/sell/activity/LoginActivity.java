@@ -8,6 +8,7 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.utils.GravityTextWatcher;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -84,16 +85,20 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
         mTelegramLoginContainer.setOnClickListener(this);
 
-        if (HonarnamaUser.isLoggedIn()) {
-            goToControlPanel();
-        } else {
-            processIntent(getIntent());
-        }
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .coordinatorLayout);
 
         mTelegramLoginTextView = (TextView) findViewById(R.id.telegram_login_text_view);
+
+        if (HonarnamaUser.isLoggedIn()) {
+//            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                return;
+//            }
+            new getMeAsyncTask().execute();
+        } else {
+            processIntent(getIntent());
+        }
 
     }
 
@@ -122,7 +127,11 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 if (BuildConfig.DEBUG) {
                     logD("getUserInfo (Calling getMeAsyncTask...)");
                 }
-                new getMeAsyncTask().execute();
+                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    return;
+                } else {
+                    new getMeAsyncTask().execute();
+                }
             } else if ("true".equals(register)) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(registerIntent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
@@ -321,8 +330,8 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 AuthServiceGrpc.AuthServiceBlockingStub stub = GRPCUtils.getInstance().getAuthServiceGrpc();
                 whoAmIReply = stub.whoAmI(simpleRequest);
                 return whoAmIReply;
-            } catch (InterruptedException e) {
-                logE("Error getting whoAmIReply. simpleRequest: " + simpleRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error getting whoAmIReply. simpleRequest: " + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }

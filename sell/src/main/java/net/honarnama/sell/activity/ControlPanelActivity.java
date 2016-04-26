@@ -125,7 +125,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             in_s.read(b);
             mAboutTextView.setText(new String(b));
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, HonarnamaBaseApp.PRODUCTION_TAG, "Error setting about us text in main page: " + e);
+            logE("Error setting about us text in main page: " + e, e);
         }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -568,7 +568,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                         callBazaarViewAppPageIntent();
                     }
                 } catch (Exception e) {
-                    logE("Error switching from sell app to browse. Error: " + e);
+                    logE("Error switching from sell app to browse. Error: " + e, e);
                 }
                 break;
 

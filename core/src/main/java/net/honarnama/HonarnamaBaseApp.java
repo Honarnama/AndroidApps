@@ -14,6 +14,8 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Created by elnaz on 7/22/15.
@@ -121,12 +123,15 @@ public abstract class HonarnamaBaseApp extends Application {
         if (grpcUtils != null) {
             try {
                 grpcUtils.close();
-            } catch (InterruptedException ie) {
+            } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     Log.e(PRODUCTION_TAG + "/" + getClass().getSimpleName(),
-                            "Error Closing GRPC.");
+                            "Error Closing GRPC.", e);
                 } else {
-                    Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Error Closing GRPC.");
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw));
+                    String stackTrace = sw.toString();
+                    Crashlytics.log(Log.ERROR, PRODUCTION_TAG, "Error Closing GRPC. Error: " + e + ". stackTrace: " + stackTrace);
                 }
             }
         }

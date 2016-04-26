@@ -874,8 +874,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 getEventReply = stub.getMyEvent(simpleRequest);
                 return getEventReply;
-            } catch (InterruptedException e) {
-                logE("Error getting user info. simpleRequest: " + simpleRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error getting user info. simpleRequest: " + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -978,8 +978,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     createOrUpdateEventReply = stub.createEvent(createOrUpdateEventRequest);
                 }
                 return createOrUpdateEventReply;
-            } catch (InterruptedException e) {
-                logE("Error running createOrUpdateEventRequest. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". Error: " + e);
+            } catch (Exception e) {
+                logE("Error running createOrUpdateEventRequest. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". Error: " + e, e);
             }
             return null;
         }

@@ -36,6 +36,8 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
@@ -210,11 +212,14 @@ public class ItemsAdapter extends BaseAdapter {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
                 deleteItemReply = stub.deleteItem(getOrDeleteItemRequest);
                 return deleteItemReply;
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     Log.e(DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e, e);
                 } else {
-                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e);
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw));
+                    String stackTrace = sw.toString();
+                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e + ". stackTrace: " + stackTrace);
                 }
             }
             return null;

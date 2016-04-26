@@ -405,7 +405,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         startActivity(sellAppIntent);
                     }
                 } catch (Exception e) {
-                    logE("Error switching from browse app to sell. Error: " + e);
+                    logE("Error switching from browse app to sell. Error: " + e, e);
                 }
                 break;
 
@@ -471,7 +471,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
                 if (topFragment instanceof NoNetFragment) {
-                    logE("no net , top frag is no net");
                     resetMenuIcons();
                     return;
                 }
@@ -492,16 +491,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (!TextUtils.isEmpty(toolbarTitle)) {
                 mTitle.setText(toolbarTitle);
             }
-
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 if (!(fragment instanceof NoNetFragment)) {
                     switchToNoNetFragment();
                 }
-
             }
-
         } catch (Exception e) {
-            logE("Exception While Switching Fragments in CPA." + e);
+            logE("Exception While Switching Fragments in CPA." + e, e);
         }
 
     }
@@ -772,7 +768,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         childFragmentManager.executePendingTransactions();
                     }
                 } catch (Exception e) {
-                    logE("Error refreshing NoNetFragment fragment while popping back stack. Error: " + e);
+                    logE("Error refreshing NoNetFragment fragment while popping back stack. Error: " + e, e);
                 }
 
             }

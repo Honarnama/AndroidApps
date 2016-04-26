@@ -11,6 +11,9 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * Created by reza on 11/23/15.
  */
@@ -73,12 +76,22 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            String stackTrace = sw.toString();
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
         }
     }
 
-    public void logE(String sharedMsg, String debugMsg) {
-        Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg));
+    public void logE(String sharedMsg, Throwable throwable) {
+        if (BuildConfig.DEBUG) {
+            Log.e(getDebugTag(), sharedMsg, throwable);
+        } else if (sharedMsg != null) {
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            String stackTrace = sw.toString();
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
+        }
     }
 
     public void logE(String sharedMsg) {

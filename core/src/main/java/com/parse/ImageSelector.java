@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -346,8 +348,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         } catch (IOException ex) {
             if (BuildConfig.DEBUG) {
                 Log.e(LOG_TAG, "While preparing for takePicture", ex);
+                ex.printStackTrace();
             } else {
-                Crashlytics.log(Log.ERROR, LOG_TAG, "While preparing for takePicture " + ex);
+                StringWriter sw = new StringWriter();
+                ex.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, LOG_TAG, "While preparing for takePicture " + ex + ". stackTrace: " + stackTrace);
             }
             return null;
         }

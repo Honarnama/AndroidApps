@@ -11,6 +11,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
@@ -111,7 +114,10 @@ public class Location {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to reset locations data. ", e);
             } else {
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to reset locations data. // Error: " + e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String stackTrace = sw.toString();
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to reset locations data. // Error: " + e + ". stackTrace: " + stackTrace);
             }
             tcs.trySetError(e);
         } finally {

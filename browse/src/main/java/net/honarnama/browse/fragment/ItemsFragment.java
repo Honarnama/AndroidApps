@@ -187,7 +187,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             } else {
                 mEmptyListContainer.setVisibility(View.VISIBLE);
                 if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Error Querying Items: " + e);
+                    logE("Error Querying Items: " + e, e);
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                     }

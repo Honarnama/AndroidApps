@@ -130,7 +130,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             @Override
             public Object then(Task<TreeMap<Number, EventCategory>> task) throws Exception {
                 if (task.isFaulted()) {
-                    logE("Getting Event Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), "", task.getError());
+                    logE("Getting Event Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), getActivity().getString(R.string.error_getting_event_cat_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }

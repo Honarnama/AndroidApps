@@ -18,6 +18,8 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -95,7 +97,10 @@ public class Uploader {
                 if (BuildConfig.DEBUG) {
                     Log.e(DEBUG_TAG, "Upload failed. ", e);
                 } else {
-                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Upload failed. Error: " + e);
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw));
+                    String stackTrace = sw.toString();
+                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Upload failed. Error: " + e + ". stackTrace: " + stackTrace);
                 }
                 mTcs.trySetError(e);
             }

@@ -1,9 +1,16 @@
 package net.honarnama.core.model;
 
+import com.google.common.base.Throwables;
+
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 
 import android.util.Log;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Created by elnaz on 2/2/16.
@@ -54,12 +61,22 @@ public class HonarnamaBaseModel {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            Log.e(getDebugTag(), sharedMsg);
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            String stackTrace = sw.toString();
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
         }
     }
 
-    public void logE(String sharedMsg, String debugMsg) {
-        Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg));
+    public void logE(String sharedMsg, Throwable throwable) {
+        if (BuildConfig.DEBUG) {
+            Log.e(getDebugTag(), sharedMsg, throwable);
+        } else if (sharedMsg != null) {
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            String stackTrace = sw.toString();
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
+        }
     }
 
     public void logE(String sharedMsg) {

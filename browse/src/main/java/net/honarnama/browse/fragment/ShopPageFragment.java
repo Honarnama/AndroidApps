@@ -151,7 +151,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                         deletedShopMsg.setVisibility(View.VISIBLE);
                     } else {
-                        logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
+                        logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), task.getError());
                         if (isVisible()) {
                             Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                         }
@@ -231,7 +231,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             public Object then(Task<List<Item>> task) throws Exception {
                 itemsloadingCircle.setVisibility(View.GONE);
                 if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), "", task.getError());
+                    logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), task.getError());
                     if (isVisible()) {
                         Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                     }

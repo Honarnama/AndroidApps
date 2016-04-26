@@ -46,7 +46,7 @@ public class AboutFragment extends HonarnamaBaseFragment {
             in_s.read(b);
             aboutTextView.setText(new String(b));
         } catch (Exception e) {
-            logE("Error setting about us text: " + e);
+            logE("Error setting about us text: " + e, e);
         }
         return rootView;
     }
