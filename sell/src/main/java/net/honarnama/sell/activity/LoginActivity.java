@@ -30,8 +30,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -160,34 +163,36 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 break;
             case R.id.telegram_login_container:
 
-                String telegramToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    String telegramToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
 
-                if (!TextUtils.isEmpty(telegramToken)) {
-                    long millis = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0L);
-                    long diff = (new Date().getTime()) - millis;
+                    if (!TextUtils.isEmpty(telegramToken)) {
+                        long millis = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0L);
+                        long diff = (new Date().getTime()) - millis;
 
-                    long seconds = diff / 1000;
-                    long minutes = seconds / 60;
-                    long hours = minutes / 60;
+                        long seconds = diff / 1000;
+                        long minutes = seconds / 60;
+                        long hours = minutes / 60;
 
-                    if (BuildConfig.DEBUG) {
-                        logD("Time passe after telegram registeration: " + minutes + " minutes.");
-                    }
-
-                    if (minutes < 24 * 60) {
                         if (BuildConfig.DEBUG) {
-                            logD("Time passe after telegram registeration is less than 24 hours => Show Telegram Activation Dialog. ");
+                            logD("Time passe after telegram registeration: " + minutes + " minutes.");
                         }
-                        showTelegramActivationDialog(telegramToken);
+
+                        if (minutes < 24 * 60) {
+                            if (BuildConfig.DEBUG) {
+                                logD("Time passe after telegram registeration is less than 24 hours => Show Telegram Activation Dialog. ");
+                            }
+                            showTelegramActivationDialog(telegramToken);
+                        } else {
+                            if (BuildConfig.DEBUG) {
+                                logD("Time passe after telegram registeration is greater than 24 hours => Call telegram to log user in. ");
+                            }
+                            removeTelegramTempInfo();
+                            callTelegramToLogUserIn();
+                        }
                     } else {
-                        if (BuildConfig.DEBUG) {
-                            logD("Time passe after telegram registeration is greater than 24 hours => Call telegram to log user in. ");
-                        }
-                        removeTelegramTempInfo();
                         callTelegramToLogUserIn();
                     }
-                } else {
-                    callTelegramToLogUserIn();
                 }
 
                 break;
@@ -252,18 +257,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                             logD("display email verification notif.");
                         }
 
-                        if (mSnackbar != null && mSnackbar.isShown()) {
-                            mSnackbar.dismiss();
-                        }
-                        mSnackbar = Snackbar
-                                .make(mCoordinatorLayout, getString(R.string.verification_email_sent), Snackbar.LENGTH_INDEFINITE);
-                        View sbView = mSnackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(getResources().getColor(R.color.gray_dark));
-                        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-                        textView.setSingleLine(false);
-                        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
-                        mSnackbar.show();
+                        SpannableStringBuilder builder = new SpannableStringBuilder();
+                        builder.append(getString(R.string.verification_email_sent));
+                        displaySnackbar(builder, false);
                     }
                 } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
                     if (BuildConfig.DEBUG) {
@@ -272,18 +268,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                     mTelegramLoginTextView.setText(getString(R.string.telegram_activation_dialog_title));
 
-                    if (mSnackbar != null && mSnackbar.isShown()) {
-                        mSnackbar.dismiss();
-                    }
-                    mSnackbar = Snackbar
-                            .make(mCoordinatorLayout, getString(R.string.telegram_activation_timeout_message), Snackbar.LENGTH_INDEFINITE);
-                    View sbView = mSnackbar.getView();
-                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                    textView.setTextColor(getResources().getColor(R.color.gray_dark));
-                    textView.setBackgroundColor(getResources().getColor(R.color.amber));
-                    textView.setSingleLine(false);
-                    sbView.setBackgroundColor(getResources().getColor(R.color.amber));
-                    mSnackbar.show();
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    builder.append(getString(R.string.telegram_activation_timeout_message));
+                    displaySnackbar(builder, false);
 
                     String telegramToken = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE);
                     showTelegramActivationDialog(telegramToken);
@@ -294,7 +281,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 }
                 mMessageContainer.setVisibility(View.GONE);
             }
-//
 //            if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
 //                removeTelegramTempInfo();
 //                getUserInfo();
@@ -348,12 +334,16 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                     case ReplyProperties.CLIENT_ERROR:
                         logE("Got CLIENT_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
-                        HonarnamaUser.logout(null);
+                        Toast.makeText(LoginActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        Toast.makeText(LoginActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
-                        HonarnamaUser.logout(null);
+                        SpannableStringBuilder builder = new SpannableStringBuilder();
+                        builder.append(" ");
+                        builder.setSpan(new ImageSpan(LoginActivity.this, android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
+                        builder.append(getString(R.string.server_error_try_again)).append(" ");
+                        displaySnackbar(builder, true);
+                        logE("Got SERVER_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -365,20 +355,9 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
                         HonarnamaUser.logout(null);
 
-                        if (mSnackbar != null && mSnackbar.isShown()) {
-                            mSnackbar.dismiss();
-                        }
-
-                        mSnackbar = Snackbar
-                                .make(mCoordinatorLayout, "در صورتی که حسابتان را قبلا فعال کرده بودید، می‌توانید از طریق فرم بالا، درخواست لینک ورود جدید کنید.", Snackbar.LENGTH_INDEFINITE);
-
-                        View sbView = mSnackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(getResources().getColor(R.color.gray_dark));
-                        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-                        textView.setSingleLine(false);
-                        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
-                        mSnackbar.show();
+                        SpannableStringBuilder builder2 = new SpannableStringBuilder();
+                        builder2.append("در صورتی که حسابتان را قبلا فعال کرده بودید، می‌توانید از طریق فرم بالا، درخواست لینک ورود جدید کنید.");
+                        displaySnackbar(builder2, false);
 
                         break;
 
@@ -399,7 +378,14 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 }
 
             } else {
-                Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+                builder.append(" ");
+                builder.setSpan(new ImageSpan(LoginActivity.this, android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
+                builder.append(getString(R.string.error_connecting_to_Server)).append(" ");
+                displaySnackbar(builder, true);
+
+                Toast.makeText(LoginActivity.this, getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -438,6 +424,33 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         if (!LoginActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }
+    }
+
+    public void displaySnackbar(SpannableStringBuilder builder, Boolean callGetMe) {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
+
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        View sbView = mSnackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setBackgroundColor(getResources().getColor(R.color.amber));
+        textView.setSingleLine(false);
+        textView.setGravity(Gravity.CENTER);
+        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+
+        if (callGetMe) {
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new getMeAsyncTask().execute();
+                    }
+                }
+            });
+        }
+
+        mSnackbar.show();
     }
 
 }

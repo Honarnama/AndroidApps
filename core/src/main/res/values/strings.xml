@@ -156,7 +156,7 @@
     <string name="send">ارسال</string>
     <string name="error_name_not_set">فیلد نام نمی‌تواند خالی باشد.</string>
     <string name="verification_email_sent">
-        لینک فعال‌سازی و ورود به حساب حساب به آدرس ایمیلتان ارسال شد. در صورت عدم فعال‌سازی
+        لینک فعال‌سازی و ورود به حساب به آدرس ایمیلتان ارسال شد. در صورت عدم فعال‌سازی
         حساب در طول ۲۴ ساعت آتی، حساب شما به صورت خودکار حذف خواهد شد.
     </string>
     <string name="telegram_activation_timeout_message">در صورتی که حساب خود
