@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.nano.DeleteItemReply;
 import net.honarnama.nano.GetOrDeleteItemRequest;
 import net.honarnama.nano.HonarnamaProto;
@@ -134,16 +135,18 @@ public class ItemsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle))
-                        .setTitle("تایید حذف")
-                        .setMessage("آگهی " + item.name + " را حذف میکنید؟")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                new deleteItemAsync().execute(position);
-                            }
-                        })
-                        .setNegativeButton("نه اشتباه شد.", null).show();
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.DialogStyle))
+                            .setTitle("تایید حذف")
+                            .setMessage("آگهی " + item.name + " را حذف میکنید؟")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("بله خذف میکنم.", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    new deleteItemAsync().execute(position);
+                                }
+                            })
+                            .setNegativeButton("نه اشتباه شد.", null).show();
+                }
 
             }
         });
@@ -151,8 +154,10 @@ public class ItemsAdapter extends BaseAdapter {
         mViewHolder.editContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
-                controlPanelActivity.switchFragmentToEditItem(mItems.get(position).id);
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
+                    controlPanelActivity.switchFragmentToEditItem(mItems.get(position).id);
+                }
             }
         });
         return convertView;

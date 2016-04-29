@@ -327,7 +327,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(getActivity(), mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+        city.getAllCitiesSorted(mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -814,7 +814,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     public void loadOfflineData() {
-        new Province().getAllProvincesSorted(getActivity()).continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
+        new Province().getAllProvincesSorted().continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -838,7 +838,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
-                return new City().getAllCitiesSorted(getActivity(), mSelectedProvinceId);
+                return new City().getAllCitiesSorted(mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override

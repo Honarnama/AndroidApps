@@ -1,16 +1,8 @@
 package net.honarnama.core.model;
 
-import com.parse.ImageSelector;
-
 import net.honarnama.HonarnamaBaseApp;
 
-import android.content.Context;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import bolts.Task;
 
 public class Item {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/itemModel";
@@ -190,19 +182,5 @@ public class Item {
         return res;
     }
 
-    public static Task<Item> saveWithImages(final Item originalItem, final String name, final String description,
-                                            final ArtCategory category, final Number price, final ImageSelector[] itemImages, Store store) throws IOException {
-        return null;
-    }
 
-    public static void setUserItemsStore(final Store store) {
-    }
-
-    public static Task<List<Item>> getUserItems(Context context) {
-        return null;
-    }
-
-    public static Task<Void> deleteItem(Context context, int itemId) {
-        return null;
-    }
 }

@@ -15,9 +15,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
-import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
@@ -26,9 +24,6 @@ import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ID;
 import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_NAME;
 import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ORDER;
 import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_PARENT_ID;
-import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ID;
-import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_NAME;
-import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ORDER;
 
 public class ArtCategory {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/artCatModel";

@@ -75,12 +75,8 @@ public class Province {
     public TreeMap<Number, HashMap<String, String>> mProvincesTreeMap = new TreeMap<Number, HashMap<String, String>>();
     public TreeMap<Number, Province> mProvincesObjectTreeMap = new TreeMap<Number, Province>();
 
-    public Context mContext;
 
-
-    public Task<TreeMap<Number, Province>> getAllProvincesSorted(Context context) {
-
-        mContext = context;
+    public Task<TreeMap<Number, Province>> getAllProvincesSorted() {
 
         final TaskCompletionSource<TreeMap<Number, Province>> tcs = new TaskCompletionSource<>();
 

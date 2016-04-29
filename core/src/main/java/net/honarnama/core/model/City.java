@@ -80,12 +80,9 @@ public class City {
 
 
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<>();
-    public Context mContext;
 
 
-    public Task<TreeMap<Number, HashMap<Integer, String>>> getAllCitiesSorted(Context context, final int parentId) {
-
-        mContext = context;
+    public Task<TreeMap<Number, HashMap<Integer, String>>> getAllCitiesSorted(final int parentId) {
 
         final TaskCompletionSource<TreeMap<Number, HashMap<Integer, String>>> tcs = new TaskCompletionSource<>();
 

@@ -561,7 +561,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
 
             case R.id.item_switch_app:
                 try {
-                    if (CommonUtil.isPackageInstalled("net.honarnama.browse", ControlPanelActivity.this)) {
+                    if (CommonUtil.isPackageInstalled("net.honarnama.browse")) {
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
                         startActivity(launchIntent);
                     } else {

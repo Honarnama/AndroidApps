@@ -276,7 +276,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(mActivity, mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+        city.getAllCitiesSorted(mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -384,7 +384,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mProvinceEditText.setHint(getString(R.string.getting_information));
         mCityEditEext.setHint(getString(R.string.getting_information));
 
-        provinces.getAllProvincesSorted(HonarnamaBaseApp.getInstance()).
+        provinces.getAllProvincesSorted().
                 continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
                     @Override
                     public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
@@ -409,7 +409,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
-                return city.getAllCitiesSorted(HonarnamaBaseApp.getInstance(), mSelectedProvinceId);
+                return city.getAllCitiesSorted(mSelectedProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override

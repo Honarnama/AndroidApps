@@ -395,7 +395,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_switch_app:
                 try {
-                    if (CommonUtil.isPackageInstalled("net.honarnama.sell", ControlPanelActivity.this)) {
+                    if (CommonUtil.isPackageInstalled("net.honarnama.sell")) {
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.sell");
                         startActivity(launchIntent);
                     } else {
@@ -941,7 +941,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(ControlPanelActivity.this, mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+        city.getAllCitiesSorted(mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {

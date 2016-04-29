@@ -95,9 +95,6 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
         mTelegramLoginTextView = (TextView) findViewById(R.id.telegram_login_text_view);
 
         if (HonarnamaUser.isLoggedIn()) {
-//            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//                return;
-//            }
             new getMeAsyncTask().execute();
         } else {
             processIntent(getIntent());

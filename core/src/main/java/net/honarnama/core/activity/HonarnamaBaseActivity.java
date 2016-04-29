@@ -133,7 +133,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     }
 
     public void callBazaarRatingIntent(final String callingApp) {
-        if (CommonUtil.isPackageInstalled("com.farsitel.bazaar", this)) {
+        if (CommonUtil.isPackageInstalled("com.farsitel.bazaar")) {
             Intent intent = new Intent(Intent.ACTION_EDIT);
             if (HonarnamaBaseApp.PACKAGE_NAME == HonarnamaBaseApp.SELL_PACKAGE_NAME) {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.SELL_PACKAGE_NAME));
@@ -148,7 +148,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     }
 
     public void callBazaarViewAppPageIntent() {
-        if (CommonUtil.isPackageInstalled("com.farsitel.bazaar", this)) {
+        if (CommonUtil.isPackageInstalled("com.farsitel.bazaar")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             if (HonarnamaBaseApp.PACKAGE_NAME == HonarnamaBaseApp.SELL_PACKAGE_NAME) {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.SELL_PACKAGE_NAME));

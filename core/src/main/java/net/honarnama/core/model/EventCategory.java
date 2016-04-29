@@ -14,11 +14,8 @@ import android.util.Log;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
-import bolts.Continuation;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 

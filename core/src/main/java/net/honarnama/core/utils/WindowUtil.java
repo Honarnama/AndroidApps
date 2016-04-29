@@ -12,12 +12,12 @@ import android.widget.ListView;
  * Created by elnaz on 1/28/16.
  */
 public class WindowUtil {
-    public static void hideKeyboard(Context ctx) {
-        InputMethodManager inputManager = (InputMethodManager) ctx
+    public static void hideKeyboard(Context context) {
+        InputMethodManager inputManager = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // check if no view has focus:
-        View v = ((Activity) ctx).getCurrentFocus();
+        View v = ((Activity) context).getCurrentFocus();
         if (v == null)
             return;
 

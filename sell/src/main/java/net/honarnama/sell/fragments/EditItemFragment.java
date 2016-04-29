@@ -15,7 +15,6 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.core.activity.ChooseArtCategoryActivity;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.model.Event;
 import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
@@ -41,9 +40,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +103,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     ProgressDialog mProgressDialog;
     private RelativeLayout[] mItemImageLoadingPannel;
+
+    Snackbar mSnackbar;
+
+    private CoordinatorLayout mCoordinatorLayout;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -184,12 +192,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-            getActivity().finish();
-            startActivity(intent);
-        }
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+//            getActivity().finish();
+//            startActivity(intent);
+//        }
 
         final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
@@ -262,6 +270,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         if (BuildConfig.DEBUG) {
             logD("onCreateView :: mCreateNew= " + mCreateNew);
         }
+
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
+
         if (mCreateNew) {
             reset(getActivity(), true);
             mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
@@ -297,6 +309,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mPriceEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
             } else {
                 if (mItemId >= 0) {
+                    mScrollView.setVisibility(View.GONE);
                     new getItemAsync().execute();
                 }
             }
@@ -501,6 +514,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        displaySnackbar();
                         displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
@@ -509,12 +523,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
+                        mScrollView.setVisibility(View.VISIBLE);
                         setItemInfo(getItemReply.item, true);
                         break;
                 }
 
             } else {
-                displayLongToast(getString(R.string.error_getting_item_info) + getString(R.string.check_net_connection));
+                displaySnackbar();
+                displayLongToast(getString(R.string.check_net_connection));
             }
         }
     }
@@ -745,5 +761,43 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mProgressDialog.show();
         }
     }
+
+
+    public void displaySnackbar() {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
+
+        //TODO display refresh icon does not work
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(" ");
+        builder.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
+        builder.append(getString(R.string.error_getting_item_info)).append(" ");
+
+
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        View sbView = mSnackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setBackgroundColor(getResources().getColor(R.color.amber));
+        textView.setSingleLine(false);
+        textView.setGravity(Gravity.CENTER);
+        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    new getItemAsync().execute();
+                    if (mSnackbar != null && mSnackbar.isShown()) {
+                        mSnackbar.dismiss();
+                    }
+                }
+            }
+        });
+
+        mSnackbar.show();
+    }
+
 
 }

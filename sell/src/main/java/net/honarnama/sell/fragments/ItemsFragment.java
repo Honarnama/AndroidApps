@@ -94,9 +94,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        net.honarnama.nano.Item item = mAdapter.getItem(i);
-        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.switchFragmentToEditItem(item.id);
+        //TODO un comment if
+//        if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+            net.honarnama.nano.Item item = mAdapter.getItem(i);
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            controlPanelActivity.switchFragmentToEditItem(item.id);
+//        }
     }
 
     @Override

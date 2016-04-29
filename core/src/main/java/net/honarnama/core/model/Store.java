@@ -1,13 +1,6 @@
 package net.honarnama.core.model;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.utils.NetworkManager;
-
-import android.accounts.NetworkErrorException;
-import android.content.Context;
-
-import bolts.Task;
-import bolts.TaskCompletionSource;
 
 /**
  * Created by elnaz on 1/5/16.
@@ -130,4 +123,4 @@ public class Store {
         mId = id;
     }
 
- }
+}

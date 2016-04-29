@@ -1,7 +1,5 @@
 package net.honarnama.core.model;
 
-import com.google.common.base.Throwables;
-
 import com.crashlytics.android.Crashlytics;
 
 import net.honarnama.HonarnamaBaseApp;
