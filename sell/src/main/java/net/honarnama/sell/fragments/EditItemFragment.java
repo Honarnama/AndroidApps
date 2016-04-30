@@ -38,15 +38,20 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -768,13 +773,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mSnackbar.dismiss();
         }
 
-        //TODO display refresh icon does not work
-
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ");
-        builder.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
-        builder.append(getString(R.string.error_getting_item_info)).append(" ");
-
+        builder.append(" ").append(getString(R.string.error_getting_item_info)).append(" ");
 
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         View sbView = mSnackbar.getView();
@@ -782,6 +782,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         textView.setBackgroundColor(getResources().getColor(R.color.amber));
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
+        Spannable spannable = (Spannable) textView.getText();
+        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
         textView.setOnClickListener(new View.OnClickListener() {
