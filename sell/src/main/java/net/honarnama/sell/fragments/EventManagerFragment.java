@@ -10,6 +10,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.core.adapter.CityAdapter;
 import net.honarnama.core.adapter.EventCategoriesAdapter;
@@ -43,10 +44,17 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,6 +73,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -144,6 +153,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     public MetaUpdateListener mMetaUpdateListener;
 
+    Snackbar mSnackbar;
+
+    private CoordinatorLayout mCoordinatorLayout;
+
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_event_manager);
@@ -170,11 +183,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-            getActivity().finish();
-            startActivity(intent);
-        }
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+//            getActivity().finish();
+//            startActivity(intent);
+//        }
 
         View rootView = inflater.inflate(R.layout.fragment_event_manager, container, false);
 
@@ -258,7 +271,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mBannerImageView.restore(savedInstanceState);
         loadOfflineData();
 
-
+        mScrollView.setVisibility(View.GONE);
         new getEventAsync().execute();
 
         mMetaUpdateListener = new MetaUpdateListener() {
@@ -280,6 +293,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
             }
         };
+
+
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
 
         return rootView;
     }
@@ -434,7 +451,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         return;
                     }
                     provinceDialog.dismiss();
-                    displayProgressDialog();
+                    displayProgressDialog(null);
                     new MetaUpdater(mMetaUpdateListener, 0).execute();
 
                 }
@@ -507,7 +524,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         return;
                     }
                     cityDialog.dismiss();
-                    displayProgressDialog();
+                    displayProgressDialog(null);
                     new MetaUpdater(mMetaUpdateListener, 0).execute();
 
                 }
@@ -557,7 +574,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         return;
                     }
                     eventCatDialog.dismiss();
-                    displayProgressDialog();
+                    displayProgressDialog(null);
                     new MetaUpdater(mMetaUpdateListener, 0).execute();
 
                 }
@@ -782,9 +799,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
 
             if (eventCategory == null) {
-                if (isVisible()) {
-                    Toast.makeText(getActivity(), getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                }
+                displayShortToast(getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection));
             } else {
                 mEventCatBtn.setText(eventCategory.getName());
             }
@@ -801,7 +816,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mStatusBarTextView.setVisibility(View.VISIBLE);
             }
 
-            if (event.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
+            if (event.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
                 mEventNotVerifiedNotif.setVisibility(View.VISIBLE);
                 mStatusBarTextView.setVisibility(View.VISIBLE);
                 mStatusBarTextView.setText(getString(R.string.please_apply_requested_modification));
@@ -861,7 +876,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            displayProgressDialog();
+            displayProgressDialog(null);
         }
 
         @Override
@@ -894,6 +909,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             if (getEventReply != null) {
                 switch (getEventReply.replyProperties.statusCode) {
                     case ReplyProperties.OK:
+                        mScrollView.setVisibility(View.VISIBLE);
                         setEventInfo(getEventReply.event, true);
                         break;
 
@@ -905,6 +921,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 break;
 
                             case GetEventReply.EVENT_NOT_FOUND:
+                                mScrollView.setVisibility(View.VISIBLE);
                                 mIsNew = true;
                                 logD("Event not found.");
                                 break;
@@ -912,7 +929,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displayShortToast(getString(R.string.server_error_try_again));
+                        displaySnackbar();
+                        displayLongToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -928,7 +946,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
+                displaySnackbar();
+                displayLongToast(getString(R.string.check_net_connection));
             }
         }
     }
@@ -936,10 +955,20 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public class CreateOrUpdateEventAsync extends AsyncTask<Void, Void, CreateOrUpdateEventReply> {
         CreateOrUpdateEventRequest createOrUpdateEventRequest;
 
+        String cToastMsg = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            displayProgressDialog();
+            displayProgressDialog(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (!TextUtils.isEmpty(cToastMsg)) {
+                        displayLongToast(cToastMsg);
+                        cToastMsg = "";
+                    }
+                }
+            });
         }
 
         @Override
@@ -1004,28 +1033,34 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
-                        dismissProgressDialog();
                         switch (createOrUpdateEventReply.errorCode) {
                             case CreateOrUpdateEventReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for createOrUpdateEventReply. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". User id: " + HonarnamaUser.getId());
-                                displayShortToast(getString(R.string.error_occured));
+                                cToastMsg = getString(R.string.error_occured);
                                 break;
                             case CreateOrUpdateEventReply.EVENT_NOT_FOUND:
-                                displayShortToast(getString(R.string.event_not_found));
+//                                displayShortToast(getString(R.string.event_not_found));
+                                cToastMsg = getString(R.string.event_not_found);
                                 break;
                             case CreateOrUpdateEventReply.EMPTY_EVENT:
                                 logE("createOrUpdateEventReply was EMPTY_EVENT. createOrUpdateEventRequest: " + createOrUpdateEventRequest);
-                                displayShortToast(getString(R.string.error_occured));
+//                                displayShortToast(getString(R.string.error_occured));
+                                cToastMsg = getString(R.string.error_occured);
                                 break;
                             case CreateOrUpdateEventReply.STORE_NOT_CREATED:
-                                displayLongToast(getString(R.string.store_not_created));
+//                                displayLongToast(getString(R.string.store_not_created));
+                                cToastMsg = getString(R.string.store_not_created);
                                 break;
+
+                            //TODO test if duplicate store can be created or not
                         }
+                        dismissProgressDialog();
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        cToastMsg = getString(R.string.server_error_try_again);
+//                        displayShortToast(getString(R.string.server_error_try_again));
                         dismissProgressDialog();
-                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -1036,30 +1071,49 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     case ReplyProperties.OK:
                         setEventInfo(createOrUpdateEventReply.uptodateEvent, false);
 
+                        if (mBannerImageView.isDeleted()) {
+                            mBannerImageView.setDeleted(false);
+                        }
+
                         if (!TextUtils.isEmpty(createOrUpdateEventReply.bannerModificationUrl) && mBannerImageView.getFinalImageUri() != null) {
                             final File bannerImageFile = new File(mBannerImageView.getFinalImageUri().getPath());
                             final Uploader aws = new Uploader(bannerImageFile, createOrUpdateEventReply.bannerModificationUrl);
                             aws.upload().continueWith(new Continuation<Void, Object>() {
                                 @Override
                                 public Object then(Task<Void> task) throws Exception {
-                                    dismissProgressDialog();
-                                    if (task.isFaulted()) {
-                                        displayLongToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
-                                    } else {
-                                        displayLongToast(getString(R.string.successfully_changed_event_info));
+                                    if (BuildConfig.DEBUG) {
+                                        logD("Continue event image upload task.");
                                     }
+
+                                    if (task.isFaulted()) {
+                                        if (BuildConfig.DEBUG) {
+                                            logD("Uploading event image failed.");
+                                        }
+                                        cToastMsg = HonarnamaBaseApp.getInstance().getString(R.string.error_uploading_event_banner) + HonarnamaBaseApp.getInstance().getString(R.string.check_net_connection);
+                                    } else {
+                                        mBannerImageView.setChanged(false);
+                                        if (BuildConfig.DEBUG) {
+                                            logD("Uploading event image done.");
+                                        }
+                                        cToastMsg = HonarnamaBaseApp.getInstance().getString(R.string.successfully_changed_event_info);
+                                    }
+
+                                    dismissProgressDialog();
                                     return null;
                                 }
                             });
                         } else {
+                            cToastMsg = HonarnamaBaseApp.getInstance().getString(R.string.successfully_changed_event_info);
                             dismissProgressDialog();
-                            displayLongToast(getString(R.string.successfully_changed_event_info));
+//                            displayLongToast(getString(R.string.successfully_changed_event_info));
                         }
                         break;
                 }
 
             } else {
-                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
+                //TODO add below line to other fragments too (creating or updating items)
+                cToastMsg = HonarnamaBaseApp.getInstance().getString(R.string.error_connecting_to_Server) + HonarnamaBaseApp.getInstance().getString(R.string.check_net_connection);
+                dismissProgressDialog();
             }
         }
 
@@ -1072,17 +1126,60 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mProgressDialog.dismiss();
             }
         }
+
     }
 
-    private void displayProgressDialog() {
+    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
+
+        if (onDismissListener != null) {
+            mProgressDialog.setOnDismissListener(onDismissListener);
+        }
+
         Activity activity = getActivity();
         if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
+
     }
+
+
+    public void displaySnackbar() {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(" ").append(getString(R.string.error_connecting_to_Server)).append(" ");
+
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        View sbView = mSnackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setBackgroundColor(getResources().getColor(R.color.amber));
+        textView.setSingleLine(false);
+        textView.setGravity(Gravity.CENTER);
+        Spannable spannable = (Spannable) textView.getText();
+        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    new getEventAsync().execute();
+                    if (mSnackbar != null && mSnackbar.isShown()) {
+                        mSnackbar.dismiss();
+                    }
+                }
+            }
+        });
+
+        mSnackbar.show();
+    }
+
 }

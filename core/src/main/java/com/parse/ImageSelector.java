@@ -208,19 +208,15 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void removeSelectedImage() {
         mFinalImageUri = null;
         setFileSet(false);
-        setFinalImageUri(null);
         if (mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageRemoved();
         }
         if (mDefaultDrawable != null) {
             setImageDrawable(mDefaultDrawable);
         }
-        mChanged = true;
+        //TODO test below commenting
+//        mChanged = true;
         mDeleted = true;
-    }
-
-    public boolean isDeleted() {
-        return mDeleted;
     }
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
@@ -437,12 +433,18 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (mFinalImageUri != null) {
             outState.putString(prefix + "_mFinalImageUri", mFinalImageUri.toString());
         }
+
+        outState.putBoolean(prefix + "_mChanged", mChanged);
+        outState.putBoolean(prefix + "_mDeleted", mDeleted);
     }
 
     public void restore(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String prefix = "ImageSelector_" + mImageSelectorIndex;
-            mChanged = true;
+//            mChanged = true;
+
+            mChanged = savedInstanceState.getBoolean(prefix + "_mChanged");
+            mDeleted = savedInstanceState.getBoolean(prefix + "_mDeleted");
 
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
@@ -466,15 +468,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mFinalImageUri;
     }
 
-    public void setFinalImageUri(Uri imageUri) {
-        super.setImageURI(imageUri);
-        mFinalImageUri = imageUri;
-        mChanged = true;
-        if (BuildConfig.DEBUG) {
-            Log.d(LOG_TAG, "Image is set (through setFinalImageUri)");
-        }
-    }
-
     public int getImageSelectorIndex() {
         return mImageSelectorIndex;
     }
@@ -492,5 +485,16 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return mChanged;
     }
 
+    public void setChanged(boolean changed) {
+        mChanged = changed;
+    }
+
+    public boolean isDeleted() {
+        return mDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        mDeleted = deleted;
+    }
 
 }

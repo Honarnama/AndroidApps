@@ -38,20 +38,16 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,7 +106,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private RelativeLayout[] mItemImageLoadingPannel;
 
     Snackbar mSnackbar;
-
     private CoordinatorLayout mCoordinatorLayout;
 
     public synchronized static EditItemFragment getInstance() {
@@ -741,6 +736,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
+                dismissProgressDialog();
                 displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
@@ -774,7 +770,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getString(R.string.error_getting_item_info)).append(" ");
+        builder.append(" ").append(getString(R.string.error_connecting_to_Server)).append(" ");
 
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         View sbView = mSnackbar.getView();
@@ -801,6 +797,5 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         mSnackbar.show();
     }
-
 
 }
