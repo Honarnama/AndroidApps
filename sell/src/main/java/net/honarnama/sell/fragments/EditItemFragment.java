@@ -37,6 +37,7 @@ import net.honarnama.sell.utils.Uploader;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -108,6 +109,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     Snackbar mSnackbar;
     private CoordinatorLayout mCoordinatorLayout;
 
+    TextWatcher mTextWatcherToMarkDirty;
+
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
             mEditItemFragment = new EditItemFragment();
@@ -124,6 +127,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mChooseCategoryButton.setText(context.getString(R.string.select));
             for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.removeSelectedImage();
+                imageSelector.setChanged(false);
+                imageSelector.setDeleted(false);
             }
             mTitleEditText.setError(null);
             mDescriptionEditText.setError(null);
@@ -164,7 +169,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        TextWatcher textWatcherToMarkDirty = new TextWatcher() {
+        mTextWatcherToMarkDirty = new TextWatcher() {
             String mValue;
 
             @Override
@@ -183,9 +188,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
             }
         };
-        mTitleEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mDescriptionEditText.addTextChangedListener(textWatcherToMarkDirty);
-        mPriceEditText.addTextChangedListener(textWatcherToMarkDirty);
         mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
     }
 
@@ -414,11 +416,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         switch (requestCode) {
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
+                    int selectedCatId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
+                    int selectedCatParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
+                    if (selectedCatId != mCategoryId || selectedCatParentId != mCategoryParentId) {
+                        setDirty(true);
+                    }
                     mCategoryTextView.setError(null);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
-                    mCategoryId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
-                    mCategoryParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
-                    setDirty(true);
+                    mCategoryId = selectedCatId;
+                    mCategoryParentId = selectedCatParentId;
                     mChooseCategoryButton.setText(mCategoryName);
                 }
                 break;
@@ -456,7 +462,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            displayProgressDialog();
+            displayProgressDialog(null);
         }
 
         @Override
@@ -597,15 +603,28 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
         }
 
+        mTitleEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+
     }
 
     public class CreateOrUpdateItemAsync extends AsyncTask<Void, Void, CreateOrUpdateItemReply> {
         CreateOrUpdateItemRequest createOrUpdateItemRequest;
+        String cToastMsg = "";
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            displayProgressDialog();
+            displayProgressDialog(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (!TextUtils.isEmpty(cToastMsg)) {
+                        displayLongToast(cToastMsg);
+                        cToastMsg = "";
+                    }
+                }
+            });
         }
 
         @Override
@@ -675,50 +694,65 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 final File storeBannerImageFile = new File(mItemImages[i].getFinalImageUri().getPath());
                                 tasks.add(new Uploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
                             }
+
+                            if (mItemImages[i].isDeleted()) {
+                                mItemImages[i].setDeleted(false);
+                            }
                         }
 
                         Task.whenAll(tasks).continueWith(new Continuation<Void, Object>() {
                             @Override
                             public Object then(Task<Void> task) throws Exception {
-                                dismissProgressDialog();
                                 if (task.isFaulted()) {
-                                    displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
+                                    cToastMsg = getString(R.string.error_sending_images) + getString(R.string.check_net_connection);
+//                                    displayShortToast(getString(R.string.error_sending_images) + getString(R.string.check_net_connection));
                                 } else {
                                     mDirty = false;
-                                    displayShortToast(getString(R.string.item_saved_successfully));
+                                    cToastMsg = getString(R.string.item_saved_successfully);
+                                    for (int i = 0; i < mItemImages.length; i++) {
+                                        mItemImages[i].setChanged(false);
+                                    }
+//                                    displayShortToast(getString(R.string.item_saved_successfully));
                                 }
+                                dismissProgressDialog();
                                 return null;
                             }
                         });
                         break;
 
                     case ReplyProperties.CLIENT_ERROR:
-                        dismissProgressDialog();
                         switch (createOrUpdateItemReply.errorCode) {
                             case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for updating item. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
-                                displayShortToast(getString(R.string.error_occured));
+//                                displayShortToast(getString(R.string.error_occured));
+                                cToastMsg = getString(R.string.error_occured);
                                 break;
                             case CreateOrUpdateItemReply.FORBIDDEN:
-                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
+//                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
                                 logE("Got FORBIDDEN reply while trying createOrUpdateItem. createOrUpdateItemRequest: " + createOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
+                                cToastMsg = getString(R.string.not_allowed_to_do_this_action);
                                 break;
                             case CreateOrUpdateItemReply.ITEM_NOT_FOUND:
-                                displayLongToast(getString(R.string.item_not_found));
+//                                displayLongToast(getString(R.string.item_not_found));
+                                cToastMsg = getString(R.string.item_not_found);
                                 break;
                             case CreateOrUpdateItemReply.EMPTY_ITEM:
                                 logE("CreateOrUpdateItemReply was EMPTY_ITEM. createOrUpdateItemRequest: " + createOrUpdateItemRequest);
-                                displayShortToast(getString(R.string.error_occured));
+//                                displayShortToast(getString(R.string.error_occured));
+                                cToastMsg = getString(R.string.error_occured);
                                 break;
                             case CreateOrUpdateItemReply.STORE_NOT_CREATED:
-                                displayLongToast(getString(R.string.store_not_created));
+//                                displayLongToast(getString(R.string.store_not_created));
+                                cToastMsg = getString(R.string.store_not_created);
                                 break;
                         }
+                        dismissProgressDialog();
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        cToastMsg = getString(R.string.server_error_try_again);
                         dismissProgressDialog();
-                        displayShortToast(getString(R.string.server_error_try_again));
+//                        displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -736,8 +770,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
+                cToastMsg = getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection);
                 dismissProgressDialog();
-                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
+//                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
             }
         }
     }
@@ -751,18 +786,23 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
     }
 
-    private void displayProgressDialog() {
+    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage(getString(R.string.please_wait));
         }
+
+        if (onDismissListener != null) {
+            mProgressDialog.setOnDismissListener(onDismissListener);
+        }
+
         Activity activity = getActivity();
         if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
-    }
 
+    }
 
     public void displaySnackbar() {
         if (mSnackbar != null && mSnackbar.isShown()) {
