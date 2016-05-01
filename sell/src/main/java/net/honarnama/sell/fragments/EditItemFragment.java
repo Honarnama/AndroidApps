@@ -169,6 +169,19 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
+        mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                             Bundle savedInstanceState) {
+//
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+//            getActivity().finish();
+//            startActivity(intent);
+//        }
+
         mTextWatcherToMarkDirty = new TextWatcher() {
             String mValue;
 
@@ -188,18 +201,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
             }
         };
-        mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
-//
-//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-//            getActivity().finish();
-//            startActivity(intent);
-//        }
 
         final View rootView = inflater.inflate(R.layout.fragment_edit_item, container, false);
 
@@ -543,63 +544,65 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
 
     public void setItemInfo(net.honarnama.nano.Item item, boolean loadImages) {
-        mItemId = item.id;
+        if (item != null) {
+            mItemId = item.id;
 
-        mTitleEditText.setText(item.name);
-        mDescriptionEditText.setText(item.description);
-        mPriceEditText.setText(item.price + "");
+            mTitleEditText.setText(item.name);
+            mDescriptionEditText.setText(item.description);
+            mPriceEditText.setText(item.price + "");
 
-        if (item.artCategoryId.level2Id > 0) {
-            mCategoryParentId = item.artCategoryId.level1Id;
-            mCategoryId = item.artCategoryId.level2Id;
-        } else {
-            mCategoryParentId = 0;
-            mCategoryId = item.artCategoryId.level1Id;
-        }
-        mChooseCategoryButton.setText(getString(R.string.getting_information));
-        new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
-            @Override
-            public Object then(Task<String> task) throws Exception {
-                if (task.isFaulted()) {
-                    displayLongToast(getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection));
-                } else {
-                    mChooseCategoryButton.setText(task.getResult());
-                }
-                return null;
+            if (item.artCategoryId.level2Id > 0) {
+                mCategoryParentId = item.artCategoryId.level1Id;
+                mCategoryId = item.artCategoryId.level2Id;
+            } else {
+                mCategoryParentId = 0;
+                mCategoryId = item.artCategoryId.level1Id;
             }
-        });
+            mChooseCategoryButton.setText(getString(R.string.getting_information));
+            new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
+                @Override
+                public Object then(Task<String> task) throws Exception {
+                    if (task.isFaulted()) {
+                        displayLongToast(getString(R.string.error_finding_category_name) + getString(R.string.check_net_connection));
+                    } else {
+                        mChooseCategoryButton.setText(task.getResult());
+                    }
+                    return null;
+                }
+            });
 
-        if (loadImages) {
-            for (int i = 0; i < 4; i++) {
-                if (!TextUtils.isEmpty(item.images[i])) {
-                    String itemImage = item.images[i];
+            if (loadImages) {
+                for (int i = 0; i < 4; i++) {
+                    if (!TextUtils.isEmpty(item.images[i])) {
+                        String itemImage = item.images[i];
 
-                    mItemImageLoadingPannel[i].setVisibility(View.VISIBLE);
-                    mItemImages[i].setVisibility(View.GONE);
+                        mItemImageLoadingPannel[i].setVisibility(View.VISIBLE);
+                        mItemImages[i].setVisibility(View.GONE);
 
-                    final int index = i;
+                        final int index = i;
 
-                    Picasso.with(getActivity()).load(itemImage)
-                            .error(R.drawable.camera_insta)
-                            .memoryPolicy(MemoryPolicy.NO_CACHE)
-                            .networkPolicy(NetworkPolicy.NO_CACHE)
-                            .into(mItemImages[i], new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    mItemImageLoadingPannel[index].setVisibility(View.GONE);
-                                    mItemImages[index].setVisibility(View.VISIBLE);
-                                    mItemImages[index].setFileSet(true);
-                                }
+                        Picasso.with(getActivity()).load(itemImage)
+                                .error(R.drawable.camera_insta)
+                                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                                .networkPolicy(NetworkPolicy.NO_CACHE)
+                                .into(mItemImages[i], new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        mItemImageLoadingPannel[index].setVisibility(View.GONE);
+                                        mItemImages[index].setVisibility(View.VISIBLE);
+                                        mItemImages[index].setFileSet(true);
+                                    }
 
-                                @Override
-                                public void onError() {
-                                    displayShortToast(getString(R.string.error_displaying_image) + getString(R.string.check_net_connection));
-                                    mItemImages[index].setVisibility(View.VISIBLE);
-                                }
-                            });
+                                    @Override
+                                    public void onError() {
+                                        displayShortToast(getString(R.string.error_displaying_image) + getString(R.string.check_net_connection));
+                                        mItemImages[index].setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                    }
 
                 }
-
             }
         }
 
@@ -607,6 +610,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
         mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
 
+        setDirty(false);
     }
 
     public class CreateOrUpdateItemAsync extends AsyncTask<Void, Void, CreateOrUpdateItemReply> {

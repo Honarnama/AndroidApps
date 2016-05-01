@@ -131,5 +131,6 @@
     <string name="changes_needed">آگهی نیاز به تغییرات دارد.</string>
     <string name="item_deleted">محصول با موفقیت حذف شد.</string>
     <string name="error_uploading_event_banner">خطا در ارسال تصویر بنر رویداد.</string>
+    <string name="error_getting_event_info">خطا در گرفتن اطلاعات رویداد.</string>
 
 </resources>
