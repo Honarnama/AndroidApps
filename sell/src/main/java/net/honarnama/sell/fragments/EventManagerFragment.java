@@ -27,7 +27,6 @@ import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
 import net.honarnama.nano.CreateOrUpdateEventReply;
 import net.honarnama.nano.CreateOrUpdateEventRequest;
-import net.honarnama.nano.Event;
 import net.honarnama.nano.GetEventReply;
 import net.honarnama.nano.HonarnamaProto;
 import net.honarnama.nano.LocationId;
@@ -314,8 +313,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
         }
-        loadOfflineData();
 
+        loadOfflineData();
         mScrollView.setVisibility(View.GONE);
         new getEventAsync().execute();
 
@@ -968,7 +967,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 //        inflater.inflate(R.menu.menu_main, menu);
     }
 
-
     public class getEventAsync extends AsyncTask<Void, Void, GetEventReply> {
         SimpleRequest simpleRequest;
 
@@ -1008,14 +1006,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             if (getEventReply != null) {
                 switch (getEventReply.replyProperties.statusCode) {
                     case ReplyProperties.OK:
-
                         if (getEventReply.event != null) {
                             mScrollView.setVisibility(View.VISIBLE);
                             setEventInfo(getEventReply.event, true);
                         } else {
                             displayShortToast(getString(R.string.error_getting_event_info));
                             displaySnackbar();
-                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was empty. simpleRequest: " + simpleRequest);
+                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was null. simpleRequest: " + simpleRequest);
                         }
                         break;
 
@@ -1157,8 +1154,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 //                                displayLongToast(getString(R.string.store_not_created));
                                 cToastMsg = getString(R.string.store_not_created);
                                 break;
-
-                            //TODO Already own an event error code
+                            case CreateOrUpdateEventReply.ALREADY_HAS_EVENT:
+                                cToastMsg = "در حال حاضر رویداد دیگری دارید.";
+                                break;
                         }
                         dismissProgressDialog();
                         break;
@@ -1217,7 +1215,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                //TODO add below line to other fragments too (creating or updating items)
                 cToastMsg = HonarnamaBaseApp.getInstance().getString(R.string.error_connecting_to_Server) + HonarnamaBaseApp.getInstance().getString(R.string.check_net_connection);
                 dismissProgressDialog();
             }
@@ -1250,7 +1247,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
-
     }
 
 
