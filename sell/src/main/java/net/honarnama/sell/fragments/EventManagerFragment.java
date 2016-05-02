@@ -25,6 +25,7 @@ import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.JalaliCalendar;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
+import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.nano.CreateOrUpdateEventReply;
 import net.honarnama.nano.CreateOrUpdateEventRequest;
 import net.honarnama.nano.GetEventReply;
@@ -218,8 +219,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             @Override
             public void afterTextChanged(Editable editable) {
                 if (mValue != editable + "") {
-
-                    logD("inja 1: make dirty // text changed");
                     mDirty = true;
                 }
             }
@@ -456,6 +455,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_event_button:
+                WindowUtil.hideKeyboard(getActivity());
                 if (formInputsAreValid()) {
                     new CreateOrUpdateEventAsync().execute();
                 }
@@ -475,14 +475,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             case R.id.active_event:
                 if (mEventStatus != true) {
-                    logD("inja 2: make dirty // event status changed to active");
                     setDirty(true);
                 }
                 break;
 
             case R.id.passive_event:
                 if (mEventStatus != false) {
-                    logD("inja 2: make dirty // event status changed to passive");
                     setDirty(true);
                 }
                 break;
@@ -521,16 +519,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
-
                     if (mSelectedProvinceId != selectedProvince.getId()) {
-                        logD("inja 2: make dirty // new province");
-
                         setDirty(true);
-                        rePopulateCityList();
                     }
                     mSelectedProvinceId = selectedProvince.getId();
                     mSelectedProvinceName = selectedProvince.getName();
                     mProvinceEditText.setText(mSelectedProvinceName);
+                    rePopulateCityList();
                     provinceDialog.dismiss();
                 }
             });
@@ -603,8 +598,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
                     for (int key : selectedCity.keySet()) {
                         if (mSelectedCityId != key) {
-                            logD("inja 2: make dirty // new city");
-
                             setDirty(true);
                         }
                         mSelectedCityId = key;
@@ -656,8 +649,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     EventCategory eventCategory = mEventCategories.get(position);
                     if (mSelectedCatId != eventCategory.getId()) {
-                        logD("inja 2: make dirty // new cat id");
-
                         setDirty(true);
                     }
                     mSelectedCatId = eventCategory.getId();
@@ -726,10 +717,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         String userEnteredStartDate = fromYearValue + "/" + fromMonthValue + "/" + fromDayValue;
         Date startDate = JalaliCalendar.getGregorianDate(userEnteredStartDate);
         if (mStartDate.getDay() != startDate.getDay() || mStartDate.getMonth() != startDate.getMonth() || mStartDate.getYear() != startDate.getYear()) {
-            logD("inja startDate: " + startDate);
-            logD("inja mStartDate: " + mStartDate);
-            logD("inja 2: make dirty // new start date");
-
             setDirty(true);
         }
         mStartDate = startDate;
@@ -753,7 +740,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
         Date endDate = JalaliCalendar.getGregorianDate(userEnteredEndDate);
         if (mEndDate.getDay() != endDate.getDay() || mEndDate.getMonth() != endDate.getMonth() || mEndDate.getYear() != endDate.getYear()) {
-            logD("inja 2: make dirty // new end date");
             setDirty(true);
         }
         mEndDate = endDate;

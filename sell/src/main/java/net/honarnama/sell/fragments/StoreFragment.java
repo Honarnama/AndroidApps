@@ -22,6 +22,7 @@ import net.honarnama.core.model.Province;
 import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
+import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.nano.CreateOrUpdateStoreReply;
 import net.honarnama.nano.CreateOrUpdateStoreRequest;
 import net.honarnama.nano.GetStoreReply;
@@ -47,9 +48,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -125,9 +128,20 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     Snackbar mSnackbar;
 
+    private boolean mDirty = false;
+    TextWatcher mTextWatcherToMarkDirty;
+
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_store_info);
+    }
+
+    private void setDirty(boolean dirty) {
+        mDirty = dirty;
+    }
+
+    public boolean isDirty() {
+        return mDirty;
     }
 
     public synchronized static StoreFragment getInstance() {
@@ -157,6 +171,26 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 //            startActivity(intent);
 //        }
 
+        mTextWatcherToMarkDirty = new TextWatcher() {
+            String mValue;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mValue = charSequence.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mValue != editable + "") {
+                    mDirty = true;
+                }
+            }
+        };
+
         View rootView = inflater.inflate(R.layout.fragment_store, container, false);
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
@@ -182,46 +216,43 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mCityEditText.setOnClickListener(this);
         mCityEditText.setKeyListener(null);
 
-
         mRegisterStoreButton = (Button) rootView.findViewById(R.id.register_store_button);
+
+        ImageSelector.OnImageSelectedListener onImageSelectedListener =
+                new ImageSelector.OnImageSelectedListener() {
+                    @Override
+                    public boolean onImageSelected(Uri selectedImage, boolean cropped) {
+                        mDirty = true;
+                        return true;
+                    }
+
+                    @Override
+                    public void onImageRemoved() {
+                        mDirty = true;
+                    }
+
+                    @Override
+                    public void onImageSelectionFailed() {
+                    }
+                };
+
+
         mLogoImageView = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.store_banner_image_view);
         mRegisterStoreButton.setOnClickListener(this);
 
-        mLogoImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
-            @Override
-            public boolean onImageSelected(Uri selectedImage, boolean cropped) {
-                return true;
-            }
-
-            @Override
-            public void onImageRemoved() {
-            }
-
-            @Override
-            public void onImageSelectionFailed() {
-            }
-        });
+        mLogoImageView.setOnImageSelectedListener(onImageSelectedListener);
         mLogoImageView.setActivity(this.getActivity());
-        mLogoImageView.restore(savedInstanceState);
+        if (savedInstanceState != null) {
+            mLogoImageView.restore(savedInstanceState);
+        }
 
-        mBannerImageView.setOnImageSelectedListener(new ImageSelector.OnImageSelectedListener() {
-            @Override
-            public boolean onImageSelected(Uri selectedImage, boolean cropped) {
-                return true;
-            }
 
-            @Override
-            public void onImageRemoved() {
-            }
-
-            @Override
-            public void onImageSelectionFailed() {
-            }
-        });
+        mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
         mBannerImageView.setActivity(this.getActivity());
-        mBannerImageView.restore(savedInstanceState);
-
+        if (savedInstanceState != null) {
+            mBannerImageView.restore(savedInstanceState);
+        }
         loadOfflineData();
         mScrollView.setVisibility(View.GONE);
         new getStoreAsync().execute();
@@ -282,6 +313,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_store_button:
+                WindowUtil.hideKeyboard(getActivity());
                 if (formInputsAreValid()) {
                     new CreateOrUpdateStoreAsync().execute();
                 }
@@ -329,6 +361,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
+                    if (mSelectedProvinceId != selectedProvince.getId()) {
+                        setDirty(true);
+                    }
                     mSelectedProvinceId = selectedProvince.getId();
                     mSelectedProvinceName = selectedProvince.getName();
                     mProvinceEditText.setText(mSelectedProvinceName);
@@ -386,6 +421,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
                 for (int key : selectedCity.keySet()) {
+                    if (mSelectedCityId != key) {
+                        setDirty(true);
+                    }
                     mSelectedCityId = key;
                 }
                 for (String value : selectedCity.values()) {
@@ -426,14 +464,17 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mDescriptionEditText.requestFocus();
             mDescriptionEditText.setError(getString(R.string.store_desc_cant_be_empty));
             return false;
+        } else {
+            mDescriptionEditText.setError(null);
         }
 
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
             mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));
             return false;
+        } else {
+            mCellNumberEditText.setError(null);
         }
-
 
         if (mCellNumberEditText.getText().toString().trim().length() > 0) {
             String mobileNumberPattern = "^09\\d{9}$";
@@ -451,6 +492,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 mPhoneNumberEditText.setError(getString(R.string.error_phone_number_is_not_valid));
                 return false;
             }
+        }
+
+        if (!isDirty()) {
+            displayLongToast(getString(R.string.item_not_changed));
+            return false;
         }
 
         return true;
@@ -542,9 +588,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             }
                         });
             }
-        } else {
-            resetFields();
         }
+
+        mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+
+        setDirty(false);
     }
 
 
@@ -633,6 +684,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        displaySnackbar();
                         displayShortToast(getString(R.string.server_error_try_again));
                         break;
 
@@ -744,7 +796,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
-
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for createOrUpdate user (id " + HonarnamaUser.getId() + ") store. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest);
@@ -785,6 +836,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.OK:
                         setStoreInfo(createOrUpdateStoreReply.uptodateStore, false);
 
+                        if (mBannerImageView.isDeleted()) {
+                            mBannerImageView.setDeleted(false);
+                        }
+
+                        if (mLogoImageView.isDeleted()) {
+                            mLogoImageView.setDeleted(false);
+                        }
+
                         if (TextUtils.isEmpty(createOrUpdateStoreReply.bannerModificationUrl) && TextUtils.isEmpty(createOrUpdateStoreReply.logoModificationUrl)) {
                             cToastMsg = getString(R.string.successfully_changed_store_info);
                             dismissProgressDialog();
@@ -809,6 +868,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                         if (task.isFaulted()) {
                                             cToastMsg = getString(R.string.error_sending_images) + getString(R.string.check_net_connection);
                                         } else {
+                                            mBannerImageView.setChanged(false);
+                                            mLogoImageView.setChanged(false);
                                             cToastMsg = getString(R.string.successfully_changed_store_info);
                                         }
 
@@ -825,6 +886,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                         if (task.isFaulted()) {
                                             cToastMsg = getString(R.string.error_sending_images) + getString(R.string.check_net_connection);
                                         } else {
+                                            mBannerImageView.setChanged(false);
                                             cToastMsg = getString(R.string.successfully_changed_store_info);
                                         }
                                         dismissProgressDialog();
@@ -842,6 +904,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                     if (task.isFaulted()) {
                                         cToastMsg = getString(R.string.error_sending_images) + getString(R.string.check_net_connection);
                                     } else {
+                                        mLogoImageView.setChanged(false);
                                         cToastMsg = getString(R.string.successfully_changed_store_info);
                                     }
 

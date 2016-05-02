@@ -19,6 +19,7 @@ import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.PriceFormatterTextWatcher;
 import net.honarnama.core.utils.TextUtil;
+import net.honarnama.core.utils.WindowUtil;
 import net.honarnama.nano.ArtCategoryId;
 import net.honarnama.nano.CreateOrUpdateItemReply;
 import net.honarnama.nano.CreateOrUpdateItemRequest;
@@ -328,11 +329,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
+                WindowUtil.hideKeyboard(getActivity());
                 if (formInputsAreValid()) {
-                    if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                        return;
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new CreateOrUpdateItemAsync().execute();
                     }
-                    new CreateOrUpdateItemAsync().execute();
                 }
                 break;
             case R.id.choose_art_category_btn:
