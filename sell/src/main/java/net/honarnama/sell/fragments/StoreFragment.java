@@ -247,7 +247,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mLogoImageView.restore(savedInstanceState);
         }
 
-
         mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
         mBannerImageView.setActivity(this.getActivity());
         if (savedInstanceState != null) {
@@ -364,6 +363,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     if (mSelectedProvinceId != selectedProvince.getId()) {
                         setDirty(true);
                     }
+                    mProvinceEditText.setError(null);
                     mSelectedProvinceId = selectedProvince.getId();
                     mSelectedProvinceName = selectedProvince.getName();
                     mProvinceEditText.setText(mSelectedProvinceName);
@@ -433,6 +433,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 cityDialog.dismiss();
             }
         });
+        mCityEditText.setError(null);
         cityDialog.setCancelable(true);
         cityDialog.setTitle(getString(R.string.select_city));
         cityDialog.show();
@@ -442,6 +443,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
         }
+
+        mNameEditText.setError(null);
+        mProvinceEditText.setError(null);
+        mCityEditText.setError(null);
+        mDescriptionEditText.setError(null);
+        mCellNumberEditText.setError(null);
+        mPhoneNumberEditText.setError(null);
+
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_store_name_cant_be_empty));
@@ -464,16 +473,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mDescriptionEditText.requestFocus();
             mDescriptionEditText.setError(getString(R.string.store_desc_cant_be_empty));
             return false;
-        } else {
-            mDescriptionEditText.setError(null);
         }
 
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
             mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));
             return false;
-        } else {
-            mCellNumberEditText.setError(null);
         }
 
         if (mCellNumberEditText.getText().toString().trim().length() > 0) {

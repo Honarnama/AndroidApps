@@ -624,7 +624,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         final Dialog eventCatDialog = new Dialog(getActivity(), R.style.DialogStyle);
 
         if (mEventCategories.isEmpty()) {
-
             eventCatDialog.setContentView(R.layout.dialog_no_data_found);
             eventCatDialog.findViewById(R.id.no_data_retry_icon).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -635,7 +634,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     eventCatDialog.dismiss();
                     displayProgressDialog(null);
                     new MetaUpdater(mMetaUpdateListener, 0).execute();
-
                 }
             });
 
@@ -651,6 +649,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     if (mSelectedCatId != eventCategory.getId()) {
                         setDirty(true);
                     }
+                    mEventCatLabel.setError(null);
                     mSelectedCatId = eventCategory.getId();
                     mSelectedCatName = eventCategory.getName();
                     mEventCatBtn.setText(mSelectedCatName);
@@ -667,12 +666,22 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
         }
+
+        mNameEditText.setError(null);
+        mEventCatLabel.setError(null);
+        mProvinceEditText.setError(null);
+        mCityEditText.setError(null);
+        mAddressEditText.setError(null);
+        mStartLabelTextView.setError(null);
+        mEndLabelTextView.setError(null);
+        mDescriptionEditText.setError(null);
+        mCellNumberEditText.setError(null);
+        mPhoneNumberEditText.setError(null);
+
         if (mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getString(R.string.error_event_name_cant_be_empty));
             return false;
-        } else {
-            mNameEditText.setError(null);
         }
 
         if (mSelectedCatId == -1) {
@@ -682,32 +691,24 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 Toast.makeText(getActivity(), getString(R.string.error_event_cat_is_not_selected), Toast.LENGTH_SHORT).show();
             }
             return false;
-        } else {
-            mEventCatLabel.setError(null);
         }
 
         if (mSelectedProvinceId < 0) {
             mProvinceEditText.requestFocus();
             mProvinceEditText.setError(getString(R.string.error_event_province_not_set));
             return false;
-        } else {
-            mProvinceEditText.setError(null);
         }
 
         if (mSelectedCityId < 0) {
             mCityEditText.requestFocus();
             mCityEditText.setError(getString(R.string.error_event_city_not_set));
             return false;
-        } else {
-            mCityEditText.setError(null);
         }
 
         if (mAddressEditText.getText().toString().trim().length() == 0) {
             mAddressEditText.requestFocus();
             mAddressEditText.setError(getString(R.string.error_event_address_is_not_specified));
             return false;
-        } else {
-            mAddressEditText.setError(null);
         }
 
         String fromYearValue = mStartYearSpinner.getItemAtPosition(mStartYearSpinner.getSelectedItemPosition()).toString();
@@ -728,10 +729,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
             }
             return false;
-        } else {
-            mStartLabelTextView.setError(null);
         }
-
 
         String toYearValue = mEndYearSpinner.getItemAtPosition(mEndYearSpinner.getSelectedItemPosition()).toString();
         String toMonthValue = (mEndMonthSpinner.getSelectedItemPosition() + 1) + "";
@@ -751,8 +749,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
             }
             return false;
-        } else {
-            mEndLabelTextView.setError(null);
         }
 
         if (mStartDate.after(mEndDate)) {
@@ -760,8 +756,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mStartLabelTextView.setError("تاریخ شروع بزرگتر از تاریخ پایان است.");
             displayLongToast("تاریخ شروع بزرگتر از تاریخ پایان است.");
             return false;
-        } else {
-            mStartLabelTextView.setError(null);
         }
 
         if (System.currentTimeMillis() > mEndDate.getTime()) {
@@ -769,8 +763,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mEndLabelTextView.setError("تاریخ پایان رویداد گذشته است.");
             displayLongToast("تاریخ پایان رویداد گذشته است.");
             return false;
-        } else {
-            mEndLabelTextView.setError(null);
         }
 
 
@@ -778,18 +770,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mDescriptionEditText.requestFocus();
             mDescriptionEditText.setError(getString(R.string.error_event_desc_cant_be_empty));
             return false;
-        } else {
-            mDescriptionEditText.setError(null);
         }
 
         if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
             mCellNumberEditText.setError(getString(R.string.fill_at_least_one_communication_ways));
             return false;
-        } else {
-            mCellNumberEditText.setError(null);
         }
-
 
         if (mCellNumberEditText.getText().toString().trim().length() > 0) {
             String mobileNumberPattern = "^09\\d{9}$";
@@ -797,8 +784,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mCellNumberEditText.requestFocus();
                 mCellNumberEditText.setError(getString(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
                 return false;
-            } else {
-                mCellNumberEditText.setError(null);
             }
         }
 
@@ -808,8 +793,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 mPhoneNumberEditText.requestFocus();
                 mPhoneNumberEditText.setError(getString(R.string.error_phone_number_is_not_valid));
                 return false;
-            } else {
-                mPhoneNumberEditText.setError(null);
             }
         }
 

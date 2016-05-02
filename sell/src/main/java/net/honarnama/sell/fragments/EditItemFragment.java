@@ -356,6 +356,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return false;
         }
 
+        mImagesTitleTextView.setError(null);
+        mTitleEditText.setError(null);
+        mPriceEditText.setError(null);
+        mCategoryTextView.setError(null);
+        mDescriptionEditText.setError(null);
+
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
             if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
@@ -696,8 +702,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         ArrayList<Task<Void>> tasks = new ArrayList<>();
                         for (int i = 0; i < mItemImages.length; i++) {
                             if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i].getFinalImageUri() != null) {
-                                final File storeBannerImageFile = new File(mItemImages[i].getFinalImageUri().getPath());
-                                tasks.add(new Uploader(storeBannerImageFile, createOrUpdateItemReply.imageModificationUrl[i]).upload());
+                                final File file = new File(mItemImages[i].getFinalImageUri().getPath());
+                                tasks.add(new Uploader(file, createOrUpdateItemReply.imageModificationUrl[i]).upload());
                             }
 
                             if (mItemImages[i].isDeleted()) {
