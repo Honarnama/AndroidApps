@@ -133,5 +133,6 @@
     <string name="error_uploading_event_banner">خطا در ارسال تصویر بنر رویداد.</string>
     <string name="error_getting_event_info">خطا در گرفتن اطلاعات رویداد.</string>
     <string name="error_getting_store_info">خطا در گرفتن اطلاعات فروشگاه.</string>
+    <string name="no_item_found">محصولی یافت نشد.</string>
 
 </resources>

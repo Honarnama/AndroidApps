@@ -165,8 +165,10 @@ public class ItemsAdapter extends BaseAdapter {
     }
 
     public void setItems(net.honarnama.nano.Item[] itemsArray) {
-        for (int i = 0; i < itemsArray.length; i++) {
-            mItems.add(itemsArray[i]);
+        if (itemsArray != null) {
+            for (int i = 0; i < itemsArray.length; i++) {
+                mItems.add(itemsArray[i]);
+            }
         }
     }
 

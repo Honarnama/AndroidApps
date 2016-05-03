@@ -382,7 +382,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 builder.append(getString(R.string.error_connecting_to_Server)).append(" ");
                 displaySnackbar(builder, true);
 
-                Toast.makeText(LoginActivity.this, getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
             }
         }
     }

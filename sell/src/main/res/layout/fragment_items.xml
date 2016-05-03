@@ -1,59 +1,65 @@
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_height="match_parent" android:layout_width="match_parent"
-        android:layoutDirection="rtl"
-        android:id="@+id/items_container"
-        android:orientation="vertical"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+>
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="match_parent" android:layout_width="match_parent"
+            android:layoutDirection="rtl"
+            android:id="@+id/items_container"
+            android:orientation="vertical"
+    >
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:id="@+id/no_store_warning_container"
+                        android:gravity="center_vertical"
+                        android:visibility="gone"
         >
-
-    <RelativeLayout android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:id="@+id/no_store_warning_container"
-                    android:gravity="center_vertical"
-                    android:visibility="gone"
-            >
-        <TextView
-                style="@style/tiny_text_view"
-                android:text="@string/items_wont_publish_unless_has_registered_store"
-                android:background="@drawable/important_bar_background"
-                android:textColor="@color/orange"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="48dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"
-                />
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/no_store_warning_image"
-                android:layout_centerVertical="true"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:iiv_color="@color/orange"
-                app:iiv_icon="gmd-info"
-                android:layout_alignParentRight="true"/>
-    </RelativeLayout>
-
-    <ListView android:id="@+id/items_listView"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="5dp"
-              android:divider="@android:color/transparent"
-              android:dividerHeight="5dp"
+            <TextView
+                    style="@style/tiny_text_view"
+                    android:text="@string/items_wont_publish_unless_has_registered_store"
+                    android:background="@drawable/important_bar_background"
+                    android:textColor="@color/orange"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
             />
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:id="@+id/no_store_warning_image"
+                    android:layout_centerVertical="true"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:iiv_color="@color/orange"
+                    app:iiv_icon="gmd-info"
+                    android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
+        <ListView android:id="@+id/items_listView"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:padding="5dp"
+                  android:divider="@android:color/transparent"
+                  android:dividerHeight="5dp"
+        />
 
-    <TextView android:id="@+id/empty_list_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/getting_items"
-              android:gravity="center"
-              style="@style/default_text_view"
-              android:layout_marginTop="20dp"
-              android:layout_gravity="center"
-            />
-</LinearLayout>
+        <TextView android:id="@+id/empty_list_view"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/getting_items"
+                  android:gravity="center"
+                  style="@style/default_text_view"
+                  android:layout_marginTop="20dp"
+                  android:layout_gravity="center"
+        />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

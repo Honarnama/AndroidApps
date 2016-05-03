@@ -164,6 +164,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     private boolean mEventStatus = true;
 
+    RelativeLayout mMainContent;
+    TextView mEmptyView;
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_event_manager);
@@ -313,8 +315,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mBannerImageView.restore(savedInstanceState);
         }
 
+        mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
+        mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
+
         loadOfflineData();
-        mScrollView.setVisibility(View.GONE);
         new getEventAsync().execute();
 
         mMetaUpdateListener = new MetaUpdateListener() {
@@ -942,6 +946,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mMainContent.setVisibility(View.GONE);
+            mEmptyView.setText(getString(R.string.getting_information));
+            mEmptyView.setVisibility(View.VISIBLE);
             displayProgressDialog(null);
         }
 
@@ -976,7 +983,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 switch (getEventReply.replyProperties.statusCode) {
                     case ReplyProperties.OK:
                         if (getEventReply.event != null) {
-                            mScrollView.setVisibility(View.VISIBLE);
+                            mEmptyView.setVisibility(View.GONE);
+                            mMainContent.setVisibility(View.VISIBLE);
                             setEventInfo(getEventReply.event, true);
                         } else {
                             displayShortToast(getString(R.string.error_getting_event_info));
@@ -993,7 +1001,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 break;
 
                             case GetEventReply.EVENT_NOT_FOUND:
-                                mScrollView.setVisibility(View.VISIBLE);
+                                mEmptyView.setVisibility(View.GONE);
+                                mMainContent.setVisibility(View.VISIBLE);
                                 mIsNew = true;
                                 logD("Event not found.");
                                 break;
@@ -1018,6 +1027,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
+                mEmptyView.setText(getString(R.string.error_getting_store_info));
                 displaySnackbar();
                 displayLongToast(getString(R.string.check_net_connection));
             }

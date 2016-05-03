@@ -13,45 +13,129 @@
             android:scrollbarThumbVertical="@drawable/custom_scrollbar"
             android:layoutDirection="rtl"
             android:id="@+id/store_fragment_scroll_view"
+            android:background="@color/gray_extra_light"
     >
-        <RelativeLayout android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0dp"
-                        android:background="@color/gray_extra_light"
-                        android:layout_gravity="right"
-                        android:gravity="right"
-                        android:layoutDirection="rtl"
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
         >
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/store_banner_container"
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="0dp"
+                            android:layout_gravity="right"
+                            android:gravity="right"
+                            android:layoutDirection="rtl"
+                            android:id="@+id/main_content"
+                            android:visibility="gone"
             >
 
-                <FrameLayout
-                        android:id="@+id/store_banner_frame_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/store_banner_container"
+                >
+
+                    <FrameLayout
+                            android:id="@+id/store_banner_frame_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        <com.parse.ImageSelector
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/store_banner_image_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_alignParentTop="true"
+                                android:src="@drawable/party_flags"
+                                app:riv_corner_radius="0dp"
+                                app:riv_border_width="0dp"
+                                app:riv_oval="false"
+                                app:outputX="640"
+                                app:outputY="640"
+                                app:riv_border_color="@color/gray_super_extra_light"
+                                android:scaleType="centerCrop"
+                                android:adjustViewBounds="true"
+                                app:removable="true"
+                                app:imageSelectorIndex="1"
+                        />
+                        <ProgressBar
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                style="@style/GenericProgressIndicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:scaleType="fitCenter"
+                                android:layout_centerInParent="true"
+                                android:background="@android:color/transparent"
+                                android:layout_gravity="center"
+                                android:id="@+id/banner_progress_bar"
+                                android:visibility="gone"
+                        />
+
+                    </FrameLayout>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:paddingRight="10dp"
+                              android:paddingLeft="10dp"
+                              android:paddingBottom="5dp"
+                              android:paddingTop="5dp"
+                              android:background="@drawable/label"
+                              android:textColor="@color/white"
+                              android:text="@string/change_banner"
+                              android:layout_centerHorizontal="true"
+                              android:layout_alignParentTop="true"
+                              android:layout_marginTop="20dp"
+                              android:id="@+id/change_store_banner_text_view"
+                              android:textSize="14sp"
+                    />
+
+                    <TextView
+                            android:id="@+id/store_status_bar_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/default_text_view"
+                            android:text="@string/waiting_to_be_confirmed"
+                            android:textColor="@color/gray_super_extra_dark"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:singleLine="true"
+                            android:background="@drawable/store_status_bar_back"
+                            android:visibility="gone"
+                            android:layout_centerInParent="true"
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                    />
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/store_logo_container"
+                                android:layout_below="@id/store_banner_container"
+                                android:layout_marginTop="-50dp"
+                >
 
                     <com.parse.ImageSelector
                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/store_banner_image_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/store_logo_image_view"
+                            android:src="@drawable/default_logo_hand"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:scaleType="fitCenter"
+                            app:riv_corner_radius="20dip"
+                            app:riv_border_width="4dip"
+                            app:riv_border_color="@color/gray_extra_light"
+                            app:riv_oval="true"
+                            app:outputX="480"
+                            app:outputY="480"
+                            android:scaleX="1"
+                            android:scaleY="1"
                             android:layout_centerHorizontal="true"
                             android:layout_alignParentTop="true"
-                            android:src="@drawable/party_flags"
-                            app:riv_corner_radius="0dp"
-                            app:riv_border_width="0dp"
-                            app:riv_oval="false"
-                            app:outputX="640"
-                            app:outputY="640"
-                            app:riv_border_color="@color/gray_super_extra_light"
-                            android:scaleType="centerCrop"
-                            android:adjustViewBounds="true"
                             app:removable="true"
-                            app:imageSelectorIndex="1"
+                            app:imageSelectorIndex="2"
                     />
+
                     <ProgressBar
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             style="@style/GenericProgressIndicator"
@@ -59,254 +143,190 @@
                             android:layout_height="wrap_content"
                             android:scaleType="fitCenter"
                             android:layout_centerInParent="true"
+                            android:layout_alignParentTop="true"
                             android:background="@android:color/transparent"
-                            android:layout_gravity="center"
-                            android:id="@+id/banner_progress_bar"
+                            android:id="@+id/logo_progress_bar"
                             android:visibility="gone"
                     />
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:paddingRight="10dp"
+                              android:paddingLeft="10dp"
+                              android:paddingBottom="5dp"
+                              android:paddingTop="5dp"
+                              android:background="@drawable/label"
+                              android:textColor="@color/white"
+                              android:text="@string/change_logo"
+                              android:layout_centerInParent="true"
+                              android:textSize="14sp"
+                    />
+                </RelativeLayout>
 
-                </FrameLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:paddingRight="10dp"
-                          android:paddingLeft="10dp"
-                          android:paddingBottom="5dp"
-                          android:paddingTop="5dp"
-                          android:background="@drawable/label"
-                          android:textColor="@color/white"
-                          android:text="@string/change_banner"
-                          android:layout_centerHorizontal="true"
-                          android:layout_alignParentTop="true"
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/important_bar_background"
+                                android:layout_marginRight="16dp"
+                                android:id="@+id/store_not_verified_notif_container"
+                                android:layout_below="@id/store_logo_container"
+                                android:visibility="gone"
+                >
+
+                    <TextView
+                            style="@style/tiny_text_view"
+                            android:text="@string/store_not_confirmed"
+                            android:textColor="@color/orange"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="24dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="5dp"
+                    />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:id="@+id/store_not_verified_notif_image"
+                            android:layout_centerVertical="true"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:iiv_color="@color/orange"
+                            app:iiv_icon="gmd-info"
+                            android:layout_alignParentRight="true"/>
+
+                </RelativeLayout>
+
+                <TextView style="@style/section_title"
+                          android:text="@string/store_info"
+                          android:layout_below="@id/store_not_verified_notif_container"
                           android:layout_marginTop="20dp"
-                          android:id="@+id/change_store_banner_text_view"
-                          android:textSize="14sp"
+                          android:id="@+id/store_info_title"
+                          android:layout_width="match_parent"
                 />
 
-                <TextView
-                        android:id="@+id/store_status_bar_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/default_text_view"
-                        android:text="@string/waiting_to_be_confirmed"
-                        android:textColor="@color/gray_super_extra_dark"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:singleLine="true"
-                        android:background="@drawable/store_status_bar_back"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true"
-                        android:padding="10dp"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
+                <EditText
+                        android:hint="@string/store_name"
+                        android:layout_below="@id/store_info_title"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/store_name_edit_text"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        style="@style/bordered_edit_text"
                 />
-            </RelativeLayout>
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/store_logo_container"
-                            android:layout_below="@id/store_banner_container"
-                            android:layout_marginTop="-50dp"
-            >
-
-                <com.parse.ImageSelector
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/store_logo_image_view"
-                        android:src="@drawable/default_logo_hand"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:scaleType="fitCenter"
-                        app:riv_corner_radius="20dip"
-                        app:riv_border_width="4dip"
-                        app:riv_border_color="@color/gray_extra_light"
-                        app:riv_oval="true"
-                        app:outputX="480"
-                        app:outputY="480"
-                        android:scaleX="1"
-                        android:scaleY="1"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentTop="true"
-                        app:removable="true"
-                        app:imageSelectorIndex="2"
-                />
-
-                <ProgressBar
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        style="@style/GenericProgressIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitCenter"
-                        android:layout_centerInParent="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/logo_progress_bar"
-                        android:visibility="gone"
-                />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:paddingRight="10dp"
-                          android:paddingLeft="10dp"
-                          android:paddingBottom="5dp"
-                          android:paddingTop="5dp"
-                          android:background="@drawable/label"
-                          android:textColor="@color/white"
-                          android:text="@string/change_logo"
-                          android:layout_centerInParent="true"
-                          android:textSize="14sp"
-                />
-            </RelativeLayout>
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/important_bar_background"
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/provinces_container"
+                              android:orientation="horizontal"
+                              android:layout_marginRight="16dp"
+                              android:layout_marginLeft="16dp"
+                              android:layout_marginTop="10dp"
+                              android:layout_below="@id/store_name_edit_text"
+                >
+                    <TextView style="@style/default_text_view"
+                              android:text="@string/provine_label"
+                              android:layout_centerVertical="true"
+                              android:id="@+id/provinces_text_view"
+                              android:editable="false"
+                              android:cursorVisible="false"
+                              android:focusable="false"
+                              android:clickable="true"
+                              android:textStyle="bold"
+                    />
+                    <EditText
+                            android:hint="@string/province"
+                            android:id="@+id/store_province_edit_text"
+                            style="@style/bordered_edit_text"
                             android:layout_marginRight="16dp"
-                            android:id="@+id/store_not_verified_notif_container"
-                            android:layout_below="@id/store_logo_container"
-                            android:visibility="gone"
-            >
+                    />
+                </LinearLayout>
 
-                <TextView
-                        style="@style/tiny_text_view"
-                        android:text="@string/store_not_confirmed"
-                        android:textColor="@color/orange"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="24dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="5dp"
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/city_container"
+                              android:orientation="horizontal"
+                              android:layout_marginRight="16dp"
+                              android:layout_marginLeft="16dp"
+                              android:layout_marginTop="10dp"
+                              android:layout_below="@id/provinces_container"
+                >
+                    <TextView style="@style/default_text_view"
+                              android:text="@string/city_label"
+                              android:layout_centerVertical="true"
+                              android:id="@+id/city_text_view"
+                              android:editable="false"
+                              android:cursorVisible="false"
+                              android:focusable="false"
+                              android:clickable="true"
+                              android:textStyle="bold"
+                    />
+                    <EditText
+                            android:hint="@string/city"
+                            android:id="@+id/store_city_edit_text"
+                            style="@style/bordered_edit_text"
+                            android:layout_marginRight="16dp"
+                    />
+                </LinearLayout>
+
+
+                <EditText
+                        android:layout_below="@id/city_container"
+                        android:id="@+id/store_description_edit_text"
+                        android:hint="@string/description_hint"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        style="@style/bordered_multiline_edit_text"
                 />
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:id="@+id/store_not_verified_notif_image"
-                        android:layout_centerVertical="true"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:iiv_color="@color/orange"
-                        app:iiv_icon="gmd-info"
-                        android:layout_alignParentRight="true"/>
 
+                <TextView style="@style/section_title"
+                          android:text="@string/contact_info"
+                          android:layout_below="@id/store_description_edit_text"
+                          android:layout_marginTop="20dp"
+                          android:id="@+id/store_contact_title"
+                          android:layout_width="match_parent"
+                />
+                <EditText
+                        android:hint="@string/phone_hint"
+                        android:layout_below="@id/store_contact_title"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/store_phone_number"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        style="@style/bordered_edit_text"
+                        android:inputType="phone"
+                        android:textDirection="ltr"
+                />
+
+                <EditText
+                        android:hint="@string/mobile_number_hint"
+                        android:layout_below="@id/store_phone_number"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/store_cell_number"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        style="@style/bordered_edit_text"
+                        android:inputType="phone"
+                        android:textDirection="ltr"
+                />
+
+
+                <Button
+                        android:id="@+id/register_store_button"
+                        android:text="@string/apply_changes"
+                        android:layout_below="@id/store_cell_number"
+                        style="@style/sell_full_width_button"
+                />
             </RelativeLayout>
 
-            <TextView style="@style/section_title"
-                      android:text="@string/store_info"
-                      android:layout_below="@id/store_not_verified_notif_container"
+            <TextView android:id="@+id/empty_view"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/getting_information"
+                      android:gravity="center"
+                      style="@style/default_text_view"
                       android:layout_marginTop="20dp"
-                      android:id="@+id/store_info_title"
-                      android:layout_width="match_parent"
+                      android:layout_gravity="center"
             />
 
-            <EditText
-                    android:hint="@string/store_name"
-                    android:layout_below="@id/store_info_title"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/store_name_edit_text"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    style="@style/bordered_edit_text"
-            />
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/provinces_container"
-                          android:orientation="horizontal"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginTop="10dp"
-                          android:layout_below="@id/store_name_edit_text"
-            >
-                <TextView style="@style/default_text_view"
-                          android:text="@string/provine_label"
-                          android:layout_centerVertical="true"
-                          android:id="@+id/provinces_text_view"
-                          android:editable="false"
-                          android:cursorVisible="false"
-                          android:focusable="false"
-                          android:clickable="true"
-                          android:textStyle="bold"
-                />
-                <EditText
-                        android:hint="@string/province"
-                        android:id="@+id/store_province_edit_text"
-                        style="@style/bordered_edit_text"
-                        android:layout_marginRight="16dp"
-                />
-            </LinearLayout>
+        </LinearLayout>
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/city_container"
-                          android:orientation="horizontal"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginTop="10dp"
-                          android:layout_below="@id/provinces_container"
-            >
-                <TextView style="@style/default_text_view"
-                          android:text="@string/city_label"
-                          android:layout_centerVertical="true"
-                          android:id="@+id/city_text_view"
-                          android:editable="false"
-                          android:cursorVisible="false"
-                          android:focusable="false"
-                          android:clickable="true"
-                          android:textStyle="bold"
-                />
-                <EditText
-                        android:hint="@string/city"
-                        android:id="@+id/store_city_edit_text"
-                        style="@style/bordered_edit_text"
-                        android:layout_marginRight="16dp"
-                />
-            </LinearLayout>
-
-
-            <EditText
-                    android:layout_below="@id/city_container"
-                    android:id="@+id/store_description_edit_text"
-                    android:hint="@string/description_hint"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    style="@style/bordered_multiline_edit_text"
-            />
-
-            <TextView style="@style/section_title"
-                      android:text="@string/contact_info"
-                      android:layout_below="@id/store_description_edit_text"
-                      android:layout_marginTop="20dp"
-                      android:id="@+id/store_contact_title"
-                      android:layout_width="match_parent"
-            />
-            <EditText
-                    android:hint="@string/phone_hint"
-                    android:layout_below="@id/store_contact_title"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/store_phone_number"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    style="@style/bordered_edit_text"
-                    android:inputType="phone"
-                    android:textDirection="ltr"
-            />
-
-            <EditText
-                    android:hint="@string/mobile_number_hint"
-                    android:layout_below="@id/store_phone_number"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/store_cell_number"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    style="@style/bordered_edit_text"
-                    android:inputType="phone"
-                    android:textDirection="ltr"
-            />
-
-
-            <Button
-                    android:id="@+id/register_store_button"
-                    android:text="@string/apply_changes"
-                    android:layout_below="@id/store_cell_number"
-                    style="@style/sell_full_width_button"
-            />
-
-
-        </RelativeLayout>
     </net.honarnama.core.utils.ObservableScrollView>
+
 </android.support.design.widget.CoordinatorLayout>

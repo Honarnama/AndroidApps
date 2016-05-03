@@ -131,6 +131,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private boolean mDirty = false;
     TextWatcher mTextWatcherToMarkDirty;
 
+    RelativeLayout mMainContent;
+    TextView mEmptyView;
+
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_store_info);
@@ -252,8 +255,14 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
         }
+        mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
+        mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
+
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
+
         loadOfflineData();
-        mScrollView.setVisibility(View.GONE);
+
         new getStoreAsync().execute();
 
         mMetaUpdateListener = new MetaUpdateListener() {
@@ -276,8 +285,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
         };
 
-        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
-                .coordinatorLayout);
 
         return rootView;
     }
@@ -287,20 +294,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         super.onResume();
         mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
         mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
-    }
-
-    public void resetFields() {
-        if (mNameEditText != null) {
-            mNameEditText.setText("");
-            mDescriptionEditText.setText("");
-            mPhoneNumberEditText.setText("");
-            mCellNumberEditText.setText("");
-
-            mNameEditText.setError(null);
-            mDescriptionEditText.setError(null);
-            mPhoneNumberEditText.setError(null);
-            mCellNumberEditText.setError(null);
-        }
     }
 
     @Override
@@ -635,6 +628,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mMainContent.setVisibility(View.GONE);
+            mEmptyView.setText(getString(R.string.getting_information));
+            mEmptyView.setVisibility(View.VISIBLE);
             displayProgressDialog(null);
         }
 
@@ -665,6 +661,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (BuildConfig.DEBUG) {
                 logD("getStoreReply is: " + getStoreReply);
             }
+
             dismissProgressDialog();
             if (getStoreReply != null) {
                 switch (getStoreReply.replyProperties.statusCode) {
@@ -678,7 +675,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         switch (getStoreReply.errorCode) {
                             case GetStoreReply.STORE_NOT_FOUND:
                                 mIsNew = true;
-                                displayLongToast(getString(R.string.store_not_found));
+                                mEmptyView.setVisibility(View.GONE);
+                                mMainContent.setVisibility(View.VISIBLE);
+                                logD("Store not found.");
                                 break;
 
                             case GetStoreReply.NO_CLIENT_ERROR:
@@ -700,7 +699,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.OK:
 
                         if (getStoreReply.store != null) {
-                            mScrollView.setVisibility(View.VISIBLE);
+                            mEmptyView.setVisibility(View.GONE);
+                            mMainContent.setVisibility(View.VISIBLE);
                             setStoreInfo(getStoreReply.store, true);
                         } else {
                             displayShortToast(getString(R.string.error_getting_store_info));
@@ -712,6 +712,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
+                mEmptyView.setText(getString(R.string.error_getting_store_info));
                 displaySnackbar();
                 displayLongToast(getString(R.string.check_net_connection));
             }

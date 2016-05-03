@@ -22,8 +22,13 @@ import net.honarnama.sell.model.HonarnamaUser;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -45,6 +49,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
     ProgressDialog mProgressDialog;
     private View mEmptyListView;
+    Snackbar mSnackbar;
+    private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     public String getTitle(Context context) {
@@ -72,11 +78,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-            getActivity().finish();
-            startActivity(intent);
-        }
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
+//            getActivity().finish();
+//            startActivity(intent);
+//        }
 
         final View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
@@ -88,6 +94,9 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         mAdapter = new ItemsAdapter(getActivity());
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
+
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
 
         return rootView;
     }
@@ -112,6 +121,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            TextView emptyListTextView = (TextView) mEmptyListView;
+            emptyListTextView.setText(getString(R.string.getting_items));
             displayProgressDialog();
         }
 
@@ -178,7 +189,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 }
 
             } else {
-                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
+                mAdapter.setItems(null);
+                TextView emptyListTextView = (TextView) mEmptyListView;
+                emptyListTextView.setText(getString(R.string.item_not_found));
+                mAdapter.notifyDataSetChanged();
+                displaySnackbar();
+                displayLongToast(getString(R.string.check_net_connection));
             }
         }
     }
@@ -202,5 +218,40 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         if (activity != null && !activity.isFinishing() && isVisible()) {
             mProgressDialog.show();
         }
+    }
+
+
+    public void displaySnackbar() {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(" ").append(getString(R.string.error_connecting_to_Server)).append(" ");
+
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        View sbView = mSnackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setBackgroundColor(getResources().getColor(R.color.amber));
+        textView.setSingleLine(false);
+        textView.setGravity(Gravity.CENTER);
+        Spannable spannable = (Spannable) textView.getText();
+        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    new getItemsAsync().execute();
+                    if (mSnackbar != null && mSnackbar.isShown()) {
+                        mSnackbar.dismiss();
+                    }
+                }
+            }
+        });
+
+        mSnackbar.show();
     }
 }
