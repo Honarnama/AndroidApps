@@ -56,6 +56,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -104,6 +105,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private Tracker mTracker;
 
+
     ProgressDialog mProgressDialog;
     private RelativeLayout[] mItemImageLoadingPannel;
 
@@ -111,6 +113,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private CoordinatorLayout mCoordinatorLayout;
 
     TextWatcher mTextWatcherToMarkDirty;
+
+    LinearLayout mMainContent;
+    TextView mEmptyView;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -143,6 +148,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         mCategoryName = null;
         setDirty(false);
         mCreateNew = createNew;
+
+        if (mCreateNew && mMainContent != null) {
+            mMainContent.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
+            if (mSnackbar != null && mSnackbar.isShown()) {
+                mSnackbar.dismiss();
+            }
+        }
     }
 
     public void setItemId(Context context, long itemId) {
@@ -171,6 +184,13 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onResume() {
         super.onResume();
         mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
+        if (mCreateNew) {
+            mMainContent.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
+            if (mSnackbar != null && mSnackbar.isShown()) {
+                mSnackbar.dismiss();
+            }
+        }
     }
 
     @Override
@@ -275,6 +295,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             logD("onCreateView :: mCreateNew= " + mCreateNew);
         }
 
+        mMainContent = (LinearLayout) rootView.findViewById(R.id.main_content);
+        mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
+
         mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
                 .coordinatorLayout);
 
@@ -313,7 +336,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mPriceEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
             } else {
                 if (mItemId >= 0) {
-                    mScrollView.setVisibility(View.GONE);
                     new getItemAsync().execute();
                 }
             }
@@ -470,6 +492,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mMainContent.setVisibility(View.GONE);
+            mEmptyView.setText(getString(R.string.getting_information));
+            mEmptyView.setVisibility(View.VISIBLE);
             displayProgressDialog(null);
         }
 
@@ -537,14 +562,16 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
-                        mScrollView.setVisibility(View.VISIBLE);
+                        mEmptyView.setVisibility(View.GONE);
+                        mMainContent.setVisibility(View.VISIBLE);
                         setItemInfo(getItemReply.item, true);
                         break;
                 }
 
             } else {
+                mEmptyView.setText(getString(R.string.error_getting_item_info));
                 displaySnackbar();
-                displayLongToast(getString(R.string.check_net_connection));
+                displayShortToast(getString(R.string.check_net_connection));
             }
         }
     }

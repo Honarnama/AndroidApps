@@ -714,7 +714,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             } else {
                 mEmptyView.setText(getString(R.string.error_getting_store_info));
                 displaySnackbar();
-                displayLongToast(getString(R.string.check_net_connection));
+                displayShortToast(getString(R.string.check_net_connection));
             }
         }
     }

@@ -166,6 +166,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     RelativeLayout mMainContent;
     TextView mEmptyView;
+
     @Override
     public String getTitle(Context context) {
         return context.getString(R.string.nav_title_event_manager);
@@ -1027,9 +1028,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                mEmptyView.setText(getString(R.string.error_getting_store_info));
+                mEmptyView.setText(getString(R.string.error_getting_event_info));
                 displaySnackbar();
-                displayLongToast(getString(R.string.check_net_connection));
+                displayShortToast(getString(R.string.check_net_connection));
             }
         }
     }

@@ -1,6 +1,5 @@
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,397 +14,328 @@
             android:scrollbarThumbVertical="@drawable/custom_scrollbar"
             android:layoutDirection="rtl"
             android:id="@+id/edit_item_scroll_view"
+            android:background="@color/gray_extra_light"
     >
-
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/gray_extra_light"
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
         >
-
-            <TextView
-
-                    android:text="@string/edit_item_photos_title"
-                    android:layout_marginTop="10dp"
-                    style="@style/section_title"
-                    android:id="@+id/edit_item_images_title_text_view"
-            />
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/important_bar_background"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginTop="10dp"
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/main_content"
             >
 
                 <TextView
-                        android:id="@+id/itemImageHint"
-                        style="@style/tiny_text_view"
-                        android:text="@string/edit_item_photos_description"
-                        android:textColor="@color/orange"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="24dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="5dp"
-                />
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:id="@+id/no_store_warning_image"
-                        android:layout_centerVertical="true"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:iiv_color="@color/orange"
-                        app:iiv_icon="gmd-info"
-                        android:layout_alignParentRight="true"/>
 
-
-            </RelativeLayout>
-
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp"
-            >
-                <RelativeLayout
-                        style="@style/GenericProgressBackground"
-                        android:id="@+id/loadingPanel_1"
-                        android:visibility="gone"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/bordered_box"
-                        android:layout_gravity="left"
-
-                >
-                    <ProgressBar
-                            style="@style/GenericProgressIndicator"
-                            android:layout_centerInParent="true"
-                    />
-                </RelativeLayout>
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage1"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="left"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="1"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginLeft="5dp"
-                        app:riv_border_width="1dp"
-                        app:riv_border_color="@color/gray_light"
-                        android:background="@color/white"
+                        android:text="@string/edit_item_photos_title"
+                        android:layout_marginTop="10dp"
+                        style="@style/section_title"
+                        android:id="@+id/edit_item_images_title_text_view"
                 />
 
-
-                <RelativeLayout
-                        style="@style/GenericProgressBackground"
-                        android:id="@+id/loadingPanel_2"
-                        android:visibility="gone"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/bordered_box"
-                        android:layout_gravity="right"
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/important_bar_background"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="10dp"
                 >
-                    <ProgressBar
-                            style="@style/GenericProgressIndicator"
-                            android:layout_centerInParent="true"
+
+                    <TextView
+                            android:id="@+id/itemImageHint"
+                            style="@style/tiny_text_view"
+                            android:text="@string/edit_item_photos_description"
+                            android:textColor="@color/orange"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="24dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="5dp"
                     />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:id="@+id/no_store_warning_image"
+                            android:layout_centerVertical="true"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:iiv_color="@color/orange"
+                            app:iiv_icon="gmd-info"
+                            android:layout_alignParentRight="true"/>
+
+
                 </RelativeLayout>
 
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage2"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="right"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="2"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginRight="5dp"
-                        app:riv_border_width="1dp"
-                        app:riv_border_color="@color/gray_light"
-                        android:background="@color/white"
-                />
-            </LinearLayout>
-
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="horizontal"
-            >
-                <RelativeLayout
-                        style="@style/GenericProgressBackground"
-                        android:id="@+id/loadingPanel_3"
-                        android:visibility="gone"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/bordered_box"
-                        android:layout_gravity="left"
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
                 >
-                    <ProgressBar
-                            style="@style/GenericProgressIndicator"
-                            android:layout_centerInParent="true"
+                    <RelativeLayout
+                            style="@style/GenericProgressBackground"
+                            android:id="@+id/loadingPanel_1"
+                            android:visibility="gone"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/bordered_box"
+                            android:layout_gravity="left"
+
+                    >
+                        <ProgressBar
+                                style="@style/GenericProgressIndicator"
+                                android:layout_centerInParent="true"
+                        />
+                    </RelativeLayout>
+                    <com.parse.ImageSelector
+                            android:id="@+id/itemImage1"
+                            android:src="@drawable/camera_insta"
+                            android:layout_gravity="left"
+                            android:scaleType="centerInside"
+                            android:layout_weight="1"
+                            app:removable="true"
+                            app:imageSelectorIndex="1"
+                            app:outputX="600"
+                            app:outputY="600"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="5dp"
+                            app:riv_border_width="1dp"
+                            app:riv_border_color="@color/gray_light"
+                            android:background="@color/white"
                     />
-                </RelativeLayout>
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage3"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="left"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="3"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginLeft="5dp"
-                        app:riv_border_width="1dp"
-                        app:riv_border_color="@color/gray_light"
-                        android:background="@color/white"
-                />
-                <RelativeLayout
-                        style="@style/GenericProgressBackground"
-                        android:id="@+id/loadingPanel_4"
-                        android:visibility="gone"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/bordered_box"
-                        android:layout_gravity="right"
+
+
+                    <RelativeLayout
+                            style="@style/GenericProgressBackground"
+                            android:id="@+id/loadingPanel_2"
+                            android:visibility="gone"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bordered_box"
+                            android:layout_gravity="right"
+                    >
+                        <ProgressBar
+                                style="@style/GenericProgressIndicator"
+                                android:layout_centerInParent="true"
+                        />
+                    </RelativeLayout>
+
+                    <com.parse.ImageSelector
+                            android:id="@+id/itemImage2"
+                            android:src="@drawable/camera_insta"
+                            android:layout_gravity="right"
+                            android:scaleType="centerInside"
+                            android:layout_weight="1"
+                            app:removable="true"
+                            app:imageSelectorIndex="2"
+                            app:outputX="600"
+                            app:outputY="600"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginRight="5dp"
+                            app:riv_border_width="1dp"
+                            app:riv_border_color="@color/gray_light"
+                            android:background="@color/white"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="horizontal"
                 >
-                    <ProgressBar
-                            style="@style/GenericProgressIndicator"
-                            android:layout_centerInParent="true"
+                    <RelativeLayout
+                            style="@style/GenericProgressBackground"
+                            android:id="@+id/loadingPanel_3"
+                            android:visibility="gone"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/bordered_box"
+                            android:layout_gravity="left"
+                    >
+                        <ProgressBar
+                                style="@style/GenericProgressIndicator"
+                                android:layout_centerInParent="true"
+                        />
+                    </RelativeLayout>
+                    <com.parse.ImageSelector
+                            android:id="@+id/itemImage3"
+                            android:src="@drawable/camera_insta"
+                            android:layout_gravity="left"
+                            android:scaleType="centerInside"
+                            android:layout_weight="1"
+                            app:removable="true"
+                            app:imageSelectorIndex="3"
+                            app:outputX="600"
+                            app:outputY="600"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="5dp"
+                            app:riv_border_width="1dp"
+                            app:riv_border_color="@color/gray_light"
+                            android:background="@color/white"
                     />
-                </RelativeLayout>
-                <com.parse.ImageSelector
-                        android:id="@+id/itemImage4"
-                        android:src="@drawable/camera_insta"
-                        android:layout_gravity="right"
-                        android:scaleType="centerInside"
-                        android:layout_weight="1"
-                        app:removable="true"
-                        app:imageSelectorIndex="4"
-                        app:outputX="600"
-                        app:outputY="600"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginRight="5dp"
-                        app:riv_border_width="1dp"
-                        app:riv_border_color="@color/gray_light"
-                        android:background="@color/white"
+                    <RelativeLayout
+                            style="@style/GenericProgressBackground"
+                            android:id="@+id/loadingPanel_4"
+                            android:visibility="gone"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/bordered_box"
+                            android:layout_gravity="right"
+                    >
+                        <ProgressBar
+                                style="@style/GenericProgressIndicator"
+                                android:layout_centerInParent="true"
+                        />
+                    </RelativeLayout>
+                    <com.parse.ImageSelector
+                            android:id="@+id/itemImage4"
+                            android:src="@drawable/camera_insta"
+                            android:layout_gravity="right"
+                            android:scaleType="centerInside"
+                            android:layout_weight="1"
+                            app:removable="true"
+                            app:imageSelectorIndex="4"
+                            app:outputX="600"
+                            app:outputY="600"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_marginRight="5dp"
+                            app:riv_border_width="1dp"
+                            app:riv_border_color="@color/gray_light"
+                            android:background="@color/white"
+                    />
+                </LinearLayout>
+
+                <TextView
+                        android:text="@string/edit_item_details_title"
+                        android:layout_marginTop="20dp"
+                        style="@style/section_title"
                 />
-            </LinearLayout>
-            <!--       <TableLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:padding="0dip"
-                           android:layout_marginTop="10dp"
-                           >
-
-                       <TableRow
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:layout_gravity="center"
-                               android:gravity="center"
-                               android:paddingRight="16dp"
-                               android:paddingLeft="16dp"
-                               >
-                           <com.parse.ImageSelector
-                                   android:id="@+id/itemImage1"
-                                   android:src="@drawable/camera_insta"
-                                   android:layout_gravity="left"
-                                   android:scaleType="centerInside"
-                                   android:layout_weight="1"
-                                   app:removable="true"
-                                   app:imageSelectorIndex="1"
-                                   app:outputX="600"
-                                   app:outputY="600"
-                                   android:layout_width="150dp"
-                                   android:layout_height="150dp"
-                                   android:layout_marginLeft="5dp"
-                                   app:riv_border_color="@color/gray_dark"
-
-                                   />
-                           <com.parse.ImageSelector
-                                   android:id="@+id/itemImage2"
-                                   android:src="@drawable/camera_insta"
-                                   android:layout_gravity="right"
-                                   android:scaleType="centerInside"
-                                   android:layout_weight="1"
-                                   app:removable="true"
-                                   app:imageSelectorIndex="2"
-                                   app:outputX="600"
-                                   app:outputY="600"
-                                   android:layout_width="150dp"
-                                   android:layout_height="150dp"
-                                   android:layout_marginRight="5dp"
-                                   app:riv_border_color="@color/gray_dark"
-                                   />
-                       </TableRow>
-                       <TableRow
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:paddingTop="10dp"
-                               android:layout_gravity="center"
-                               android:gravity="center"
-                               android:paddingRight="16dp"
-                               android:paddingLeft="16dp"
-                               >
-                           <com.parse.ImageSelector
-                                   android:id="@+id/itemImage3"
-                                   android:src="@drawable/camera_insta"
-                                   android:layout_gravity="left"
-                                   android:scaleType="centerInside"
-                                   android:layout_weight="1"
-                                   app:removable="true"
-                                   app:imageSelectorIndex="3"
-                                   app:outputX="600"
-                                   app:outputY="600"
-                                   android:layout_width="150dp"
-                                   android:layout_height="150dp"
-                                   android:layout_marginLeft="5dp"
-                                   app:riv_border_color="@color/gray_dark"
-                                   />
-                           <com.parse.ImageSelector
-                                   android:id="@+id/itemImage4"
-                                   android:src="@drawable/camera_insta"
-                                   android:layout_gravity="right"
-                                   android:scaleType="centerInside"
-                                   android:layout_weight="1"
-                                   app:removable="true"
-                                   app:imageSelectorIndex="4"
-                                   app:outputX="600"
-                                   app:outputY="600"
-                                   android:layout_width="150dp"
-                                   android:layout_height="150dp"
-                                   android:layout_marginRight="5dp"
-                                   app:riv_border_color="@color/gray_dark"
-                                   />
-                       </TableRow>
-                   </TableLayout>-->
-            <TextView
-                    android:text="@string/edit_item_details_title"
-                    android:layout_marginTop="20dp"
-                    style="@style/section_title"
-            />
 
 
-            <EditText android:id="@+id/editProductTitle"
-                      android:hint="@string/edit_item_title_hint"
-                      style="@style/bordered_edit_text"
-                      android:layout_marginLeft="16dp"
-                      android:layout_marginRight="16dp"
-                      android:layout_marginTop="10dp"
-                      android:textDirection="rtl"
-            />
-
-            <TextView android:text="@string/edit_item_title_sub_hint"
-                      style="@style/tiny_text_view"
-                      android:layout_marginRight="16dp"
-                      android:gravity="right"
-            />
-
-
-            <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="10dp"
-                          android:layout_marginRight="16dp" android:layout_marginLeft="16dp">
-
-                <EditText android:id="@+id/editItemPrice"
-                          android:layout_width="0dp"
-                          android:hint="@string/item_price"
-                          android:layout_weight="2"
+                <EditText android:id="@+id/editProductTitle"
+                          android:hint="@string/edit_item_title_hint"
                           style="@style/bordered_edit_text"
-                          android:inputType="number"
-                          android:textDirection="ltr"
-                />
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          style="@style/default_text_view"
-                          android:text="@string/toman"
-                          android:layout_gravity="left|center"
-                          android:gravity="left|center"
-                          android:layout_marginRight="5dp"
-                />
-
-            </LinearLayout>
-
-
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/edit_item_category_container"
-                          android:orientation="horizontal"
-                          android:layout_marginRight="16dp"
                           android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
                           android:layout_marginTop="10dp"
-                          android:layout_gravity="center"
-            >
-                <TextView style="@style/default_text_view"
-                          android:text="@string/ad_category"
-                          android:layout_centerVertical="true"
-                          android:id="@+id/edit_item_category_text_view"
-                          android:editable="false"
-                          android:cursorVisible="false"
-                          android:focusable="false"
-                          android:clickable="true"
-                          android:textStyle="bold"
-                          android:layout_gravity="center"
+                          android:textDirection="rtl"
                 />
-                <Button android:layout_width="wrap_content" android:layout_height="40dp"
-                        android:text="@string/select"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="5dp"
-                        android:id="@+id/choose_art_category_btn"
-                        android:background="@color/extra_dark_green"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:padding="10dp"
+
+                <TextView android:text="@string/edit_item_title_sub_hint"
+                          style="@style/tiny_text_view"
+                          android:layout_marginRight="16dp"
+                          android:gravity="right"
                 />
+
+
+                <LinearLayout android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="10dp"
+                              android:layout_marginRight="16dp" android:layout_marginLeft="16dp">
+
+                    <EditText android:id="@+id/editItemPrice"
+                              android:layout_width="0dp"
+                              android:hint="@string/item_price"
+                              android:layout_weight="2"
+                              style="@style/bordered_edit_text"
+                              android:inputType="number"
+                              android:textDirection="ltr"
+                    />
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              style="@style/default_text_view"
+                              android:text="@string/toman"
+                              android:layout_gravity="left|center"
+                              android:gravity="left|center"
+                              android:layout_marginRight="5dp"
+                    />
+
+                </LinearLayout>
+
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/edit_item_category_container"
+                              android:orientation="horizontal"
+                              android:layout_marginRight="16dp"
+                              android:layout_marginLeft="16dp"
+                              android:layout_marginTop="10dp"
+                              android:layout_gravity="center"
+                >
+                    <TextView style="@style/default_text_view"
+                              android:text="@string/ad_category"
+                              android:layout_centerVertical="true"
+                              android:id="@+id/edit_item_category_text_view"
+                              android:editable="false"
+                              android:cursorVisible="false"
+                              android:focusable="false"
+                              android:clickable="true"
+                              android:textStyle="bold"
+                              android:layout_gravity="center"
+                    />
+                    <Button android:layout_width="wrap_content" android:layout_height="40dp"
+                            android:text="@string/select"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="5dp"
+                            android:id="@+id/choose_art_category_btn"
+                            android:background="@color/extra_dark_green"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:padding="10dp"
+                    />
+                </LinearLayout>
+
+
+                <LinearLayout android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="10dp"
+                              android:layout_marginRight="16dp" android:layout_marginLeft="16dp"
+                >
+                    <EditText android:id="@+id/editProductDescription"
+                              android:hint="@string/edit_item_description_hint"
+                              style="@style/bordered_multiline_edit_text"
+                              android:inputType="textCapSentences|textMultiLine"
+
+                    />
+                </LinearLayout>
+
+
+                <Button
+                        android:id="@+id/saveItemButton"
+                        android:text="@string/edit_item_save"
+                        style="@style/sell_full_width_button"
+                        android:layout_marginTop="10dp"
+                />
+
             </LinearLayout>
-
-
-            <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="10dp"
-                          android:layout_marginRight="16dp" android:layout_marginLeft="16dp"
-            >
-                <EditText android:id="@+id/editProductDescription"
-                          android:hint="@string/edit_item_description_hint"
-                          style="@style/bordered_multiline_edit_text"
-                          android:inputType="textCapSentences|textMultiLine"
-
-                />
-            </LinearLayout>
-
-
-            <Button
-                    android:id="@+id/saveItemButton"
-                    android:text="@string/edit_item_save"
-                    style="@style/sell_full_width_button"
-                    android:layout_marginTop="10dp"
+            <TextView android:id="@+id/empty_view"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/getting_information"
+                      android:gravity="center"
+                      style="@style/default_text_view"
+                      android:layout_marginTop="20dp"
+                      android:layout_gravity="center"
+                      android:visibility="gone"
             />
-
         </LinearLayout>
     </ScrollView>
 
