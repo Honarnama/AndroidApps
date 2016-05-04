@@ -905,6 +905,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             @Override
                             public void onError() {
                                 mBannerProgressBar.setVisibility(View.GONE);
+                                displayShortToast(getString(R.string.error_displaying_event_banner) + getString(R.string.check_net_connection));
                             }
                         });
             }
@@ -988,9 +989,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             mMainContent.setVisibility(View.VISIBLE);
                             setEventInfo(getEventReply.event, true);
                         } else {
-                            displayShortToast(getString(R.string.error_getting_event_info));
-                            displaySnackbar();
-                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was null. simpleRequest: " + simpleRequest);
+                            if (isVisible()) {
+                                displayShortToast(getString(R.string.error_getting_event_info));
+                                displaySnackbar();
+                                logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was null. simpleRequest: " + simpleRequest);
+                            }
                         }
                         break;
 
@@ -1011,8 +1014,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displaySnackbar();
-                        displayLongToast(getString(R.string.server_error_try_again));
+                        if (isVisible()) {
+                            displaySnackbar();
+                            displayLongToast(getString(R.string.server_error_try_again));
+                        }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -1028,9 +1033,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                mEmptyView.setText(getString(R.string.error_getting_event_info));
-                displaySnackbar();
-                displayShortToast(getString(R.string.check_net_connection));
+                if (isVisible()) {
+                    mEmptyView.setText(getString(R.string.error_getting_event_info));
+                    displaySnackbar();
+                    displayShortToast(getString(R.string.check_net_connection));
+                }
             }
         }
     }
@@ -1078,6 +1085,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.PUT;
+            } else {
+                createOrUpdateEventRequest.changingBanner = HonarnamaProto.NOOP;
             }
 
             if (BuildConfig.DEBUG) {

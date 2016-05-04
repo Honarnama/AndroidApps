@@ -560,6 +560,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             @Override
                             public void onError() {
                                 mLogoProgressBar.setVisibility(View.GONE);
+                                displayShortToast(getString(R.string.error_displaying_store_logo) + getString(R.string.check_net_connection));
                             }
                         });
 
@@ -583,6 +584,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             @Override
                             public void onError() {
                                 mBannerProgressBar.setVisibility(View.GONE);
+                                displayShortToast(getString(R.string.error_displaying_store_banner) + getString(R.string.check_net_connection));
                             }
                         });
             }
@@ -688,8 +690,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displaySnackbar();
-                        displayShortToast(getString(R.string.server_error_try_again));
+                        if (isVisible()) {
+                            mEmptyView.setText(getString(R.string.error_getting_store_info));
+                            displaySnackbar();
+                            displayShortToast(getString(R.string.server_error_try_again));
+                        }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -703,18 +708,22 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             mMainContent.setVisibility(View.VISIBLE);
                             setStoreInfo(getStoreReply.store, true);
                         } else {
-                            displayShortToast(getString(R.string.error_getting_store_info));
-                            displaySnackbar();
-                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") store, but store was null. simpleRequest: " + simpleRequest);
+                            if (isVisible()) {
+                                displayShortToast(getString(R.string.error_getting_store_info));
+                                displaySnackbar();
+                                logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") store, but store was null. simpleRequest: " + simpleRequest);
+                            }
                         }
 
                         break;
                 }
 
             } else {
-                mEmptyView.setText(getString(R.string.error_getting_store_info));
-                displaySnackbar();
-                displayShortToast(getString(R.string.check_net_connection));
+                if (isVisible()) {
+                    mEmptyView.setText(getString(R.string.error_getting_store_info));
+                    displaySnackbar();
+                    displayShortToast(getString(R.string.check_net_connection));
+                }
             }
         }
     }
@@ -758,12 +767,16 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
             } else if (mLogoImageView.isChanged() && mLogoImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.PUT;
+            } else {
+                createOrUpdateStoreRequest.changingLogo = HonarnamaProto.NOOP;
             }
 
             if (mBannerImageView.isDeleted()) {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.DELETE;
             } else if (mBannerImageView.isChanged() && mBannerImageView.getFinalImageUri() != null) {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.PUT;
+            } else {
+                createOrUpdateStoreRequest.changingBanner = HonarnamaProto.NOOP;
             }
 
             CreateOrUpdateStoreReply createOrUpdateStoreReply;

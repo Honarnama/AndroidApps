@@ -553,8 +553,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displaySnackbar();
-                        displayShortToast(getString(R.string.server_error_try_again));
+                        if (isVisible()) {
+                            displaySnackbar();
+                            displayShortToast(getString(R.string.server_error_try_again));
+                        }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -569,9 +571,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
-                mEmptyView.setText(getString(R.string.error_getting_item_info));
-                displaySnackbar();
-                displayShortToast(getString(R.string.check_net_connection));
+                if (isVisible()) {
+                    mEmptyView.setText(getString(R.string.error_getting_item_info));
+                    displaySnackbar();
+                    displayShortToast(getString(R.string.check_net_connection));
+                }
             }
         }
     }
@@ -608,10 +612,17 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (loadImages) {
                 for (int i = 0; i < 4; i++) {
                     if (!TextUtils.isEmpty(item.images[i])) {
+
                         String itemImage = item.images[i];
+
+//                        //TODO remove test if
+//                        if (i == 0) {
+//                            itemImage = "https://honarnama.net:9000/item-images/2054825614816374329-7zixLS-S.jpg";
+//                        }
 
                         mItemImageLoadingPannel[i].setVisibility(View.VISIBLE);
                         mItemImages[i].setVisibility(View.GONE);
+
 
                         final int index = i;
 
@@ -629,6 +640,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                                     @Override
                                     public void onError() {
+                                        mItemImageLoadingPannel[index].setVisibility(View.GONE);
                                         displayShortToast(getString(R.string.error_displaying_image) + getString(R.string.check_net_connection));
                                         mItemImages[index].setVisibility(View.VISIBLE);
                                     }
@@ -687,6 +699,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 createOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryParentId;
                 createOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
             }
+
+            //TODO Server: When image is not uploaded correctly and reuqest update
 
             createOrUpdateItemRequest.changingImage = new int[4];
             for (int i = 0; i < mItemImages.length; i++) {
