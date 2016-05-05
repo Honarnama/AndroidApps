@@ -134,5 +134,7 @@
     <string name="error_getting_event_info">خطا در گرفتن اطلاعات رویداد.</string>
     <string name="error_getting_store_info">خطا در گرفتن اطلاعات فروشگاه.</string>
     <string name="no_item_found">محصولی یافت نشد.</string>
+    <string name="wrong_start_date">تاریخ شروع اشتباه است.</string>
+    <string name="wrong_end_date">تاریخ پایان اشتباه است.</string>
 
 </resources>

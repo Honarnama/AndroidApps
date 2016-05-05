@@ -41,7 +41,6 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.Uploader;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -73,7 +72,6 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -151,8 +149,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     private long mEventId = -1;
 
-    ProgressDialog mProgressDialog;
-
     public MetaUpdateListener mMetaUpdateListener;
 
     Snackbar mSnackbar;
@@ -202,8 +198,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                              Bundle savedInstanceState) {
 
 //        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-//            getActivity().finish();
+//            Intent intent = new Intent(mActivity, ControlPanelActivity.class);
+//            mActivity.finish();
 //            startActivity(intent);
 //        }
 
@@ -249,7 +245,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
-        mSendingDataProgressDialog = new ProgressDialog(getActivity());
+        mSendingDataProgressDialog = new ProgressDialog(mActivity);
 
         mNameEditText = (EditText) rootView.findViewById(R.id.event_name_edit_text);
         mAddressEditText = (EditText) rootView.findViewById(R.id.event_address_edit_text);
@@ -268,16 +264,16 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mStartLabelTextView = (TextView) rootView.findViewById(R.id.start_label_text_view);
         mEndLabelTextView = (TextView) rootView.findViewById(R.id.end_label_text_view);
 
-        ArrayAdapter<String> daysAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.days));
+        ArrayAdapter<String> daysAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.days));
         mStartDaySpinner.setAdapter(daysAdapter);
         mEndDaySpinner.setAdapter(daysAdapter);
 
 
-        ArrayAdapter<String> monthsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.months));
+        ArrayAdapter<String> monthsAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.months));
         mStartMonthSpinner.setAdapter(monthsAdapter);
         mEndMonthSpinner.setAdapter(monthsAdapter);
 
-        ArrayAdapter<String> yearsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.years));
+        ArrayAdapter<String> yearsAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.years));
         mStartYearSpinner.setAdapter(yearsAdapter);
         mEndYearSpinner.setAdapter(yearsAdapter);
 
@@ -311,7 +307,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mRegisterEventButton.setOnClickListener(this);
 
         mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
-        mBannerImageView.setActivity(this.getActivity());
+        mBannerImageView.setActivity(mActivity);
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
         }
@@ -332,7 +328,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ((ControlPanelActivity) getActivity()).displayUpgradeRequiredDialog();
+                        ((ControlPanelActivity) mActivity).displayUpgradeRequiredDialog();
                         break;
 
                     default:
@@ -460,7 +456,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_event_button:
-                WindowUtil.hideKeyboard(getActivity());
+                WindowUtil.hideKeyboard(mActivity);
                 if (formInputsAreValid()) {
                     new CreateOrUpdateEventAsync().execute();
                 }
@@ -497,7 +493,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         ListView provincesListView;
         ProvincesAdapter provincesAdapter;
 
-        final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
+        final Dialog provinceDialog = new Dialog(mActivity, R.style.DialogStyle);
 
         if (mProvinceObjectsTreeMap.isEmpty()) {
 
@@ -518,7 +514,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         } else {
             provinceDialog.setContentView(R.layout.choose_province);
             provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-            provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
+            provincesAdapter = new ProvincesAdapter(mActivity, mProvinceObjectsTreeMap);
             provincesListView.setAdapter(provincesAdapter);
             provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -573,7 +569,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         ListView cityListView;
         CityAdapter cityAdapter;
 
-        final Dialog cityDialog = new Dialog(getActivity(), R.style.DialogStyle);
+        final Dialog cityDialog = new Dialog(mActivity, R.style.DialogStyle);
 
         if (mCityOrderedTreeMap.isEmpty()) {
 
@@ -595,7 +591,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             cityDialog.setContentView(R.layout.choose_city);
             cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
 
-            cityAdapter = new CityAdapter(getActivity(), mCityOrderedTreeMap);
+            cityAdapter = new CityAdapter(mActivity, mCityOrderedTreeMap);
             cityListView.setAdapter(cityAdapter);
             cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -626,7 +622,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         ListView eventCatsListView;
         EventCategoriesAdapter eventCatsAdapter;
 
-        final Dialog eventCatDialog = new Dialog(getActivity(), R.style.DialogStyle);
+        final Dialog eventCatDialog = new Dialog(mActivity, R.style.DialogStyle);
 
         if (mEventCategories.isEmpty()) {
             eventCatDialog.setContentView(R.layout.dialog_no_data_found);
@@ -645,7 +641,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         } else {
             eventCatDialog.setContentView(R.layout.choose_event_category);
             eventCatsListView = (ListView) eventCatDialog.findViewById(net.honarnama.base.R.id.event_category_list_view);
-            eventCatsAdapter = new EventCategoriesAdapter(getActivity(), mEventCategories);
+            eventCatsAdapter = new EventCategoriesAdapter(mActivity, mEventCategories);
             eventCatsListView.setAdapter(eventCatsAdapter);
             eventCatsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -692,9 +688,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (mSelectedCatId == -1) {
             mEventCatLabel.requestFocus();
             mEventCatLabel.setError(getString(R.string.error_event_cat_is_not_selected));
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.error_event_cat_is_not_selected), Toast.LENGTH_SHORT).show();
-            }
+            displayShortToast(getString(R.string.error_event_cat_is_not_selected));
             return false;
         }
 
@@ -729,10 +723,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
         if (!checkJalaliDate.equals(userEnteredStartDate)) {
             mStartDaySpinner.requestFocus();
-            mStartLabelTextView.setError("تاریخ شروع اشتباه است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ شروع اشتباه است.", Toast.LENGTH_LONG).show();
-            }
+            mStartLabelTextView.setError(mContext.getString(R.string.wrong_start_date));
+            displayLongToast(mContext.getString(R.string.wrong_start_date));
             return false;
         }
 
@@ -749,10 +741,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
         if (!checkJalaliDate.equals(userEnteredEndDate)) {
             mEndDaySpinner.requestFocus();
-            mEndLabelTextView.setError("تاریخ پایان اشتباه است.");
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "تاریخ پایان اشتباه است.", Toast.LENGTH_LONG).show();
-            }
+            mEndLabelTextView.setError(mContext.getString(R.string.wrong_end_date));
+            displayLongToast(mContext.getString(R.string.wrong_end_date));
             return false;
         }
 
@@ -891,7 +881,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             if (loadImages && !TextUtils.isEmpty(event.banner)) {
                 mBannerProgressBar.setVisibility(View.VISIBLE);
 
-                Picasso.with(getActivity()).load(event.banner)
+                Picasso.with(mActivity).load(event.banner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -1021,11 +1011,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -1119,7 +1109,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 switch (createOrUpdateEventReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
                         dismissProgressDialog();
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -1158,7 +1148,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.OK:
@@ -1210,33 +1200,33 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
 
     }
-
-    private void dismissProgressDialog() {
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-
-    }
-
-    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
-
-        if (onDismissListener != null) {
-            mProgressDialog.setOnDismissListener(onDismissListener);
-        }
-
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing() && isVisible()) {
-            mProgressDialog.show();
-        }
-    }
+//
+//    private void dismissProgressDialog() {
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing()) {
+//            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//                mProgressDialog.dismiss();
+//            }
+//        }
+//
+//    }
+//
+//    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
+//        if (mProgressDialog == null) {
+//            mProgressDialog = new ProgressDialog(mActivity);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.setMessage(getString(R.string.please_wait));
+//        }
+//
+//        if (onDismissListener != null) {
+//            mProgressDialog.setOnDismissListener(onDismissListener);
+//        }
+//
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing() && isVisible()) {
+//            mProgressDialog.show();
+//        }
+//    }
 
 
     public void displaySnackbar() {
@@ -1254,7 +1244,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
         Spannable spannable = (Spannable) textView.getText();
-        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannable.setSpan(new ImageSpan(mActivity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 

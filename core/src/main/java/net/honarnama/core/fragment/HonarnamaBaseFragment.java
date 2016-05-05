@@ -4,8 +4,12 @@ import com.crashlytics.android.Crashlytics;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.R;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +24,9 @@ import java.io.StringWriter;
 public abstract class HonarnamaBaseFragment extends Fragment {
 
     private boolean announced = false;
+    public Context mContext;
+    public Activity mActivity;
+    ProgressDialog mProgressDialog;
 
     abstract public String getTitle(Context context);
 
@@ -124,4 +131,36 @@ public abstract class HonarnamaBaseFragment extends Fragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        mActivity = (Activity) context;
+    }
+
+    public void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+        }
+
+        if (onDismissListener != null) {
+            mProgressDialog.setOnDismissListener(onDismissListener);
+        }
+
+        if (mActivity != null && !mActivity.isFinishing() && isVisible()) {
+            mProgressDialog.show();
+        }
+    }
+
+    public void dismissProgressDialog() {
+        if (mActivity != null && !mActivity.isFinishing()) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    }
+
 }

@@ -38,9 +38,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.Uploader;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,7 +65,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.HashMap;
@@ -120,8 +117,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public boolean mIsNew = true;
     private long mStoreId = -1;
 
-    ProgressDialog mProgressDialog;
-
     public MetaUpdateListener mMetaUpdateListener;
 
     private CoordinatorLayout mCoordinatorLayout;
@@ -133,6 +128,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     RelativeLayout mMainContent;
     TextView mEmptyView;
+
 
     @Override
     public String getTitle(Context context) {
@@ -169,8 +165,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                              Bundle savedInstanceState) {
 
 //        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-//            getActivity().finish();
+//            Intent intent = new Intent(mActivity, ControlPanelActivity.class);
+//            mActivity.finish();
 //            startActivity(intent);
 //        }
 
@@ -245,13 +241,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mRegisterStoreButton.setOnClickListener(this);
 
         mLogoImageView.setOnImageSelectedListener(onImageSelectedListener);
-        mLogoImageView.setActivity(this.getActivity());
+        mLogoImageView.setActivity(mActivity);
         if (savedInstanceState != null) {
             mLogoImageView.restore(savedInstanceState);
         }
 
         mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
-        mBannerImageView.setActivity(this.getActivity());
+        mBannerImageView.setActivity(mActivity);
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
         }
@@ -275,7 +271,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ((ControlPanelActivity) getActivity()).displayUpgradeRequiredDialog();
+                        if (isVisible()) {
+                            ((ControlPanelActivity) mActivity).displayUpgradeRequiredDialog();
+                        }
                         break;
 
                     default:
@@ -305,7 +303,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_store_button:
-                WindowUtil.hideKeyboard(getActivity());
+                WindowUtil.hideKeyboard(mActivity);
                 if (formInputsAreValid()) {
                     new CreateOrUpdateStoreAsync().execute();
                 }
@@ -326,7 +324,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         ListView provincesListView;
         ProvincesAdapter provincesAdapter;
 
-        final Dialog provinceDialog = new Dialog(getActivity(), R.style.DialogStyle);
+        final Dialog provinceDialog = new Dialog(mActivity, R.style.DialogStyle);
 
         if (mProvinceObjectsTreeMap.isEmpty()) {
 
@@ -347,7 +345,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         } else {
             provinceDialog.setContentView(R.layout.choose_province);
             provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-            provincesAdapter = new ProvincesAdapter(getActivity(), mProvinceObjectsTreeMap);
+            provincesAdapter = new ProvincesAdapter(mActivity, mProvinceObjectsTreeMap);
             provincesListView.setAdapter(provincesAdapter);
             provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -376,9 +374,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                    }
+                    displayLongToast(getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection));
                 } else {
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
@@ -403,11 +399,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         ListView cityListView;
         CityAdapter cityAdapter;
 
-        final Dialog cityDialog = new Dialog(getActivity(), R.style.DialogStyle);
+        final Dialog cityDialog = new Dialog(mActivity, R.style.DialogStyle);
         cityDialog.setContentView(R.layout.choose_city);
         cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
 
-        cityAdapter = new CityAdapter(getActivity(), mCityOrderedTreeMap);
+        cityAdapter = new CityAdapter(mActivity, mCityOrderedTreeMap);
         cityListView.setAdapter(cityAdapter);
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -546,7 +542,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 logD("Loading logo ...");
 
                 mLogoProgressBar.setVisibility(View.VISIBLE);
-                Picasso.with(getActivity()).load(store.logo)
+                Picasso.with(mActivity).load(store.logo)
                         .error(R.drawable.default_logo_hand)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -570,7 +566,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 logD("Loading logo ...");
                 mBannerProgressBar.setVisibility(View.VISIBLE);
 
-                Picasso.with(getActivity()).load(store.banner)
+                Picasso.with(mActivity).load(store.banner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -668,7 +664,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (getStoreReply != null) {
                 switch (getStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -698,7 +694,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.OK:
@@ -809,7 +805,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
                         dismissProgressDialog();
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -849,7 +845,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.OK:
@@ -994,15 +990,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         });
     }
 
-    private void dismissProgressDialog() {
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    }
-
     public void displaySnackbar() {
         if (mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
@@ -1018,7 +1005,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
         Spannable spannable = (Spannable) textView.getText();
-        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannable.setSpan(new ImageSpan(mActivity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
@@ -1036,23 +1023,5 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
         mSnackbar.show();
     }
-
-    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
-
-        if (onDismissListener != null) {
-            mProgressDialog.setOnDismissListener(onDismissListener);
-        }
-
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing() && isVisible()) {
-            mProgressDialog.show();
-        }
-    }
-
 
 }

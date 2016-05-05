@@ -19,7 +19,6 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 import net.honarnama.sell.model.HonarnamaUser;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -79,8 +78,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                              Bundle savedInstanceState) {
 
 //        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
-//            getActivity().finish();
+//            Intent intent = new Intent(mActivity, ControlPanelActivity.class);
+//            mActivity.finish();
 //            startActivity(intent);
 //        }
 
@@ -91,7 +90,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
         new getItemsAsync().execute();
 
-        mAdapter = new ItemsAdapter(getActivity());
+        mAdapter = new ItemsAdapter(mActivity);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
 
@@ -105,7 +104,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (NetworkManager.getInstance().isNetworkEnabled(true)) {
             net.honarnama.nano.Item item = mAdapter.getItem(i);
-            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mActivity;
             controlPanelActivity.switchFragmentToEditItem(item.id);
         }
     }
@@ -123,7 +122,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             super.onPreExecute();
             TextView emptyListTextView = (TextView) mEmptyListView;
             emptyListTextView.setText(getString(R.string.getting_items));
-            displayProgressDialog();
+            displayProgressDialog(null);
         }
 
         @Override
@@ -153,7 +152,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             if (getItemsReply != null) {
                 switch (getItemsReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -176,7 +175,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.OK:
@@ -189,36 +188,38 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 }
 
             } else {
-                mAdapter.setItems(null);
-                TextView emptyListTextView = (TextView) mEmptyListView;
-                emptyListTextView.setText(getString(R.string.item_not_found));
-                mAdapter.notifyDataSetChanged();
-                displaySnackbar();
-                displayLongToast(getString(R.string.check_net_connection));
+                if (isVisible()) {
+                    mAdapter.setItems(null);
+                    TextView emptyListTextView = (TextView) mEmptyListView;
+                    emptyListTextView.setText(getString(R.string.item_not_found));
+                    mAdapter.notifyDataSetChanged();
+                    displaySnackbar();
+                    displayLongToast(getString(R.string.check_net_connection));
+                }
             }
         }
     }
 
-    private void dismissProgressDialog() {
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    }
-
-    private void displayProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing() && isVisible()) {
-            mProgressDialog.show();
-        }
-    }
+//    private void dismissProgressDialog() {
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing()) {
+//            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//                mProgressDialog.dismiss();
+//            }
+//        }
+//    }
+//
+//    private void displayProgressDialog() {
+//        if (mProgressDialog == null) {
+//            mProgressDialog = new ProgressDialog(mActivity);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.setMessage(getString(R.string.please_wait));
+//        }
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing() && isVisible()) {
+//            mProgressDialog.show();
+//        }
+//    }
 
 
     public void displaySnackbar() {
@@ -236,7 +237,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
         Spannable spannable = (Spannable) textView.getText();
-        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannable.setSpan(new ImageSpan(mActivity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 

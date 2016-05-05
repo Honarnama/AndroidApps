@@ -35,8 +35,6 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.Uploader;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,7 +58,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,8 +102,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private Tracker mTracker;
 
-
-    ProgressDialog mProgressDialog;
     private RelativeLayout[] mItemImageLoadingPannel;
 
     Snackbar mSnackbar;
@@ -274,7 +269,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         };
 
         for (ImageSelector imageSelector : mItemImages) {
-            imageSelector.setActivity(getActivity());
+            imageSelector.setActivity(mActivity);
             imageSelector.setOnImageSelectedListener(onImageSelectedListener);
         }
 
@@ -302,7 +297,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 .coordinatorLayout);
 
         if (mCreateNew) {
-            reset(getActivity(), true);
+            reset(mActivity, true);
             mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
             mTracker.setScreenName("AddItem");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -351,7 +346,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveItemButton:
-                WindowUtil.hideKeyboard(getActivity());
+                WindowUtil.hideKeyboard(mActivity);
                 if (formInputsAreValid()) {
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
                         new CreateOrUpdateItemAsync().execute();
@@ -359,7 +354,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
                 break;
             case R.id.choose_art_category_btn:
-                Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
+                Intent intent = new Intent(mActivity, ChooseArtCategoryActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_SELL_APP);
                 startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 break;
@@ -430,9 +425,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
 
         if (!mDirty) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), getString(R.string.item_not_changed), Toast.LENGTH_LONG).show();
-            }
+            displayShortToast(getString(R.string.item_not_changed));
             return false;
         }
 
@@ -445,7 +438,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         switch (requestCode) {
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
-                if (resultCode == getActivity().RESULT_OK) {
+                if (resultCode == mActivity.RESULT_OK) {
                     int selectedCatId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
                     int selectedCatParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
                     if (selectedCatId != mCategoryId || selectedCatParentId != mCategoryParentId) {
@@ -528,7 +521,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (getItemReply != null) {
                 switch (getItemReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -560,7 +553,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.OK:
@@ -626,7 +619,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                         final int index = i;
 
-                        Picasso.with(getActivity()).load(itemImage)
+                        Picasso.with(mActivity).load(itemImage)
                                 .error(R.drawable.camera_insta)
                                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                                 .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -809,12 +802,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         dismissProgressDialog();
-                        HonarnamaUser.logout(getActivity());
+                        HonarnamaUser.logout(mActivity);
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
                         dismissProgressDialog();
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) getActivity());
+                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                         if (controlPanelActivity != null) {
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
@@ -829,32 +822,32 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
     }
 
-    private void dismissProgressDialog() {
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    }
-
-    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
-
-        if (onDismissListener != null) {
-            mProgressDialog.setOnDismissListener(onDismissListener);
-        }
-
-        Activity activity = getActivity();
-        if (activity != null && !activity.isFinishing() && isVisible()) {
-            mProgressDialog.show();
-        }
-
-    }
+//    private void dismissProgressDialog() {
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing()) {
+//            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//                mProgressDialog.dismiss();
+//            }
+//        }
+//    }
+//
+//    private void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
+//        if (mProgressDialog == null) {
+//            mProgressDialog = new ProgressDialog(mActivity);
+//            mProgressDialog.setCancelable(false);
+//            mProgressDialog.setMessage(getString(R.string.please_wait));
+//        }
+//
+//        if (onDismissListener != null) {
+//            mProgressDialog.setOnDismissListener(onDismissListener);
+//        }
+//
+//        Activity activity = mActivity;
+//        if (activity != null && !activity.isFinishing() && isVisible()) {
+//            mProgressDialog.show();
+//        }
+//
+//    }
 
     public void displaySnackbar() {
         if (mSnackbar != null && mSnackbar.isShown()) {
@@ -871,7 +864,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
         Spannable spannable = (Spannable) textView.getText();
-        spannable.setSpan(new ImageSpan(getActivity(), android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannable.setSpan(new ImageSpan(mActivity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
