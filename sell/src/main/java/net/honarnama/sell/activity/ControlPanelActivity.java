@@ -246,7 +246,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
             if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
                 mDrawer.closeDrawer(Gravity.RIGHT);
             }
-            mEditItemFragment.reset(ControlPanelActivity.this, true);
+            mEditItemFragment.reset(true);
             resetMenuIcons();
             selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM));
             switchFragment(mEditItemFragment);
@@ -318,7 +318,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
     }
 
     public void switchFragmentToEditItem(long itemId) {
-        mEditItemFragment.setItemId(ControlPanelActivity.this, itemId);
+        mEditItemFragment.setItemId(itemId);
         switchFragment(mEditItemFragment);
     }
 
@@ -332,7 +332,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 switchFragmentFromEdittingItem(new OnAcceptedListener() {
                     @Override
                     public void onAccepted() {
-                        mEditItemFragment.reset(ControlPanelActivity.this, true);
+                        mEditItemFragment.reset(true);
                         switchFragment(ItemsFragment.getInstance());
                         resetMenuIcons();
                         selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
@@ -585,16 +585,16 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     switchFragmentFromEdittingItem(new OnAcceptedListener() {
                         @Override
                         public void onAccepted() {
-                            mEditItemFragment.reset(ControlPanelActivity.this, true);
+                            mEditItemFragment.reset(true);
                             switchFragment(finalFragment);
                         }
                     });
                 } else {
-                    mEditItemFragment.reset(ControlPanelActivity.this, true);
+                    mEditItemFragment.reset(true);
                     switchFragment(fragment);
                 }
             } else {
-                mEditItemFragment.reset(ControlPanelActivity.this, true);
+                mEditItemFragment.reset(true);
                 switchFragment(fragment);
             }
         }
