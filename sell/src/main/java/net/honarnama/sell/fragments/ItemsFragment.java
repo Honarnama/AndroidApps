@@ -19,7 +19,7 @@ import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.adapter.ItemsAdapter;
 import net.honarnama.sell.model.HonarnamaUser;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -46,14 +46,13 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public static ItemsFragment mItemsFragment;
     private Tracker mTracker;
 
-    ProgressDialog mProgressDialog;
     private View mEmptyListView;
     Snackbar mSnackbar;
     private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.nav_title_items);
+        return getStringInFragment(R.string.nav_title_items);
     }
 
     public synchronized static ItemsFragment getInstance() {
@@ -77,12 +76,6 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            Intent intent = new Intent(mActivity, ControlPanelActivity.class);
-//            mActivity.finish();
-//            startActivity(intent);
-//        }
-
         final View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListView = rootView.findViewById(R.id.empty_list_view);
@@ -90,10 +83,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
         new getItemsAsync().execute();
 
-        mAdapter = new ItemsAdapter(mActivity);
-        listView.setAdapter(mAdapter);
+        Activity activity = getActivity();
+        if (activity != null) {
+            mAdapter = new ItemsAdapter(activity);
+            listView.setAdapter(mAdapter);
+        }
         listView.setOnItemClickListener(this);
-
         mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
                 .coordinatorLayout);
 
@@ -103,9 +98,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-            net.honarnama.nano.Item item = mAdapter.getItem(i);
-            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mActivity;
-            controlPanelActivity.switchFragmentToEditItem(item.id);
+            Activity activity = getActivity();
+            if (activity != null) {
+                net.honarnama.nano.Item item = mAdapter.getItem(i);
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) activity;
+                controlPanelActivity.switchFragmentToEditItem(item.id);
+            }
         }
     }
 
@@ -120,9 +118,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            TextView emptyListTextView = (TextView) mEmptyListView;
-            emptyListTextView.setText(getString(R.string.getting_items));
-            displayProgressDialog(null);
+            if (isAdded()) {
+                TextView emptyListTextView = (TextView) mEmptyListView;
+                emptyListTextView.setText(getStringInFragment(R.string.getting_items));
+                displayProgressDialog(null);
+            }
         }
 
         @Override
@@ -148,53 +148,68 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         @Override
         protected void onPostExecute(GetItemsReply getItemsReply) {
             super.onPostExecute(getItemsReply);
+
+            Activity activity = getActivity();
             dismissProgressDialog();
             if (getItemsReply != null) {
                 switch (getItemsReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
-                        if (controlPanelActivity != null) {
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getItemsReply.errorCode) {
                             case GetItemsReply.STORE_NOT_CREATED:
-                                displayLongToast(getString(R.string.store_not_created));
+                                displayLongToast(getStringInFragment(R.string.store_not_created));
                                 break;
 
                             case GetItemReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for getItemsReply. simpleRequest: " + simpleRequest + ". User id: " + HonarnamaUser.getId());
-                                displayShortToast(getString(R.string.error_occured));
+                                displayShortToast(getStringInFragment(R.string.error_occured));
                                 break;
                         }
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        displayShortToast(getString(R.string.server_error_try_again));
+                        if (isAdded()) {
+                            mAdapter.setItems(null);
+                            TextView emptyListTextView = (TextView) mEmptyListView;
+                            emptyListTextView.setText(getStringInFragment(R.string.item_not_found));
+                            mAdapter.notifyDataSetChanged();
+                            displaySnackbar();
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(mActivity);
+
+                        HonarnamaUser.logout(activity);
+                        if (activity == null) {
+                            displayLongToast(getStringInFragment(R.string.login_again));
+                        }
                         break;
 
                     case ReplyProperties.OK:
-                        net.honarnama.nano.Item itemList[] = getItemsReply.items;
-                        mAdapter.setItems(itemList);
-                        TextView emptyListTextView = (TextView) mEmptyListView;
-                        emptyListTextView.setText(getString(R.string.has_not_registered_any_store));
-                        mAdapter.notifyDataSetChanged();
+                        if (isAdded()) {
+                            net.honarnama.nano.Item itemList[] = getItemsReply.items;
+                            mAdapter.setItems(itemList);
+                            TextView emptyListTextView = (TextView) mEmptyListView;
+                            emptyListTextView.setText(getStringInFragment(R.string.has_not_registered_any_store));
+                            mAdapter.notifyDataSetChanged();
+                        }
                         break;
                 }
 
             } else {
-                if (isVisible()) {
+                if (isAdded()) {
                     mAdapter.setItems(null);
                     TextView emptyListTextView = (TextView) mEmptyListView;
-                    emptyListTextView.setText(getString(R.string.item_not_found));
+                    emptyListTextView.setText(getStringInFragment(R.string.item_not_found));
                     mAdapter.notifyDataSetChanged();
                     displaySnackbar();
-                    displayLongToast(getString(R.string.check_net_connection));
+                    displayLongToast(getStringInFragment(R.string.check_net_connection));
                 }
             }
         }
@@ -213,7 +228,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 //        if (mProgressDialog == null) {
 //            mProgressDialog = new ProgressDialog(mActivity);
 //            mProgressDialog.setCancelable(false);
-//            mProgressDialog.setMessage(getString(R.string.please_wait));
+//            mProgressDialog.setMessage(getStringInFragment(R.string.please_wait));
 //        }
 //        Activity activity = mActivity;
 //        if (activity != null && !activity.isFinishing() && isVisible()) {
@@ -223,12 +238,17 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
 
     public void displaySnackbar() {
+        if (!isAdded()) {
+            return;
+        }
         if (mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
         }
 
+        Activity activity = getActivity();
+
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getString(R.string.error_connecting_to_Server)).append(" ");
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
 
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         View sbView = mSnackbar.getView();
@@ -237,8 +257,9 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         textView.setSingleLine(false);
         textView.setGravity(Gravity.CENTER);
         Spannable spannable = (Spannable) textView.getText();
-        spannable.setSpan(new ImageSpan(mActivity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
+        if (activity != null) {
+            spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
         textView.setOnClickListener(new View.OnClickListener() {

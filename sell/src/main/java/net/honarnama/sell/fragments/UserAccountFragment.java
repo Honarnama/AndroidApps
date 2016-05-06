@@ -18,7 +18,7 @@ import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.model.HonarnamaUser;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,18 +55,22 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.nav_title_seller_account);
+        return getStringInFragment(R.string.nav_title_seller_account);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Activity activity = getActivity();
         if (!HonarnamaUser.isLoggedIn()) {
             if (BuildConfig.DEBUG) {
                 logD("User was not logged in!");
             }
-            HonarnamaUser.logout(mActivity);
+            HonarnamaUser.logout(activity);
+            if (activity == null) {
+                displayLongToast(getStringInFragment(R.string.login_again));
+            }
         }
 
         View rootView = inflater.inflate(R.layout.fragment_user_account, container, false);
@@ -118,6 +122,9 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     public void setUserInfo() {
+        if (!isAdded()) {
+            return;
+        }
         mNameEditText.setText(HonarnamaUser.getName());
         mGenderWoman.setChecked(false);
         mGenderMan.setChecked(false);
@@ -135,12 +142,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 break;
         }
 
-
     }
 
     @Override
     public void onClick(View view) {
-
+        if (!isAdded()) {
+            return;
+        }
         switch (view.getId()) {
             case R.id.alter_account_info_btn:
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -150,7 +158,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                     changeUserProfile();
                 } else {
                     mNameEditText.requestFocus();
-                    mNameEditText.setError(getString(R.string.error_name_not_set));
+                    mNameEditText.setError(getStringInFragment(R.string.error_name_not_set));
                 }
                 break;
         }
@@ -172,7 +180,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
     public class UpdateAccountAsync extends AsyncTask<Void, Void, UpdateAccountReply> {
         String name;
-        int genderCode;
+        int genderCode = -1;
         CreateOrUpdateAccountRequest createOrUpdateAccountRequest;
         String cToastMsg = "";
 
@@ -180,8 +188,18 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         protected void onPreExecute() {
             super.onPreExecute();
 
+            createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
+            createOrUpdateAccountRequest.account = new Account();
+
+            if (!isAdded()) {
+                return;
+            }
             genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             name = mNameEditText.getText().toString().trim();
+
+            createOrUpdateAccountRequest.account.id = HonarnamaUser.getId();
+            createOrUpdateAccountRequest.account.name = name;
+            createOrUpdateAccountRequest.account.gender = genderCode;
 
             displayProgressDialog(new DialogInterface.OnDismissListener() {
                 @Override
@@ -196,11 +214,10 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
         @Override
         protected UpdateAccountReply doInBackground(Void... voids) {
-            createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
-            createOrUpdateAccountRequest.account = new Account();
-            createOrUpdateAccountRequest.account.id = HonarnamaUser.getId();
-            createOrUpdateAccountRequest.account.name = name;
-            createOrUpdateAccountRequest.account.gender = genderCode;
+
+            if (genderCode == -1) {
+                return null;
+            }
 
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             createOrUpdateAccountRequest.requestProperties = rp;
@@ -223,6 +240,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         protected void onPostExecute(UpdateAccountReply updateAccountReply) {
             super.onPostExecute(updateAccountReply);
 
+            Activity activity = getActivity();
+
             if (BuildConfig.DEBUG) {
                 logD("updateAccountReply is: " + updateAccountReply);
             }
@@ -234,64 +253,40 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case UpdateAccountReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code updateAccountReply. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". user Id: " + HonarnamaUser.getId());
-//                                displayShortToast(getString(R.string.error_occured));
-                                cToastMsg = getString(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_occured);
                                 break;
                             case UpdateAccountReply.ACCOUNT_NOT_FOUND:
-//                                displayLongToast(getString(R.string.account_not_found));
-                                cToastMsg = getString(R.string.account_not_found);
+                                cToastMsg = getStringInFragment(R.string.account_not_found);
                                 break;
                             case UpdateAccountReply.FORBIDDEN:
-//                                displayLongToast(getString(R.string.not_allowed_to_do_this_action));
                                 logE("Got FORBIDDEN reply while trying to update user " + HonarnamaUser.getId() + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
-                                cToastMsg = getString(R.string.not_allowed_to_do_this_action);
+                                cToastMsg = getStringInFragment(R.string.not_allowed_to_do_this_action);
                                 break;
                         }
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-//                        displayShortToast(getString(R.string.server_error_try_again));
-                        cToastMsg = getString(R.string.server_error_try_again);
+                        cToastMsg = getStringInFragment(R.string.server_error_try_again);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-                        HonarnamaUser.logout(mActivity);
+                        HonarnamaUser.logout(activity);
+                        if (activity == null) {
+                            displayLongToast(getStringInFragment(R.string.login_again));
+                        }
                         break;
 
                     case ReplyProperties.OK:
                         HonarnamaUser.setName(name);
                         HonarnamaUser.setGender(genderCode);
-//                        displayShortToast(getString(R.string.successfully_changed_user_info));
-                        cToastMsg = getString(R.string.successfully_changed_user_info);
+                        cToastMsg = getStringInFragment(R.string.successfully_changed_user_info);
                         break;
                 }
             } else {
-//                displayLongToast(getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection));
-                cToastMsg = getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
             }
 
             dismissProgressDialog();
         }
     }
-
-//    private void dismissProgressDialog() {
-//        Activity activity = mActivity;
-//        if (activity != null && !activity.isFinishing()) {
-//            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-//                mProgressDialog.dismiss();
-//            }
-//        }
-//    }
-//
-//    private void displayProgressDialog() {
-//        if (mProgressDialog == null) {
-//            mProgressDialog = new ProgressDialog(mActivity);
-//            mProgressDialog.setCancelable(false);
-//            mProgressDialog.setMessage(getString(R.string.please_wait));
-//        }
-//        Activity activity = mActivity;
-//        if (activity != null && !activity.isFinishing() && isVisible()) {
-//            mProgressDialog.show();
-//        }
-//    }
 }

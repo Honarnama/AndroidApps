@@ -136,5 +136,8 @@
     <string name="no_item_found">محصولی یافت نشد.</string>
     <string name="wrong_start_date">تاریخ شروع اشتباه است.</string>
     <string name="wrong_end_date">تاریخ پایان اشتباه است.</string>
+    <string name="login_again">اعتبار ورود منقضی شده است. لطفا از برنامه خارج شده و دوباره وارد
+        شوید.
+    </string>
 
 </resources>

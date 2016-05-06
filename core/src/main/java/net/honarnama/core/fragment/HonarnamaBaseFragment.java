@@ -25,7 +25,6 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
     private boolean announced = false;
     public Context mContext;
-    public Activity mActivity;
     ProgressDialog mProgressDialog;
 
     abstract public String getTitle(Context context);
@@ -121,13 +120,13 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
 
     public void displayLongToast(String message) {
-        if (isVisible()) {
+        if (isAdded()) {
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
     }
 
     public void displayShortToast(String message) {
-        if (isVisible()) {
+        if (isAdded()) {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
@@ -136,31 +135,47 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mActivity = (Activity) context;
     }
 
     public void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
+        Activity activity = getActivity();
+        if (activity != null && isAdded()) {
+            if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(activity);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.setMessage(getString(R.string.please_wait));
+            }
 
-        if (onDismissListener != null) {
-            mProgressDialog.setOnDismissListener(onDismissListener);
-        }
+            if (onDismissListener != null) {
+                mProgressDialog.setOnDismissListener(onDismissListener);
+            }
 
-        if (mActivity != null && !mActivity.isFinishing() && isVisible()) {
-            mProgressDialog.show();
+            if (activity != null && !activity.isFinishing() && isAdded()) {
+                mProgressDialog.show();
+            }
         }
     }
 
     public void dismissProgressDialog() {
-        if (mActivity != null && !mActivity.isFinishing()) {
+        Activity activity = getActivity();
+        if (isAdded() && activity != null && !activity.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
         }
     }
+
+    public String getStringInFragment(int stringId) {
+        return getFragmentContext().getResources().getString(stringId);
+    }
+
+    public Context getFragmentContext() {
+        if (isAdded() && getActivity() != null) {
+            return getActivity();
+        } else {
+            return HonarnamaBaseApp.getInstance();
+        }
+    }
+
 
 }
