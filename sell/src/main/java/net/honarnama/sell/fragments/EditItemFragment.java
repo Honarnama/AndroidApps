@@ -115,25 +115,24 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public void reset(boolean createNew) {
+        setTextInFragment(mTitleEditText, "");
+        setTextInFragment(mDescriptionEditText, "");
+        setTextInFragment(mPriceEditText, "");
+        setTextInFragment(mChooseCategoryButton, getStringInFragment(R.string.select));
 
-        if (mTitleEditText != null) {
-            mTitleEditText.setText("");
-            mDescriptionEditText.setText("");
-            mPriceEditText.setText("");
-            mChooseCategoryButton.setText(getStringInFragment(R.string.select));
-            for (ImageSelector imageSelector : mItemImages) {
-                if (imageSelector != null) {
-                    imageSelector.removeSelectedImage();
-                    imageSelector.setChanged(false);
-                    imageSelector.setDeleted(false);
-                }
+        for (ImageSelector imageSelector : mItemImages) {
+            if (imageSelector != null && isAdded()) {
+                imageSelector.removeSelectedImage();
+                imageSelector.setChanged(false);
+                imageSelector.setDeleted(false);
             }
-            mTitleEditText.setError(null);
-            mDescriptionEditText.setError(null);
-            mPriceEditText.setError(null);
-            mCategoryTextView.setError(null);
-            mImagesTitleTextView.setError(null);
         }
+
+        setErrorInFragment(mTitleEditText, "");
+        setErrorInFragment(mDescriptionEditText, "");
+        setErrorInFragment(mPriceEditText, "");
+        setErrorInFragment(mCategoryTextView, "");
+        setErrorInFragment(mImagesTitleTextView, "");
         mItemId = -1;
         mCategoryId = -1;
         mCategoryParentId = -1;
@@ -141,9 +140,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         setDirty(false);
         mCreateNew = createNew;
 
-        if (mCreateNew && isAdded() && mMainContent != null) {
-            mMainContent.setVisibility(View.VISIBLE);
-            mEmptyView.setVisibility(View.GONE);
+        if (mCreateNew) {
+            setVisibilityInFragment(mMainContent, View.VISIBLE);
+            setVisibilityInFragment(mEmptyView, View.GONE);
         }
 
         if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
@@ -179,9 +178,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         if (isAdded()) {
             mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
             if (mCreateNew) {
-                mMainContent.setVisibility(View.VISIBLE);
-                mEmptyView.setVisibility(View.GONE);
-                if (mSnackbar != null && mSnackbar.isShown()) {
+                setVisibilityInFragment(mMainContent, View.VISIBLE);
+                setVisibilityInFragment(mEmptyView, View.GONE);
+                if (mSnackbar != null && mSnackbar.isShown() && isAdded()) {
                     mSnackbar.dismiss();
                 }
             }
@@ -241,7 +240,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 new ImageSelector.OnImageSelectedListener() {
                     @Override
                     public boolean onImageSelected(Uri selectedImage, boolean cropped) {
-                        mImagesTitleTextView.setError(null);
+                        setErrorInFragment(mImagesTitleTextView, "");
                         mDirty = true;
                         return true;
                     }
@@ -271,7 +270,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         };
 
         for (ImageSelector imageSelector : mItemImages) {
-            if (activity != null) {
+            if (activity != null && imageSelector != null && isAdded()) {
                 imageSelector.setActivity(activity);
                 imageSelector.setOnImageSelectedListener(onImageSelectedListener);
             } else {
@@ -331,12 +330,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     imageSelector.restore(savedInstanceState);
                 }
                 mItemId = savedItemId;
-                if (isAdded()) {
-                    mTitleEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_TITLE));
-                    mDescriptionEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION));
-                    mChooseCategoryButton.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME));
-                    mPriceEditText.setText(savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
-                }
+                setTextInFragment(mTitleEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_TITLE));
+                setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION));
+                setTextInFragment(mChooseCategoryButton, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME));
+                setTextInFragment(mPriceEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
                 mCategoryId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID);
                 mCategoryParentId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID);
             } else {
@@ -381,66 +378,68 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
     private boolean formInputsAreValid() {
 
-        if (!isAdded()) {
-            return false;
-        }
-
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
         }
 
-        final String title = mTitleEditText.getText().toString();
-        final String price = TextUtil.normalizePrice(mPriceEditText.getText().toString());
-        final String description = mDescriptionEditText.getText().toString();
+        String title = "";
+        String price = "";
+        String description = "";
 
-        mImagesTitleTextView.setError(null);
-        mTitleEditText.setError(null);
-        mPriceEditText.setError(null);
-        mCategoryTextView.setError(null);
-        mDescriptionEditText.setError(null);
+        if (isAdded()) {
+            title = mTitleEditText.getText().toString();
+            price = TextUtil.normalizePrice(mPriceEditText.getText().toString());
+            description = mDescriptionEditText.getText().toString();
+        }
+
+        setErrorInFragment(mImagesTitleTextView, "");
+        setErrorInFragment(mTitleEditText, "");
+        setErrorInFragment(mPriceEditText, "");
+        setErrorInFragment(mCategoryTextView, "");
+        setErrorInFragment(mDescriptionEditText, "");
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
-            if ((imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
+            if (isAdded() && imageSelector != null && (imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
                 noImage = false;
                 break;
             }
         }
-        if (noImage) {
+        if (isAdded() && mImagesTitleTextView != null && noImage) {
             mImagesTitleTextView.requestFocus();
-            mImagesTitleTextView.setError(getStringInFragment(R.string.error_edit_item_no_image));
+            setErrorInFragment(mImagesTitleTextView, getStringInFragment(R.string.error_edit_item_no_image));
             mScrollView.fullScroll(ScrollView.FOCUS_UP);
             return false;
         }
 
-        if (title.trim().length() == 0) {
+        if (isAdded() && mTitleEditText != null && title.trim().length() == 0) {
             mTitleEditText.requestFocus();
-            mTitleEditText.setError(getStringInFragment(R.string.error_edit_item_title_is_empty));
+            setErrorInFragment(mTitleEditText, getStringInFragment(R.string.error_edit_item_title_is_empty));
             return false;
         }
 
-        if (price.trim().length() == 0) {
+        if (isAdded() && mPriceEditText != null && price.trim().length() == 0) {
             mPriceEditText.requestFocus();
-            mPriceEditText.setError(getStringInFragment(R.string.error_item_price_not_set));
+            setErrorInFragment(mPriceEditText, getStringInFragment(R.string.error_item_price_not_set));
             return false;
         }
 
-        if (Integer.valueOf(price.trim()) < 100) {
+        if (isAdded() && mPriceEditText != null && Integer.valueOf(price.trim()) < 100) {
             mPriceEditText.requestFocus();
-            mPriceEditText.setError(getStringInFragment(R.string.error_item_price_is_low));
+            setErrorInFragment(mPriceEditText, getStringInFragment(R.string.error_item_price_is_low));
             return false;
         }
 
 
-        if (mCategoryId < 0) {
+        if (isAdded() && mCategoryTextView != null && mCategoryId < 0) {
             mCategoryTextView.requestFocus();
-            mCategoryTextView.setError(getStringInFragment(R.string.error_category_is_not_selected));
+            setErrorInFragment(mCategoryTextView, getStringInFragment(R.string.error_category_is_not_selected));
             return false;
         }
 
-        if (description.trim().length() == 0) {
+        if (isAdded() && mDescriptionEditText != null && description.trim().length() == 0) {
             mDescriptionEditText.requestFocus();
-            mDescriptionEditText.setError(getStringInFragment(R.string.error_edit_item_description_is_empty));
+            setErrorInFragment(mDescriptionEditText, getStringInFragment(R.string.error_edit_item_description_is_empty));
             return false;
         }
 
@@ -465,10 +464,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     if (selectedCatId != mCategoryId || selectedCatParentId != mCategoryParentId) {
                         setDirty(true);
                     }
-                    if (isAdded()) {
-                        mCategoryTextView.setError(null);
-                        mChooseCategoryButton.setText(mCategoryName);
-                    }
+
+                    setErrorInFragment(mCategoryTextView, "");
+                    setTextInFragment(mChooseCategoryButton, mCategoryName);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryId = selectedCatId;
                     mCategoryParentId = selectedCatParentId;
@@ -508,12 +506,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mMainContent.setVisibility(View.GONE);
-                mEmptyView.setText(getStringInFragment(R.string.getting_information));
-                mEmptyView.setVisibility(View.VISIBLE);
-                displayProgressDialog(null);
-            }
+            setVisibilityInFragment(mMainContent, View.GONE);
+            setTextInFragment(mEmptyView, getStringInFragment(R.string.getting_information));
+            setVisibilityInFragment(mEmptyView, View.VISIBLE);
+            displayProgressDialog(null);
         }
 
         @Override
@@ -589,10 +585,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                     case ReplyProperties.OK:
                         if (getItemReply.item != null) {
-                            if (isAdded()) {
-                                mEmptyView.setVisibility(View.GONE);
-                                mMainContent.setVisibility(View.VISIBLE);
-                            }
+                            setVisibilityInFragment(mEmptyView, View.GONE);
+                            setVisibilityInFragment(mMainContent, View.VISIBLE);
                             setItemInfo(getItemReply.item, true);
                         } else {
                             if (isAdded()) {
@@ -605,11 +599,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
-                if (isAdded()) {
-                    mEmptyView.setText(getStringInFragment(R.string.error_getting_item_info));
-                    displaySnackbar();
-                    displayShortToast(getStringInFragment(R.string.check_net_connection));
-                }
+                setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
+                displaySnackbar();
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }
@@ -632,34 +624,36 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 mCategoryId = item.artCategoryId.level1Id;
             }
 
-
-            mTitleEditText.setText(item.name);
-            mDescriptionEditText.setText(item.description);
-            mPriceEditText.setText(item.price + "");
-            mChooseCategoryButton.setText(getStringInFragment(R.string.getting_information));
+            setTextInFragment(mTitleEditText, item.name);
+            setTextInFragment(mDescriptionEditText, item.description);
+            setTextInFragment(mPriceEditText, item.price + "");
+            setTextInFragment(mChooseCategoryButton, getStringInFragment(R.string.getting_information));
             new ArtCategory().getCategoryNameById(mCategoryId).continueWith(new Continuation<String, Object>() {
                 @Override
                 public Object then(Task<String> task) throws Exception {
                     if (task.isFaulted()) {
                         displayLongToast(getStringInFragment(R.string.error_finding_category_name) + getStringInFragment(R.string.check_net_connection));
                     } else {
-                        mChooseCategoryButton.setText(task.getResult());
+                        setTextInFragment(mChooseCategoryButton, task.getResult());
                     }
                     return null;
                 }
             });
 
-            if (loadImages && activity != null) {
-                for (int i = 0; i < 4; i++) {
+            if (loadImages && activity != null && isAdded()) {
+                for (int i = 0; i < mItemImages.length; i++) {
                     if (!TextUtils.isEmpty(item.images[i])) {
 
                         String itemImage = item.images[i];
 
-                        mItemImageLoadingPannel[i].setVisibility(View.VISIBLE);
-                        mItemImages[i].setVisibility(View.GONE);
+                        setVisibilityInFragment(mItemImageLoadingPannel[i], View.VISIBLE);
+                        setVisibilityInFragment(mItemImages[i], View.GONE);
 
                         final int index = i;
 
+                        if (!isAdded()) {
+                            break;
+                        }
                         Picasso.with(activity).load(itemImage)
                                 .error(R.drawable.camera_insta)
                                 .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -667,16 +661,18 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 .into(mItemImages[i], new Callback() {
                                     @Override
                                     public void onSuccess() {
-                                        mItemImageLoadingPannel[index].setVisibility(View.GONE);
-                                        mItemImages[index].setVisibility(View.VISIBLE);
-                                        mItemImages[index].setFileSet(true);
+                                        setVisibilityInFragment(mItemImageLoadingPannel[index], View.GONE);
+                                        setVisibilityInFragment(mItemImages[index], View.VISIBLE);
+                                        if (mItemImages[index] != null && isAdded()) {
+                                            mItemImages[index].setFileSet(true);
+                                        }
                                     }
 
                                     @Override
                                     public void onError() {
-                                        mItemImageLoadingPannel[index].setVisibility(View.GONE);
+                                        setVisibilityInFragment(mItemImageLoadingPannel[index], View.GONE);
                                         displayShortToast(getStringInFragment(R.string.error_displaying_image) + getStringInFragment(R.string.check_net_connection));
-                                        mItemImages[index].setVisibility(View.VISIBLE);
+                                        setVisibilityInFragment(mItemImages[index], View.VISIBLE);
                                     }
                                 });
                     }
@@ -686,9 +682,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         }
 
-        mTitleEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        if (isAdded()) {
+            mTitleEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        }
         setDirty(false);
     }
 
@@ -785,7 +783,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                         ArrayList<Task<Void>> tasks = new ArrayList<>();
                         for (int i = 0; i < mItemImages.length; i++) {
-                            if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i].getFinalImageUri() != null) {
+                            if (!isAdded()) {
+                                break;
+                            }
+                            if (!TextUtils.isEmpty(createOrUpdateItemReply.imageModificationUrl[i]) && mItemImages[i] != null && mItemImages[i].getFinalImageUri() != null) {
                                 final File file = new File(mItemImages[i].getFinalImageUri().getPath());
                                 tasks.add(new Uploader(file, createOrUpdateItemReply.imageModificationUrl[i]).upload());
                             }
@@ -873,10 +874,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public void displaySnackbar() {
-        if (!isAdded()) {
-            return;
-        }
-        if (mSnackbar != null && mSnackbar.isShown()) {
+
+        if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
         }
 
@@ -885,6 +884,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
 
+        if (!isAdded()) {
+            return;
+        }
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         View sbView = mSnackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -903,14 +905,17 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             public void onClick(View v) {
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
                     new getItemAsync().execute();
-                    if (mSnackbar != null && mSnackbar.isShown()) {
+                    if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
                         mSnackbar.dismiss();
                     }
                 }
             }
         });
 
-        mSnackbar.show();
+        if (isAdded()) {
+            mSnackbar.show();
+        }
+
     }
 
 }

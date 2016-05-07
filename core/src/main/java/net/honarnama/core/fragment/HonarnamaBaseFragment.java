@@ -12,7 +12,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.PrintWriter;
@@ -177,5 +182,49 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         }
     }
 
+    //TODO use this in fragments instead of settext
+    public void setTextInFragment(EditText editText, String text) {
+        if (editText != null && isAdded()) {
+            editText.setText(text);
+        }
+    }
+
+    public void setTextInFragment(Button button, String text) {
+        if (button != null && isAdded()) {
+            button.setText(text);
+        }
+    }
+
+    public void setTextInFragment(TextView textView, String text) {
+        if (textView != null && isAdded()) {
+            textView.setText(text);
+        }
+    }
+
+    public void setErrorInFragment(EditText editText, String errorMsg) {
+        if (editText != null && isAdded()) {
+            if (TextUtils.isEmpty(errorMsg)) {
+                editText.setError(null);
+            } else {
+                editText.setError(errorMsg);
+            }
+        }
+    }
+
+    public void setErrorInFragment(TextView textView, String errorMsg) {
+        if (textView != null && isAdded()) {
+            if (TextUtils.isEmpty(errorMsg)) {
+                textView.setError(null);
+            } else {
+                textView.setError(errorMsg);
+            }
+        }
+    }
+
+    public void setVisibilityInFragment(View view, int visibility) {
+        if (view != null && isAdded()) {
+            view.setVisibility(visibility);
+        }
+    }
 
 }

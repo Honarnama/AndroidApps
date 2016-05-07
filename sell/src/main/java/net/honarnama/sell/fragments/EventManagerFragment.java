@@ -852,6 +852,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mAddressEditText.setText(event.address);
             mDescriptionEditText.setText(event.description);
 
+            //TODO exception raised: Fragment EventManagerFragment{dfa61b3} not attached to Activity
             mPhoneNumberEditText.setText(event.phoneNumber);
             mCellNumberEditText.setText(event.cellNumber);
 
