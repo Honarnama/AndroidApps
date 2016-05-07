@@ -264,4 +264,7 @@
     <string name="site_url">https://www.honarnama.net</string>
     <string name="no_data_found">داده‌ای پیدا نشد.</string>
     <string name="close">بستن</string>
+    <string name="upgrade_to_new_version">برای استفاده از تمامی امکانات برنامه، لطفا نسخه جدید آن را
+        از کافه بازار بگیرید.
+    </string>
 </resources>

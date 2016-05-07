@@ -148,7 +148,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.nav_title_event_manager);
+        return getStringInFragment(R.string.nav_title_event_manager);
     }
 
     private void setDirty(boolean dirty) {
@@ -340,8 +340,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             mProvincesHashMap.put(province.getId(), province.getName());
                         }
                     }
-                    if (mSelectedProvinceId > 0 && isAdded()) {
-                        mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    if (mSelectedProvinceId > 0) {
+                        setTextInFragment(mProvinceEditText, mProvincesHashMap.get(mSelectedProvinceId));
                     }
                 }
                 return null;
@@ -369,8 +369,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             }
                         }
                     }
-                    if (mSelectedCityId > 0 && isAdded()) {
-                        mCityEditText.setText(mCityHashMap.get(mSelectedCityId));
+                    if (mSelectedCityId > 0) {
+                        setTextInFragment(mCityEditText, mCityHashMap.get(mSelectedCityId));
                     }
                 }
                 return null;
@@ -392,8 +392,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             mEventCategoriesHashMap.put(mEventCategories.get(i).getId(), mEventCategories.get(i).getName());
                         }
                     }
-                    if (mSelectedCatId > 0 && isAdded()) {
-                        mEventCatBtn.setText(mEventCategoriesHashMap.get(mSelectedCatId));
+                    if (mSelectedCatId > 0) {
+                        setTextInFragment(mEventCatBtn, mEventCategoriesHashMap.get(mSelectedCatId));
                     }
                 }
                 return null;
@@ -410,26 +410,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
         }
     }
-//    public void resetFields() {
-//        if (mNameEditText != null) {
-//            mNameEditText.setText("");
-//            mDescriptionEditText.setText("");
-//            mPhoneNumberEditText.setText("");
-//            mCellNumberEditText.setText("");
-//            mAddressEditText.setText("");
-//            mActiveBtn.setChecked(true);
-//            mPassiveBtn.setChecked(false);
-//            mSelectedCatId = -1;
-//            mEventCatBtn.setText(getStringInFragment(R.string.select));
-//            mNameEditText.setError(null);
-//            mAddressEditText.setError(null);
-//            mDescriptionEditText.setError(null);
-//            mPhoneNumberEditText.setError(null);
-//            mCellNumberEditText.setError(null);
-//            setDirty(false);
-//        }
-//    }
-
 
     @Override
     public void onDetach() {
@@ -514,7 +494,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                     mSelectedProvinceId = selectedProvince.getId();
                     mSelectedProvinceName = selectedProvince.getName();
-                    mProvinceEditText.setText(mSelectedProvinceName);
+                    setTextInFragment(mProvinceEditText, mSelectedProvinceName);
                     rePopulateCityList();
                     provinceDialog.dismiss();
                 }
@@ -544,9 +524,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
                         for (Integer key : tempSet) {
                             mSelectedCityId = key;
-                            if (isAdded()) {
-                                mCityEditText.setText(mCityHashMap.get(key));
-                            }
+                            setTextInFragment(mCityEditText, mCityHashMap.get(key));
                         }
                     }
 
@@ -599,9 +577,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                     for (String value : selectedCity.values()) {
                         mSelectedCityName = value;
-                        if (isAdded()) {
-                            mCityEditText.setText(mSelectedCityName);
-                        }
+                        setTextInFragment(mCityEditText, mSelectedCityName);
                     }
                     cityDialog.dismiss();
                 }
@@ -654,9 +630,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     mEventCatLabel.setError(null);
                     mSelectedCatId = eventCategory.getId();
                     mSelectedCatName = eventCategory.getName();
-                    if (isAdded()) {
-                        mEventCatBtn.setText(mSelectedCatName);
-                    }
+                    setTextInFragment(mEventCatBtn, mSelectedCatName);
                     eventCatDialog.dismiss();
                 }
             });
@@ -686,34 +660,38 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mCellNumberEditText.setError(null);
         mPhoneNumberEditText.setError(null);
 
-        if (mNameEditText.getText().toString().trim().length() == 0) {
+        if (isAdded() && mNameEditText.getText().toString().trim().length() == 0) {
             mNameEditText.requestFocus();
             mNameEditText.setError(getStringInFragment(R.string.error_event_name_cant_be_empty));
             return false;
         }
 
-        if (mSelectedCatId == -1) {
+        if (isAdded() && mSelectedCatId == -1) {
             mEventCatLabel.requestFocus();
             mEventCatLabel.setError(getStringInFragment(R.string.error_event_cat_is_not_selected));
             displayShortToast(getStringInFragment(R.string.error_event_cat_is_not_selected));
             return false;
         }
 
-        if (mSelectedProvinceId < 0) {
+        if (isAdded() && mSelectedProvinceId < 0) {
             mProvinceEditText.requestFocus();
             mProvinceEditText.setError(getStringInFragment(R.string.error_event_province_not_set));
             return false;
         }
 
-        if (mSelectedCityId < 0) {
+        if (isAdded() && mSelectedCityId < 0) {
             mCityEditText.requestFocus();
             mCityEditText.setError(getStringInFragment(R.string.error_event_city_not_set));
             return false;
         }
 
-        if (mAddressEditText.getText().toString().trim().length() == 0) {
+        if (isAdded() && mAddressEditText.getText().toString().trim().length() == 0) {
             mAddressEditText.requestFocus();
             mAddressEditText.setError(getStringInFragment(R.string.error_event_address_is_not_specified));
+            return false;
+        }
+
+        if (!isAdded()) {
             return false;
         }
 
@@ -728,6 +706,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
         mStartDate = startDate;
         String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
+        if (!isAdded()) {
+            return false;
+        }
         if (!checkJalaliDate.equals(userEnteredStartDate)) {
             mStartDaySpinner.requestFocus();
             mStartLabelTextView.setError(getStringInFragment(R.string.wrong_start_date));
@@ -735,6 +716,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             return false;
         }
 
+        if (!isAdded()) {
+            return false;
+        }
         String toYearValue = mEndYearSpinner.getItemAtPosition(mEndYearSpinner.getSelectedItemPosition()).toString();
         String toMonthValue = (mEndMonthSpinner.getSelectedItemPosition() + 1) + "";
         String toDayValue = (mEndDaySpinner.getSelectedItemPosition() + 1) + "";
@@ -746,54 +730,54 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
         mEndDate = endDate;
         checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
-        if (!checkJalaliDate.equals(userEnteredEndDate)) {
+        if (isAdded() && !checkJalaliDate.equals(userEnteredEndDate)) {
             mEndDaySpinner.requestFocus();
             mEndLabelTextView.setError(getStringInFragment(R.string.wrong_end_date));
             displayLongToast(getStringInFragment(R.string.wrong_end_date));
             return false;
         }
 
-        if (mStartDate.after(mEndDate)) {
+        if (isAdded() && mStartDate.after(mEndDate)) {
             mStartDaySpinner.requestFocus();
             mStartLabelTextView.setError("تاریخ شروع بزرگتر از تاریخ پایان است.");
             displayLongToast("تاریخ شروع بزرگتر از تاریخ پایان است.");
             return false;
         }
 
-        if (System.currentTimeMillis() > mEndDate.getTime()) {
+        if (isAdded() && System.currentTimeMillis() > mEndDate.getTime()) {
             mEndDaySpinner.requestFocus();
-            mEndLabelTextView.setError("تاریخ پایان رویداد گذشته است.");
+            setErrorInFragment(mEndLabelTextView, "تاریخ پایان رویداد گذشته است.");
             displayLongToast("تاریخ پایان رویداد گذشته است.");
             return false;
         }
 
 
-        if (mDescriptionEditText.getText().toString().trim().length() == 0) {
+        if (isAdded() && mDescriptionEditText.getText().toString().trim().length() == 0) {
             mDescriptionEditText.requestFocus();
-            mDescriptionEditText.setError(getStringInFragment(R.string.error_event_desc_cant_be_empty));
+            setErrorInFragment(mDescriptionEditText, getStringInFragment(R.string.error_event_desc_cant_be_empty));
             return false;
         }
 
-        if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
+        if (isAdded() && mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
             mCellNumberEditText.requestFocus();
-            mCellNumberEditText.setError(getStringInFragment(R.string.fill_at_least_one_communication_ways));
+            setErrorInFragment(mCellNumberEditText, getStringInFragment(R.string.fill_at_least_one_communication_ways));
             return false;
         }
 
-        if (mCellNumberEditText.getText().toString().trim().length() > 0) {
+        if (isAdded() && mCellNumberEditText.getText().toString().trim().length() > 0) {
             String mobileNumberPattern = "^09\\d{9}$";
             if (!mCellNumberEditText.getText().toString().trim().matches(mobileNumberPattern)) {
                 mCellNumberEditText.requestFocus();
-                mCellNumberEditText.setError(getStringInFragment(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
+                setErrorInFragment(mCellNumberEditText, getStringInFragment(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
                 return false;
             }
         }
 
-        if (mPhoneNumberEditText.getText().toString().trim().length() > 0) {
+        if (isAdded() && mPhoneNumberEditText.getText().toString().trim().length() > 0) {
             String phoneNumberPattern = "^(0[0-9]{2,3}-?)?[0-9]{6,14}$";
             if (!mPhoneNumberEditText.getText().toString().trim().matches(phoneNumberPattern)) {
                 mPhoneNumberEditText.requestFocus();
-                mPhoneNumberEditText.setError(getStringInFragment(R.string.error_phone_number_is_not_valid));
+                setErrorInFragment(mPhoneNumberEditText, getStringInFragment(R.string.error_phone_number_is_not_valid));
                 return false;
             }
         }
@@ -827,10 +811,16 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             String startYear = separatedJalaliStartDate[0];
             int startMonth = Integer.valueOf(separatedJalaliStartDate[1]);
             int startDay = Integer.valueOf(separatedJalaliStartDate[2]);
+            if (!isAdded()) {
+                return;
+            }
             mStartDaySpinner.setSelection(startDay - 1);
             mStartMonthSpinner.setSelection(startMonth - 1);
+
             ArrayAdapter<String> yearAdapter = (ArrayAdapter<String>) mStartYearSpinner.getAdapter();
-            mStartYearSpinner.setSelection(yearAdapter.getPosition(startYear));
+            if (yearAdapter != null) {
+                mStartYearSpinner.setSelection(yearAdapter.getPosition(startYear));
+            }
 
             mEndDate = new Date(event.endAt * 1000);
             String jalaliEndDate = JalaliCalendar.getJalaliDate(mEndDate);
@@ -838,23 +828,28 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             String endYear = separatedJalaliEndDate[0];
             int endMonth = Integer.valueOf(separatedJalaliEndDate[1]);
             int endDay = Integer.valueOf(separatedJalaliEndDate[2]);
+            if (!isAdded()) {
+                return;
+            }
             mEndDaySpinner.setSelection(endDay - 1);
             mEndMonthSpinner.setSelection(endMonth - 1);
             yearAdapter = (ArrayAdapter<String>) mEndYearSpinner.getAdapter();
-            mEndYearSpinner.setSelection(yearAdapter.getPosition(endYear));
-
+            if (yearAdapter != null) {
+                mEndYearSpinner.setSelection(yearAdapter.getPosition(endYear));
+            }
 
             mEventStatus = event.active;
+            if (!isAdded()) {
+                return;
+            }
             mActiveBtn.setChecked(event.active);
             mPassiveBtn.setChecked(!event.active);
 
-            mNameEditText.setText(event.name);
-            mAddressEditText.setText(event.address);
-            mDescriptionEditText.setText(event.description);
-
-            //TODO exception raised: Fragment EventManagerFragment{dfa61b3} not attached to Activity
-            mPhoneNumberEditText.setText(event.phoneNumber);
-            mCellNumberEditText.setText(event.cellNumber);
+            setTextInFragment(mNameEditText, event.name);
+            setTextInFragment(mAddressEditText, event.address);
+            setTextInFragment(mDescriptionEditText, event.description);
+            setTextInFragment(mPhoneNumberEditText, event.phoneNumber);
+            setTextInFragment(mCellNumberEditText, event.cellNumber);
 
             mSelectedCatId = event.eventCategoryId;
             mSelectedProvinceId = event.locationId.provinceId;
@@ -863,36 +858,35 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             Province province = Province.getProvinceById(mSelectedProvinceId);
             City city = City.getCityById(mSelectedCityId);
 
-            mEventCatBtn.setText(getStringInFragment(R.string.getting_information));
+            setTextInFragment(mEventCatBtn, getStringInFragment(R.string.getting_information));
             EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
 
             if (eventCategory == null) {
                 displayShortToast(getStringInFragment(R.string.error_finding_category_name) + getStringInFragment(R.string.check_net_connection));
             } else {
-                mEventCatBtn.setText(eventCategory.getName());
+                setTextInFragment(mEventCatBtn, eventCategory.getName());
             }
 
             if (!TextUtils.isEmpty(city.getName())) {
-                mCityEditText.setText(city.getName());
+                setTextInFragment(mCityEditText, city.getName());
             }
 
             if (!TextUtils.isEmpty(province.getName())) {
-                mProvinceEditText.setText(province.getName());
+                setTextInFragment(mProvinceEditText, province.getName());
             }
 
             if (event.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
-                mStatusBarTextView.setVisibility(View.VISIBLE);
+                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
             }
 
             if (event.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
-                mEventNotVerifiedNotif.setVisibility(View.VISIBLE);
-                mStatusBarTextView.setVisibility(View.VISIBLE);
-                mStatusBarTextView.setText(getStringInFragment(R.string.please_apply_requested_modification));
+                setVisibilityInFragment(mEventNotVerifiedNotif, View.VISIBLE);
+                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
             }
 
-            if (loadImages && !TextUtils.isEmpty(event.banner) && activity != null) {
-                mBannerProgressBar.setVisibility(View.VISIBLE);
-
+            if (loadImages && !TextUtils.isEmpty(event.banner) && activity != null && isAdded()) {
+                setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 Picasso.with(activity).load(event.banner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -900,41 +894,44 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         .into(mBannerImageView, new Callback() {
                             @Override
                             public void onSuccess() {
-                                mBannerProgressBar.setVisibility(View.GONE);
-                                mBannerImageView.setFileSet(true);
+                                setVisibilityInFragment(mBannerProgressBar, View.GONE);
+                                if (isAdded()) {
+                                    mBannerImageView.setFileSet(true);
+                                }
                             }
 
                             @Override
                             public void onError() {
-                                mBannerProgressBar.setVisibility(View.GONE);
+                                setVisibilityInFragment(mBannerProgressBar, View.GONE);
                                 displayShortToast(getStringInFragment(R.string.error_displaying_event_banner) + getStringInFragment(R.string.check_net_connection));
                             }
                         });
             }
         }
 
-        mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-
+        if (isAdded()) {
+            mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        }
         setDirty(false);
     }
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
-        int scrollY = mScrollView.getScrollY();
-        // Add parallax effect
-        mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
-
+        if (isAdded()) {
+            int scrollY = mScrollView.getScrollY();
+            // Add parallax effect
+            mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if (mBannerImageView != null) {
+        if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
     }
@@ -950,12 +947,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mMainContent.setVisibility(View.GONE);
-                mEmptyView.setText(getStringInFragment(R.string.getting_information));
-                mEmptyView.setVisibility(View.VISIBLE);
-                displayProgressDialog(null);
-            }
+            setVisibilityInFragment(mMainContent, View.GONE);
+            setTextInFragment(mEmptyView, getStringInFragment(R.string.getting_information));
+            setVisibilityInFragment(mEmptyView, View.VISIBLE);
+            displayProgressDialog(null);
         }
 
         @Override
@@ -991,17 +986,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 switch (getEventReply.replyProperties.statusCode) {
                     case ReplyProperties.OK:
                         if (getEventReply.event != null) {
-                            if (isAdded()) {
-                                mEmptyView.setVisibility(View.GONE);
-                                mMainContent.setVisibility(View.VISIBLE);
-                                setEventInfo(getEventReply.event, true);
-                            }
+                            setVisibilityInFragment(mEmptyView, View.GONE);
+                            setVisibilityInFragment(mMainContent, View.VISIBLE);
+                            setEventInfo(getEventReply.event, true);
                         } else {
-                            if (isAdded()) {
-                                displayShortToast(getStringInFragment(R.string.error_getting_event_info));
-                                displaySnackbar();
-                                logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was null. simpleRequest: " + simpleRequest);
-                            }
+                            displayShortToast(getStringInFragment(R.string.error_getting_event_info));
+                            displaySnackbar();
+                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") event, but event was null. simpleRequest: " + simpleRequest);
                         }
                         break;
 
@@ -1014,8 +1005,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
                             case GetEventReply.EVENT_NOT_FOUND:
                                 if (isAdded()) {
-                                    mEmptyView.setVisibility(View.GONE);
-                                    mMainContent.setVisibility(View.VISIBLE);
+                                    setVisibilityInFragment(mEmptyView, View.GONE);
+                                    setVisibilityInFragment(mMainContent, View.VISIBLE);
                                 }
                                 mIsNew = true;
                                 logD("Event not found.");
@@ -1024,10 +1015,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            displaySnackbar();
-                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        //TODO add below line to other fragments
+                        setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
+                        displaySnackbar();
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -1041,16 +1032,17 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            //TODO add to others too
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
                 }
 
             } else {
-                if (isAdded()) {
-                    mEmptyView.setText(getStringInFragment(R.string.error_getting_event_info));
-                    displaySnackbar();
-                    displayShortToast(getStringInFragment(R.string.check_net_connection));
-                }
+                setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
+                displaySnackbar();
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }
@@ -1072,7 +1064,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     }
                 }
             });
-
 
             createOrUpdateEventRequest = new CreateOrUpdateEventRequest();
             createOrUpdateEventRequest.event = new net.honarnama.nano.Event();
@@ -1146,9 +1137,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         dismissProgressDialog();
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
-                            if (controlPanelActivity != null) {
-                                controlPanelActivity.displayUpgradeRequiredDialog();
-                            }
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
@@ -1190,7 +1181,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     case ReplyProperties.OK:
                         setEventInfo(createOrUpdateEventReply.uptodateEvent, false);
 
-                        if (mBannerImageView != null && mBannerImageView.isDeleted()) {
+                        if (isAdded() && mBannerImageView != null && mBannerImageView.isDeleted()) {
                             mBannerImageView.setDeleted(false);
                         }
 
@@ -1209,7 +1200,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                         }
                                         cToastMsg = getStringInFragment(R.string.error_uploading_event_banner) + getStringInFragment(R.string.check_net_connection);
                                     } else {
-                                        if (mBannerImageView != null)
+                                        if (isAdded() && mBannerImageView != null)
                                             mBannerImageView.setChanged(false);
                                         if (BuildConfig.DEBUG) {
                                             logD("Uploading event image done.");
@@ -1240,7 +1231,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (!isAdded()) {
             return;
         }
-        if (mSnackbar != null && mSnackbar.isShown()) {
+        if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
         }
 
@@ -1248,6 +1239,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
+
+        if (!isAdded()) {
+            return;
+        }
 
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         View sbView = mSnackbar.getView();
@@ -1258,23 +1253,28 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         Spannable spannable = (Spannable) textView.getText();
 
-        if (activity != null) {
+        if (spannable != null && activity != null) {
             spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         }
+        if (!isAdded()) {
+            return;
+        }
         sbView.setBackgroundColor(getResources().getColor(R.color.amber));
-
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
                     new getEventAsync().execute();
-                    if (mSnackbar != null && mSnackbar.isShown()) {
+                    if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
                         mSnackbar.dismiss();
                     }
                 }
             }
         });
-        mSnackbar.show();
+
+        if (isAdded()) {
+            mSnackbar.show();
+        }
     }
 
 }

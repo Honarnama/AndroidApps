@@ -548,6 +548,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
@@ -570,10 +572,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            displaySnackbar();
-                            displayShortToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
+                        displaySnackbar();
+                        displayShortToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -861,6 +862,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             if (controlPanelActivity != null) {
                                 controlPanelActivity.displayUpgradeRequiredDialog();
                             }
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
 
                         break;
@@ -884,35 +887,33 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
 
-        if (!isAdded()) {
-            return;
-        }
-        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
-        View sbView = mSnackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-        textView.setSingleLine(false);
-        textView.setGravity(Gravity.CENTER);
-        Spannable spannable = (Spannable) textView.getText();
+        if (isAdded()) {
+            mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
 
-        if (activity != null) {
-            spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+            View sbView = mSnackbar.getView();
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    new getItemAsync().execute();
-                    if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
-                        mSnackbar.dismiss();
+            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setBackgroundColor(getResources().getColor(R.color.amber));
+            textView.setSingleLine(false);
+            textView.setGravity(Gravity.CENTER);
+            Spannable spannable = (Spannable) textView.getText();
+
+            if (activity != null) {
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new getItemAsync().execute();
+                        if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
+                            mSnackbar.dismiss();
+                        }
                     }
                 }
-            }
-        });
-
-        if (isAdded()) {
+            });
             mSnackbar.show();
         }
 

@@ -41,7 +41,7 @@
                     android:layout_centerHorizontal="true"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:text="برای استفاده از تمامی امکانات برنامه، لطفا نسخه جدید آن را از کافه بازار بگیرید."
+                    android:text="@string/upgrade_to_new_version"
                     android:singleLine="false"
                     android:layout_below="@id/liked_title"
                     android:textColor="@color/gray"
