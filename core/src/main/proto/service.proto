@@ -299,7 +299,7 @@ message CreateOrUpdateStoreReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    ALREADY_HAS_STORE = 1; // Only while creating 
+    ALREADY_HAS_STORE = 1; // Only while creating
     DUPLICATE_NAME = 2;
     STORE_NOT_FOUND = 3; // Only while updating
     EMPTY_STORE = 4; // Only while updating
@@ -423,7 +423,7 @@ message CreateOrUpdateEventReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    ALREADY_HAS_EVENT = 1; // Only while creating 
+    ALREADY_HAS_EVENT = 1; // Only while creating
     STORE_NOT_CREATED = 3; // Only while creating
     EVENT_NOT_FOUND = 4; // Only while updating
     EMPTY_EVENT = 5; // Only while updating
@@ -431,4 +431,31 @@ message CreateOrUpdateEventReply {
   ErrorCode errorCode = 2;
   Event uptodateEvent = 3;
   string bannerModificationUrl = 4;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+service CommunicationService {
+  rpc CreateMessage(CreateMessageRequest) returns (CreateMessageReply) {
+    option (google.api.http) = {
+      post: "/v1/messages"
+      body: "*"
+    };
+  }
+}
+
+message CreateMessageRequest {
+  RequestProperties requestProperties = 1;
+  uint64 toUserId = 2;
+  uint64 inReplyTo = 3;
+  string message = 4;
+}
+
+message CreateMessageReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    INVALID_TO_ERROR = 1;
+    TOO_MUCH_MESSAGES_ERROR = 2;
+  }
+  ErrorCode errorCode = 2;
 }
