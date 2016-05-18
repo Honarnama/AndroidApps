@@ -201,6 +201,22 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         }
     }
 
+    //TODO use this in fragments instead of settext
+    public String getTextInFragment(EditText editText) {
+        if (editText != null && isAdded()) {
+            return editText.getText().toString().trim();
+        }
+        return "";
+    }
+
+
+    public String getTextInFragment(Button button) {
+        if (button != null && isAdded()) {
+            return button.getText().toString().trim();
+        }
+        return "";
+    }
+
     public void setErrorInFragment(EditText editText, String errorMsg) {
         if (editText != null && isAdded()) {
             if (TextUtils.isEmpty(errorMsg)) {
@@ -218,6 +234,18 @@ public abstract class HonarnamaBaseFragment extends Fragment {
             } else {
                 textView.setError(errorMsg);
             }
+        }
+    }
+
+    public void requestFocusInFragment(TextView textView) {
+        if (textView != null && isAdded()) {
+            textView.requestFocus();
+        }
+    }
+
+    public void requestFocusInFragment(EditText editText) {
+        if (editText != null && isAdded()) {
+            editText.requestFocus();
         }
     }
 

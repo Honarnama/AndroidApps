@@ -15,13 +15,16 @@ public class WindowUtil {
     public static void hideKeyboard(Context context) {
         InputMethodManager inputManager = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
+        View v;
+        if (context != null && context instanceof Activity) {        // check if no view has focus:
+            v = ((Activity) context).getCurrentFocus();
 
-        // check if no view has focus:
-        View v = ((Activity) context).getCurrentFocus();
-        if (v == null)
-            return;
+            if (v == null) {
+                return;
+            }
+            inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
 
-        inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
     /****
