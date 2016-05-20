@@ -168,6 +168,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     case ReplyProperties.UPGRADE_REQUIRED:
                         displayUpgradeRequiredDialog();
                         break;
+
                 }
             }
         };

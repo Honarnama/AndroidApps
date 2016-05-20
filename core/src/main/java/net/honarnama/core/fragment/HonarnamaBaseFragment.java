@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,15 +127,11 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
 
     public void displayLongToast(String message) {
-        if (isAdded()) {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
     }
 
     public void displayShortToast(String message) {
-        if (isAdded()) {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -201,6 +199,18 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         }
     }
 
+    public void setSelectionInFragment(Spinner spinner, int pos) {
+        if (spinner != null && isAdded()) {
+            spinner.setSelection(pos);
+        }
+    }
+
+    public void setCheckedInFragment(RadioButton radioButton, boolean checked) {
+        if (radioButton != null && isAdded()) {
+            radioButton.setChecked(checked);
+        }
+    }
+
     //TODO use this in fragments instead of settext
     public String getTextInFragment(EditText editText) {
         if (editText != null && isAdded()) {
@@ -246,6 +256,12 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     public void requestFocusInFragment(EditText editText) {
         if (editText != null && isAdded()) {
             editText.requestFocus();
+        }
+    }
+
+    public void requestFocusInFragment(Spinner spinner) {
+        if (spinner != null && isAdded()) {
+            spinner.requestFocus();
         }
     }
 

@@ -105,7 +105,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private Tracker mTracker;
 
     TextWatcher mTextWatcherToMarkDirty;
-    CreateOrUpdateItemAsync mCreateOrUpdateItemAsync;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -355,8 +354,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             case R.id.saveItemButton:
                 WindowUtil.hideKeyboard(activity);
                 if (formInputsAreValid()) {
-                    mCreateOrUpdateItemAsync = new CreateOrUpdateItemAsync();
-                    mCreateOrUpdateItemAsync.execute();
+                    new CreateOrUpdateItemAsync().execute();
                 }
                 break;
             case R.id.choose_art_category_btn:
@@ -400,36 +398,42 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (isAdded() && mScrollView != null) {
                 mScrollView.fullScroll(ScrollView.FOCUS_UP);
             }
+            displayShortToast(getStringInFragment(R.string.error_edit_item_no_image));
             return false;
         }
 
         if (title.length() == 0) {
             requestFocusInFragment(mTitleEditText);
             setErrorInFragment(mTitleEditText, getStringInFragment(R.string.error_edit_item_title_is_empty));
+            displayShortToast(getStringInFragment(R.string.error_edit_item_title_is_empty));
             return false;
         }
 
         if (price.length() == 0) {
             requestFocusInFragment(mPriceEditText);
             setErrorInFragment(mPriceEditText, getStringInFragment(R.string.error_item_price_not_set));
+            displayShortToast(getStringInFragment(R.string.error_item_price_not_set));
             return false;
         }
 
         if (Integer.valueOf(price) < 100) {
             requestFocusInFragment(mPriceEditText);
             setErrorInFragment(mPriceEditText, getStringInFragment(R.string.error_item_price_is_low));
+            displayShortToast(getStringInFragment(R.string.error_item_price_is_low));
             return false;
         }
 
         if (mCategoryId < 0) {
             requestFocusInFragment(mCategoryTextView);
             setErrorInFragment(mCategoryTextView, getStringInFragment(R.string.error_category_is_not_selected));
+            displayShortToast(getStringInFragment(R.string.error_category_is_not_selected));
             return false;
         }
 
         if (description.length() == 0) {
             requestFocusInFragment(mDescriptionEditText);
             setErrorInFragment(mDescriptionEditText, getStringInFragment(R.string.error_edit_item_description_is_empty));
+            displayShortToast(getStringInFragment(R.string.error_edit_item_description_is_empty));
             return false;
         }
 
@@ -585,6 +589,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             setItemInfo(getItemReply.item, true);
                         } else {
                             if (isAdded()) {
+                                setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
                                 displayShortToast(getStringInFragment(R.string.error_getting_event_info));
                                 displayRetrySnackbar();
                                 logE("Got OK code for getting item (id " + mItemId + "), but item was null. getOrDeleteItemRequest: " + getOrDeleteItemRequest);
@@ -872,26 +877,33 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         dismissSnackbar();
 
         Activity activity = getActivity();
+        View sbView = null;
+        TextView textView = null;
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
 
-        if (isAdded()) {
-            mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        if (!isAdded()) {
+            return;
+        }
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
 
-            View sbView = mSnackbar.getView();
+        if (mSnackbar != null) {
+            sbView = mSnackbar.getView();
+        }
+        if (sbView != null) {
+            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+            textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        }
 
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        if (textView != null) {
             textView.setBackgroundColor(getResources().getColor(R.color.amber));
             textView.setSingleLine(false);
             textView.setGravity(Gravity.CENTER);
             Spannable spannable = (Spannable) textView.getText();
-
             if (activity != null) {
                 spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
-            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
-
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -901,8 +913,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     }
                 }
             });
+        }
+
+        if (isAdded() && mSnackbar != null) {
             mSnackbar.show();
         }
+
     }
 
     public void dismissSnackbar() {

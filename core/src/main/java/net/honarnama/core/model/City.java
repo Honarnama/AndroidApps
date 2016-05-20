@@ -96,7 +96,7 @@ public class City {
 
                     for (int i = 0; i < cities.size(); i++) {
                         City city = cities.get(i);
-                        HashMap<Integer, String> tempMap = new HashMap<Integer, String>();
+                        HashMap<Integer, String> tempMap = new HashMap();
                         tempMap.put(city.getId(), city.getName());
                         mCityOrderedTreehMap.put(city.getOrder(), tempMap);
                     }
