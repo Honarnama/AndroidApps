@@ -33,7 +33,6 @@ import android.widget.ToggleButton;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-
 public class UserAccountFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     public static UserAccountFragment mUserAccountFragment;
@@ -68,9 +67,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 logD("User was not logged in!");
             }
             HonarnamaUser.logout(activity);
-            if (activity == null) {
-                displayLongToast(getStringInFragment(R.string.login_again));
-            }
+            displayLongToast(getStringInFragment(R.string.login_again));
         }
 
         View rootView = inflater.inflate(R.layout.fragment_user_account, container, false);
@@ -122,23 +119,21 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     public void setUserInfo() {
-        if (!isAdded()) {
-            return;
-        }
-        mNameEditText.setText(HonarnamaUser.getName());
-        mGenderWoman.setChecked(false);
-        mGenderMan.setChecked(false);
-        mGenderUnspecified.setChecked(false);
+
+        setTextInFragment(mNameEditText, HonarnamaUser.getName());
+        setCheckedInFragment(mGenderWoman, false);
+        setCheckedInFragment(mGenderMan, false);
+        setCheckedInFragment(mGenderUnspecified, false);
 
         switch (HonarnamaUser.getGender()) {
             case Account.FEMALE:
-                mGenderWoman.setChecked(true);
+                setCheckedInFragment(mGenderWoman, true);
                 break;
             case Account.MALE:
-                mGenderMan.setChecked(true);
+                setCheckedInFragment(mGenderMan, true);
                 break;
             case Account.UNSPECIFIED:
-                mGenderUnspecified.setChecked(true);
+                setCheckedInFragment(mGenderUnspecified, true);
                 break;
         }
 
@@ -146,19 +141,17 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
     @Override
     public void onClick(View view) {
-        if (!isAdded()) {
-            return;
-        }
         switch (view.getId()) {
             case R.id.alter_account_info_btn:
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
-                if (mNameEditText.getText().toString().trim().length() > 0) {
+                if (getTextInFragment(mNameEditText).length() > 0) {
                     changeUserProfile();
                 } else {
-                    mNameEditText.requestFocus();
-                    mNameEditText.setError(getStringInFragment(R.string.error_name_not_set));
+                    requestFocusInFragment(mNameEditText);
+                    setErrorInFragment(mNameEditText, getStringInFragment(R.string.error_name_not_set));
+                    displayShortToast(getStringInFragment(R.string.error_name_not_set));
                 }
                 break;
         }
@@ -166,9 +159,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     private void changeUserProfile() {
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            return;
-        } else {
+        if (NetworkManager.getInstance().isNetworkEnabled(true)) {
             new UpdateAccountAsync().execute();
         }
     }
@@ -191,11 +182,11 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
             createOrUpdateAccountRequest.account = new Account();
 
-            if (!isAdded()) {
+            if (!isAdded() || mGenderWoman == null) {
                 return;
             }
             genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
-            name = mNameEditText.getText().toString().trim();
+            name = getTextInFragment(mNameEditText);
 
             createOrUpdateAccountRequest.account.id = HonarnamaUser.getId();
             createOrUpdateAccountRequest.account.name = name;
@@ -248,7 +239,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
             if (updateAccountReply != null) {
                 switch (updateAccountReply.replyProperties.statusCode) {
-
                     case ReplyProperties.CLIENT_ERROR:
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case UpdateAccountReply.NO_CLIENT_ERROR:
@@ -271,9 +261,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         HonarnamaUser.logout(activity);
-                        if (activity == null) {
-                            displayLongToast(getStringInFragment(R.string.login_again));
-                        }
+                        displayLongToast(getStringInFragment(R.string.login_again));
                         break;
 
                     case ReplyProperties.OK:

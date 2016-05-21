@@ -21,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -180,7 +181,6 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         }
     }
 
-    //TODO use this in fragments instead of settext
     public void setTextInFragment(EditText editText, String text) {
         if (editText != null && isAdded()) {
             editText.setText(text);
@@ -211,7 +211,12 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         }
     }
 
-    //TODO use this in fragments instead of settext
+    public void setCheckedInFragment(ToggleButton toggleButton, boolean checked) {
+        if (toggleButton != null && isAdded()) {
+            toggleButton.setChecked(checked);
+        }
+    }
+
     public String getTextInFragment(EditText editText) {
         if (editText != null && isAdded()) {
             return editText.getText().toString().trim();

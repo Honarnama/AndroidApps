@@ -1033,7 +1033,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        //TODO add below line to other fragments
                         setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
                         displayRetrySnackbar();
                         displayShortToast(getStringInFragment(R.string.server_error_try_again));

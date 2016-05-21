@@ -562,7 +562,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
-                logD("Loading logo ...");
+                logD("Loading store logo ...");
 
                 setVisibilityInFragment(mLogoProgressBar, View.VISIBLE);
                 Picasso.with(activity).load(store.logo)
@@ -588,7 +588,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (loadImages && !TextUtils.isEmpty(store.banner) && activity != null && isAdded()) {
-                logD("Loading banner...");
+                logD("Loading store banner...");
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 Picasso.with(activity).load(store.banner)
                         .error(R.drawable.party_flags)
@@ -687,7 +687,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             Activity activity = getActivity();
             if (BuildConfig.DEBUG) {
-                logD("getStoreReply is: " + getStoreReply);
+                logD("get store reply is: " + getStoreReply);
             }
 
             dismissProgressDialog();
