@@ -682,7 +682,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         }
 
-        if (isAdded()) {
+        if (isAdded() && mTitleEditText != null) {
             mTitleEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
@@ -851,17 +851,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        dismissProgressDialog();
-
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             if (controlPanelActivity != null) {
                                 controlPanelActivity.displayUpgradeRequiredDialog();
                             }
                         } else {
-                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                            cToastMsg = getStringInFragment(R.string.upgrade_to_new_version);
                         }
-
+                        dismissProgressDialog();
                         break;
                 }
 

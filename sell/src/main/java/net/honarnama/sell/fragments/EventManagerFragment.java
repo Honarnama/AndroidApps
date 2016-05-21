@@ -308,6 +308,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     case ReplyProperties.UPGRADE_REQUIRED:
                         if (activity != null) {
                             ((ControlPanelActivity) activity).displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
 
@@ -485,14 +487,16 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
-                    setErrorInFragment(mProvinceEditText, "");
-                    if (mSelectedProvinceId != selectedProvince.getId()) {
-                        setDirty(true);
+                    if (selectedProvince != null) {
+                        setErrorInFragment(mProvinceEditText, "");
+                        if (mSelectedProvinceId != selectedProvince.getId()) {
+                            setDirty(true);
+                        }
+                        mSelectedProvinceId = selectedProvince.getId();
+                        mSelectedProvinceName = selectedProvince.getName();
+                        setTextInFragment(mProvinceEditText, mSelectedProvinceName);
+                        rePopulateCityList();
                     }
-                    mSelectedProvinceId = selectedProvince.getId();
-                    mSelectedProvinceName = selectedProvince.getName();
-                    setTextInFragment(mProvinceEditText, mSelectedProvinceName);
-                    rePopulateCityList();
                     provinceDialog.dismiss();
                 }
             });
@@ -567,16 +571,18 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                    setErrorInFragment(mCityEditText, "");
-                    for (int key : selectedCity.keySet()) {
-                        if (mSelectedCityId != key) {
-                            setDirty(true);
+                    if (selectedCity != null) {
+                        setErrorInFragment(mCityEditText, "");
+                        for (int key : selectedCity.keySet()) {
+                            if (mSelectedCityId != key) {
+                                setDirty(true);
+                            }
+                            mSelectedCityId = key;
                         }
-                        mSelectedCityId = key;
-                    }
-                    for (String value : selectedCity.values()) {
-                        mSelectedCityName = value;
-                        setTextInFragment(mCityEditText, mSelectedCityName);
+                        for (String value : selectedCity.values()) {
+                            mSelectedCityName = value;
+                            setTextInFragment(mCityEditText, mSelectedCityName);
+                        }
                     }
                     cityDialog.dismiss();
                 }
@@ -800,7 +806,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (mBannerImageView != null) {
+        if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onActivityResult(requestCode, resultCode, intent);
         }
     }
@@ -889,6 +895,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             if (event.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
                 setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
             }
 
             if (event.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
@@ -907,7 +914,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             @Override
                             public void onSuccess() {
                                 setVisibilityInFragment(mBannerProgressBar, View.GONE);
-                                if (isAdded()) {
+                                if (isAdded() && mBannerImageView != null) {
                                     mBannerImageView.setFileSet(true);
                                 }
                             }
@@ -921,7 +928,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
         }
 
-        if (isAdded()) {
+        if (isAdded() && mNameEditText != null) {
             mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
@@ -978,7 +985,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 getEventReply = stub.getMyEvent(simpleRequest);
                 return getEventReply;
             } catch (Exception e) {
-                logE("Error getting user info. simpleRequest: " + simpleRequest + ". Error: " + e, e);
+                logE("Error getting event info. simpleRequest: " + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -1042,7 +1049,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         } else {
-                            //TODO add to others too
                             displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
@@ -1140,13 +1146,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             if (createOrUpdateEventReply != null) {
                 switch (createOrUpdateEventReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        dismissProgressDialog();
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         } else {
-                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                            cToastMsg = getStringInFragment(R.string.upgrade_to_new_version);
                         }
+                        dismissProgressDialog();
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (createOrUpdateEventReply.errorCode) {
@@ -1240,9 +1246,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     }
 
     public void displayRetrySnackbar() {
-        if (!isAdded()) {
-            return;
-        }
 
         dismissSnackbar();
         Activity activity = getActivity();

@@ -39,7 +39,6 @@ import android.widget.TextView;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-
 public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.OnItemClickListener {
 
     ItemsAdapter mAdapter;
@@ -79,19 +78,18 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         final View rootView = inflater.inflate(R.layout.fragment_items, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListView = rootView.findViewById(R.id.empty_list_view);
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
         listView.setEmptyView(mEmptyListView);
 
-        new getItemsAsync().execute();
 
         Activity activity = getActivity();
         if (activity != null) {
             mAdapter = new ItemsAdapter(activity);
             listView.setAdapter(mAdapter);
+            new getItemsAsync().execute();
+            listView.setOnItemClickListener(this);
         }
-        listView.setOnItemClickListener(this);
-        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
-                .coordinatorLayout);
-
         return rootView;
     }
 
@@ -99,10 +97,12 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (NetworkManager.getInstance().isNetworkEnabled(true)) {
             Activity activity = getActivity();
-            if (activity != null) {
+            if (activity != null && mAdapter != null) {
                 net.honarnama.nano.Item item = mAdapter.getItem(i);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) activity;
-                controlPanelActivity.switchFragmentToEditItem(item.id);
+                if (item != null) {
+                    controlPanelActivity.switchFragmentToEditItem(item.id);
+                }
             }
         }
     }
@@ -120,7 +120,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             super.onPreExecute();
             if (isAdded()) {
                 TextView emptyListTextView = (TextView) mEmptyListView;
-                emptyListTextView.setText(getStringInFragment(R.string.getting_items));
+                setTextInFragment(emptyListTextView, getStringInFragment(R.string.getting_items));
                 displayProgressDialog(null);
             }
         }
@@ -157,6 +157,8 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
@@ -176,19 +178,16 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         if (isAdded()) {
                             mAdapter.setItems(null);
                             TextView emptyListTextView = (TextView) mEmptyListView;
-                            emptyListTextView.setText(getStringInFragment(R.string.item_not_found));
+                            setTextInFragment(emptyListTextView, getStringInFragment(R.string.item_not_found));
                             mAdapter.notifyDataSetChanged();
-                            displaySnackbar();
+                            displayRetrySnackbar();
                             displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
-
                         HonarnamaUser.logout(activity);
-                        if (activity == null) {
-                            displayLongToast(getStringInFragment(R.string.login_again));
-                        }
+                        displayLongToast(getStringInFragment(R.string.login_again));
                         break;
 
                     case ReplyProperties.OK:
@@ -196,7 +195,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                             net.honarnama.nano.Item itemList[] = getItemsReply.items;
                             mAdapter.setItems(itemList);
                             TextView emptyListTextView = (TextView) mEmptyListView;
-                            emptyListTextView.setText(getStringInFragment(R.string.has_not_registered_any_store));
+                            setTextInFragment(emptyListTextView, getStringInFragment(R.string.has_not_registered_any_store));
                             mAdapter.notifyDataSetChanged();
                         }
                         break;
@@ -206,9 +205,9 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                 if (isAdded()) {
                     mAdapter.setItems(null);
                     TextView emptyListTextView = (TextView) mEmptyListView;
-                    emptyListTextView.setText(getStringInFragment(R.string.item_not_found));
+                    setTextInFragment(emptyListTextView, getStringInFragment(R.string.item_not_found));
                     mAdapter.notifyDataSetChanged();
-                    displaySnackbar();
+                    displayRetrySnackbar();
                     displayLongToast(getStringInFragment(R.string.check_net_connection));
                 }
             }
@@ -237,43 +236,59 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 //    }
 
 
-    public void displaySnackbar() {
-        if (!isAdded()) {
-            return;
-        }
-        if (mSnackbar != null && mSnackbar.isShown()) {
-            mSnackbar.dismiss();
-        }
+    public void displayRetrySnackbar() {
+
+        dismissSnackbar();
 
         Activity activity = getActivity();
+        View sbView = null;
+        TextView textView = null;
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
 
-        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
-        View sbView = mSnackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-        textView.setSingleLine(false);
-        textView.setGravity(Gravity.CENTER);
-        Spannable spannable = (Spannable) textView.getText();
-        if (activity != null) {
-            spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (!isAdded()) {
+            return;
         }
-        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    new getItemsAsync().execute();
-                    if (mSnackbar != null && mSnackbar.isShown()) {
-                        mSnackbar.dismiss();
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
+        if (mSnackbar != null) {
+            sbView = mSnackbar.getView();
+        }
+
+        if (sbView != null) {
+            textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+        }
+
+        if (textView != null) {
+            textView.setBackgroundColor(getResources().getColor(R.color.amber));
+            textView.setSingleLine(false);
+            textView.setGravity(Gravity.CENTER);
+            Spannable spannable = (Spannable) textView.getText();
+            if (activity != null) {
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new getItemsAsync().execute();
+                        if (mSnackbar != null && mSnackbar.isShown()) {
+                            mSnackbar.dismiss();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        if (isAdded() && mSnackbar != null) {
+            mSnackbar.show();
+        }
+    }
 
-        mSnackbar.show();
+    public void dismissSnackbar() {
+        if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
     }
 }

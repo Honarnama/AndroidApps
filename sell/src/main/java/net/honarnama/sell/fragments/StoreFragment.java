@@ -85,16 +85,20 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private Button mRegisterStoreButton;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
-
     private ObservableScrollView mScrollView;
-
     private View mBannerFrameLayout;
-
     private EditText mProvinceEditText;
+    private EditText mCityEditText;
+    public ProgressBar mBannerProgressBar;
+    public ProgressBar mLogoProgressBar;
+    public TextView mStatusBarTextView;
+    public RelativeLayout mStoreNotVerifiedNotif;
+    Snackbar mSnackbar;
+    RelativeLayout mMainContent;
+    TextView mEmptyView;
+
     public TreeMap<Number, Province> mProvinceObjectsTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
-
-    private EditText mCityEditText;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
 
@@ -103,12 +107,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     public int mSelectedCityId = -1;
     public String mSelectedCityName;
-
-    public ProgressBar mBannerProgressBar;
-    public ProgressBar mLogoProgressBar;
-
-    public TextView mStatusBarTextView;
-    public RelativeLayout mStoreNotVerifiedNotif;
 
     public static StoreFragment mStoreFragment;
 
@@ -121,14 +119,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     private CoordinatorLayout mCoordinatorLayout;
 
-    Snackbar mSnackbar;
-
     private boolean mDirty = false;
     TextWatcher mTextWatcherToMarkDirty;
-
-    RelativeLayout mMainContent;
-    TextView mEmptyView;
-
 
     @Override
     public String getTitle(Context context) {
@@ -154,7 +146,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("StoreFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -269,8 +260,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        if (isAdded() && activity != null) {
+                        if (activity != null) {
                             ((ControlPanelActivity) activity).displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
 
@@ -280,7 +273,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
             }
         };
-
 
         return rootView;
     }
@@ -304,9 +296,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         Activity activity = getActivity();
         switch (view.getId()) {
             case R.id.register_store_button:
-                if (isAdded() && activity != null) {
-                    WindowUtil.hideKeyboard(activity);
-                }
+                WindowUtil.hideKeyboard(activity);
                 if (formInputsAreValid()) {
                     new CreateOrUpdateStoreAsync().execute();
                 }
@@ -326,8 +316,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
         ListView provincesListView;
         ProvincesAdapter provincesAdapter;
-
         Activity activity = getActivity();
+
         if (!(activity != null && isAdded())) {
             return;
         }
@@ -359,14 +349,16 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Province selectedProvince = mProvinceObjectsTreeMap.get(position + 1);
-                    if (mSelectedProvinceId != selectedProvince.getId()) {
-                        setDirty(true);
+                    if (selectedProvince != null) {
+                        if (mSelectedProvinceId != selectedProvince.getId()) {
+                            setDirty(true);
+                        }
+                        setErrorInFragment(mProvinceEditText, "");
+                        mSelectedProvinceId = selectedProvince.getId();
+                        mSelectedProvinceName = selectedProvince.getName();
+                        setTextInFragment(mProvinceEditText, mSelectedProvinceName);
+                        rePopulateCityList();
                     }
-                    mProvinceEditText.setError(null);
-                    mSelectedProvinceId = selectedProvince.getId();
-                    mSelectedProvinceName = selectedProvince.getName();
-                    mProvinceEditText.setText(mSelectedProvinceName);
-                    rePopulateCityList();
                     provinceDialog.dismiss();
                 }
             });
@@ -394,7 +386,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
                         for (int key : tempSet) {
                             mSelectedCityId = key;
-                            mCityEditText.setText(mCityHashMap.get(key));
+                            setTextInFragment(mCityEditText, mCityHashMap.get(key));
                         }
                     }
                 }
@@ -415,27 +407,29 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         final Dialog cityDialog = new Dialog(activity, R.style.DialogStyle);
         cityDialog.setContentView(R.layout.choose_city);
         cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
-
         cityAdapter = new CityAdapter(activity, mCityOrderedTreeMap);
         cityListView.setAdapter(cityAdapter);
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
-                for (int key : selectedCity.keySet()) {
-                    if (mSelectedCityId != key) {
-                        setDirty(true);
+
+                if (selectedCity != null) {
+                    setErrorInFragment(mCityEditText, "");
+                    for (int key : selectedCity.keySet()) {
+                        if (mSelectedCityId != key) {
+                            setDirty(true);
+                        }
+                        mSelectedCityId = key;
                     }
-                    mSelectedCityId = key;
-                }
-                for (String value : selectedCity.values()) {
-                    mSelectedCityName = value;
-                    mCityEditText.setText(mSelectedCityName);
+                    for (String value : selectedCity.values()) {
+                        mSelectedCityName = value;
+                        setTextInFragment(mCityEditText, mSelectedCityName);
+                    }
                 }
                 cityDialog.dismiss();
             }
         });
-        mCityEditText.setError(null);
         cityDialog.setCancelable(true);
         cityDialog.setTitle(getStringInFragment(R.string.select_city));
         cityDialog.show();
@@ -450,57 +444,64 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             return false;
         }
 
-        mNameEditText.setError(null);
-        mProvinceEditText.setError(null);
-        mCityEditText.setError(null);
-        mDescriptionEditText.setError(null);
-        mCellNumberEditText.setError(null);
-        mPhoneNumberEditText.setError(null);
+        setErrorInFragment(mNameEditText, "");
+        setErrorInFragment(mProvinceEditText, "");
+        setErrorInFragment(mCityEditText, "");
+        setErrorInFragment(mDescriptionEditText, "");
+        setErrorInFragment(mCellNumberEditText, "");
+        setErrorInFragment(mPhoneNumberEditText, "");
 
-        if (mNameEditText.getText().toString().trim().length() == 0) {
-            mNameEditText.requestFocus();
-            mNameEditText.setError(getStringInFragment(R.string.error_store_name_cant_be_empty));
+        if (getTextInFragment(mNameEditText).length() == 0) {
+            requestFocusInFragment(mNameEditText);
+            setErrorInFragment(mNameEditText, getStringInFragment(R.string.error_store_name_cant_be_empty));
+            displayShortToast(getStringInFragment(R.string.error_store_name_cant_be_empty));
             return false;
         }
 
         if (mSelectedProvinceId < 0) {
-            mProvinceEditText.requestFocus();
-            mProvinceEditText.setError(getStringInFragment(R.string.error_store_province_not_set));
+            requestFocusInFragment(mProvinceEditText);
+            setErrorInFragment(mProvinceEditText, getStringInFragment(R.string.error_store_province_not_set));
+            displayShortToast(getStringInFragment(R.string.error_store_province_not_set));
             return false;
         }
 
         if (mSelectedCityId < 0) {
-            mCityEditText.requestFocus();
-            mCityEditText.setError(getStringInFragment(R.string.error_store_city_not_set));
+            requestFocusInFragment(mCityEditText);
+            setErrorInFragment(mCityEditText, getStringInFragment(R.string.error_store_city_not_set));
+            displayShortToast(getStringInFragment(R.string.error_store_city_not_set));
             return false;
         }
 
-        if (mDescriptionEditText.getText().toString().trim().length() == 0) {
-            mDescriptionEditText.requestFocus();
-            mDescriptionEditText.setError(getStringInFragment(R.string.store_desc_cant_be_empty));
+        if (getTextInFragment(mDescriptionEditText).length() == 0) {
+            requestFocusInFragment(mDescriptionEditText);
+            setErrorInFragment(mDescriptionEditText, getStringInFragment(R.string.store_desc_cant_be_empty));
+            displayShortToast(getStringInFragment(R.string.store_desc_cant_be_empty));
             return false;
         }
 
-        if (mCellNumberEditText.getText().toString().trim().length() == 0 && mPhoneNumberEditText.getText().toString().trim().length() == 0) {
-            mCellNumberEditText.requestFocus();
-            mCellNumberEditText.setError(getStringInFragment(R.string.fill_at_least_one_communication_ways));
+        if (getTextInFragment(mCellNumberEditText).length() == 0 && getTextInFragment(mPhoneNumberEditText).length() == 0) {
+            requestFocusInFragment(mCellNumberEditText);
+            setErrorInFragment(mCellNumberEditText, getStringInFragment(R.string.fill_at_least_one_communication_ways));
+            displayShortToast(getStringInFragment(R.string.fill_at_least_one_communication_ways));
             return false;
         }
 
-        if (mCellNumberEditText.getText().toString().trim().length() > 0) {
+        if (getTextInFragment(mCellNumberEditText).length() > 0) {
             String mobileNumberPattern = "^09\\d{9}$";
-            if (!mCellNumberEditText.getText().toString().trim().matches(mobileNumberPattern)) {
-                mCellNumberEditText.requestFocus();
-                mCellNumberEditText.setError(getStringInFragment(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
+            if (!getTextInFragment(mCellNumberEditText).matches(mobileNumberPattern)) {
+                requestFocusInFragment(mCellNumberEditText);
+                setErrorInFragment(mCellNumberEditText, getStringInFragment(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
+                displayShortToast(getStringInFragment(net.honarnama.base.R.string.error_mobile_number_is_not_valid));
                 return false;
             }
         }
 
-        if (mPhoneNumberEditText.getText().toString().trim().length() > 0) {
+        if (getTextInFragment(mPhoneNumberEditText).length() > 0) {
             String phoneNumberPattern = "^(0[0-9]{2,3}-?)?[0-9]{6,14}$";
-            if (!mPhoneNumberEditText.getText().toString().trim().matches(phoneNumberPattern)) {
-                mPhoneNumberEditText.requestFocus();
-                mPhoneNumberEditText.setError(getStringInFragment(R.string.error_phone_number_is_not_valid));
+            if (!getTextInFragment(mPhoneNumberEditText).matches(phoneNumberPattern)) {
+                requestFocusInFragment(mPhoneNumberEditText);
+                setErrorInFragment(mPhoneNumberEditText, getStringInFragment(R.string.error_phone_number_is_not_valid));
+                displayShortToast(getStringInFragment(R.string.error_phone_number_is_not_valid));
                 return false;
             }
         }
@@ -516,7 +517,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (isAdded()) {
+        if (isAdded() && mLogoImageView != null) {
             mLogoImageView.onActivityResult(requestCode, resultCode, intent);
             mBannerImageView.onActivityResult(requestCode, resultCode, intent);
         }
@@ -531,40 +532,39 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             Activity activity = getActivity();
             mIsNew = false;
             mStoreId = store.id;
-            mNameEditText.setText(store.name);
-            mDescriptionEditText.setText(store.description);
-
-            mPhoneNumberEditText.setText(store.publicPhoneNumber);
-            mCellNumberEditText.setText(store.publicCellNumber);
+            setTextInFragment(mNameEditText, store.name);
+            setTextInFragment(mDescriptionEditText, store.description);
+            setTextInFragment(mPhoneNumberEditText, store.publicPhoneNumber);
+            setTextInFragment(mCellNumberEditText, store.publicCellNumber);
 
             LocationId storeLocation = store.locationId;
             City city = City.getCityById(storeLocation.cityId);
             Province province = Province.getProvinceById(storeLocation.provinceId);
 
             if (city != null) {
-                mCityEditText.setText(city.getName());
+                setTextInFragment(mCityEditText, city.getName());
                 mSelectedCityId = city.getId();
             }
 
             if (province != null) {
-                mProvinceEditText.setText(province.getName());
+                setTextInFragment(mProvinceEditText, province.getName());
                 mSelectedProvinceId = province.getId();
             }
 
             if (store.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
-                mStatusBarTextView.setVisibility(View.VISIBLE);
+                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
             }
 
             if (store.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
-                mStoreNotVerifiedNotif.setVisibility(View.VISIBLE);
-                mStatusBarTextView.setVisibility(View.VISIBLE);
-                mStatusBarTextView.setText(getStringInFragment(R.string.please_apply_requested_modification));
+                setVisibilityInFragment(mStoreNotVerifiedNotif, View.VISIBLE);
+                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
             }
 
-            if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null) {
+            if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
                 logD("Loading logo ...");
 
-                mLogoProgressBar.setVisibility(View.VISIBLE);
+                setVisibilityInFragment(mLogoProgressBar, View.VISIBLE);
                 Picasso.with(activity).load(store.logo)
                         .error(R.drawable.default_logo_hand)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -572,23 +572,24 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         .into(mLogoImageView, new Callback() {
                             @Override
                             public void onSuccess() {
-                                mLogoProgressBar.setVisibility(View.GONE);
-                                mLogoImageView.setFileSet(true);
+                                setVisibilityInFragment(mLogoProgressBar, View.GONE);
+                                if (mLogoImageView != null && isAdded()) {
+                                    mLogoImageView.setFileSet(true);
+                                }
                             }
 
                             @Override
                             public void onError() {
-                                mLogoProgressBar.setVisibility(View.GONE);
+                                setVisibilityInFragment(mLogoProgressBar, View.GONE);
                                 displayShortToast(getStringInFragment(R.string.error_displaying_store_logo) + getStringInFragment(R.string.check_net_connection));
                             }
                         });
 
             }
 
-            if (loadImages && !TextUtils.isEmpty(store.banner) && activity != null) {
-                logD("Loading logo ...");
-                mBannerProgressBar.setVisibility(View.VISIBLE);
-
+            if (loadImages && !TextUtils.isEmpty(store.banner) && activity != null && isAdded()) {
+                logD("Loading banner...");
+                setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 Picasso.with(activity).load(store.banner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -596,43 +597,48 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         .into(mBannerImageView, new Callback() {
                             @Override
                             public void onSuccess() {
-                                mBannerProgressBar.setVisibility(View.GONE);
-                                mBannerImageView.setFileSet(true);
+                                setVisibilityInFragment(mBannerProgressBar, View.GONE);
+                                if (isAdded() && mBannerImageView != null) {
+                                    mBannerImageView.setFileSet(true);
+                                }
                             }
 
                             @Override
                             public void onError() {
-                                mBannerProgressBar.setVisibility(View.GONE);
+                                setVisibilityInFragment(mBannerProgressBar, View.GONE);
                                 displayShortToast(getStringInFragment(R.string.error_displaying_store_banner) + getStringInFragment(R.string.check_net_connection));
                             }
                         });
             }
         }
 
-        mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        if (isAdded() && mNameEditText != null) {
+            mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+        }
         setDirty(false);
     }
 
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
-        int scrollY = mScrollView.getScrollY();
-        // Add parallax effect
-        mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
-
+        if (isAdded()) {
+            int scrollY = mScrollView.getScrollY();
+            // Add parallax effect
+            mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mLogoImageView != null) {
+        if (isAdded() && mLogoImageView != null) {
             mLogoImageView.onSaveInstanceState(outState);
         }
 
-        if (mBannerImageView != null) {
+        if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
     }
@@ -648,12 +654,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mMainContent.setVisibility(View.GONE);
-                mEmptyView.setText(getStringInFragment(R.string.getting_information));
-                mEmptyView.setVisibility(View.VISIBLE);
-                displayProgressDialog(null);
-            }
+            setVisibilityInFragment(mMainContent, View.GONE);
+            setTextInFragment(mEmptyView, getStringInFragment(R.string.getting_information));
+            setVisibilityInFragment(mEmptyView, View.VISIBLE);
+            displayProgressDialog(null);
         }
 
         @Override
@@ -672,7 +676,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 getStoreReply = stub.getMyStore(simpleRequest);
                 return getStoreReply;
             } catch (Exception e) {
-                logE("Error getting user info. simpleRequest:" + simpleRequest + ". Error: " + e, e);
+                logE("Error getting store info. simpleRequest:" + simpleRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -692,19 +696,17 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                     case ReplyProperties.UPGRADE_REQUIRED:
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
-                            if (controlPanelActivity != null) {
-                                controlPanelActivity.displayUpgradeRequiredDialog();
-                            }
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (getStoreReply.errorCode) {
                             case GetStoreReply.STORE_NOT_FOUND:
                                 mIsNew = true;
-                                if (isAdded()) {
-                                    mEmptyView.setVisibility(View.GONE);
-                                    mMainContent.setVisibility(View.VISIBLE);
-                                }
+                                setVisibilityInFragment(mEmptyView, View.GONE);
+                                setVisibilityInFragment(mMainContent, View.VISIBLE);
                                 logD("Store not found.");
                                 break;
 
@@ -716,45 +718,34 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            mEmptyView.setText(getStringInFragment(R.string.error_getting_store_info));
-                            displaySnackbar();
-                            displayShortToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
+                        displayRetrySnackbar();
+                        displayShortToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         HonarnamaUser.logout(activity);
-                        if (activity == null) {
-                            displayLongToast(getStringInFragment(R.string.login_again));
-                        }
+                        displayLongToast(getStringInFragment(R.string.login_again));
                         break;
 
                     case ReplyProperties.OK:
-
                         if (getStoreReply.store != null) {
-                            if (isAdded()) {
-                                mEmptyView.setVisibility(View.GONE);
-                                mMainContent.setVisibility(View.VISIBLE);
-                            }
+                            setVisibilityInFragment(mEmptyView, View.GONE);
+                            setVisibilityInFragment(mMainContent, View.VISIBLE);
                             setStoreInfo(getStoreReply.store, true);
                         } else {
-                            if (isAdded()) {
-                                displayShortToast(getStringInFragment(R.string.error_getting_store_info));
-                                displaySnackbar();
-                                logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") store, but store was null. simpleRequest: " + simpleRequest);
-                            }
+                            displayShortToast(getStringInFragment(R.string.error_getting_store_info));
+                            displayRetrySnackbar();
+                            logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") store, but store was null. simpleRequest: " + simpleRequest);
                         }
 
                         break;
                 }
 
             } else {
-                if (isAdded()) {
-                    mEmptyView.setText(getStringInFragment(R.string.error_getting_store_info));
-                    displaySnackbar();
-                    displayShortToast(getStringInFragment(R.string.check_net_connection));
-                }
+                setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
+                displayRetrySnackbar();
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }
@@ -780,29 +771,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest = new CreateOrUpdateStoreRequest();
             createOrUpdateStoreRequest.store = new net.honarnama.nano.Store();
 
-            if (!isAdded()) {
-                return;
-            }
-
-            createOrUpdateStoreRequest.store.name = mNameEditText.getText().toString().trim();
-            createOrUpdateStoreRequest.store.description = mDescriptionEditText.getText().toString().trim();
-            createOrUpdateStoreRequest.store.publicPhoneNumber = mPhoneNumberEditText.getText().toString().trim();
-            createOrUpdateStoreRequest.store.publicCellNumber = mCellNumberEditText.getText().toString().trim();
-        }
-
-        @Override
-        protected CreateOrUpdateStoreReply doInBackground(Void... voids) {
-
-            if (TextUtils.isEmpty(createOrUpdateStoreRequest.store.name)) {
-                return null;
-            }
-
-            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            createOrUpdateStoreRequest.requestProperties = rp;
-
-            createOrUpdateStoreRequest.store.locationId = new LocationId();
-            createOrUpdateStoreRequest.store.locationId.provinceId = mSelectedProvinceId;
-            createOrUpdateStoreRequest.store.locationId.cityId = mSelectedCityId;
+            createOrUpdateStoreRequest.store.name = getTextInFragment(mNameEditText);
+            createOrUpdateStoreRequest.store.description = getTextInFragment(mDescriptionEditText);
+            createOrUpdateStoreRequest.store.publicPhoneNumber = getTextInFragment(mPhoneNumberEditText);
+            createOrUpdateStoreRequest.store.publicCellNumber = getTextInFragment(mCellNumberEditText);
 
             if (mLogoImageView != null && mLogoImageView.isDeleted()) {
                 createOrUpdateStoreRequest.changingLogo = HonarnamaProto.DELETE;
@@ -819,6 +791,21 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             } else {
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.NOOP;
             }
+
+            createOrUpdateStoreRequest.store.locationId = new LocationId();
+            createOrUpdateStoreRequest.store.locationId.provinceId = mSelectedProvinceId;
+            createOrUpdateStoreRequest.store.locationId.cityId = mSelectedCityId;
+        }
+
+        @Override
+        protected CreateOrUpdateStoreReply doInBackground(Void... voids) {
+
+            if (TextUtils.isEmpty(createOrUpdateStoreRequest.store.name)) {
+                return null;
+            }
+
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            createOrUpdateStoreRequest.requestProperties = rp;
 
             CreateOrUpdateStoreReply createOrUpdateStoreReply;
             try {
@@ -851,11 +838,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (createOrUpdateStoreReply != null) {
                 switch (createOrUpdateStoreReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        dismissProgressDialog();
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            cToastMsg = getStringInFragment(R.string.upgrade_to_new_version);
                         }
+                        dismissProgressDialog();
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         switch (createOrUpdateStoreReply.errorCode) {
@@ -865,7 +854,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 break;
 
                             case CreateOrUpdateStoreReply.DUPLICATE_NAME:
-                                mNameEditText.setError(getStringInFragment(R.string.store_name_already_exists));
+                                setErrorInFragment(mNameEditText, getStringInFragment(R.string.store_name_already_exists));
                                 cToastMsg = getStringInFragment(R.string.store_name_already_exists);
                                 break;
 
@@ -892,9 +881,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         HonarnamaUser.logout(activity);
-                        if (activity == null) {
-                            cToastMsg = getStringInFragment(R.string.login_again);
-                        }
+                        cToastMsg = getStringInFragment(R.string.login_again);
                         dismissProgressDialog();
                         break;
 
@@ -1013,9 +1000,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             mProvincesHashMap.put(province.getId(), province.getName());
                         }
                     }
-                    //TODO add isAdded()  in other fragments
-                    if (isAdded() && mSelectedProvinceId > 0) {
-                        mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                    if (mSelectedProvinceId > 0) {
+                        setTextInFragment(mProvinceEditText, mProvincesHashMap.get(mSelectedProvinceId));
                     }
                 }
                 return null;
@@ -1043,8 +1029,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             }
                         }
                     }
-                    if (isAdded() && mSelectedCityId > 0) {
-                        mCityEditText.setText(mCityHashMap.get(mSelectedCityId));
+                    if (mSelectedCityId > 0) {
+                        setTextInFragment(mCityEditText, mCityHashMap.get(mSelectedCityId));
                     }
                 }
                 return null;
@@ -1052,46 +1038,57 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         });
     }
 
-    public void displaySnackbar() {
+    public void displayRetrySnackbar() {
+
+        dismissSnackbar();
+
+        Activity activity = getActivity();
+        View sbView = null;
+        TextView textView = null;
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
+
         if (!isAdded()) {
             return;
         }
 
-        if (mSnackbar != null && mSnackbar.isShown()) {
-            mSnackbar.dismiss();
-        }
-
-
-        Activity activity = getActivity();
-
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
-
         mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
-        View sbView = mSnackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-        textView.setSingleLine(false);
-        textView.setGravity(Gravity.CENTER);
-        Spannable spannable = (Spannable) textView.getText();
-        if (activity != null) {
-            spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        if (mSnackbar != null) {
+            sbView = mSnackbar.getView();
         }
-        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    new getStoreAsync().execute();
-                    if (mSnackbar != null && mSnackbar.isShown()) {
-                        mSnackbar.dismiss();
+        if (sbView != null) {
+            textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+        }
+        if (textView != null) {
+            textView.setBackgroundColor(getResources().getColor(R.color.amber));
+            textView.setSingleLine(false);
+            textView.setGravity(Gravity.CENTER);
+            Spannable spannable = (Spannable) textView.getText();
+            if (activity != null) {
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new getStoreAsync().execute();
+                        dismissSnackbar();
                     }
                 }
-            }
-        });
+            });
+        }
 
-        mSnackbar.show();
+        if (isAdded() && mSnackbar != null) {
+            mSnackbar.show();
+        }
+    }
+
+    public void dismissSnackbar() {
+        if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
     }
 
 }
