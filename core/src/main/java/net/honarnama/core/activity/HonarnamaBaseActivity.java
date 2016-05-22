@@ -77,9 +77,12 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), sharedMsg, throwable);
         } else if (sharedMsg != null) {
-            StringWriter sw = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(sw));
-            String stackTrace = sw.toString();
+            String stackTrace = "";
+            if (throwable != null) {
+                StringWriter sw = new StringWriter();
+                throwable.printStackTrace(new PrintWriter(sw));
+                stackTrace = sw.toString();
+            }
             Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
         }
     }

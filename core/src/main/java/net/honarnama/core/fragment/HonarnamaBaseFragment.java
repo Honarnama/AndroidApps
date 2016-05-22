@@ -6,14 +6,11 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -104,9 +101,12 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), sharedMsg, throwable);
         } else if (sharedMsg != null) {
-            StringWriter sw = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(sw));
-            String stackTrace = sw.toString();
+            String stackTrace = "";
+            if (throwable != null) {
+                StringWriter sw = new StringWriter();
+                throwable.printStackTrace(new PrintWriter(sw));
+                stackTrace = sw.toString();
+            }
             Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
         }
     }

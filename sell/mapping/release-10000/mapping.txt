@@ -36673,35 +36673,35 @@ net.honarnama.core.activity.HonarnamaBaseActivity -> net.honarnama.core.activity
     38:43:void onCreate(android.os.Bundle) -> onCreate
     49:49:java.lang.String getDebugTag() -> m
     71:74:void logE(java.lang.String,java.lang.String,java.lang.Throwable) -> a
-    79:85:void logE(java.lang.String,java.lang.Throwable) -> a
-    88:89:void logE(java.lang.String) -> a
-    108:137:void askToRate(java.lang.String) -> b
-    140:152:void callBazaarRatingIntent(java.lang.String) -> c
-    155:167:void callBazaarViewAppPageIntent() -> n
-    170:190:void displayUpgradeRequiredDialog() -> o
-    206:216:void verifyStoragePermissions(android.app.Activity) -> a
-    194:194:void <clinit>() -> <clinit>
+    79:88:void logE(java.lang.String,java.lang.Throwable) -> a
+    91:92:void logE(java.lang.String) -> a
+    111:140:void askToRate(java.lang.String) -> b
+    143:155:void callBazaarRatingIntent(java.lang.String) -> c
+    158:170:void callBazaarViewAppPageIntent() -> n
+    173:193:void displayUpgradeRequiredDialog() -> o
+    209:219:void verifyStoragePermissions(android.app.Activity) -> a
+    197:197:void <clinit>() -> <clinit>
 net.honarnama.core.activity.HonarnamaBaseActivity$1 -> net.honarnama.core.activity.c:
     java.lang.String val$callingApp -> a
     android.app.Dialog val$dialog -> b
     net.honarnama.core.activity.HonarnamaBaseActivity this$0 -> c
-    114:114:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,java.lang.String,android.app.Dialog) -> <init>
-    117:127:void onClick(android.view.View) -> onClick
+    117:117:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,java.lang.String,android.app.Dialog) -> <init>
+    120:130:void onClick(android.view.View) -> onClick
 net.honarnama.core.activity.HonarnamaBaseActivity$2 -> net.honarnama.core.activity.d:
     android.app.Dialog val$dialog -> a
     net.honarnama.core.activity.HonarnamaBaseActivity this$0 -> b
-    129:129:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
-    132:134:void onClick(android.view.View) -> onClick
+    132:132:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
+    135:137:void onClick(android.view.View) -> onClick
 net.honarnama.core.activity.HonarnamaBaseActivity$3 -> net.honarnama.core.activity.e:
     android.app.Dialog val$dialog -> a
     net.honarnama.core.activity.HonarnamaBaseActivity this$0 -> b
-    176:176:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
-    179:181:void onClick(android.view.View) -> onClick
+    179:179:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
+    182:184:void onClick(android.view.View) -> onClick
 net.honarnama.core.activity.HonarnamaBaseActivity$4 -> net.honarnama.core.activity.f:
     android.app.Dialog val$dialog -> a
     net.honarnama.core.activity.HonarnamaBaseActivity this$0 -> b
-    183:183:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
-    186:187:void onClick(android.view.View) -> onClick
+    186:186:void <init>(net.honarnama.core.activity.HonarnamaBaseActivity,android.app.Dialog) -> <init>
+    189:190:void onClick(android.view.View) -> onClick
 net.honarnama.core.adapter.CategoriesAdapter -> net.honarnama.core.a.a:
     android.content.Context mContext -> c
     java.util.HashMap mArtCategoriesName -> d
@@ -36798,11 +36798,11 @@ net.honarnama.core.fragment.HonarnamaBaseFragment -> net.honarnama.core.b.f:
     boolean announced -> a
     android.content.Context mContext -> b
     android.app.ProgressDialog mProgressDialog -> c
-    35:37:void <init>() -> <init>
+    32:34:void <init>() -> <init>
     java.lang.String getTitle(android.content.Context) -> b
-    45:50:void onCreate(android.os.Bundle) -> a
-    73:73:java.lang.String getDebugTag() -> K
-    106:112:void logE(java.lang.String,java.lang.Throwable) -> a
+    42:47:void onCreate(android.os.Bundle) -> a
+    70:70:java.lang.String getDebugTag() -> K
+    103:112:void logE(java.lang.String,java.lang.Throwable) -> a
     115:116:void logE(java.lang.String) -> c
     130:130:void logD(java.lang.String) -> d
     135:139:void displayLongToast(java.lang.String) -> e

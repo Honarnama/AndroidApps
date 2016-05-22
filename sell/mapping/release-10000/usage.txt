@@ -10135,13 +10135,13 @@ net.honarnama.base.R:
 net.honarnama.core.activity.HonarnamaBaseActivity:
     private static final int REQUEST_EXTERNAL_STORAGE
     54:65:java.lang.String getMessage(java.lang.String,java.lang.String)
-    92:93:public void logI(java.lang.String,java.lang.String)
-    99:99:public void logD(java.lang.String,java.lang.String)
-    105:105:public void logD(java.lang.String)
+    95:96:public void logI(java.lang.String,java.lang.String)
+    102:102:public void logD(java.lang.String,java.lang.String)
+    108:108:public void logD(java.lang.String)
 net.honarnama.core.fragment.HonarnamaBaseFragment:
-    53:66:public java.lang.String getLocalClassName()
-    78:89:java.lang.String getMessage(java.lang.String,java.lang.String)
-    95:101:public void logE(java.lang.String,java.lang.String,java.lang.Throwable)
+    50:63:public java.lang.String getLocalClassName()
+    75:86:java.lang.String getMessage(java.lang.String,java.lang.String)
+    92:98:public void logE(java.lang.String,java.lang.String,java.lang.Throwable)
     119:120:public void logI(java.lang.String,java.lang.String)
     123:124:public void logD(java.lang.String,java.lang.String)
 net.honarnama.core.helper.DatabaseHelper:
