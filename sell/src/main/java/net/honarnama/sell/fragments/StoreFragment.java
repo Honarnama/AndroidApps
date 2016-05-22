@@ -287,10 +287,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
             mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
         }
-//        Activity activity = getActivity();
-//        if (activity != null) {
-//            verifyStoragePermissions(getActivity());
-//        }
     }
 
     @Override

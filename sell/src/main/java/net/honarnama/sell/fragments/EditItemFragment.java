@@ -180,7 +180,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             if (mCreateNew) {
                 setVisibilityInFragment(mMainContent, View.VISIBLE);
                 setVisibilityInFragment(mEmptyView, View.GONE);
-                displayRetrySnackbar();
             }
         }
     }
@@ -463,10 +462,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     }
 
                     setErrorInFragment(mCategoryTextView, "");
-                    setTextInFragment(mChooseCategoryButton, mCategoryName);
                     mCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryId = selectedCatId;
                     mCategoryParentId = selectedCatParentId;
+                    setTextInFragment(mChooseCategoryButton, mCategoryName);
                 }
                 break;
             default:
