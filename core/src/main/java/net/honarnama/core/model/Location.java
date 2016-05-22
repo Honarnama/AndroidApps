@@ -101,6 +101,11 @@ public class Location {
             for (int i = 0; i < locations.length; i++) {
                 ContentValues values = new ContentValues();
                 net.honarnama.nano.Location location = locations[i];
+
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Reset Locations // location: " + location);
+                }
+
                 values.put(COL_LOCATIONS_ID, location.id);
                 values.put(COL_LOCATIONS_PARENT_ID, location.parentId);
                 values.put(COL_LOCATIONS_NAME, location.name);

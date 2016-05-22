@@ -93,6 +93,9 @@ public class ArtCategory {
             for (int i = 0; i < artCategories.length; i++) {
                 ContentValues values = new ContentValues();
                 net.honarnama.nano.ArtCategory artCategory = artCategories[i];
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Reset Art Categories // artCategory: " + artCategory);
+                }
                 values.put(COL_ART_CAT_ID, artCategory.id);
                 values.put(COL_ART_CAT_PARENT_ID, artCategory.parentId);
                 values.put(COL_ART_CAT_NAME, artCategory.name);

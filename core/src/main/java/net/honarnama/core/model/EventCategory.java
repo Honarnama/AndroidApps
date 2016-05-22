@@ -19,6 +19,8 @@ import java.util.List;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
+import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE;
+import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ORDER;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ID;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_NAME;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ORDER;
@@ -65,9 +67,6 @@ public class EventCategory {
     public static Task<Void> resetEventCategories(net.honarnama.nano.EventCategory[] eventCategories) {
         final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
-        if (BuildConfig.DEBUG) {
-            Log.d(DEBUG_TAG, "eventCategories: " + eventCategories);
-        }
         // Create and/or open the database for writing
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getWritableDatabase();
         // It's a good idea to wrap our insert in a transaction. This helps with performance and ensures
@@ -79,9 +78,12 @@ public class EventCategory {
             for (int i = 0; i < eventCategories.length; i++) {
                 ContentValues values = new ContentValues();
                 net.honarnama.nano.EventCategory eventCategory = eventCategories[i];
-
+                if (BuildConfig.DEBUG) {
+                    Log.d(DEBUG_TAG, "Reset Event Categories // eventCategory: " + eventCategory);
+                }
                 values.put(COL_EVENT_CAT_ID, eventCategory.id);
                 values.put(COL_EVENT_CAT_NAME, eventCategory.name);
+                values.put(COL_EVENT_CAT_ORDER, eventCategory.order);
                 db.insertOrThrow(TABLE_NAME, null, values);
             }
             db.setTransactionSuccessful();
@@ -111,7 +113,11 @@ public class EventCategory {
         List<EventCategory> eventCategories = new ArrayList<>();
 
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
+        String query = "SELECT * FROM " + TABLE_NAME;
+        if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
+            query += " WHERE " + COL_EVENT_CAT_ORDER + " > 1 ";
+        }
+        query += " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
         Cursor cursor = db.rawQuery(query, null);
 
         try {

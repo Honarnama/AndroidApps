@@ -1,6 +1,7 @@
 package net.honarnama.core.adapter;
 
 
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.R;
 import net.honarnama.core.model.EventCategory;
 
@@ -52,7 +53,7 @@ public class EventCategoriesAdapter extends BaseAdapter {
         View rowView = layoutInflater.inflate(R.layout.province_row, parent, false);
 
         TextView nameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
-        if (position == 0) {
+        if (position == 0 && HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.BROWSE_PACKAGE_NAME)) {
             nameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
         }
 

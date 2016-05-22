@@ -53,7 +53,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
     protected void onPostExecute(final MetaReply reply) {
         if (reply != null) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Meta reply:" + reply.replyProperties);
+                Log.d(DEBUG_TAG, "Meta reply:" + reply);
             }
             switch (reply.replyProperties.statusCode) {
                 case ReplyProperties.OK:
