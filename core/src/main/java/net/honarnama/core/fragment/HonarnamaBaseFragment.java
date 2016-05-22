@@ -131,11 +131,19 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
 
     public void displayLongToast(String message) {
-        Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            logE("Exception displaying dialog. e: " + e);
+        }
     }
 
     public void displayShortToast(String message) {
-        Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            logE("Exception displaying dialog. e: " + e);
+        }
     }
 
     @Override
@@ -145,9 +153,10 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     }
 
     public void displayProgressDialog(DialogInterface.OnDismissListener onDismissListener) {
-        Activity activity = getActivity();
-        if (activity != null && isAdded()) {
-            if (mProgressDialog == null) {
+        try {
+            dismissProgressDialog();
+            Activity activity = getActivity();
+            if (activity != null && mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(activity);
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.setMessage(getString(R.string.please_wait));
@@ -157,9 +166,12 @@ public abstract class HonarnamaBaseFragment extends Fragment {
                 mProgressDialog.setOnDismissListener(onDismissListener);
             }
 
-            if (activity != null && !activity.isFinishing() && isAdded()) {
+            activity = getActivity();
+            if (mProgressDialog != null && activity != null && !activity.isFinishing() && isAdded()) {
                 mProgressDialog.show();
             }
+        } catch (Exception e) {
+            logE("Exception displaying dialog. e: " + e);
         }
     }
 

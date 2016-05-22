@@ -720,8 +720,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         String userEnteredStartDate = startYearValue + "/" + startMonthValue + "/" + startDayValue;
         Date startDate = JalaliCalendar.getGregorianDate(userEnteredStartDate);
-        if (mStartDate.getDay() != startDate.getDay() || mStartDate.getMonth() != startDate.getMonth() || mStartDate.getYear() != startDate.getYear()) {
-            setDirty(true);
+        if (mStartDate != null) {
+            if (mStartDate.getDay() != startDate.getDay() || mStartDate.getMonth() != startDate.getMonth() || mStartDate.getYear() != startDate.getYear()) {
+                setDirty(true);
+            }
+        } else {
+            if (startDate != null) {
+                setDirty(true);
+            }
         }
         mStartDate = startDate;
         String checkJalaliDate = JalaliCalendar.getJalaliDate(mStartDate);
@@ -744,8 +750,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
         String userEnteredEndDate = toYearValue + "/" + toMonthValue + "/" + toDayValue;
         Date endDate = JalaliCalendar.getGregorianDate(userEnteredEndDate);
-        if (mEndDate.getDay() != endDate.getDay() || mEndDate.getMonth() != endDate.getMonth() || mEndDate.getYear() != endDate.getYear()) {
-            setDirty(true);
+        if (mEndDate != null) {
+            if (mEndDate.getDay() != endDate.getDay() || mEndDate.getMonth() != endDate.getMonth() || mEndDate.getYear() != endDate.getYear()) {
+                setDirty(true);
+            }
+        } else {
+            if (endDate != null) {
+                setDirty(true);
+            }
         }
         mEndDate = endDate;
         checkJalaliDate = JalaliCalendar.getJalaliDate(mEndDate);
