@@ -136,7 +136,8 @@
     <string name="edit_item_save">ذخیره</string>
     <string name="edit_item_done">محصول شما با موفقیت ذخیره شد.</string>
     <string name="error_saving_item">"خطا در هنگام ذخیره‌سازی محصول."</string>
-    <string name="item_not_changed">از آخرین ذخیره‌سازی تغییری در اطلاعات محصول ایجاد نشده است.
+    <string name="item_not_changed">
+        از آخرین ذخیره‌سازی تغییری در اطلاعات ایجاد نشده است.
     </string>
     <string name="error_getting_item_info">خطا در گرفتن اطلاعات محصول.</string>
     <string name="error_sending_images">خطا در ارسال تصاویر. لطفا دوباره تلاش کنید</string>
