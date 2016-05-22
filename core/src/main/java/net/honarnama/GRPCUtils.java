@@ -2,6 +2,7 @@ package net.honarnama;
 
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
+import net.honarnama.nano.CommunicationServiceGrpc;
 import net.honarnama.nano.MetaServiceGrpc;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
@@ -92,6 +93,11 @@ public class GRPCUtils {
     public SellServiceGrpc.SellServiceBlockingStub getSellServiceGrpc() {
         // TODO: cache
         return SellServiceGrpc.newBlockingStub(mChannel);
+    }
+
+    public CommunicationServiceGrpc.CommunicationServiceBlockingStub getCommunicationServiceGrpc() {
+        // TODO: cache
+        return CommunicationServiceGrpc.newBlockingStub(mChannel);
     }
 
     public void processReplyProperties() {

@@ -141,7 +141,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContactFragment = ContactFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+        mContactFragment = ContactFragment.getInstance();
         mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
         mBookmarksFragment = BookmarksFragment.getInstance();
 
@@ -352,7 +352,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .color(getResources().getColor(R.color.dark_cyan))
                                     .icon(GoogleMaterial.Icon.gmd_email);
                     menuItem.setIcon(contactDrawable);
-                    ContactFragment contactFragment = ContactFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+                    ContactFragment contactFragment = ContactFragment.getInstance();
                     switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
                     break;
                 } else {
