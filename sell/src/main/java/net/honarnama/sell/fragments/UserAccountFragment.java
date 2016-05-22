@@ -104,6 +104,8 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 mGenderMan.setChecked(false);
             }
         });
+
+        setErrorInFragment(mNameEditText, "");
         return rootView;
     }
 

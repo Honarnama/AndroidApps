@@ -277,6 +277,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (activity != null) {
             ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
         }
+        resetError();
         return rootView;
     }
 
@@ -438,6 +439,15 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         cityDialog.show();
     }
 
+    public void resetError() {
+        setErrorInFragment(mNameEditText, "");
+        setErrorInFragment(mProvinceEditText, "");
+        setErrorInFragment(mCityEditText, "");
+        setErrorInFragment(mDescriptionEditText, "");
+        setErrorInFragment(mCellNumberEditText, "");
+        setErrorInFragment(mPhoneNumberEditText, "");
+    }
+
     private boolean formInputsAreValid() {
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
             return false;
@@ -447,12 +457,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             return false;
         }
 
-        setErrorInFragment(mNameEditText, "");
-        setErrorInFragment(mProvinceEditText, "");
-        setErrorInFragment(mCityEditText, "");
-        setErrorInFragment(mDescriptionEditText, "");
-        setErrorInFragment(mCellNumberEditText, "");
-        setErrorInFragment(mPhoneNumberEditText, "");
+        resetError();
 
         if (getTextInFragment(mNameEditText).length() == 0) {
             requestFocusInFragment(mNameEditText);

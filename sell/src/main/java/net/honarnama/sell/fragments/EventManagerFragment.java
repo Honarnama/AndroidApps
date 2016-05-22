@@ -323,6 +323,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (activity != null) {
             ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
         }
+
+        resetErrors();
+
         return rootView;
     }
 
@@ -648,15 +651,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         eventCatDialog.show();
     }
 
-    private boolean formInputsAreValid() {
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            return false;
-        }
-
-        if (!isAdded()) {
-            return false;
-        }
-
+    public void resetErrors() {
         setErrorInFragment(mNameEditText, "");
         setErrorInFragment(mEventCatLabel, "");
         setErrorInFragment(mProvinceEditText, "");
@@ -667,6 +662,18 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         setErrorInFragment(mDescriptionEditText, "");
         setErrorInFragment(mCellNumberEditText, "");
         setErrorInFragment(mPhoneNumberEditText, "");
+    }
+
+    private boolean formInputsAreValid() {
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            return false;
+        }
+
+        if (!isAdded()) {
+            return false;
+        }
+
+        resetErrors();
 
         if (getTextInFragment(mNameEditText).length() == 0) {
             requestFocusInFragment(mNameEditText);

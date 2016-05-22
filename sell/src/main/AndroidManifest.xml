@@ -43,6 +43,12 @@
                         android:host="*honarnama.net"
                         android:pathPrefix="/sell/login"
                         android:scheme="https"/>
+
+                <data
+                        android:host="sell"
+                        android:pathPrefix="/login"
+                        android:scheme="honarnama"/>
+
             </intent-filter>
 
         </activity>

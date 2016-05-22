@@ -345,6 +345,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         if (activity != null) {
             ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
         }
+
+        resetErrors();
+
         return rootView;
     }
 
@@ -371,6 +374,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         }
     }
 
+    public void resetErrors() {
+        setErrorInFragment(mImagesTitleTextView, "");
+        setErrorInFragment(mTitleEditText, "");
+        setErrorInFragment(mPriceEditText, "");
+        setErrorInFragment(mCategoryTextView, "");
+        setErrorInFragment(mDescriptionEditText, "");
+    }
+
     private boolean formInputsAreValid() {
 
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -381,11 +392,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         String price = TextUtil.normalizePrice(getTextInFragment(mPriceEditText));
         String description = getTextInFragment(mDescriptionEditText);
 
-        setErrorInFragment(mImagesTitleTextView, "");
-        setErrorInFragment(mTitleEditText, "");
-        setErrorInFragment(mPriceEditText, "");
-        setErrorInFragment(mCategoryTextView, "");
-        setErrorInFragment(mDescriptionEditText, "");
+        resetErrors();
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
