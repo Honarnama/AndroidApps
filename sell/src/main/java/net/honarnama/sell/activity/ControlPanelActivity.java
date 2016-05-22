@@ -170,6 +170,8 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         long metaVersion = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
         MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
         metaUpdater.execute();
+
+        verifyStoragePermissions(this);
     }
 
 

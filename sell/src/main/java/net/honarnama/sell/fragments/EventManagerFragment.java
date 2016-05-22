@@ -320,6 +320,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
         };
 
+        if (activity != null) {
+            ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
+        }
         return rootView;
     }
 

@@ -343,6 +343,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         rootView.findViewById(R.id.saveItemButton).setOnClickListener(this);
 
+        if (activity != null) {
+            ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
+        }
         return rootView;
     }
 
