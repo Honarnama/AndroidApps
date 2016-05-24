@@ -81,7 +81,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
         mSubject.setError(null);
         mBody.setError(null);
 
-        if (HonarnamaBaseApp.PACKAGE_NAME == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
+        if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.BROWSE_PACKAGE_NAME)) {
             mContactButton.setBackgroundColor(getResources().getColor(R.color.dark_cyan));
         }
         mContactButton.setOnClickListener(new View.OnClickListener() {

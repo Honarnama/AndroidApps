@@ -31,8 +31,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     public ArrayList<Integer> mNodeCategories = new ArrayList();
     public HashMap<Integer, Integer> mFilterSubCatParentHashMap = new HashMap<>();
 
-    public String mCallingApp = HonarnamaBaseApp.PREF_NAME_SELL_APP;
-
     public int mAllSubCategoriesFilterObjectId;
 
     @Override
@@ -47,9 +45,6 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if ((intent != null) && intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER)) {
-            mCallingApp = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER);
-        }
         setIntent(intent);
     }
 
@@ -67,10 +62,10 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     private void buildCategoriesHierarchyHashMap() {
 
         List<ArtCategory> artCategories;
-        if (mCallingApp == HonarnamaBaseApp.PREF_NAME_BROWSE_APP) {
-            artCategories = ArtCategory.getAllArtCategoriesSorted(true);
-        } else {
+        if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
             artCategories = ArtCategory.getAllArtCategoriesSorted(false);
+        } else {
+            artCategories = ArtCategory.getAllArtCategoriesSorted(true);
         }
 
         for (int i = 0; i < artCategories.size(); i++) {
@@ -121,7 +116,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             for (Integer key : mCategoriesHierarchyHashMap.keySet()) {
 
                 int index = mCategoriesOrderHashMap.get(key);
-                if (mCallingApp.equals(HonarnamaBaseApp.PREF_NAME_SELL_APP)) {
+                if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                     index = index - 1;
                 }
                 mCurrentArtCategoriesObjectIds.put(index, key);
@@ -135,7 +130,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             for (int i = 0; i < notSortedCurrentCategoryObjectIds.size(); i++) {
                 int objectId = notSortedCurrentCategoryObjectIds.get(i);
                 int index = mCategoriesOrderHashMap.get(objectId).intValue();
-                if (mCallingApp.equals(HonarnamaBaseApp.PREF_NAME_SELL_APP)) {
+                if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                     index = index - 1;
                 }
                 mCurrentArtCategoriesObjectIds.put(index, objectId);

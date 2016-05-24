@@ -233,7 +233,11 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
 
     private void sendUserBackToCallingActivity(int activationMethod, String telegramCode) {
         Intent intent = new Intent();
+        WindowUtil.hideKeyboard(RegisterActivity.this);
 
+        if (BuildConfig.DEBUG) {
+            logD("sendUserBackToCallingActivity// activationMethod: " + activationMethod);
+        }
         switch (activationMethod) {
             case Account.EMAIL:
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
@@ -248,11 +252,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                 Date currentDate = new Date();
                 editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, currentDate.getTime());
                 editor.commit();
-
                 break;
         }
-
-        WindowUtil.hideKeyboard(RegisterActivity.this);
 
         setResult(Activity.RESULT_OK, intent);
         finish();

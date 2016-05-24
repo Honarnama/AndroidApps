@@ -1,5 +1,11 @@
 package net.honarnama;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.security.ProviderInstaller;
+
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CommunicationServiceGrpc;
@@ -13,6 +19,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -35,12 +42,22 @@ public class GRPCUtils {
         return singleton;
     }
 
-    public synchronized static GRPCUtils getInstance() throws InterruptedException {
+    public synchronized static GRPCUtils getInstance() throws InterruptedException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
         singleton = new GRPCUtils();
         return singleton;
     }
 
-    private GRPCUtils() throws InterruptedException {
+    private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
+//        ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+        try {
+            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesRepairableException!", e);
+            Crashlytics.logException(e);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesNotAvailableException!", e);
+            Crashlytics.logException(e);
+        }
         mChannel = ManagedChannelBuilder.forAddress(mHost, mPort)
                 .build();
     }

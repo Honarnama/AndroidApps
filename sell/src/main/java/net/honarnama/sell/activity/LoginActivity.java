@@ -239,7 +239,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        WindowUtil.hideKeyboard(LoginActivity.this);
+        if (BuildConfig.DEBUG) {
+            logD("onActivityResult//resultCode: " + resultCode);
+        }
+
         if (resultCode == Activity.RESULT_OK) {
             if (BuildConfig.DEBUG) {
                 logD("onActivityResult::RESULT_OK");

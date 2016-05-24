@@ -62,7 +62,7 @@ public class HonarnamaSellApp extends HonarnamaBaseApp {
 
     public HonarnamaSellApp() {
         super();
-        defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+//        defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         // setup handler for uncaught exception
 //        Thread.setDefaultUncaughtExceptionHandler(_unCaughtExceptionHandler);
     }

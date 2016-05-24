@@ -23,9 +23,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 /**
  * Created by reza on 7/23/15.
  */
@@ -62,14 +59,14 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         } else if (sharedMsg != null) {
             return sharedMsg;
         }
-        return null;
+        return "";
     }
 
     public void logE(String sharedMsg, String debugMsg, Throwable throwable) {
         if (BuildConfig.DEBUG) {
-            Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
+            logE(getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
+            logE(sharedMsg, throwable);
         }
     }
 
@@ -77,13 +74,12 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), sharedMsg, throwable);
         } else if (sharedMsg != null) {
-            String stackTrace = "";
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
             if (throwable != null) {
-                StringWriter sw = new StringWriter();
-                throwable.printStackTrace(new PrintWriter(sw));
-                stackTrace = sw.toString();
+                Crashlytics.logException(throwable);
+            } else {
+                Crashlytics.logException(new Throwable(sharedMsg));
             }
-            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
         }
     }
 
@@ -107,7 +103,10 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         }
     }
 
-    public void askToRate(final String callingApp) {
+    public void askToRate() {
+        if (BuildConfig.DEBUG) {
+            logD("HonarnamaBaseApp.PACKAGE_NAME: " + HonarnamaBaseApp.PACKAGE_NAME);
+        }
         final Dialog dialog = new Dialog(this, R.style.CustomDialogTheme);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -117,9 +116,9 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         letsRateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callBazaarRatingIntent(callingApp);
+                callBazaarRatingIntent();
                 SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
-                if (callingApp == HonarnamaBaseApp.PREF_NAME_SELL_APP) {
+                if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, true);
                 } else {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, true);
@@ -139,10 +138,10 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void callBazaarRatingIntent(final String callingApp) {
+    public void callBazaarRatingIntent() {
         if (CommonUtil.isPackageInstalled("com.farsitel.bazaar")) {
             Intent intent = new Intent(Intent.ACTION_EDIT);
-            if (HonarnamaBaseApp.PACKAGE_NAME == HonarnamaBaseApp.SELL_PACKAGE_NAME) {
+            if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.SELL_PACKAGE_NAME));
             } else {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.BROWSE_PACKAGE_NAME));
@@ -157,7 +156,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     public void callBazaarViewAppPageIntent() {
         if (CommonUtil.isPackageInstalled("com.farsitel.bazaar")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (HonarnamaBaseApp.PACKAGE_NAME == HonarnamaBaseApp.SELL_PACKAGE_NAME) {
+            if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.SELL_PACKAGE_NAME));
             } else {
                 intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.BROWSE_PACKAGE_NAME));

@@ -349,7 +349,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                     .setPositiveButton("بله", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             if (!HonarnamaBaseApp.getCommonSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
-                                askToRate(HonarnamaBaseApp.PREF_NAME_SELL_APP);
+                                askToRate();
                             } else {
                                 finish();
                             }
@@ -554,7 +554,7 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
                 break;
 
             case R.id.item_support_us:
-                callBazaarRatingIntent(HonarnamaBaseApp.PREF_NAME_SELL_APP);
+                callBazaarRatingIntent();
                 break;
 
             case R.id.item_switch_app:

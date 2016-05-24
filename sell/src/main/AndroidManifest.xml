@@ -55,7 +55,7 @@
         <activity
                 android:name="net.honarnama.sell.activity.RegisterActivity"
                 android:label="@string/title_activity_register"
-                android:launchMode="singleTask"
+                android:launchMode="standard"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="stateHidden">
         </activity>

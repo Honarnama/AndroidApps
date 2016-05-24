@@ -161,7 +161,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
 //            sb.append(ev.name);
 //            sb.append(" / ");
 //        }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.e("GRPC-HN", "Error getting meta. Error: " + e, e);
             } else {
