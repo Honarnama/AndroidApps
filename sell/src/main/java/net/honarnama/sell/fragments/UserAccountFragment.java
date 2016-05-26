@@ -16,6 +16,7 @@ import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.UpdateAccountReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
@@ -273,7 +274,10 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
                 }
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
 
             dismissProgressDialog();

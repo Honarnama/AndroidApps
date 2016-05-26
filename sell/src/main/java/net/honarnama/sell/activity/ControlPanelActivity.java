@@ -9,7 +9,6 @@ import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.activity.HonarnamaBaseActivity;
 import net.honarnama.core.fragment.AboutFragment;
 import net.honarnama.core.fragment.ContactFragment;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
@@ -53,7 +52,7 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 
-public class ControlPanelActivity extends HonarnamaBaseActivity implements View.OnClickListener {
+public class ControlPanelActivity extends HonarnamaSellActivity implements View.OnClickListener {
 
     public static final int ITEM_IDENTIFIER_ACCOUNT = 0;
 
@@ -159,11 +158,13 @@ public class ControlPanelActivity extends HonarnamaBaseActivity implements View.
         MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
             @Override
             public void onMetaUpdateDone(int replyCode) {
+                if (BuildConfig.DEBUG) {
+                    logD("Meta Update replyCode: " + replyCode);
+                }
                 switch (replyCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
                         displayUpgradeRequiredDialog();
                         break;
-
                 }
             }
         };

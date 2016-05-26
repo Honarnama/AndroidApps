@@ -43,7 +43,7 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 /**
  * Created by elnaz on 2/13/16.
  */
-public class RegisterActivity extends HonarnamaBaseActivity implements View.OnClickListener {
+public class RegisterActivity extends HonarnamaSellActivity implements View.OnClickListener {
 
     private EditText mNameEditText;
     private EditText mMobileNumberEditText;
@@ -146,8 +146,17 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
         if (viewId == mRegisterButton.getId()) {
             signUserUp();
         }
-        if (viewId == R.id.register_activate_with_email || viewId == R.id.register_activate_with_telegram) {
-            changeMandatoryFieldsMarkers();
+        if (viewId == R.id.register_activate_with_email) {
+            mActivateWithEmail.setChecked(true);
+            mActivateWithTelegram.setChecked(false);
+            findViewById(R.id.email_layer).setBackgroundColor(getResources().getColor(R.color.gray_extra_light));
+            findViewById(R.id.telegram_layer).setBackgroundColor(getResources().getColor(R.color.gray_whitish));
+        }
+        if (viewId == R.id.register_activate_with_telegram) {
+            mActivateWithTelegram.setChecked(true);
+            mActivateWithEmail.setChecked(false);
+            findViewById(R.id.email_layer).setBackgroundColor(getResources().getColor(R.color.gray_whitish));
+            findViewById(R.id.telegram_layer).setBackgroundColor(getResources().getColor(R.color.gray_extra_light));
         }
     }
 
@@ -162,18 +171,6 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
             Toast.makeText(RegisterActivity.this, "لطفا خطاهای مشخص شده را اصلاح کنید.", Toast.LENGTH_LONG).show();
         }
 
-    }
-
-    private void changeMandatoryFieldsMarkers() {
-
-        if (mActivateWithEmail.isChecked()) {
-            findViewById(R.id.register_email_star_marker).setVisibility(View.VISIBLE);
-            findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.GONE);
-
-        } else {
-            findViewById(R.id.register_email_star_marker).setVisibility(View.GONE);
-            findViewById(R.id.register_mobile_number_star_marker).setVisibility(View.VISIBLE);
-        }
     }
 
     public void clearErrors() {
@@ -328,15 +325,15 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                                 break;
                             case CreateAccountReply.INVALID_EMAIL:
                                 mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_email_address_is_not_valid), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
                                 mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_duplicated_mobile_number), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.INVALID_MOBILE_NUMBER:
                                 mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_correct_mistakes_and_try_again), Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_mobile_number_is_not_valid), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.EMPTY_ACCOUNT:
                                 logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
@@ -368,7 +365,8 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
                         break;
                 }
             } else {
-                Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_to_Server) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
+                checkGooglePlayAvailability();
             }
         }
     }
@@ -382,11 +380,10 @@ public class RegisterActivity extends HonarnamaBaseActivity implements View.OnCl
     }
 
     private void displayProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(RegisterActivity.this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
+        dismissProgressDialog();
+        mProgressDialog = new ProgressDialog(RegisterActivity.this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage(getString(R.string.please_wait));
         if (!RegisterActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }

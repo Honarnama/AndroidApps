@@ -49,15 +49,7 @@ public class GRPCUtils {
 
     private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
 //        ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-        try {
-            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesRepairableException!", e);
-            Crashlytics.logException(e);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesNotAvailableException!", e);
-            Crashlytics.logException(e);
-        }
+        ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
         mChannel = ManagedChannelBuilder.forAddress(mHost, mPort)
                 .build();
     }

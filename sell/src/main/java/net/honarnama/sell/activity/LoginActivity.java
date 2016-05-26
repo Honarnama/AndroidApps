@@ -47,7 +47,7 @@ import java.util.Date;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 //TODO resend login link
-public class LoginActivity extends HonarnamaBaseActivity implements View.OnClickListener {
+public class LoginActivity extends HonarnamaSellActivity implements View.OnClickListener {
     private Button mRegisterAsSellerBtn;
     private Button mLoginButton;
     private EditText mUsernameEditText;
@@ -385,7 +385,7 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
                 builder.append(getString(R.string.error_connecting_to_Server)).append(" ");
                 displaySnackbar(builder, true);
 
-                Toast.makeText(LoginActivity.this, getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+                checkGooglePlayAvailability();
             }
         }
     }
@@ -416,11 +416,10 @@ public class LoginActivity extends HonarnamaBaseActivity implements View.OnClick
     }
 
     private void displayProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(LoginActivity.this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-        }
+        dismissProgressDialog();
+        mProgressDialog = new ProgressDialog(LoginActivity.this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage(getString(R.string.please_wait));
         if (!LoginActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }

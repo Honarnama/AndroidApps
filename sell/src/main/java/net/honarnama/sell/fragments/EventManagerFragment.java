@@ -299,6 +299,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mMetaUpdateListener = new MetaUpdateListener() {
             @Override
             public void onMetaUpdateDone(int replyCode) {
+                if (BuildConfig.DEBUG) {
+                    logD("Meta Update replyCode: " + replyCode);
+                }
                 dismissProgressDialog();
                 switch (replyCode) {
                     case ReplyProperties.OK:
@@ -312,9 +315,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
                         }
                         break;
-
                     default:
-                        displayLongToast(getStringInFragment(R.string.error_occured) + getStringInFragment(R.string.check_net_connection));
+                        displayLongToast(getStringInFragment(R.string.error_occured));
+                        if (activity != null) {
+                            ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                        }
                         break;
                 }
             }
@@ -1078,7 +1083,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
                 displayRetrySnackbar();
-                displayShortToast(getStringInFragment(R.string.check_net_connection));
+
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
     }
@@ -1259,8 +1267,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
                 dismissProgressDialog();
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
 

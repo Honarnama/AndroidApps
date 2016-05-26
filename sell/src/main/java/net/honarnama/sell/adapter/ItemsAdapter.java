@@ -1,5 +1,8 @@
 package net.honarnama.sell.adapter;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import com.crashlytics.android.Crashlytics;
 import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
@@ -24,6 +27,7 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -277,7 +281,16 @@ public class ItemsAdapter extends BaseAdapter {
                 }
 
             } else {
-                mItemsFragment.displayLongToast(mContext.getString(R.string.error_connecting_to_Server) + mContext.getString(R.string.check_net_connection));
+                mItemsFragment.displayLongToast(mContext.getString(R.string.error_connecting_to_Server));
+                mItemsFragment.displayLongToast("لطفا فعال بودن و به‌روز بودن خدمات Google Play را بررسی کنید.");
+//                Activity activity = (Activity) mContext;
+//                if (activity != null) {
+//                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+//                    if (status != ConnectionResult.SUCCESS) {
+//                        Log.e(DEBUG_TAG, "GooglePlayServices is not available. ConnectionResult: " + status);
+//                        ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, activity, 10)).show();
+//                    }
+//                }
             }
         }
     }

@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ForgotPasswordActivity extends HonarnamaBaseActivity {
+public class ForgotPasswordActivity extends HonarnamaSellActivity {
     private Button mForgotPasswordButton;
     private EditText mForgotPasswordEmailEditEext;
     private ProgressDialog mWaitingProgressDialog;

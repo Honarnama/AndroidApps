@@ -610,7 +610,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
                 displayRetrySnackbar();
-                displayShortToast(getStringInFragment(R.string.check_net_connection));
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
     }
@@ -873,8 +875,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
                 dismissProgressDialog();
+
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
     }

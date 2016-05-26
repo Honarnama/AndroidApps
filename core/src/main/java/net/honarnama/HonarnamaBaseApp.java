@@ -1,8 +1,10 @@
 package net.honarnama;
 
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 
 import com.crashlytics.android.Crashlytics;
@@ -10,6 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import net.honarnama.base.BuildConfig;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -106,18 +109,14 @@ public abstract class HonarnamaBaseApp extends Application {
         setCommonSharedPref(getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE));
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        //TODO inja comment konam
         try {
             ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
         } catch (GooglePlayServicesRepairableException e) {
             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesRepairableException!", e);
-            Crashlytics.logException(e);
         } catch (GooglePlayServicesNotAvailableException e) {
             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesNotAvailableException!", e);
-            Crashlytics.logException(e);
         } catch (Exception e) {
             Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Exception trying to install needed modules!", e);
-            Crashlytics.logException(e);
         }
 
     }

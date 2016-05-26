@@ -111,7 +111,9 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                         metaCallback.onMetaUpdateDone(ReplyProperties.SERVER_ERROR);
                     }
                     if (BuildConfig.DEBUG) {
-                        Log.d(DEBUG_TAG, "Server error occured trying updating meta.");
+                        Log.e(DEBUG_TAG, "Server error occured trying to update meta.");
+                    } else {
+                        Crashlytics.logException(new Throwable("Server error occured trying to update meta."));
                     }
                     break;
 
@@ -120,15 +122,29 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                         metaCallback.onMetaUpdateDone(ReplyProperties.UPGRADE_REQUIRED);
                     }
                     break;
+
+                case ReplyProperties.CLIENT_ERROR:
+                    if (metaCallback != null) {
+                        metaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
+                    }
+                    break;
+
+                case ReplyProperties.NOT_AUTHORIZED:
+                    if (metaCallback != null) {
+                        metaCallback.onMetaUpdateDone(ReplyProperties.NOT_AUTHORIZED);
+                    }
+                    break;
             }
 
         } else {
+
             if (metaCallback != null) {
                 metaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
             }
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Meta reply was null");
             }
+
         }
     }
 
@@ -169,6 +185,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                 e.printStackTrace(new PrintWriter(sw));
                 String stackTrace = sw.toString();
                 Crashlytics.log(Log.ERROR, "GRPC-HN", "Error getting meta. Error: " + e + ". stackTrace: " + stackTrace);
+                Crashlytics.logException(e);
             }
             return null;
         }

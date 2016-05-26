@@ -28,15 +28,11 @@
     <string name="register_form_name_alert">
         نام‌ها در هنرنما به صورت عمومی نمایش داده می‌شوند.
     </string>
-    <string name="select_activation_method">*ساخت حساب توسط:</string>
+    <string name="select_activation_method">ساخت حساب توسط:</string>
     <string name="email_address_hint">آدرس ایمیل - مثال: your_name@yahoo.com</string>
     <string name="mobile_number_hint">شماره تلفن همراه - مثال: 09123456789</string>
-    <string name="add_national_card_image_text">* افزودن تصویر کارت ملی:</string>
-    <string name="register_card_number_alert_text">نام صاحب شماره کارت باید با اطلاعات کارت ملی
-        مطابقت داشته باشد.
-    </string>
+
     <string name="register">ثبت‌نام</string>
-    <string name="shetab_catd_number_hint_text">شماره کارت عضو شتاب</string>
     <string name="send_register_activation_link_to_email">
         آدرس ایمیل
     </string>

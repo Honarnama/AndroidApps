@@ -253,6 +253,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         mMetaUpdateListener = new MetaUpdateListener() {
             @Override
             public void onMetaUpdateDone(int replyCode) {
+                if (BuildConfig.DEBUG) {
+                    logD("Meta Update replyCode: " + replyCode);
+                }
                 dismissProgressDialog();
                 switch (replyCode) {
                     case ReplyProperties.OK:
@@ -268,7 +271,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     default:
-                        displayLongToast(getStringInFragment(R.string.error_occured) + getStringInFragment(R.string.check_net_connection));
+                        displayLongToast(getStringInFragment(R.string.error_occured));
+                        if (activity != null) {
+                            ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                        }
                         break;
                 }
             }
@@ -753,7 +759,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
                 displayRetrySnackbar();
-                displayShortToast(getStringInFragment(R.string.check_net_connection));
+
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
     }
@@ -985,8 +994,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
 
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
                 dismissProgressDialog();
+
+                if (activity != null) {
+                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
+                }
             }
         }
     }

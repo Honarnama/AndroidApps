@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -152,22 +153,19 @@ public abstract class HonarnamaBaseFragment extends Fragment {
         try {
             dismissProgressDialog();
             Activity activity = getActivity();
-            if (activity != null && mProgressDialog == null) {
+            if (activity != null && !activity.isFinishing() && isAdded()) {
                 mProgressDialog = new ProgressDialog(activity);
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.setMessage(getString(R.string.please_wait));
-            }
 
-            if (onDismissListener != null) {
-                mProgressDialog.setOnDismissListener(onDismissListener);
-            }
+                if (onDismissListener != null) {
+                    mProgressDialog.setOnDismissListener(onDismissListener);
+                }
 
-            activity = getActivity();
-            if (mProgressDialog != null && activity != null && !activity.isFinishing() && isAdded()) {
                 mProgressDialog.show();
             }
         } catch (Exception e) {
-            logE("Exception displaying dialog. e: " + e);
+            logE("Exception displaying dialog. e: " + e, e);
         }
     }
 

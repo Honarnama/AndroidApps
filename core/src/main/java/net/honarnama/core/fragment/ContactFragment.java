@@ -1,23 +1,22 @@
 package net.honarnama.core.fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.core.utils.GravityTextWatcher;
 import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.TextUtil;
-import net.honarnama.nano.Account;
-import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CommunicationServiceGrpc;
 import net.honarnama.nano.CreateMessageReply;
 import net.honarnama.nano.CreateMessageRequest;
-import net.honarnama.nano.CreateOrUpdateAccountRequest;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
-import net.honarnama.nano.UpdateAccountReply;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,9 +30,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -245,7 +241,14 @@ public class ContactFragment extends HonarnamaBaseFragment {
                         break;
                 }
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server) + getStringInFragment(R.string.check_net_connection);
+                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                if (activity != null) {
+                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+                    if (status != ConnectionResult.SUCCESS) {
+                        logE("GooglePlayServices is not available. ConnectionResult: " + status);
+                        ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, activity, 10)).show();
+                    }
+                }
             }
 
             dismissProgressDialog();
