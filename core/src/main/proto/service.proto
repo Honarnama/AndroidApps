@@ -213,29 +213,29 @@ service SellService {
 
   rpc GetItems(SimpleRequest) returns (GetItemsReply) {
     option (google.api.http) = {
-      get: "/v1/items"
+      get: "/v1/not-reviewed-items"
     };
   }
   rpc GetItem(GetOrDeleteItemRequest) returns (GetItemReply) {
     option (google.api.http) = {
-      get: "/v1/item/{id}"
+      get: "/v1/not-reviewed-item/{id}"
     };
   }
   rpc CreateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
     option (google.api.http) = {
-      post: "/v1/items"
+      post: "/v1/not-reviewed-items"
       body: "*"
     };
   }
   rpc UpdateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
     option (google.api.http) = {
-      put: "/v1/item/{item.id}"
+      put: "/v1/not-reviewed-item/{item.id}"
       body: "*"
     };
   }
   rpc DeleteItem(GetOrDeleteItemRequest) returns (DeleteItemReply) {
     option (google.api.http) = {
-      delete: "/v1/item/{id}"
+      delete: "/v1/not-reviewed-item/{id}"
     };
   }
 
@@ -321,6 +321,7 @@ message Item {
   uint64 price = 7;
   repeated string images = 8; // Just for gets
   ReviewStatus reviewStatus = 9; // Will be ignored in create and update
+  int64 publishTimestamp = 10;
 }
 
 message GetItemsReply {
@@ -458,4 +459,24 @@ message CreateMessageReply {
     TOO_MUCH_MESSAGES_ERROR = 2;
   }
   ErrorCode errorCode = 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+service BrowseService {
+  rpc GetItems(GetItemsRequest) returns (GetItemsReply) {
+    option (google.api.http) = {
+      get: "/v1/items"
+    };
+  }
+}
+
+message GetItemsRequest {
+  RequestProperties requestProperties = 1;
+  LocationId locationId = 2;
+  ArtCategoryId artCategoryId = 3;
+  uint32 minPrice = 4; // 1000 toman, floor round
+  uint32 maxPrice = 5; // 1000 toman, ceil round
+  string searchTerm = 6;
+  int64 lastItemTimestamp = 7;
+  uint32 page = 8;
 }
