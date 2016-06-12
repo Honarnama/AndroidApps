@@ -7,7 +7,7 @@ protobuf {
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:0.13.2'
+            artifact = 'io.grpc:protoc-gen-grpc-java:0.14.0'
         }
     }
     generateProtoTasks {
@@ -51,8 +51,8 @@ dependencies {
 
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
-    compile 'io.grpc:grpc-okhttp:0.13.2'
-    compile 'io.grpc:grpc-protobuf-nano:0.13.2'
-    compile 'io.grpc:grpc-stub:0.13.2'
+    compile 'io.grpc:grpc-okhttp:0.14.0'
+    compile 'io.grpc:grpc-protobuf-nano:0.14.0'
+    compile 'io.grpc:grpc-stub:0.14.0'
     protobuf files('lib/google.tar.gz')
 }

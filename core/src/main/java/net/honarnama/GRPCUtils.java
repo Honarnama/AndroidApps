@@ -42,14 +42,20 @@ public class GRPCUtils {
         return singleton;
     }
 
-    public synchronized static GRPCUtils getInstance() throws InterruptedException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
+    public synchronized static GRPCUtils getInstance() throws InterruptedException, GooglePlayServicesNotAvailableException {
         singleton = new GRPCUtils();
         return singleton;
     }
 
-    private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
-//        ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-        ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+    private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException {
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+            } catch (GooglePlayServicesRepairableException re) {
+                Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
+            }
+        }
         mChannel = ManagedChannelBuilder.forAddress(mHost, mPort)
                 .build();
     }
