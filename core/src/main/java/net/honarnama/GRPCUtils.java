@@ -33,7 +33,8 @@ import io.grpc.ManagedChannelBuilder;
 public class GRPCUtils {
 
     private String mHost = "honarnama.net"; // TODO: read from gradle
-    private int mPort = 8000; // TODO: read from gradle
+    private int mSecurePort = 8000; // TODO: read from gradle
+    private int mInsecurePort = 8001; // TODO: read from gradle
     private ManagedChannel mChannel;
 
     static private GRPCUtils singleton;
@@ -48,16 +49,24 @@ public class GRPCUtils {
     }
 
     private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException {
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-            } catch (GooglePlayServicesRepairableException re) {
-                Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
+        boolean throughTLS = true;
+        try {
+            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+        } catch (GooglePlayServicesRepairableException re) {
+            Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
+            int sdk = android.os.Build.VERSION.SDK_INT;
+            if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
+                throughTLS = false;
             }
         }
-        mChannel = ManagedChannelBuilder.forAddress(mHost, mPort)
+        if (throughTLS) {
+            mChannel = ManagedChannelBuilder.forAddress(mHost, mSecurePort)
+                    .build();
+        } else {
+            mChannel = ManagedChannelBuilder.forAddress(mHost, mInsecurePort)
+                .usePlaintext(true)
                 .build();
+        }
     }
 
     public void close() throws InterruptedException {
