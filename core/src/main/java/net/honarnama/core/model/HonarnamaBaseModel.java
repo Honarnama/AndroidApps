@@ -52,17 +52,14 @@ public class HonarnamaBaseModel {
         } else if (sharedMsg != null) {
             return sharedMsg;
         }
-        return null;
+        return "";
     }
 
     public void logE(String sharedMsg, String debugMsg, Throwable throwable) {
         if (BuildConfig.DEBUG) {
-            Log.e(getDebugTag(), getMessage(sharedMsg, debugMsg), throwable);
+            logE(getMessage(sharedMsg, debugMsg), throwable);
         } else if (sharedMsg != null) {
-            StringWriter sw = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(sw));
-            String stackTrace = sw.toString();
-            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
+            logE(sharedMsg, throwable);
         }
     }
 
@@ -70,15 +67,17 @@ public class HonarnamaBaseModel {
         if (BuildConfig.DEBUG) {
             Log.e(getDebugTag(), sharedMsg, throwable);
         } else if (sharedMsg != null) {
-            StringWriter sw = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(sw));
-            String stackTrace = sw.toString();
-            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg + ". stackTrace: " + stackTrace);
+            Crashlytics.log(Log.ERROR, getDebugTag(), sharedMsg);
+            if (throwable != null) {
+                Crashlytics.logException(throwable);
+            } else {
+                Crashlytics.logException(new Throwable(sharedMsg));
+            }
         }
     }
 
     public void logE(String sharedMsg) {
-        logE(sharedMsg, null);
+        logE(sharedMsg, null, null);
     }
 
     public void logI(String sharedMsg, String debugMsg) {
@@ -90,6 +89,9 @@ public class HonarnamaBaseModel {
     }
 
     public void logD(String debugMsg) {
-        Log.d(getDebugTag(), getMessage(null, debugMsg));
+        if (BuildConfig.DEBUG) {
+            Log.d(getDebugTag(), getMessage(null, debugMsg));
+        }
     }
+
 }

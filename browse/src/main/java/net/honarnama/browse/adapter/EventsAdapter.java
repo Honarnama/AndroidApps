@@ -1,20 +1,14 @@
 package net.honarnama.browse.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
-import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.City;
 import net.honarnama.core.model.Event;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +71,7 @@ public class EventsAdapter extends BaseAdapter {
         mViewHolderWithImage.place.setText(event.getCity().getName());
 
 //TODO
-       File image = null;
+        File image = null;
         mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
 
         if (image != null) {

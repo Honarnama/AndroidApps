@@ -2,7 +2,6 @@ package net.honarnama.browse.fragment;
 
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;

@@ -1,13 +1,10 @@
 package net.honarnama.browse.adapter;
 
-import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
 import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopsFragment;
-import net.honarnama.core.fragment.ContactFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
+import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 /**

@@ -1,22 +1,14 @@
 package net.honarnama.browse.dialog;
 
-import com.mikepenz.iconics.view.IconicsImageView;
-
 import net.honarnama.browse.R;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Created by elnaz on 3/2/16.

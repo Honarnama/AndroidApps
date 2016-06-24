@@ -357,7 +357,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                     mCityOrderedTreeMap = task.getResult();
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            if (mSelectedCityId<0) {
+                            if (mSelectedCityId < 0) {
                                 mSelectedCityId = citySet.getKey();
                             }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());

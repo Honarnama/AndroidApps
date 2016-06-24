@@ -5,7 +5,6 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.BookmarksAdapter;
-import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.model.Item;
 
 import android.content.Context;

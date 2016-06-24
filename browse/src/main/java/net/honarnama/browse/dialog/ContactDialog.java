@@ -1,7 +1,6 @@
 package net.honarnama.browse.dialog;
 
 import com.mikepenz.iconics.view.IconicsImageView;
-import com.parse.ImageSelector;
 
 import net.honarnama.browse.R;
 
@@ -12,11 +11,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**

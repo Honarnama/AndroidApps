@@ -1,9 +1,5 @@
 package net.honarnama.browse.model;
 
-import com.parse.ParseClassName;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-
 import net.honarnama.core.model.ArtCategory;
 import net.honarnama.core.model.Store;
 
@@ -14,7 +10,6 @@ import bolts.Task;
 /**
  * Created by elnaz on 2/15/16.
  */
-@ParseClassName("Item")
 public class Item extends net.honarnama.core.model.Item {
 
     public Item(int ownerId, String name, String description, ArtCategory category, Number price, Store store) {

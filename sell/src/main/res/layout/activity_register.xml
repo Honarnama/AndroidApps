@@ -14,6 +14,7 @@
                     tools:context="net.honarnama.sell.activity.RegisterActivity"
                     android:layout_gravity="right"
                     android:layoutDirection="rtl"
+                    android:textAlignment="gravity"
                     android:gravity="right">
 
         <TextView
@@ -33,13 +34,16 @@
                 android:orientation="horizontal"
                 android:layout_below="@id/register_form_title"
                 android:layout_alignParentRight="true"
-                android:gravity="right"
                 android:layout_marginTop="10dp"
+                android:layout_gravity="right"
+                android:gravity="right"
         >
             <android.support.design.widget.TextInputLayout
                     android:id="@+id/name_hint"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+
+            >
                 <EditText
                         android:id="@+id/register_name_edit_text"
                         android:inputType="textPersonName"
@@ -50,6 +54,9 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="2"
                         style="@style/edit_text_default"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:ellipsize="end"
                 >
                     <requestFocus/>
                 </EditText>
@@ -71,6 +78,8 @@
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal"
                     android:layout_below="@id/register_name_alert"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
         >
 
             <ToggleButton android:id="@+id/register_gender_woman"
@@ -147,6 +156,7 @@
                               android:background="@color/gray_extra_light"
                               android:padding="5dp"
                               android:id="@+id/email_layer"
+                              android:gravity="right"
                 >
                     <RadioButton
                             android:id="@+id/register_activate_with_email"
@@ -186,6 +196,7 @@
                               android:layout_marginTop="15dp"
                               android:padding="5dp"
                               android:id="@+id/telegram_layer"
+                              android:gravity="right"
                 >
                     <RadioButton
                             android:id="@+id/register_activate_with_telegram"

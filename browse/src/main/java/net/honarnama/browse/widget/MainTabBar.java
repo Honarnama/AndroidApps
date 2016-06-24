@@ -147,8 +147,7 @@ public class MainTabBar extends LinearLayout {
         }
     }
 
-    public void selectTabViewWithTabTag(Object tabTag)
-    {
+    public void selectTabViewWithTabTag(Object tabTag) {
         selectTabView(findViewWithTag(tabTag));
     }
 

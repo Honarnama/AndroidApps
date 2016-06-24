@@ -19,8 +19,6 @@ import java.util.List;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ALL_SUBCAT_FILTER_TYPE;
-import static net.honarnama.core.helper.DatabaseHelper.COL_ART_CAT_ORDER;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ID;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_NAME;
 import static net.honarnama.core.helper.DatabaseHelper.COL_EVENT_CAT_ORDER;
@@ -93,10 +91,8 @@ public class EventCategory {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to add eventCategories to database", e);
             } else {
-                StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
-                String stackTrace = sw.toString();
-                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e + ". stackTrace: " + stackTrace);
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to add eventCategories to database // Error: " + e);
+                Crashlytics.logException(e);
             }
             db.endTransaction();
             tcs.trySetError(e);

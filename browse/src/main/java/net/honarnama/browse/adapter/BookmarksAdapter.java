@@ -1,15 +1,11 @@
 package net.honarnama.browse.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import net.honarnama.browse.R;
+import net.honarnama.browse.model.Bookmark;
 import net.honarnama.browse.model.Item;
 import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.model.Bookmark;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;

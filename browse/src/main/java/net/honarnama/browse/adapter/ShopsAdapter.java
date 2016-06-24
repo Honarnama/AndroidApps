@@ -1,23 +1,14 @@
 package net.honarnama.browse.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
-import net.honarnama.browse.model.Item;
-import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.City;
-import net.honarnama.core.model.Event;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.TextUtil;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,19 +86,19 @@ public class ShopsAdapter extends BaseAdapter {
 //                        }
 //                    });
 //        } else {
-            Picasso.with(mContext).load(R.drawable.default_logo_hand)
-                    .error(R.drawable.default_logo_hand)
-                    .into(mViewHolderWithImage.icon, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                        }
+        Picasso.with(mContext).load(R.drawable.default_logo_hand)
+                .error(R.drawable.default_logo_hand)
+                .into(mViewHolderWithImage.icon, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                    }
 
-                        @Override
-                        public void onError() {
-                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                        }
-                    });
+                    @Override
+                    public void onError() {
+                        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                    }
+                });
 //        }
         return convertView;
 

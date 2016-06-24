@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -52,7 +53,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public RelativeLayout mOnErrorRetry;
     public Button mCategoryFilterButton;
     public RelativeLayout mFilterContainer;
-    public TreeMap<Number, EventCategory> mEventCategoryObjectsTreeMap = new TreeMap<Number, EventCategory>();
+    List<EventCategory> mEventCategories = new ArrayList<>();
     public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
     public int mSelectedCatId = -1;
     public String mSelectedCatName;
@@ -126,24 +127,23 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mListView.setOnItemClickListener(this);
 
         final EventCategory eventCategory = new EventCategory();
-        eventCategory.getAllEventCategoriesSorted().continueWith(new Continuation<TreeMap<Number, EventCategory>, Object>() {
+        eventCategory.getAllEventCategoriesSorted().continueWith(new Continuation<List<EventCategory>, Object>() {
             @Override
-            public Object then(Task<TreeMap<Number, EventCategory>> task) throws Exception {
+            public Object then(Task<List<EventCategory>> task) throws Exception {
                 if (task.isFaulted()) {
                     logE("Getting Event Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.error_getting_event_cat_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                    }
+                    displayShortToast(getString(R.string.error_getting_event_cat_list) + getString(R.string.check_net_connection));
                 } else {
-                    mEventCategoryObjectsTreeMap = task.getResult();
-                    for (EventCategory category : mEventCategoryObjectsTreeMap.values()) {
-                        mEventCategoriesHashMap.put(category.getId(), category.getName());
+                    mEventCategories = task.getResult();
+                    if (mEventCategories != null) {
+                        for (int i = 0; i < mEventCategories.size(); i++) {
+                            mEventCategoriesHashMap.put(mEventCategories.get(i).getId(), mEventCategories.get(i).getName());
+                        }
                     }
                 }
                 return null;
             }
         });
-
         listEvents();
         return rootView;
     }
@@ -213,7 +213,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         eventCatDialog.setContentView(R.layout.choose_event_category);
 
         eventCatsListView = (ListView) eventCatDialog.findViewById(net.honarnama.base.R.id.event_category_list_view);
-        eventCatsAdapter = new EventCategoriesAdapter(getActivity(), mEventCategoryObjectsTreeMap);
+        eventCatsAdapter = new EventCategoriesAdapter(getActivity(), mEventCategories);
         eventCatsListView.setAdapter(eventCatsAdapter);
         eventCatsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -223,7 +223,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 } else {
                     mFilterAllCategoryRowSelected = false;
                 }
-                EventCategory eventCategory = mEventCategoryObjectsTreeMap.get(position + 1);
+                EventCategory eventCategory = mEventCategories.get(position);
                 mSelectedCatId = eventCategory.getId();
                 mSelectedCatName = eventCategory.getName();
                 mCategoryFilterButton.setText(mSelectedCatName);

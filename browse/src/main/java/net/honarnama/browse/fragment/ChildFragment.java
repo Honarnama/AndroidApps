@@ -2,7 +2,6 @@ package net.honarnama.browse.fragment;
 
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.core.fragment.HonarnamaBaseFragment;
 import net.honarnama.core.utils.NetworkManager;
 
@@ -16,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.List;

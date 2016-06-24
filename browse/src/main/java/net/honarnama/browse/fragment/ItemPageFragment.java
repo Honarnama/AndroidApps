@@ -4,12 +4,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
-import com.mikepenz.iconics.view.IconicsTextView;
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -18,11 +13,7 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
-import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.model.Bookmark;
-import net.honarnama.core.model.City;
-import net.honarnama.core.model.Province;
 import net.honarnama.core.model.Store;
 import net.honarnama.core.utils.NetworkManager;
 import net.honarnama.core.utils.ObservableScrollView;
@@ -31,7 +22,6 @@ import net.honarnama.core.utils.TextUtil;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -48,15 +38,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by elnaz on 2/15/16.

@@ -1,23 +1,16 @@
 package net.honarnama.browse.adapter;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseFile;
 
 import net.honarnama.browse.R;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +21,7 @@ import java.util.List;
 public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    List<ParseFile> mImages = new ArrayList<>();
+    List<ImageSelector> mImages = new ArrayList<>();
     private static LayoutInflater mInflater = null;
 
     public ImageAdapter(Context c) {
@@ -36,7 +29,7 @@ public class ImageAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(mContext);
     }
 
-    public void setImages(List<ParseFile> images) {
+    public void setImages(List<ImageSelector> images) {
         mImages = images;
     }
 

@@ -3,10 +3,8 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.parse.GetDataCallback;
 import com.parse.ImageSelector;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
