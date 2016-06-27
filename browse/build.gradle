@@ -12,6 +12,17 @@ android {
         versionCode 900
         versionName "0.9"
     }
+
+    productFlavors {
+        prod {
+            applicationId "net.honarnama.browse"
+        }
+
+        stg1 {
+            applicationId "net.honarnama.browse.staging1"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -23,8 +34,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    debugCompile project(path: ':core', configuration: 'debug')
-    releaseCompile project(path: ':core', configuration: 'release')
+    debugCompile project(path: ':core', configuration: 'prodDebug')
+    releaseCompile project(path: ':core', configuration: 'prodRelease')
+    stg1Compile project(path: ':core', configuration: 'stg1Debug')
     compile 'com.android.support:design:23.2.0'
     compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
 }

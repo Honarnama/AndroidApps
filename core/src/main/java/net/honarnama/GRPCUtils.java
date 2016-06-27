@@ -4,8 +4,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
-import com.crashlytics.android.Crashlytics;
-
+import net.honarnama.base.BuildConfig;
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.CommunicationServiceGrpc;
@@ -32,9 +31,9 @@ import io.grpc.ManagedChannelBuilder;
  */
 public class GRPCUtils {
 
-    private String mHost = "honarnama.net"; // TODO: read from gradle
-    private int mSecurePort = 8000; // TODO: read from gradle
-    private int mInsecurePort = 8001; // TODO: read from gradle
+    private String mHost = BuildConfig.HOST;
+    private int mSecurePort = BuildConfig.SECURE_PORT;
+    private int mInsecurePort = BuildConfig.INSECURE_PORT;
     private ManagedChannel mChannel;
 
     static private GRPCUtils singleton;
@@ -49,14 +48,16 @@ public class GRPCUtils {
     }
 
     private GRPCUtils() throws InterruptedException, GooglePlayServicesNotAvailableException {
-        boolean throughTLS = true;
-        try {
-            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-        } catch (GooglePlayServicesRepairableException re) {
-            Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
-            int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
-                throughTLS = false;
+        boolean throughTLS = BuildConfig.FLAVOR == "prod";
+        if (throughTLS) {
+            try {
+                ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+            } catch (GooglePlayServicesRepairableException re) {
+                Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
+                int sdk = android.os.Build.VERSION.SDK_INT;
+                if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    throughTLS = false;
+                }
             }
         }
         if (throughTLS) {
@@ -64,8 +65,8 @@ public class GRPCUtils {
                     .build();
         } else {
             mChannel = ManagedChannelBuilder.forAddress(mHost, mInsecurePort)
-                .usePlaintext(true)
-                .build();
+                    .usePlaintext(true)
+                    .build();
         }
     }
 
