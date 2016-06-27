@@ -5,7 +5,6 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ImageSelector;
-import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -58,7 +57,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mPlaceTextView;
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
-    private ParseUser mOwner;
     private LinearLayout mDotsLayout;
     public LinearLayout mInnerLayout;
     public RelativeLayout mSimilarTitleContainer;
@@ -109,10 +107,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         itemPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return itemPageFragment;
-    }
-
-    private void setOwner(ParseUser owner) {
-        mOwner = owner;
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
-import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -32,12 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -250,39 +247,39 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     }
 
 
-    class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
-        //TODO remove this listener
-        @Override
-        public void onLoading() {
-            mEmptyListContainer.setVisibility(View.GONE);
-            mOnErrorRetry.setVisibility(View.GONE);
-            mLoadingCircle.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onLoaded(List objects, Exception e) {
-
-            mLoadingCircle.setVisibility(View.GONE);
-            if (e == null) {
-                if ((objects != null) && objects.size() > 0) {
-                    mEmptyListContainer.setVisibility(View.GONE);
-                } else {
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
-                }
-            } else {
-                mEmptyListContainer.setVisibility(View.VISIBLE);
-                if (((ParseException) e).getCode() == ParseException.OBJECT_NOT_FOUND) {
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_event_found), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                    }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
-            }
-        }
+    class onQueryLoadListener{
+//        //TODO remove this listener
+//        @Override
+//        public void onLoading() {
+//            mEmptyListContainer.setVisibility(View.GONE);
+//            mOnErrorRetry.setVisibility(View.GONE);
+//            mLoadingCircle.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        public void onLoaded(List objects, Exception e) {
+//
+//            mLoadingCircle.setVisibility(View.GONE);
+//            if (e == null) {
+//                if ((objects != null) && objects.size() > 0) {
+//                    mEmptyListContainer.setVisibility(View.GONE);
+//                } else {
+//                    mEmptyListContainer.setVisibility(View.VISIBLE);
+//                }
+//            } else {
+//                mEmptyListContainer.setVisibility(View.VISIBLE);
+//                if (((ParseException) e).getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_event_found), Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+//                    }
+//                    mOnErrorRetry.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        }
     }
 
     @Override

@@ -19,7 +19,7 @@ android {
         }
 
         stg1 {
-            applicationId "net.honarnama.browse.staging1"
+            applicationId "net.honarnama.browse.stg1"
         }
     }
 
@@ -34,8 +34,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    debugCompile project(path: ':core', configuration: 'prodDebug')
-    releaseCompile project(path: ':core', configuration: 'prodRelease')
+    prodCompile project(path: ':core', configuration: 'prodRelease')
     stg1Compile project(path: ':core', configuration: 'stg1Debug')
     compile 'com.android.support:design:23.2.0'
     compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'

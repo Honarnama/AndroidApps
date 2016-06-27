@@ -1,8 +1,5 @@
 package net.honarnama.browse.fragment;
 
-
-import com.parse.ParseException;
-
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -302,19 +299,19 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 mLoadingCircle.setVisibility(View.GONE);
                 mEmptyListContainer.setVisibility(View.VISIBLE);
                 mListView.setEmptyView(mEmptyListContainer);
-
-                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Searching shops with search term" + msearchTerm + " failed. Error: " + task.getError(), task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_shop_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                    }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                } else {
-                    mOnErrorRetry.setVisibility(View.GONE);
-                    List<Store> foundItems = task.getResult();
-                    mShopsAdapter.setShops(foundItems);
-                    mShopsAdapter.notifyDataSetChanged();
-                }
+//
+//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
+//                    logE("Searching shops with search term" + msearchTerm + " failed. Error: " + task.getError(), task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_shop_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                    mOnErrorRetry.setVisibility(View.VISIBLE);
+//                } else {
+//                    mOnErrorRetry.setVisibility(View.GONE);
+//                    List<Store> foundItems = task.getResult();
+//                    mShopsAdapter.setShops(foundItems);
+//                    mShopsAdapter.notifyDataSetChanged();
+//                }
                 return null;
             }
         });

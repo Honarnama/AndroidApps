@@ -16,13 +16,13 @@ import bolts.TaskCompletionSource;
  */
 public class Shop extends Store {
 
-    public static Task<List<ParseObject>> getShopList(Context context) {
-        final TaskCompletionSource<List<ParseObject>> tcs = new TaskCompletionSource<>();
+    public static List<Shop>  getShopList(Context context) {
+//        final TaskCompletionSource<List<ParseObject>> tcs = new TaskCompletionSource<>();
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
-            tcs.setError(new NetworkErrorException("No network connection."));
-            return tcs.getTask();
-        }
+//        if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+//            tcs.setError(new NetworkErrorException("No network connection."));
+//            return tcs.getTask();
+//        }
 
         //TODO
 
@@ -49,8 +49,9 @@ public class Shop extends Store {
 //                }
 //            }
 //        });
-        tcs.trySetResult(null);
-        return tcs.getTask();
+//        tcs.trySetResult(null);
+//        return tcs.getTask();
+        return null;
     }
 
     public static Task<Store> getShopById(final String shopId) {

@@ -16,7 +16,7 @@ public class Item extends net.honarnama.core.model.Item {
         super(ownerId, name, description, category, price, store);
     }
 
-    public static Task<List<Item>> getItemsByOwner(final ParseUser owner) {
+    public static Task<List<Item>> getItemsByOwner(final String ownerId) {
         return null;
         //TODO
     }
@@ -26,7 +26,7 @@ public class Item extends net.honarnama.core.model.Item {
         return null;
     }
 
-    public static Task<ParseObject> getItemById(final String itemId) {
+    public static net.honarnama.nano.Item getItemById(final String itemId) {
         //TODO
         return null;
     }

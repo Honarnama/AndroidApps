@@ -5,7 +5,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.BuildConfig;
+import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
@@ -114,8 +114,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public Dialog mSetDefaultLocationDialog;
 
-    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<Number, Province>();
-    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap();
+//    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
     public int mDefaultLocationProvinceId;
     public String mDefaultLocationProvinceName;
     public int mSelectedDefaultLocationProvinceId = -1;

@@ -2,7 +2,6 @@ package net.honarnama.browse.fragment;
 
 
 import com.mikepenz.iconics.view.IconicsImageView;
-import com.parse.ParseException;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -28,10 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by elnaz on 2/11/16.
@@ -166,35 +163,35 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
     }
 
-    class onQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener {
-        @Override
-        public void onLoading() {
-            mEmptyListContainer.setVisibility(View.GONE);
-            mOnErrorRetry.setVisibility(View.GONE);
-            mLoadingCircle.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onLoaded(List objects, Exception e) {
-
-            mLoadingCircle.setVisibility(View.GONE);
-            if (e == null) {
-                if ((objects != null) && objects.size() > 0) {
-                    mEmptyListContainer.setVisibility(View.GONE);
-                } else {
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
-                }
-            } else {
-                mEmptyListContainer.setVisibility(View.VISIBLE);
-                if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Error Querying Items: " + e, e);
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                    }
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
-            }
-        }
+    class onQueryLoadListener {
+//        @Override
+//        public void onLoading() {
+//            mEmptyListContainer.setVisibility(View.GONE);
+//            mOnErrorRetry.setVisibility(View.GONE);
+//            mLoadingCircle.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        public void onLoaded(List objects, Exception e) {
+//
+//            mLoadingCircle.setVisibility(View.GONE);
+//            if (e == null) {
+//                if ((objects != null) && objects.size() > 0) {
+//                    mEmptyListContainer.setVisibility(View.GONE);
+//                } else {
+//                    mEmptyListContainer.setVisibility(View.VISIBLE);
+//                }
+//            } else {
+//                mEmptyListContainer.setVisibility(View.VISIBLE);
+//                if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
+//                    logE("Error Querying Items: " + e, e);
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+//                    }
+//                    mOnErrorRetry.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        }
     }
 
     public void listItems() {

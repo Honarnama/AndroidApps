@@ -4,8 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
-import com.parse.ParseException;
-import com.parse.ParseUser;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -57,7 +55,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopName;
     public TextView mShopDesc;
     public TextView mShopPlace;
-    private ParseUser mOwner;
     public ListView mListView;
 
     private ObservableScrollView mScrollView;
@@ -79,10 +76,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         shopPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return shopPageFragment;
-    }
-
-    private void setOwner(ParseUser owner) {
-        mOwner = owner;
     }
 
     @Override
@@ -143,18 +136,18 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             @Override
             public Boolean then(Task<Store> task) throws Exception {
                 if (task.isFaulted()) {
-                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_shop_no_longer_exists), Toast.LENGTH_SHORT).show();
-                        }
-                        deletedShopMsg.setVisibility(View.VISIBLE);
-                    } else {
-                        logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), task.getError());
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-                        }
-                        mOnErrorRetry.setVisibility(View.VISIBLE);
-                    }
+//                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
+//                        if (isVisible()) {
+//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_shop_no_longer_exists), Toast.LENGTH_SHORT).show();
+//                        }
+//                        deletedShopMsg.setVisibility(View.VISIBLE);
+//                    } else {
+//                        logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), task.getError());
+//                        if (isVisible()) {
+//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+//                        }
+//                        mOnErrorRetry.setVisibility(View.VISIBLE);
+//                    }
                     itemsloadingCircle.setVisibility(View.GONE);
                     return false;
                 } else {
@@ -218,31 +211,32 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         }).continueWithTask(new Continuation<Boolean, Task<List<Item>>>() {
             @Override
             public Task<List<Item>> then(Task<Boolean> task) throws Exception {
-                if (task.getResult() == true && mOwner != null) {
-                    return Item.getItemsByOwner(mOwner);
-                } else {
-                    return Task.forError(new ParseException(ParseException.OBJECT_NOT_FOUND, "Shop is not verified or no shop found"));
-                }
+//                if (task.getResult() == true && mOwner != null) {
+//                    return Item.getItemsByOwner(mOwner);
+//                } else {
+//                    return Task.forError(new ParseException(ParseException.OBJECT_NOT_FOUND, "Shop is not verified or no shop found"));
+//                }
+                return null;
             }
         }).continueWith(new Continuation<List<Item>, Object>() {
             @Override
             public Object then(Task<List<Item>> task) throws Exception {
                 itemsloadingCircle.setVisibility(View.GONE);
-                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-                    logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), task.getError());
-                    if (isVisible()) {
-                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    List<Item> shopItems = task.getResult();
-                    if (shopItems.size() == 0) {
-                        mListView.setEmptyView(emptyListContainer);
-                        emptyListContainer.setVisibility(View.VISIBLE);
-                    }
-                    mItemsAdapter.setItems(shopItems);
-                    mItemsAdapter.notifyDataSetChanged();
-                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
-                }
+//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
+//                    logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), task.getError());
+//                    if (isVisible()) {
+//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    List<Item> shopItems = task.getResult();
+//                    if (shopItems.size() == 0) {
+//                        mListView.setEmptyView(emptyListContainer);
+//                        emptyListContainer.setVisibility(View.VISIBLE);
+//                    }
+//                    mItemsAdapter.setItems(shopItems);
+//                    mItemsAdapter.notifyDataSetChanged();
+//                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
+//                }
                 return null;
             }
         });
