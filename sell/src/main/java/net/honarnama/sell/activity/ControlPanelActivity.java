@@ -525,7 +525,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                                 .color(getResources().getColor(R.color.amber_primary_dark))
                                 .icon(GoogleMaterial.Icon.gmd_info_outline);
                 menuItem.setIcon(aboutDrawable);
-                fragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_SELL_APP);
+                fragment = AboutFragment.getInstance();
                 break;
 
             case R.id.item_contact_us:

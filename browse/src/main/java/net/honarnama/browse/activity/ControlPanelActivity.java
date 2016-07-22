@@ -114,23 +114,23 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public Dialog mSetDefaultLocationDialog;
 
-    public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap();
+    public TreeMap<Number, Province> mProvincesTreeMap = new TreeMap();
 //    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
-    public int mDefaultLocationProvinceId;
-    public String mDefaultLocationProvinceName;
-    public int mSelectedDefaultLocationProvinceId = -1;
-    public String mSelectedDefaultLocationProvinceName;
+    public int mDefaultProvinceId;
+    public String mDefaultProvinceName;
+    public int mSelectedProvinceId = -1;
+    public String mSelectedProvinceName;
 
-    public EditText mDefaultLocationProvinceEditText;
-    private Province mSelectedDefaultLocationProvince;
+    public EditText mDefaultProvinceEditText;
+    private Province mSelectedProvince;
 
-    public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
+    public TreeMap<Number, HashMap<Integer, String>> mCityTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
-    public int mDefaultLocationCityId;
-    public String mDefaultLocationCityName;
-    public int mSelectedDefaultLocationCityId = -1;
-    public String mSelectedDefaultLocationCityName;
-    public EditText mDefaultLocationCityEditText;
+    public int mDefaultCityId;
+    public String mDefaultCityName;
+    public int mSelectedCityId = -1;
+    public String mSelectedCityName;
+    public EditText mDefaultCityEditText;
 
     IconicsImageView mRefetchProvinces;
     IconicsImageView mRefetchCities;
@@ -219,10 +219,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
         mNavFooter.setOnClickListener(this);
 
-        mSelectedDefaultLocationProvinceId = mDefaultLocationProvinceId = getDefaultLocationProvinceId();
-        mSelectedDefaultLocationCityId = mDefaultLocationCityId = getDefaultLocationCityId();
-        mSelectedDefaultLocationProvinceName = mDefaultLocationProvinceName = getDefaultLocationProvinceName();
-        mSelectedDefaultLocationCityName = mDefaultLocationCityName = getDefaultLocationCityName();
+        mSelectedProvinceId = mDefaultProvinceId = getDefaultLocationProvinceId();
+        mSelectedCityId = mDefaultCityId = getDefaultLocationCityId();
+        mSelectedProvinceName = mDefaultProvinceName = getDefaultLocationProvinceName();
+        mSelectedCityName = mDefaultCityName = getDefaultLocationCityName();
 
         changeLocationTitle();
 
@@ -234,9 +234,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         if (BuildConfig.DEBUG) {
             logD("changeLocationTitle");
         }
-        if (!TextUtils.isEmpty(mDefaultLocationProvinceName) && !TextUtils.isEmpty(mDefaultLocationCityName)) {
+        if (!TextUtils.isEmpty(mDefaultProvinceName) && !TextUtils.isEmpty(mDefaultCityName)) {
             Menu menu = mNavigationView.getMenu();
-            menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultLocationProvinceName + "، " + mDefaultLocationCityName);
+            menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultProvinceName + "، " + mDefaultCityName);
         }
     }
 
@@ -853,13 +853,13 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mSetDefaultLocationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mSetDefaultLocationDialog.setContentView(R.layout.set_default_location);
 
-        mDefaultLocationProvinceEditText = (EditText) mSetDefaultLocationDialog.findViewById(R.id.province_edit_text);
-        mDefaultLocationProvinceEditText.setOnClickListener(this);
-        mDefaultLocationProvinceEditText.setKeyListener(null);
+        mDefaultProvinceEditText = (EditText) mSetDefaultLocationDialog.findViewById(R.id.province_edit_text);
+        mDefaultProvinceEditText.setOnClickListener(this);
+        mDefaultProvinceEditText.setKeyListener(null);
 
-        mDefaultLocationCityEditText = (EditText) mSetDefaultLocationDialog.findViewById(R.id.city_edit_text);
-        mDefaultLocationCityEditText.setOnClickListener(this);
-        mDefaultLocationCityEditText.setKeyListener(null);
+        mDefaultCityEditText = (EditText) mSetDefaultLocationDialog.findViewById(R.id.city_edit_text);
+        mDefaultCityEditText.setOnClickListener(this);
+        mDefaultCityEditText.setKeyListener(null);
 
         mRefetchProvinces = (IconicsImageView) mSetDefaultLocationDialog.findViewById(R.id.refetchProvinces);
         mRefetchProvinces.setOnClickListener(this);
@@ -876,16 +876,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     return;
                 }
-                if ((mSelectedDefaultLocationProvinceId > 0) && mSelectedDefaultLocationCityId > 0) {
-                    mDefaultLocationProvinceId = mSelectedDefaultLocationProvinceId;
-                    mDefaultLocationProvinceName = mSelectedDefaultLocationProvinceName;
-                    mDefaultLocationCityId = mSelectedDefaultLocationCityId;
-                    mDefaultLocationCityName = mSelectedDefaultLocationCityName;
+                if ((mSelectedProvinceId > 0) && mSelectedCityId > 0) {
+                    mDefaultProvinceId = mSelectedProvinceId;
+                    mDefaultProvinceName = mSelectedProvinceName;
+                    mDefaultCityId = mSelectedCityId;
+                    mDefaultCityName = mSelectedCityName;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultLocationProvinceId);
-                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultLocationProvinceName);
-                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultLocationCityId);
-                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultLocationCityName);
+                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, mDefaultProvinceId);
+                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME, mDefaultProvinceName);
+                    editor.putInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, mDefaultCityId);
+                    editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultCityName);
                     editor.commit();
                     changeLocationTitle();
                 } else {
@@ -917,16 +917,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         provinceDialog.setContentView(R.layout.choose_province);
 
         provincesListView = (ListView) provinceDialog.findViewById(net.honarnama.base.R.id.provinces_list_view);
-        provincesAdapter = new ProvincesAdapter(ControlPanelActivity.this, mProvincesObjectsTreeMap);
+        provincesAdapter = new ProvincesAdapter(ControlPanelActivity.this, mProvincesTreeMap);
         provincesListView.setAdapter(provincesAdapter);
 
         provincesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedDefaultLocationProvince = mProvincesObjectsTreeMap.get(position + 1);
-                mSelectedDefaultLocationProvinceId = mSelectedDefaultLocationProvince.getId();
-                mSelectedDefaultLocationProvinceName = mSelectedDefaultLocationProvince.getName();
-                mDefaultLocationProvinceEditText.setText(mSelectedDefaultLocationProvinceName);
+                mSelectedProvince = mProvincesTreeMap.get(position + 1);
+                mSelectedProvinceId = mSelectedProvince.getId();
+                mSelectedProvinceName = mSelectedProvince.getName();
+                mDefaultProvinceEditText.setText(mSelectedProvinceName);
 
                 rePopulateCityList();
                 if (provinceDialog.isShowing()) {
@@ -941,7 +941,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     private void rePopulateCityList() {
         City city = new City();
-        city.getAllCitiesSorted(mSelectedDefaultLocationProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+        city.getAllCitiesSorted(mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -949,19 +949,19 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    mCityOrderedTreeMap = task.getResult();
-                    for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
+                    mCityTreeMap = task.getResult();
+                    for (HashMap<Integer, String> cityMap : mCityTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
 
                         }
                     }
 
-                    Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                    Set<Integer> tempSet = mCityTreeMap.get(1).keySet();
                     for (int key : tempSet) {
-                        mSelectedDefaultLocationCityId = key;
-                        mSelectedDefaultLocationCityName = mCityHashMap.get(key);
-                        mDefaultLocationCityEditText.setText(mSelectedDefaultLocationCityName);
+                        mSelectedCityId = key;
+                        mSelectedCityName = mCityHashMap.get(key);
+                        mDefaultCityEditText.setText(mSelectedCityName);
                     }
                 }
                 return null;
@@ -977,19 +977,19 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         cityDialog.setContentView(R.layout.choose_city);
         cityListView = (ListView) cityDialog.findViewById(net.honarnama.base.R.id.city_list_view);
 
-        cityAdapter = new CityAdapter(ControlPanelActivity.this, mCityOrderedTreeMap);
+        cityAdapter = new CityAdapter(ControlPanelActivity.this, mCityTreeMap);
         cityListView.setAdapter(cityAdapter);
         cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                HashMap<Integer, String> selectedCity = mCityOrderedTreeMap.get(position + 1);
+                HashMap<Integer, String> selectedCity = mCityTreeMap.get(position + 1);
                 for (int key : selectedCity.keySet()) {
-                    mSelectedDefaultLocationCityId = key;
+                    mSelectedCityId = key;
                 }
                 for (String value : selectedCity.values()) {
-                    mSelectedDefaultLocationCityName = value;
-                    mDefaultLocationCityEditText.setText(mSelectedDefaultLocationCityName);
+                    mSelectedCityName = value;
+                    mDefaultCityEditText.setText(mSelectedCityName);
                 }
 
                 if (cityDialog.isShowing()) {

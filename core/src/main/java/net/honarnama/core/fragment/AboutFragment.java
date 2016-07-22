@@ -19,11 +19,10 @@ public class AboutFragment extends HonarnamaBaseFragment {
 
     public static AboutFragment mAboutFragment;
 
-    public synchronized static AboutFragment getInstance(String appKey) {
+    public synchronized static AboutFragment getInstance() {
 //        if (mAboutFragment == null) {
         mAboutFragment = new AboutFragment();
         Bundle args = new Bundle();
-        args.putString("appKey", appKey);
         mAboutFragment.setArguments(args);
 //        }
         return mAboutFragment;

@@ -44,7 +44,7 @@ android {
 
         stg1 {
             buildConfigField 'String', 'HOST', '"staging1.honarnama.net"'
-            buildConfigField 'int', 'SECURE_PORT', "8000"
+            buildConfigField 'int', 'SECURE_PORT', "0"
             buildConfigField 'int', 'INSECURE_PORT', "8001"
         }
     }

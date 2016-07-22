@@ -1,8 +1,5 @@
 package net.honarnama.core.fragment;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -16,10 +13,10 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -31,7 +28,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class ContactFragment extends HonarnamaBaseFragment {
 
@@ -51,7 +47,6 @@ public class ContactFragment extends HonarnamaBaseFragment {
 //        mContactFragment.setArguments(args);
         return mContactFragment;
     }
-
 
     @Override
     public String getTitle(Context context) {
@@ -242,13 +237,13 @@ public class ContactFragment extends HonarnamaBaseFragment {
                 }
             } else {
                 cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
-                if (activity != null) {
-                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-                    if (status != ConnectionResult.SUCCESS) {
-                        logE("GooglePlayServices is not available. ConnectionResult: " + status);
-                        ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, activity, 10)).show();
-                    }
-                }
+//                if (activity != null) {
+//                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+//                    if (status != ConnectionResult.SUCCESS) {
+//                        logE("GooglePlayServices is not available. ConnectionResult: " + status);
+//                        ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, activity, 10)).show();
+//                    }
+//                }
             }
 
             dismissProgressDialog();
