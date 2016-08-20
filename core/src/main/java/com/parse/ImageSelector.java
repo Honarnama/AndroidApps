@@ -6,7 +6,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
-import net.honarnama.core.utils.FileUtil;
+import net.honarnama.base.utils.FileUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;

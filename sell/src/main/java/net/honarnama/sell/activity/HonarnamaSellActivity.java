@@ -3,7 +3,7 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import net.honarnama.core.activity.HonarnamaBaseActivity;
+import net.honarnama.base.activity.HonarnamaBaseActivity;
 
 import android.app.Dialog;
 import android.os.Bundle;

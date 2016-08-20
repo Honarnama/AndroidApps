@@ -1,7 +1,7 @@
 package net.honarnama.browse.model;
 
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;

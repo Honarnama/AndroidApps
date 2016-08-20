@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "530397267825",
+    "project_id": "honarnama-base"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530397267825:android:6343fc5b8704130e",
+        "android_client_info": {
+          "package_name": "net.honarnama.base"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkXv47dwlMAbAMWOLstg0rgnvf8Yme77w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-73292543-5"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

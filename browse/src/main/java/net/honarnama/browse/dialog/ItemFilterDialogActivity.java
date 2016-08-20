@@ -9,12 +9,12 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
 import net.honarnama.browse.widget.HorizontalNumberPicker;
-import net.honarnama.core.adapter.CityAdapter;
-import net.honarnama.core.adapter.ProvincesAdapter;
-import net.honarnama.core.model.City;
-import net.honarnama.core.model.Province;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.TextUtil;
+import net.honarnama.base.adapter.CityAdapter;
+import net.honarnama.base.adapter.ProvincesAdapter;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.TextUtil;
 
 import android.app.Activity;
 import android.app.Dialog;

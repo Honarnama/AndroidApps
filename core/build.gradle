@@ -70,3 +70,5 @@ dependencies {
     compile 'io.grpc:grpc-stub:0.14.0'
     protobuf files('lib/google.tar.gz')
 }
+
+apply plugin: 'com.google.gms.google-services'

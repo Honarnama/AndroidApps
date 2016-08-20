@@ -3,9 +3,8 @@ package net.honarnama.sell.activity;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import net.honarnama.core.activity.HonarnamaBaseActivity;
-import net.honarnama.core.utils.GravityTextWatcher;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.utils.GravityTextWatcher;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 

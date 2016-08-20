@@ -6,7 +6,7 @@
         android:background="?android:windowBackground"
 
         >
-    <net.honarnama.core.utils.ObservableScrollView
+    <net.honarnama.base.utils.ObservableScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_height="fill_parent"
@@ -204,7 +204,7 @@
                 </HorizontalScrollView>
             </RelativeLayout>
         </RelativeLayout>
-    </net.honarnama.core.utils.ObservableScrollView>
+    </net.honarnama.base.utils.ObservableScrollView>
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

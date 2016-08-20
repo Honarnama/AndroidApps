@@ -1,7 +1,7 @@
 package net.honarnama.browse.activity;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.core.activity.HonarnamaBaseActivity;
+import net.honarnama.base.activity.HonarnamaBaseActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;

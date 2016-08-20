@@ -11,10 +11,10 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.dialog.EventFilterDialogActivity;
-import net.honarnama.core.adapter.EventCategoriesAdapter;
-import net.honarnama.core.model.Event;
-import net.honarnama.core.model.EventCategory;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.adapter.EventCategoriesAdapter;
+import net.honarnama.base.model.Event;
+import net.honarnama.base.model.EventCategory;
+import net.honarnama.base.utils.NetworkManager;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -2,7 +2,7 @@ package net.honarnama.browse.fragment;
 
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.base.fragment.HonarnamaBaseFragment;
 
 import android.content.Context;
 import android.os.Bundle;

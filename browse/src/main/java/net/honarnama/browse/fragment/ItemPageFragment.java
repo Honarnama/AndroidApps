@@ -13,10 +13,10 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.ObservableScrollView;
-import net.honarnama.core.utils.TextUtil;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
+import net.honarnama.base.utils.TextUtil;
 
 import android.content.Context;
 import android.content.Intent;

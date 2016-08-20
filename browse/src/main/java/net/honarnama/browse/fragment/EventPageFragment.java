@@ -9,8 +9,8 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.ObservableScrollView;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
 
 import android.content.Context;
 import android.content.Intent;

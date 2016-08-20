@@ -8,10 +8,10 @@ import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.Event;
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.WindowUtil;
+import net.honarnama.base.model.Event;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.WindowUtil;
 
 import android.content.Context;
 import android.content.Intent;

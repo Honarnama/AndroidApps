@@ -7,8 +7,8 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.model.ArtCategory;
-import net.honarnama.core.utils.TextUtil;
+import net.honarnama.base.model.ArtCategory;
+import net.honarnama.base.utils.TextUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -10,9 +10,9 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
-import net.honarnama.core.activity.ChooseArtCategoryActivity;
-import net.honarnama.core.model.Province;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.activity.ChooseArtCategoryActivity;
+import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;

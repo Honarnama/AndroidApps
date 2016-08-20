@@ -3,8 +3,8 @@ package net.honarnama.sell.fragments;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.fragment.HonarnamaBaseFragment;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.activity.ControlPanelActivity;

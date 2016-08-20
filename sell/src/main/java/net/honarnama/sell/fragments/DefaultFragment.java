@@ -1,7 +1,7 @@
 package net.honarnama.sell.fragments;
 
 
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
+import net.honarnama.base.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.R;
 
 import android.content.Context;

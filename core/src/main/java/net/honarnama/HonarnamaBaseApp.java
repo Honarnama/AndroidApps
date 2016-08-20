@@ -109,15 +109,15 @@ public abstract class HonarnamaBaseApp extends Application {
         setCommonSharedPref(getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE));
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        try {
-            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesRepairableException!", e);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesNotAvailableException!", e);
-        } catch (Exception e) {
-            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Exception trying to install needed modules!", e);
-        }
+//        try {
+//            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+//        } catch (GooglePlayServicesRepairableException e) {
+//            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesRepairableException!", e);
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "GooglePlayServicesNotAvailableException!", e);
+//        } catch (Exception e) {
+//            Log.e(HonarnamaBaseApp.PRODUCTION_TAG, "Exception trying to install needed modules!", e);
+//        }
 
     }
 

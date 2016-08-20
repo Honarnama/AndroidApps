@@ -13,11 +13,10 @@ import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.NetworkManager;
-import net.honarnama.core.utils.ObservableScrollView;
-import net.honarnama.core.utils.TextUtil;
-import net.honarnama.core.utils.WindowUtil;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
+import net.honarnama.base.utils.TextUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +32,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -274,7 +272,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        net.honarnama.core.model.Item selectedItem = (Item) mItemsAdapter.getItem(position);
+        net.honarnama.base.model.Item selectedItem = (Item) mItemsAdapter.getItem(position);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         controlPanelActivity.displayItemPage(selectedItem.getId(), false);
     }

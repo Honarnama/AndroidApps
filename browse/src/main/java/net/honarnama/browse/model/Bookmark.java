@@ -3,8 +3,8 @@ package net.honarnama.browse.model;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.helper.BrowseDatabaseHelper;
-import net.honarnama.core.helper.DatabaseHelper;
-import net.honarnama.core.model.HonarnamaBaseModel;
+import net.honarnama.base.helper.DatabaseHelper;
+import net.honarnama.base.model.HonarnamaBaseModel;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -54,11 +54,11 @@ public class Bookmark extends HonarnamaBaseModel {
         super();
     }
 
-    public Bookmark(net.honarnama.core.model.Item item) {
+    public Bookmark(net.honarnama.base.model.Item item) {
         super();
     }
 
-    public net.honarnama.core.model.Item getItem() {
+    public net.honarnama.base.model.Item getItem() {
         return null;
     }
 

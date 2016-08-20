@@ -5,8 +5,8 @@ import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.fragment.HonarnamaBaseFragment;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.fragment.HonarnamaBaseFragment;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.nano.GetItemReply;
 import net.honarnama.nano.GetItemsReply;
 import net.honarnama.nano.ReplyProperties;

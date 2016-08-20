@@ -34,7 +34,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    prodCompile project(path: ':core', configuration: 'prodRelease')
+    prodCompile project(path: ':core', configuration: 'prodDebug')
     stg1Compile project(path: ':core', configuration: 'stg1Debug')
     compile 'com.android.support:design:23.2.0'
     compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'

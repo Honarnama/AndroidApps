@@ -1,0 +1,255 @@
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    tools:context="net.honarnama.sell.activity.RegisterActivity"
+                    android:layout_gravity="right"
+                    android:layoutDirection="rtl"
+                    android:textAlignment="gravity"
+                    android:gravity="right">
+
+        <TextView
+                android:id="@+id/register_form_title"
+                android:text="@string/register_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_alignParentRight="true"
+        />
+
+        <LinearLayout
+                android:id="@+id/register_name_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/register_form_title"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="right"
+                android:gravity="right"
+        >
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/name_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            >
+                <EditText
+                        android:id="@+id/register_name_edit_text"
+                        android:inputType="textPersonName"
+                        android:hint="@string/name_hint"
+                        android:layout_alignParentTop="true"
+                        android:nextFocusForward="@+id/register_gender_radio_group"
+                        android:textColorHint="@color/default_hint_color_for_android"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="2"
+                        style="@style/edit_text_default"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:ellipsize="end"
+                >
+                    <requestFocus/>
+                </EditText>
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/register_name_alert"
+                android:text="@string/register_form_name_alert"
+                android:layout_below="@id/register_name_layout"
+                android:layout_alignParentRight="true"
+                style="@style/tiny_text_view"
+        />
+
+
+        <RadioGroup android:id="@+id/register_gender_radio_group"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/register_name_alert"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+        >
+
+            <ToggleButton android:id="@+id/register_gender_not_said"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="2"
+                          android:textSize="14sp"
+                          android:textOn="@string/wont_specify"
+                          android:textOff="@string/wont_specify"
+                          android:layout_margin="0dp"
+                          style="@style/core_wrap_button"
+                          android:background="@drawable/toggle_button_left"
+                          android:textColor="@color/toggle_button_states_text_colors"
+                          android:checked="true"
+                          android:padding="0dp"
+            />
+
+            <ToggleButton android:id="@+id/register_gender_woman"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:textSize="14sp"
+                          android:textOn="@string/woman"
+                          android:textOff="@string/woman"
+                          style="@style/core_wrap_button"
+                          android:background="@drawable/toggle_button_middle"
+                          android:textColor="@color/toggle_button_states_text_colors"
+            />
+            <ToggleButton android:id="@+id/register_gender_man"
+                          android:layout_height="wrap_content"
+                          android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:textSize="14sp"
+                          android:textOn="@string/man"
+                          android:textOff="@string/man"
+                          style="@style/core_wrap_button"
+                          android:background="@drawable/toggle_button_right"
+                          android:textColor="@color/toggle_button_states_text_colors"
+            />
+
+        </RadioGroup>
+
+        <TextView
+                android:id="@+id/register_activation_method_text_view"
+                android:text="@string/select_activation_method"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layout_alignParentRight="true"
+                android:textStyle="bold"
+                android:layout_below="@id/register_gender_radio_group"
+                android:layout_marginTop="15dp"
+        />
+        <RelativeLayout android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:layout_marginTop="5dp"
+                        android:padding="10dp"
+                        android:paddingRight="0dp"
+                        android:layout_below="@id/register_activation_method_text_view"
+                        android:id="@+id/register_prefered_activate_method_layer"
+        >
+
+            <RadioGroup android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="right"
+            >
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:background="@color/gray_extra_light"
+                              android:padding="5dp"
+                              android:id="@+id/email_layer"
+                              android:gravity="right"
+                >
+                    <RadioButton
+                            android:id="@+id/register_activate_with_email"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/send_register_activation_link_to_email"
+                            android:layout_marginRight="5dp"
+                            android:textSize="14sp"
+                            android:button="@null"
+                            android:drawableRight="@drawable/radio_button_image"
+                            android:layout_marginBottom="15dp"
+                            android:textColor="@color/dark_blue"
+                            android:checked="true"
+                    />
+                    <android.support.design.widget.TextInputLayout
+                            android:id="@+id/email_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <EditText
+                                android:id="@+id/register_email_address_edit_text"
+                                android:layout_width="fill_parent" android:layout_height="45dp"
+                                android:inputType="textWebEmailAddress"
+                                android:hint="@string/email_address_hint"
+                                android:singleLine="true"
+                                android:textSize="16sp"
+                                android:layout_weight="2"
+                                android:ellipsize="start"
+                                android:textColorHint="@color/default_hint_color_for_android"
+                                android:gravity="right"
+                        />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginTop="15dp"
+                              android:padding="5dp"
+                              android:id="@+id/telegram_layer"
+                              android:gravity="right"
+                >
+                    <RadioButton
+                            android:id="@+id/register_activate_with_telegram"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/send_register_activation_link_to_telegram"
+                            android:layout_marginRight="5dp"
+                            android:textSize="14sp"
+                            android:button="@null"
+                            android:drawableRight="@drawable/radio_button_image"
+                            android:textColor="@color/dark_blue"
+                            android:checked="false"
+                    />
+
+                    <android.support.design.widget.TextInputLayout
+                            android:id="@+id/phone_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        <EditText
+                                android:id="@+id/register_mobile_number_edit_text"
+                                android:layout_width="fill_parent" android:layout_height="45dp"
+                                android:inputType="phone"
+                                android:hint="@string/mobile_number_hint"
+                                android:singleLine="true"
+                                android:textSize="16sp"
+                                android:layout_weight="2"
+                                android:ellipsize="start"
+                                android:nextFocusForward="@+id/register_confirm_password_edit_text"
+                                android:textColorHint="@color/default_hint_color_for_android"
+                                android:gravity="right"
+                        />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+            </RadioGroup>
+        </RelativeLayout>
+
+        <Button
+                android:id="@+id/register_button"
+                android:text="@string/send"
+                android:layout_below="@id/register_prefered_activate_method_layer"
+                android:layout_marginTop="10dp"
+                android:nextFocusForward="@id/register_name_edit_text"
+                style="@style/core_full_width_button"
+        />
+
+        <TextView
+                android:id="@+id/honarnama_rules"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/register_button"
+                style="@style/tiny_text_view"
+                android:text="@string/privacy_policy_notfi"
+        />
+
+    </RelativeLayout>
+</ScrollView>

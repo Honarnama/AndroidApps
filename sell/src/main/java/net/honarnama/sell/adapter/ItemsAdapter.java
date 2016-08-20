@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.nano.DeleteItemReply;
 import net.honarnama.nano.GetOrDeleteItemRequest;
 import net.honarnama.nano.HonarnamaProto;
@@ -27,7 +27,6 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;

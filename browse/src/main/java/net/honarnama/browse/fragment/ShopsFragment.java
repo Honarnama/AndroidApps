@@ -11,8 +11,8 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.dialog.ShopFilterDialogActivity;
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.NetworkManager;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;

@@ -5,8 +5,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
-import net.honarnama.core.model.Store;
-import net.honarnama.core.utils.TextUtil;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.TextUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;
