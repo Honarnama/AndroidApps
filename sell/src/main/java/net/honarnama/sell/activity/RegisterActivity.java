@@ -310,10 +310,10 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         protected void onPostExecute(CreateAccountReply createAccountReply) {
             super.onPostExecute(createAccountReply);
             dismissProgressDialog();
+            if (BuildConfig.DEBUG) {
+                logD("createAccountReply is: " + createAccountReply);
+            }
             if (createAccountReply != null) {
-                if (BuildConfig.DEBUG) {
-                    logD("createAccountReply is: " + createAccountReply);
-                }
                 switch (createAccountReply.replyProperties.statusCode) {
 
                     case ReplyProperties.CLIENT_ERROR:

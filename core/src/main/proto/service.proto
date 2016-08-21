@@ -6,8 +6,6 @@ option java_outer_classname = "HonarnamaProto";
 
 package protobuf;
 
-import "google/api/annotations.proto";
-
 /// Commons /////////////////////////////////////////////////////////////////
 message AndroidClientInfo {
   int32 sdkVersion = 1;
@@ -100,9 +98,6 @@ message ArtCategoryId {
 /////////////////////////////////////////////////////////////////////////////
 service MetaService {
   rpc Meta(SimpleRequest) returns (MetaReply) {
-    option (google.api.http) = {
-      get: "/v1/meta"
-    };
   }
 }
 
@@ -119,21 +114,10 @@ message MetaReply {
 /////////////////////////////////////////////////////////////////////////////
 service AuthService {
   rpc CreateAccount(CreateOrUpdateAccountRequest) returns (CreateAccountReply) {
-    option (google.api.http) = {
-      post: "/v1/accounts"
-      body: "*"
-    };
   }
   rpc UpdateAccount(CreateOrUpdateAccountRequest) returns (UpdateAccountReply) {
-    option (google.api.http) = {
-      put: "/v1/account/{account.id}"
-      body: "*"
-    };
   }
   rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
-    option (google.api.http) = {
-      get: "/v1/whoami"
-    };
   }
 }
 
@@ -194,67 +178,28 @@ message UpdateAccountReply {
 service SellService {
 
   rpc GetMyStore(SimpleRequest) returns (GetStoreReply) {
-    option (google.api.http) = {
-      get: "/v1/my-store"
-    };
   }
   rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
-    option (google.api.http) = {
-      post: "/v1/my-store"
-      body: "*"
-    };
   }
   rpc UpdateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
-    option (google.api.http) = {
-      put: "/v1/my-store"
-      body: "*"
-    };
   }
 
   rpc GetItems(SimpleRequest) returns (GetItemsReply) {
-    option (google.api.http) = {
-      get: "/v1/not-reviewed-items"
-    };
   }
   rpc GetItem(GetOrDeleteItemRequest) returns (GetItemReply) {
-    option (google.api.http) = {
-      get: "/v1/not-reviewed-item/{id}"
-    };
   }
   rpc CreateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
-    option (google.api.http) = {
-      post: "/v1/not-reviewed-items"
-      body: "*"
-    };
   }
   rpc UpdateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
-    option (google.api.http) = {
-      put: "/v1/not-reviewed-item/{item.id}"
-      body: "*"
-    };
   }
   rpc DeleteItem(GetOrDeleteItemRequest) returns (DeleteItemReply) {
-    option (google.api.http) = {
-      delete: "/v1/not-reviewed-item/{id}"
-    };
   }
 
   rpc GetMyEvent(SimpleRequest) returns (GetEventReply) {
-    option (google.api.http) = {
-      get: "/v1/my-event"
-    };
   }
   rpc CreateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
-    option (google.api.http) = {
-      post: "/v1/my-event"
-      body: "*"
-    };
   }
   rpc UpdateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
-    option (google.api.http) = {
-      put: "/v1/my-event"
-      body: "*"
-    };
   }
 }
 
@@ -437,10 +382,6 @@ message CreateOrUpdateEventReply {
 /////////////////////////////////////////////////////////////////////////////
 service CommunicationService {
   rpc CreateMessage(CreateMessageRequest) returns (CreateMessageReply) {
-    option (google.api.http) = {
-      post: "/v1/messages"
-      body: "*"
-    };
   }
 }
 
@@ -464,9 +405,6 @@ message CreateMessageReply {
 /////////////////////////////////////////////////////////////////////////////
 service BrowseService {
   rpc GetItems(GetItemsRequest) returns (GetItemsReply) {
-    option (google.api.http) = {
-      get: "/v1/items"
-    };
   }
 }
 
