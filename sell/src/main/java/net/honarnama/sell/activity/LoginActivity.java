@@ -13,6 +13,8 @@ import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.SendLoginEmailReply;
+import net.honarnama.nano.SendLoginEmailRequest;
 import net.honarnama.nano.SimpleRequest;
 import net.honarnama.nano.WhoAmIReply;
 import net.honarnama.sell.HonarnamaSellApp;
@@ -154,11 +156,11 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 break;
             case R.id.send_login_link_btn:
                 mMessageContainer.setVisibility(View.GONE);
-                //TODO
-                Toast.makeText(LoginActivity.this, "لطفا برای ورود از لینکی که هنگام ساخت حساب به آدرس ایمیلتان فرستاده شده، استفاده کنید.", Toast.LENGTH_LONG).show();
+                if (formInputsAreValid()) {
+                    new SendLoginEmailAsync().execute();
+                }
                 break;
             case R.id.telegram_login_container:
-
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
                     String telegramToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
 
@@ -272,7 +274,11 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                     displaySnackbar(builder, false);
 
                     String telegramToken = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE);
-                    showTelegramActivationDialog(telegramToken);
+                    if (!TextUtils.isEmpty(telegramToken)) {
+                        showTelegramActivationDialog(telegramToken);
+                    } else {
+                        logE("Missing telegram token after registeration completed.");
+                    }
                 }
             } else {
                 if (BuildConfig.DEBUG) {
@@ -450,5 +456,116 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
 
         mSnackbar.show();
     }
+
+
+    public void clearErrors() {
+        mUsernameEditText.setError(null);
+    }
+
+    private boolean formInputsAreValid() {
+        clearErrors();
+        if (mUsernameEditText.getText().toString().trim().length() == 0) {
+            mUsernameEditText.requestFocus();
+            mUsernameEditText.setError(getString(R.string.error_email_not_set));
+            Toast.makeText(LoginActivity.this, getString(R.string.error_email_not_set), Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (!(android.util.Patterns.EMAIL_ADDRESS.matcher(mUsernameEditText.getText().toString().trim()).matches())) {
+            mUsernameEditText.requestFocus();
+            mUsernameEditText.setError(getString(R.string.error_email_address_is_not_valid));
+            Toast.makeText(LoginActivity.this, getString(R.string.error_email_address_is_not_valid), Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    public class SendLoginEmailAsync extends AsyncTask<Void, Void, SendLoginEmailReply> {
+        String cEmail = "";
+        SendLoginEmailRequest sendLoginEmailRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            displayProgressDialog();
+        }
+
+        @Override
+        protected SendLoginEmailReply doInBackground(Void... voids) {
+            sendLoginEmailRequest = new SendLoginEmailRequest();
+            sendLoginEmailRequest.email = mUsernameEditText.getText().toString().trim();
+
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            sendLoginEmailRequest.requestProperties = rp;
+
+            if (BuildConfig.DEBUG) {
+                logD("sendLoginEmailRequest: " + sendLoginEmailRequest);
+            }
+
+            AuthServiceGrpc.AuthServiceBlockingStub stub;
+            try {
+                stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+                SendLoginEmailReply sendLoginEmailReply = stub.sendLoginEmail(sendLoginEmailRequest);
+                return sendLoginEmailReply;
+            } catch (Exception e) {
+                logE("Error trying to send login email request. sendLoginEmailRequest: " + sendLoginEmailRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SendLoginEmailReply sendLoginEmailReply) {
+            super.onPostExecute(sendLoginEmailReply);
+            dismissProgressDialog();
+            if (BuildConfig.DEBUG) {
+                logD("sendLoginEmailReply is: " + sendLoginEmailReply);
+            }
+            if (sendLoginEmailReply != null) {
+                switch (sendLoginEmailReply.replyProperties.statusCode) {
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        switch (sendLoginEmailReply.errorCode) {
+                            case SendLoginEmailReply.NO_USER_FOUND:
+                                mUsernameEditText.setError(getString(R.string.no_user_found_matching_email));
+                                Toast.makeText(LoginActivity.this, getString(R.string.account_not_found), Toast.LENGTH_LONG).show();
+                                break;
+                            case SendLoginEmailReply.INVALID_EMAIL:
+                                mUsernameEditText.setError(getString(R.string.error_email_address_is_not_valid));
+                                Toast.makeText(LoginActivity.this, getString(R.string.error_email_address_is_not_valid), Toast.LENGTH_LONG).show();
+                                break;
+                            case SendLoginEmailReply.NO_CLIENT_ERROR:
+                                logE("Got NO_CLIENT_ERROR code for registering user. sendLoginEmailReply: " + sendLoginEmailReply + ". sendLoginEmailRequest: " + sendLoginEmailRequest);
+                                Toast.makeText(LoginActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
+                                break;
+                        }
+//                        logE("Sign-up Failed. errorCode: " + sendLoginEmailReply.errorCode +
+//                                " // statusCode: " + sendLoginEmailReply.replyProperties.statusCode +
+//                                " // Error Msg: " + sendLoginEmailReply.replyProperties.errorMessage);
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        Toast.makeText(LoginActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        HonarnamaUser.logout(LoginActivity.this);
+                        break;
+
+                    case ReplyProperties.OK:
+                        SpannableStringBuilder builder = new SpannableStringBuilder();
+                        builder.append(getString(R.string.login_email_sent));
+                        displaySnackbar(builder, false);
+                         break;
+
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
+                        break;
+                }
+            } else {
+                Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
+                checkGooglePlayAvailability();
+            }
+        }
+    }
+
 
 }

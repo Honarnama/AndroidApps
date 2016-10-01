@@ -8,6 +8,7 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.utils.GravityTextWatcher;
 import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.TextUtil;
 import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -24,6 +25,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -243,11 +245,13 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE, telegramCode);
 
-                SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
-                editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, telegramCode);
-                Date currentDate = new Date();
-                editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, currentDate.getTime());
-                editor.commit();
+                if (!TextUtils.isEmpty(telegramCode)) {
+                    SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+                    editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, telegramCode);
+                    Date currentDate = new Date();
+                    editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, currentDate.getTime());
+                    editor.commit();
+                }
                 break;
         }
 
@@ -292,7 +296,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
             createOrUpdateAccountRequest.requestProperties = rp;
 
             if (BuildConfig.DEBUG) {
-                logD("createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+                logD("sendLoginEmailRequest: " + createOrUpdateAccountRequest);
             }
 
             AuthServiceGrpc.AuthServiceBlockingStub stub;
@@ -301,7 +305,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                 CreateAccountReply createAccountReply = stub.createAccount(createOrUpdateAccountRequest);
                 return createAccountReply;
             } catch (Exception e) {
-                logE("Error trying to send register request. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error: " + e, e);
+                logE("Error trying to send register request. sendLoginEmailRequest: " + createOrUpdateAccountRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -335,11 +339,11 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                                 Toast.makeText(RegisterActivity.this, getString(R.string.error_mobile_number_is_not_valid), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.EMPTY_ACCOUNT:
-                                logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+                                logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". sendLoginEmailRequest: " + createOrUpdateAccountRequest);
                                 Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.NO_CLIENT_ERROR:
-                                logE("Got NO_CLIENT_ERROR code for registering user. createAccountReply: " + createAccountReply + ". createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
+                                logE("Got NO_CLIENT_ERROR code for registering user. createAccountReply: " + createAccountReply + ". sendLoginEmailRequest: " + createOrUpdateAccountRequest);
                                 Toast.makeText(RegisterActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
                                 break;
                         }

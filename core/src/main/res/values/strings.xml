@@ -48,7 +48,8 @@
     <string name="telegram_activation_dialog_title">فعال‌سازی حساب تلگرام</string>
     <string name="telegram_activation_option_text">ارسال پیغام از طریق تلگرام این دستگاه</string>
 
-    <string name="error_email_not_set">"فیلد آدرس ایمیل نمی‌تواند خالی باشد. "
+    <string name="error_email_not_set">
+" آدرس ایمیل وارد نشده است. "
     </string>
     <string name="error_email_address_is_not_valid">" آدرس ایمیل معتبر نیست. "</string>
     <string name="error_mobile_number_field_can_not_be_empty">" فیلد شماره تلفن همراه نمی‌تواند خالی

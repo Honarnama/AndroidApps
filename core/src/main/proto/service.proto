@@ -119,6 +119,8 @@ service AuthService {
   }
   rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
   }
+  rpc SendLoginEmail(SendLoginEmailRequest) returns (SendLoginEmailReply) {
+  }
 }
 
 message Account {
@@ -142,6 +144,21 @@ message Account {
 message WhoAmIReply {
   ReplyProperties replyProperties = 1;
   Account account = 2;
+}
+
+message SendLoginEmailRequest {
+  RequestProperties requestProperties = 1;
+  string email = 2;
+}
+
+message SendLoginEmailReply {
+  ReplyProperties replyProperties = 1;
+  enum ErrorCode {
+    NO_CLIENT_ERROR = 0;
+    NO_USER_FOUND = 1;
+    INVALID_EMAIL = 2;
+  }
+  ErrorCode errorCode = 2;
 }
 
 message CreateOrUpdateAccountRequest {

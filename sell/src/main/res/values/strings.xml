@@ -66,7 +66,7 @@
     </string>
     <string name="item_saved_successfully">محصول با موفقیت ذخیره شد.</string>
     <string name="password_reset_link_sent">لینک بازنشانی رمز عبور برایتان ارسال شد.</string>
-    <string name="no_user_found_matching_email">کاربری با آدرس ایمیل داده شده پیدا نشد.</string>
+    <string name="no_user_found_matching_email">حساب کاربری مربوط به آدرس ایمیل موجود نیست.</string>
     <string name="error_sending_reset_pass_link">"خطا در ارسال لینک بازنشانی رمز عبور. "</string>
     <string name="log_in_with_telegram">ورود با حساب تلگرام</string>
     <string name="use_side_menu_to_manage_account_and_items">لطفا از منوی کناری برای مدیریت محصولات
@@ -139,5 +139,6 @@
     <string name="login_again">اعتبار ورود منقضی شده است. لطفا از برنامه خارج شده و دوباره وارد
         شوید.
     </string>
+    <string name="login_email_sent">لینک ورود به حساب به آدرس ایمیلتان ارسال شد.</string>
 
 </resources>
