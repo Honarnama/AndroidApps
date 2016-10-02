@@ -50,58 +50,19 @@
                     android:layout_marginBottom="10dp"
             />
 
-
-
-            <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/login_message_container"
-                          android:layout_below="@id/login_slogan_for_sellers_text_view"
-                          android:layout_marginTop="10dp"
-                          style="@style/ErrorStyle"
-                          android:gravity="right"
-                          android:visibility="gone"
-                          android:padding="5dp">
-                <TextView android:id="@+id/login_message_text_view"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text=""
-                          style="@style/ErrorStyle"
-                          android:padding="5dp"/>
-                <!--
-                <Button android:id="@+id/resend_activation_link"
-                        style="@style/ErrorButtonStyle"
-                        android:text="ارسال مجدد لینک فعال‌سازی"
-                        />
-                        -->
-            </LinearLayout>
-
-
             <!--<TextView-->
-                    <!--android:id="@+id/register_as_seller_text_view"-->
-                    <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@id/login_message_container"-->
-                    <!--android:text="@string/register_account"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:gravity="center"-->
-                    <!--android:layout_marginTop="24dp"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:textStyle="bold"-->
-                    <!--android:textColor="@color/gray_super_extra_dark"-->
-                    <!--android:clickable="true"-->
+            <!--android:id="@+id/register_as_seller_text_view"-->
+            <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/login_message_container"-->
+            <!--android:text="@string/register_account"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_marginTop="24dp"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textColor="@color/gray_super_extra_dark"-->
+            <!--android:clickable="true"-->
             <!--/>-->
-
-            <Button
-                    android:id="@+id/register_as_seller_btn"
-                    android:text="@string/register_account"
-                    android:layout_below="@id/login_message_container"
-                    style="@style/button_wrap_content_width"
-                    android:background="@drawable/rounded_corner_green"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/white"
-
-            />
 
             <RelativeLayout
                     android:id="@+id/login_form_layout"
@@ -112,7 +73,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_below="@id/register_as_seller_btn"
+                    android:layout_below="@id/login_slogan_for_sellers_text_view"
             >
 
                 <EditText
@@ -135,35 +96,59 @@
                 />
             </RelativeLayout>
 
+            <TextView
+                    android:id="@+id/login_hint"
+                    android:text= "@string/login_hint"
+                    android:layout_below="@id/login_form_layout"
+                    android:layout_alignParentRight="true"
+                    style="@style/tiny_text_view"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:layoutDirection="rtl"
+                    android:gravity="right"
+            />
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_below="@+id/login_form_layout"
-                          android:layout_centerHorizontal="true"
-                          android:background="@color/telegram_blue"
-                          android:id="@+id/telegram_login_container"
-                          android:layout_marginTop="10dp"
-                          android:orientation="horizontal"
-                          android:padding="10dp"
-                          android:clickable="true"
-            >
-                <ImageView android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:src="@drawable/telegram_icon"
-                           android:layout_gravity="center_vertical"
-                />
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/log_in_with_telegram"
-                        android:textColor="#ffffff"
-                        android:id="@+id/telegram_login_text_view"
-                        android:background="@color/telegram_blue"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="5dp"
-                        android:textStyle="bold"
-                />
-            </LinearLayout>
+            <Button
+                    android:id="@+id/register_as_seller_btn"
+                    android:text="@string/register_account"
+                    android:layout_below="@id/login_hint"
+                    style="@style/button_wrap_content_width"
+                    android:background="@drawable/rounded_corner_green"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/white"
+            />
+
+            <!--<LinearLayout android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/login_form_layout"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:background="@color/telegram_blue"-->
+            <!--android:id="@+id/telegram_login_container"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="10dp"-->
+            <!--android:clickable="true"-->
+            <!--&gt;-->
+            <!--<ImageView android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/telegram_icon"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--/>-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/log_in_with_telegram"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:id="@+id/telegram_login_text_view"-->
+            <!--android:background="@color/telegram_blue"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:textStyle="bold"-->
+            <!--/>-->
+            <!--</LinearLayout>-->
 
         </RelativeLayout>
     </ScrollView>

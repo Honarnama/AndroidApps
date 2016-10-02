@@ -39,8 +39,6 @@
         آدرس ایمیلی که با آن ثبت‌نام کردید را وارد کنید تا لینک بازنشانی رمز عبور را برایتان به آن
         آدرس بفرستیم.
     </string>
-    <string name="please_install_telegram">لطفا برنامه‌ی تلگرام را بر روی دستگاه خود نصب کنید.
-    </string>
     <string name="message_profile_changed_successfully">اطلاعات شما با موفقیت تغییر پیدا کرد.
     </string>
     <string name="error_updating_store_info">
@@ -68,7 +66,6 @@
     <string name="password_reset_link_sent">لینک بازنشانی رمز عبور برایتان ارسال شد.</string>
     <string name="no_user_found_matching_email">حساب کاربری مربوط به آدرس ایمیل موجود نیست.</string>
     <string name="error_sending_reset_pass_link">"خطا در ارسال لینک بازنشانی رمز عبور. "</string>
-    <string name="log_in_with_telegram">ورود با حساب تلگرام</string>
     <string name="use_side_menu_to_manage_account_and_items">لطفا از منوی کناری برای مدیریت محصولات
         و حساب خود استفاده کنید.
     </string>
@@ -140,5 +137,7 @@
         شوید.
     </string>
     <string name="login_email_sent">لینک ورود به حساب به آدرس ایمیلتان ارسال شد.</string>
+
+    <string name="login_hint"> "در صورتی که قبلا حساب کاربری ساخته‌اید، برای ورود به برنامه از لینکی که به آدرس ایمیلتان ارسال میشود، استفاده کنید."</string>
 
 </resources>

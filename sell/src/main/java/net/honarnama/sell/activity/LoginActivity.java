@@ -9,7 +9,6 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.base.utils.GravityTextWatcher;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
-import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
@@ -22,28 +21,20 @@ import net.honarnama.sell.R;
 import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -52,10 +43,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     private Button mRegisterAsSellerBtn;
     private Button mLoginButton;
     private EditText mUsernameEditText;
-    private View mMessageContainer;
-    private TextView mLoginMessageTextView;
-    private LinearLayout mTelegramLoginContainer;
-    private TextView mTelegramLoginTextView;
 
     ProgressDialog mProgressDialog;
     Snackbar mSnackbar;
@@ -81,19 +68,11 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
         mLoginButton.setOnClickListener(this);
 
         mUsernameEditText = (EditText) findViewById(R.id.login_username_edit_text);
-        mMessageContainer = findViewById(R.id.login_message_container);
-        mLoginMessageTextView = (TextView) findViewById(R.id.login_message_text_view);
 
         mUsernameEditText.addTextChangedListener(new GravityTextWatcher(mUsernameEditText));
 
-        mTelegramLoginContainer = (LinearLayout) findViewById(R.id.telegram_login_container);
-        mTelegramLoginContainer.setOnClickListener(this);
-
-
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .coordinatorLayout);
-
-        mTelegramLoginTextView = (TextView) findViewById(R.id.telegram_login_text_view);
 
         if (HonarnamaUser.isLoggedIn()) {
             new getMeAsyncTask().execute();
@@ -111,8 +90,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     }
 
     private void processIntent(Intent intent) {
-        mLoginMessageTextView.setText("");
-        Uri data = intent.getData();
+         Uri data = intent.getData();
         if (BuildConfig.DEBUG) {
             logD("processIntent :: data= " + data);
         }
@@ -143,7 +121,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        mMessageContainer.setVisibility(View.GONE);
         WindowUtil.hideKeyboard(LoginActivity.this);
     }
 
@@ -155,61 +132,15 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
             case R.id.send_login_link_btn:
-                mMessageContainer.setVisibility(View.GONE);
-                if (formInputsAreValid()) {
+                 if (formInputsAreValid()) {
                     new SendLoginEmailAsync().execute();
                 }
                 break;
-            case R.id.telegram_login_container:
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    String telegramToken = HonarnamaBaseApp.getCommonSharedPref().getString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
-
-                    if (!TextUtils.isEmpty(telegramToken)) {
-                        long millis = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0L);
-                        long diff = (new Date().getTime()) - millis;
-
-                        long seconds = diff / 1000;
-                        long minutes = seconds / 60;
-                        long hours = minutes / 60;
-
-                        if (BuildConfig.DEBUG) {
-                            logD("Time passe after telegram registeration: " + minutes + " minutes.");
-                        }
-
-                        if (minutes < 24 * 60) {
-                            if (BuildConfig.DEBUG) {
-                                logD("Time passe after telegram registeration is less than 24 hours => Show Telegram Activation Dialog. ");
-                            }
-                            showTelegramActivationDialog(telegramToken);
-                        } else {
-                            if (BuildConfig.DEBUG) {
-                                logD("Time passe after telegram registeration is greater than 24 hours => Call telegram to log user in. ");
-                            }
-                            removeTelegramTempInfo();
-                            callTelegramToLogUserIn();
-                        }
-                    } else {
-                        callTelegramToLogUserIn();
-                    }
-                }
-
-                break;
-
             default:
                 break;
         }
     }
 
-    public void callTelegramToLogUserIn() {
-        Intent telegramIntent;
-        telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=**/login"));
-
-        if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(telegramIntent);
-        } else {
-            Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -217,26 +148,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
         dismissProgressDialog();
     }
 
-    private void showTelegramActivationDialog(final String activationCode) {
-        final AlertDialog.Builder telegramActivationDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, net.honarnama.base.R.style.DialogStyle));
-        telegramActivationDialog.setTitle(getString(net.honarnama.base.R.string.telegram_activation_dialog_title));
-        telegramActivationDialog.setItems(new String[]{getString(net.honarnama.base.R.string.telegram_activation_option_text)},
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Intent telegramIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://telegram.me/HonarNamaBot?start=" + activationCode));
-                            if (telegramIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivityForResult(telegramIntent, HonarnamaBaseApp.INTENT_TELEGRAM_CODE);
-                            } else {
-                                Toast.makeText(LoginActivity.this, getString(R.string.please_install_telegram), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        dialog.dismiss();
-                    }
-                });
-        telegramActivationDialog.show();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -262,38 +173,14 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         builder.append(getString(R.string.verification_email_sent));
                         displaySnackbar(builder, false);
                     }
-                } else if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE)) {
-                    if (BuildConfig.DEBUG) {
-                        logD("display telegram verification notif.");
-                    }
-
-                    mTelegramLoginTextView.setText(getString(R.string.telegram_activation_dialog_title));
-
-                    SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append(getString(R.string.telegram_activation_timeout_message));
-                    displaySnackbar(builder, false);
-
-                    String telegramToken = intent.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE);
-                    if (!TextUtils.isEmpty(telegramToken)) {
-                        showTelegramActivationDialog(telegramToken);
-                    } else {
-                        logE("Missing telegram token after registeration completed.");
-                    }
                 }
             } else {
                 if (BuildConfig.DEBUG) {
                     logD("Hide register message notif.");
                 }
-                mMessageContainer.setVisibility(View.GONE);
             }
-//            if (requestCode == HonarnamaBaseApp.INTENT_TELEGRAM_CODE) {
-//                removeTelegramTempInfo();
-//                getUserInfo();
-//            }
-        } else {
-            mMessageContainer.setVisibility(View.GONE);
-        }
 
+        }
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
@@ -370,9 +257,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         HonarnamaUser.setName(whoAmIReply.account.name);
                         HonarnamaUser.setGender(whoAmIReply.account.gender);
                         HonarnamaUser.setId(whoAmIReply.account.id);
-                        if (whoAmIReply.account.activationMethod == Account.TELEGRAM) {
-                            removeTelegramTempInfo();
-                        }
                         goToControlPanel();
                         break;
 
@@ -400,17 +284,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
         startActivity(intent);
         finish();
     }
-
-    public void removeTelegramTempInfo() {
-        if (BuildConfig.DEBUG) {
-            logD("Remove telegram registeration temp data.");
-        }
-        SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
-        editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, "");
-        editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, 0L);
-        editor.commit();
-    }
-
 
     private void dismissProgressDialog() {
         if (!LoginActivity.this.isFinishing()) {
@@ -554,7 +427,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         SpannableStringBuilder builder = new SpannableStringBuilder();
                         builder.append(getString(R.string.login_email_sent));
                         displaySnackbar(builder, false);
-                         break;
+                        break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
                         displayUpgradeRequiredDialog();

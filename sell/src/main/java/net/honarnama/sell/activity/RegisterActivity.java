@@ -8,7 +8,6 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.utils.GravityTextWatcher;
 import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.TextUtil;
 import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.nano.Account;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -23,21 +22,16 @@ import net.honarnama.sell.model.HonarnamaUser;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import java.util.Date;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
@@ -49,9 +43,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
     private EditText mNameEditText;
     private EditText mMobileNumberEditText;
     private EditText mEmailAddressEditText;
-
-    private RadioButton mActivateWithEmail;
-    private RadioButton mActivateWithTelegram;
 
     private ToggleButton mGenderWoman;
     private ToggleButton mGenderMan;
@@ -78,14 +69,10 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         mEmailAddressEditText = (EditText) findViewById(R.id.register_email_address_edit_text);
         mRegisterButton = (Button) findViewById(R.id.register_button);
 
-        mActivateWithEmail = (RadioButton) findViewById(R.id.register_activate_with_email);
-        mActivateWithTelegram = (RadioButton) findViewById(R.id.register_activate_with_telegram);
-
         mMobileNumberEditText.addTextChangedListener(new GravityTextWatcher(mMobileNumberEditText));
         mEmailAddressEditText.addTextChangedListener(new GravityTextWatcher(mEmailAddressEditText));
         mRegisterButton.setOnClickListener(this);
-        mActivateWithEmail.setOnClickListener(this);
-        mActivateWithTelegram.setOnClickListener(this);
+
 
         mGenderWoman = (ToggleButton) findViewById(R.id.register_gender_woman);
         mGenderMan = (ToggleButton) findViewById(R.id.register_gender_man);
@@ -147,18 +134,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         if (viewId == mRegisterButton.getId()) {
             signUserUp();
         }
-        if (viewId == R.id.register_activate_with_email) {
-            mActivateWithEmail.setChecked(true);
-            mActivateWithTelegram.setChecked(false);
-            findViewById(R.id.email_layer).setBackgroundColor(getResources().getColor(R.color.gray_extra_light));
-            findViewById(R.id.telegram_layer).setBackgroundColor(getResources().getColor(R.color.gray_whitish));
-        }
-        if (viewId == R.id.register_activate_with_telegram) {
-            mActivateWithTelegram.setChecked(true);
-            mActivateWithEmail.setChecked(false);
-            findViewById(R.id.email_layer).setBackgroundColor(getResources().getColor(R.color.gray_whitish));
-            findViewById(R.id.telegram_layer).setBackgroundColor(getResources().getColor(R.color.gray_extra_light));
-        }
     }
 
     private void signUserUp() {
@@ -187,22 +162,17 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
             mNameEditText.setError(getString(R.string.error_name_not_set));
             return false;
         }
-        if (mActivateWithEmail.isChecked() && (mEmailAddressEditText.getText().toString().trim().length() == 0)) {
+        if (mEmailAddressEditText.getText().toString().trim().length() == 0) {
             mEmailAddressEditText.requestFocus();
             mEmailAddressEditText.setError(getString(R.string.error_email_not_set));
             return false;
         }
-        if (mEmailAddressEditText.getText().toString().trim().length() > 0 &&
-                !(android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString().trim()).matches())) {
+        if (!(android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString().trim()).matches())) {
             mEmailAddressEditText.requestFocus();
             mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
             return false;
         }
-        if (mActivateWithTelegram.isChecked() && (mMobileNumberEditText.getText().toString().trim().length() == 0)) {
-            mMobileNumberEditText.requestFocus();
-            mMobileNumberEditText.setError(getString(R.string.error_mobile_number_field_can_not_be_empty));
-            return false;
-        }
+
         String mobileNumberPattern = "^09\\d{9}$";
         if (mMobileNumberEditText.getText().toString().trim().length() > 0 && (!mMobileNumberEditText.getText().toString().trim().matches(mobileNumberPattern))) {
             mMobileNumberEditText.requestFocus();
@@ -229,32 +199,13 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         super.onSaveInstanceState(outState);
     }
 
-    private void sendUserBackToCallingActivity(int activationMethod, String telegramCode) {
+    private void sendUserBackToCallingActivity() {
         Intent intent = new Intent();
         WindowUtil.hideKeyboard(RegisterActivity.this);
-
         if (BuildConfig.DEBUG) {
-            logD("sendUserBackToCallingActivity// activationMethod: " + activationMethod);
+            logD("sendUserBackToCallingActivity...");
         }
-        switch (activationMethod) {
-            case Account.EMAIL:
-                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
-                break;
-
-            case Account.TELEGRAM:
-                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE, true);
-                intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_TELEGRAM_CODE, telegramCode);
-
-                if (!TextUtils.isEmpty(telegramCode)) {
-                    SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
-                    editor.putString(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN, telegramCode);
-                    Date currentDate = new Date();
-                    editor.putLong(HonarnamaBaseApp.PREF_KEY_TELEGRAM_TOKEN_SET_DATE, currentDate.getTime());
-                    editor.commit();
-                }
-                break;
-        }
-
+        intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, true);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -262,7 +213,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
     public class CreateAccountAsync extends AsyncTask<Void, Void, CreateAccountReply> {
         String cName = "";
         int cGenderCode;
-        int cActivationMethod;
         String cEmail = "";
         String cMobileNumber = "";
         CreateOrUpdateAccountRequest createOrUpdateAccountRequest;
@@ -273,7 +223,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
 
             cGenderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             cName = mNameEditText.getText().toString().trim();
-            cActivationMethod = mActivateWithEmail.isChecked() ? Account.EMAIL : Account.TELEGRAM;
             if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
                 cEmail = mEmailAddressEditText.getText().toString().trim();
             }
@@ -288,7 +237,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
 
             createOrUpdateAccountRequest.account.mobileNumber = cMobileNumber;
             createOrUpdateAccountRequest.account.name = cName;
-            createOrUpdateAccountRequest.account.activationMethod = cActivationMethod;
             createOrUpdateAccountRequest.account.email = cEmail;
             createOrUpdateAccountRequest.account.gender = cGenderCode;
 
@@ -361,7 +309,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
-                        sendUserBackToCallingActivity(cActivationMethod, createAccountReply.telegramActivationCode);
+                        sendUserBackToCallingActivity();
                         break;
                     case ReplyProperties.UPGRADE_REQUIRED:
                         displayUpgradeRequiredDialog();

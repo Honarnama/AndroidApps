@@ -18,7 +18,6 @@ public class HonarnamaUser {
     private static String Name;
     private static int Gender;
     private static long Id;
-    private static String TelegramToken;
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/user";
 
     public static void login(String token) {
@@ -68,9 +67,6 @@ public class HonarnamaUser {
         Id = id;
     }
 
-    public static void setTelegramToken(String telegramToken) {
-        TelegramToken = telegramToken;
-    }
 
 //    public static ActivationMethod getActivationMethod() {
 //        ParseUser user = getCurrentUser();
@@ -102,23 +98,5 @@ public class HonarnamaUser {
         }
     }
 
-    public static enum ActivationMethod {
-        EMAIL("emailVerified"),
-        MOBILE_NUMBER("telegramVerified"),
-        UNKNOWN(null);
-
-        private final String verificationFieldName;
-
-        ActivationMethod(String verificationFieldName) {
-            this.verificationFieldName = verificationFieldName;
-        }
-//
-//        public boolean isUserVerified(ParseUser user) {
-//            if (verificationFieldName != null) {
-//                return user.getBoolean(verificationFieldName);
-//            }
-//            return false;
-//        }
-    }
 
 }
