@@ -272,9 +272,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     default:
                         displayLongToast(getStringInFragment(R.string.error_occured));
-                        if (activity != null) {
-                            ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                        }
                         break;
                 }
             }
@@ -759,10 +756,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
                 displayRetrySnackbar();
-
-                if (activity != null) {
-                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                }
             }
         }
     }
@@ -996,10 +989,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             } else {
                 cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
                 dismissProgressDialog();
-
-                if (activity != null) {
-                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                }
             }
         }
     }

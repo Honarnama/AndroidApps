@@ -317,9 +317,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
                     default:
                         displayLongToast(getStringInFragment(R.string.error_occured));
-                        if (activity != null) {
-                            ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                        }
                         break;
                 }
             }
@@ -1083,10 +1080,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
                 displayRetrySnackbar();
-
-                if (activity != null) {
-                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                }
             }
         }
     }
@@ -1269,9 +1262,6 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             } else {
                 cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
                 dismissProgressDialog();
-                if (activity != null) {
-                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                }
             }
         }
 

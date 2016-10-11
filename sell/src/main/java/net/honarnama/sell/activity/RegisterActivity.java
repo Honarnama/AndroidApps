@@ -41,7 +41,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 public class RegisterActivity extends HonarnamaSellActivity implements View.OnClickListener {
 
     private EditText mNameEditText;
-    private EditText mMobileNumberEditText;
     private EditText mEmailAddressEditText;
 
     private ToggleButton mGenderWoman;
@@ -65,11 +64,9 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         setContentView(R.layout.activity_register);
 
         mNameEditText = (EditText) findViewById(R.id.register_name_edit_text);
-        mMobileNumberEditText = (EditText) findViewById(R.id.register_mobile_number_edit_text);
         mEmailAddressEditText = (EditText) findViewById(R.id.register_email_address_edit_text);
         mRegisterButton = (Button) findViewById(R.id.register_button);
 
-        mMobileNumberEditText.addTextChangedListener(new GravityTextWatcher(mMobileNumberEditText));
         mEmailAddressEditText.addTextChangedListener(new GravityTextWatcher(mEmailAddressEditText));
         mRegisterButton.setOnClickListener(this);
 
@@ -152,7 +149,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
     public void clearErrors() {
         mNameEditText.setError(null);
         mEmailAddressEditText.setError(null);
-        mMobileNumberEditText.setError(null);
     }
 
     private boolean formInputsAreValid() {
@@ -170,13 +166,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         if (!(android.util.Patterns.EMAIL_ADDRESS.matcher(mEmailAddressEditText.getText().toString().trim()).matches())) {
             mEmailAddressEditText.requestFocus();
             mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
-            return false;
-        }
-
-        String mobileNumberPattern = "^09\\d{9}$";
-        if (mMobileNumberEditText.getText().toString().trim().length() > 0 && (!mMobileNumberEditText.getText().toString().trim().matches(mobileNumberPattern))) {
-            mMobileNumberEditText.requestFocus();
-            mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
             return false;
         }
 
@@ -214,7 +203,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         String cName = "";
         int cGenderCode;
         String cEmail = "";
-        String cMobileNumber = "";
         CreateOrUpdateAccountRequest createOrUpdateAccountRequest;
 
         @Override
@@ -226,7 +214,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
             if (mEmailAddressEditText.getText().toString().trim().length() > 0) {
                 cEmail = mEmailAddressEditText.getText().toString().trim();
             }
-            cMobileNumber = mMobileNumberEditText.getText().toString().trim();
             displayProgressDialog();
         }
 
@@ -235,7 +222,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
             createOrUpdateAccountRequest = new CreateOrUpdateAccountRequest();
             createOrUpdateAccountRequest.account = new Account();
 
-            createOrUpdateAccountRequest.account.mobileNumber = cMobileNumber;
             createOrUpdateAccountRequest.account.name = cName;
             createOrUpdateAccountRequest.account.email = cEmail;
             createOrUpdateAccountRequest.account.gender = cGenderCode;
@@ -278,14 +264,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                                 mEmailAddressEditText.setError(getString(R.string.error_email_address_is_not_valid));
                                 Toast.makeText(RegisterActivity.this, getString(R.string.error_email_address_is_not_valid), Toast.LENGTH_LONG).show();
                                 break;
-                            case CreateAccountReply.DUPLICATE_MOBILE_NUMBER:
-                                mMobileNumberEditText.setError(getString(R.string.error_signup_duplicated_mobile_number));
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_signup_duplicated_mobile_number), Toast.LENGTH_LONG).show();
-                                break;
-                            case CreateAccountReply.INVALID_MOBILE_NUMBER:
-                                mMobileNumberEditText.setError(getString(R.string.error_mobile_number_is_not_valid));
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_mobile_number_is_not_valid), Toast.LENGTH_LONG).show();
-                                break;
                             case CreateAccountReply.EMPTY_ACCOUNT:
                                 logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". sendLoginEmailRequest: " + createOrUpdateAccountRequest);
                                 Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
@@ -317,7 +295,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                 }
             } else {
                 Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
-                checkGooglePlayAvailability();
             }
         }
     }

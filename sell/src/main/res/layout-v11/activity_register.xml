@@ -12,11 +12,12 @@
                     android:layout_height="match_parent"
                     android:paddingRight="16dp"
                     android:paddingLeft="16dp"
+                    android:paddingTop="20dp"
                     tools:context="net.honarnama.sell.activity.RegisterActivity"
-                    android:layout_gravity="right|center"
+                    android:layout_gravity="right|top"
                     android:layoutDirection="rtl"
                     android:textAlignment="gravity"
-                    android:gravity="right">
+                    android:gravity="right|top">
 
         <TextView
                 android:id="@+id/register_form_title"
@@ -51,7 +52,6 @@
                         android:layout_alignParentTop="true"
                         android:nextFocusForward="@+id/register_gender_radio_group"
                         android:textColorHint="@color/default_hint_color_for_android"
-                        android:layout_marginLeft="5dp"
                         android:layout_weight="2"
                         style="@style/edit_text_default"
                         android:layout_gravity="right"
@@ -75,7 +75,7 @@
         <RadioGroup android:id="@+id/register_gender_radio_group"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="20dp"
                     android:orientation="horizontal"
                     android:layout_below="@id/register_name_alert"
                     android:gravity="right"
@@ -126,9 +126,7 @@
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:gravity="right"
-                      android:layout_marginTop="5dp"
-                      android:padding="10dp"
-                      android:paddingRight="0dp"
+                      android:layout_marginTop="20dp"
                       android:layout_below="@id/register_gender_radio_group"
                       android:id="@+id/register_prefered_activate_method_layer"
                       android:orientation="vertical"
@@ -151,27 +149,6 @@
                         android:gravity="right"
                 />
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                    android:id="@+id/phone_hint"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <EditText
-                        android:id="@+id/register_mobile_number_edit_text"
-                        android:layout_width="fill_parent" android:layout_height="45dp"
-                        android:inputType="phone"
-                        android:hint="@string/mobile_number_hint"
-                        android:singleLine="true"
-                        android:textSize="16sp"
-                        android:layout_weight="2"
-                        android:ellipsize="start"
-                        android:nextFocusForward="@+id/register_confirm_password_edit_text"
-                        android:textColorHint="@color/default_hint_color_for_android"
-                        android:gravity="right"
-                />
-            </android.support.design.widget.TextInputLayout>
-
 
         </LinearLayout>
 

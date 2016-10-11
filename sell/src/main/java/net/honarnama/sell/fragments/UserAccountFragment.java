@@ -275,9 +275,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                 }
             } else {
                 cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
-                if (activity != null) {
-                    ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                }
             }
 
             dismissProgressDialog();

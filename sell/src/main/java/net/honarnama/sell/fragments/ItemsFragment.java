@@ -208,10 +208,6 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     setTextInFragment(emptyListTextView, getStringInFragment(R.string.item_not_found));
                     mAdapter.notifyDataSetChanged();
                     displayRetrySnackbar();
-
-                    if (activity != null) {
-                        ((ControlPanelActivity) activity).checkGooglePlayAvailability();
-                    }
                 }
 
             }

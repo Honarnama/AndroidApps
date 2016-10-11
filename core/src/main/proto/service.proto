@@ -127,18 +127,17 @@ message Account {
   uint64 id = 1; // Will be ignored in create
   string name = 2;
   string email = 3;
-  string mobileNumber = 4;
   enum Gender {
     FEMALE = 0;
     MALE = 1;
     UNSPECIFIED = 2;
   }
-  Gender gender = 5;
+  Gender gender = 4;
   enum ActivationMethod {
     EMAIL = 0;
     TELEGRAM = 1;
   }
-  ActivationMethod activationMethod = 6;
+  ActivationMethod activationMethod = 5;
 }
 
 message WhoAmIReply {
@@ -155,7 +154,7 @@ message SendLoginEmailReply {
   ReplyProperties replyProperties = 1;
   enum ErrorCode {
     NO_CLIENT_ERROR = 0;
-    NO_USER_FOUND = 1;
+    ACCOUNT_NOT_FOUND = 1;
     INVALID_EMAIL = 2;
   }
   ErrorCode errorCode = 2;
@@ -172,8 +171,6 @@ message CreateAccountReply {
     NO_CLIENT_ERROR = 0;
     INVALID_EMAIL = 1;
     DUPLICATE_EMAIL = 2;
-    INVALID_MOBILE_NUMBER = 3;
-    DUPLICATE_MOBILE_NUMBER = 4;
     EMPTY_ACCOUNT = 5;
   }
   ErrorCode errorCode = 2;

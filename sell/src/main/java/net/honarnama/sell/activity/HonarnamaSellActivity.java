@@ -28,11 +28,11 @@ public class HonarnamaSellActivity extends HonarnamaBaseActivity {
         }
     }
 
-    public void checkGooglePlayAvailability() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) {
-            logE("GooglePlayServices is not available. ConnectionResult: " + status);
-            ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, this, 10)).show();
-        }
-    }
+//    public void checkGooglePlayAvailability() {
+//        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+//        if (status != ConnectionResult.SUCCESS) {
+//            logE("GooglePlayServices is not available. ConnectionResult: " + status);
+//            ((Dialog) GooglePlayServicesUtil.getErrorDialog(status, this, 10)).show();
+//        }
+//    }
 }

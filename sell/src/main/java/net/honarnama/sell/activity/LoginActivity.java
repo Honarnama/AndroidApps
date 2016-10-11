@@ -273,8 +273,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 builder.setSpan(new ImageSpan(LoginActivity.this, android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
                 builder.append(getString(R.string.error_connecting_to_Server)).append(" ");
                 displaySnackbar(builder, true);
-
-                checkGooglePlayAvailability();
             }
         }
     }
@@ -397,9 +395,9 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
 
                     case ReplyProperties.CLIENT_ERROR:
                         switch (sendLoginEmailReply.errorCode) {
-                            case SendLoginEmailReply.NO_USER_FOUND:
+                            case SendLoginEmailReply.ACCOUNT_NOT_FOUND:
                                 mUsernameEditText.setError(getString(R.string.no_user_found_matching_email));
-                                Toast.makeText(LoginActivity.this, getString(R.string.account_not_found), Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, getString(R.string.no_user_found_matching_email), Toast.LENGTH_LONG).show();
                                 break;
                             case SendLoginEmailReply.INVALID_EMAIL:
                                 mUsernameEditText.setError(getString(R.string.error_email_address_is_not_valid));
@@ -435,7 +433,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 }
             } else {
                 Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
-                checkGooglePlayAvailability();
             }
         }
     }
