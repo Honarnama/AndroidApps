@@ -245,7 +245,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         TextView textView = null;
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_server_try_again)).append(" ");
 
         if (!isAdded()) {
             return;

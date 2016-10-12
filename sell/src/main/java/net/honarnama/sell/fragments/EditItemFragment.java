@@ -872,7 +872,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
 
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                cToastMsg = getStringInFragment(R.string.error_connecting_server_try_again);
                 dismissProgressDialog();
             }
         }
@@ -887,7 +887,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         TextView textView = null;
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_server_retry)).append(" ");
 
         if (!isAdded()) {
             return;

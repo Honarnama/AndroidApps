@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:padding="10dp"
+                android:background="@color/amber"
+>
+    <TextView
+            android:id="@+id/snack_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/amber"
+            android:singleLine="false"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+    />
+
+    <ImageButton
+            android:id="@+id/snack_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="5dp"
+            android:layout_toLeftOf="@id/snack_text"
+            android:src="@android:drawable/stat_notify_sync"
+            android:background="@null"
+    />
+
+
+</RelativeLayout>

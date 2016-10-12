@@ -274,7 +274,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
                 }
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                cToastMsg = getStringInFragment(R.string.error_connecting_server_try_again);
             }
 
             dismissProgressDialog();

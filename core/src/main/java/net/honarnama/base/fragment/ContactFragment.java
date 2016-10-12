@@ -236,7 +236,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
                         break;
                 }
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                cToastMsg = getStringInFragment(R.string.error_connecting_server_try_again);
 //                if (activity != null) {
 //                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
 //                    if (status != ConnectionResult.SUCCESS) {

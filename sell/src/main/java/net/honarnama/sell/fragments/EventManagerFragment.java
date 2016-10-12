@@ -1260,7 +1260,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 }
 
             } else {
-                cToastMsg = getStringInFragment(R.string.error_connecting_to_Server);
+                cToastMsg = getStringInFragment(R.string.error_connecting_server_try_again);
                 dismissProgressDialog();
             }
         }
@@ -1273,7 +1273,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         Activity activity = getActivity();
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(" ").append(getStringInFragment(R.string.error_connecting_to_Server)).append(" ");
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_server_try_again)).append(" ");
 
         View sbView = null;
         TextView textView = null;

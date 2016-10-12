@@ -254,8 +254,8 @@
     <string name="error_getting_event_cat_list">خطا در گرفتن فهرست دسته‌بندی رویداد‌ها.</string>
     <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="category_label">دسته‌بندی:</string>
-    <string name="error_connection_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
-    <string name="error_connecting_to_Server">خطا در برقراری ارتباط.</string>
+    <string name="error_connecting_server_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
+    <string name="error_connecting_server_try_again">خطا در برقراری ارتباط. لطفا دوباره تلاش کنید.</string>
     <string name="server_error_try_again">خطای سرور. لطفا دوباره تلاش کنید.</string>
     <string name="no_event_found">رویدادی یافت نشد.</string>
     <string name="bazaar_is_not_installed">متاسفانه برنامه بازار بر روی گوشی شما نصب نیست.</string>

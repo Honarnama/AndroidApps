@@ -294,7 +294,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                         break;
                 }
             } else {
-                Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, getString(R.string.error_connecting_server_try_again), Toast.LENGTH_LONG).show();
             }
         }
     }

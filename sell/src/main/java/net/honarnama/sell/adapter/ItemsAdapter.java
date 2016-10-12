@@ -280,7 +280,7 @@ public class ItemsAdapter extends BaseAdapter {
                 }
 
             } else {
-                mItemsFragment.displayLongToast(mContext.getString(R.string.error_connecting_to_Server));
+                mItemsFragment.displayLongToast(mContext.getString(R.string.error_connecting_server_try_again));
                 mItemsFragment.displayLongToast("لطفا فعال بودن و به‌روز بودن خدمات Google Play را بررسی کنید.");
 //                Activity activity = (Activity) mContext;
 //                if (activity != null) {

@@ -27,12 +27,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,7 +88,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     }
 
     private void processIntent(Intent intent) {
-         Uri data = intent.getData();
+        Uri data = intent.getData();
         if (BuildConfig.DEBUG) {
             logD("processIntent :: data= " + data);
         }
@@ -132,7 +130,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 startActivityForResult(intent, HonarnamaBaseApp.INTENT_REGISTER_CODE);
                 break;
             case R.id.send_login_link_btn:
-                 if (formInputsAreValid()) {
+                if (formInputsAreValid()) {
                     new SendLoginEmailAsync().execute();
                 }
                 break;
@@ -168,10 +166,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         if (BuildConfig.DEBUG) {
                             logD("display email verification notif.");
                         }
-
-                        SpannableStringBuilder builder = new SpannableStringBuilder();
-                        builder.append(getString(R.string.verification_email_sent));
-                        displaySnackbar(builder, false);
+                        displayCustomSnackbar(getString(R.string.verification_email_sent), false);
                     }
                 }
             } else {
@@ -230,11 +225,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
-                        SpannableStringBuilder builder = new SpannableStringBuilder();
-                        builder.append(" ");
-                        builder.setSpan(new ImageSpan(LoginActivity.this, android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
-                        builder.append(getString(R.string.server_error_try_again)).append(" ");
-                        displaySnackbar(builder, true);
+                        displayCustomSnackbar(getString(R.string.server_error_try_again), true);
                         logE("Got SERVER_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
                         break;
 
@@ -244,13 +235,8 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                             logD("Got NOT_AUTHORIZED reply in reply to WhoAmI request.");
                         }
                         Toast.makeText(LoginActivity.this, getString(R.string.account_not_found) + " یا اعتبار لینک ورود منقضی شده است.", Toast.LENGTH_LONG).show();
-
                         HonarnamaUser.logout(null);
-
-                        SpannableStringBuilder builder2 = new SpannableStringBuilder();
-                        builder2.append("در صورتی که حسابتان را قبلا فعال کرده بودید، می‌توانید از طریق فرم بالا، درخواست لینک ورود جدید کنید.");
-                        displaySnackbar(builder2, false);
-
+                        displayCustomSnackbar("در صورتی که حسابتان را قبلا فعال کرده بودید، می‌توانید از طریق فرم بالا، درخواست لینک ورود جدید کنید.", false);
                         break;
 
                     case ReplyProperties.OK:
@@ -267,12 +253,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                 }
 
             } else {
-
-                SpannableStringBuilder builder = new SpannableStringBuilder();
-                builder.append(" ");
-                builder.setSpan(new ImageSpan(LoginActivity.this, android.R.drawable.stat_notify_sync), builder.length() - 1, builder.length(), 0);
-                builder.append(getString(R.string.error_connecting_to_Server)).append(" ");
-                displaySnackbar(builder, true);
+                displayCustomSnackbar(getString(R.string.error_connecting_server_try_again), true);
             }
         }
     }
@@ -301,21 +282,24 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
         }
     }
 
-    public void displaySnackbar(SpannableStringBuilder builder, Boolean callGetMe) {
+    public void displayCustomSnackbar(String text, Boolean displayGetMeRefreshBtn) {
         if (mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
         }
 
-        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
-        View sbView = mSnackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setBackgroundColor(getResources().getColor(R.color.amber));
-        textView.setSingleLine(false);
-        textView.setGravity(Gravity.CENTER);
-        sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+        mSnackbar = Snackbar.make(mCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) mSnackbar.getView();
+        TextView textView = (TextView) snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
 
-        if (callGetMe) {
-            textView.setOnClickListener(new View.OnClickListener() {
+        View snackView = getLayoutInflater().inflate(R.layout.snackbar, null);
+        TextView textViewTop = (TextView) snackView.findViewById(R.id.snack_text);
+        textViewTop.setText(text);
+
+        ImageButton imageBtn = (ImageButton) snackView.findViewById(R.id.snack_action);
+        if (displayGetMeRefreshBtn) {
+            imageBtn.setVisibility(View.VISIBLE);
+            imageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -323,8 +307,12 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                     }
                 }
             });
+        } else {
+            imageBtn.setVisibility(View.GONE);
         }
 
+        snackbarLayout.setBackgroundColor(getResources().getColor(R.color.amber));
+        snackbarLayout.addView(snackView, 0);
         mSnackbar.show();
     }
 
@@ -422,9 +410,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         break;
 
                     case ReplyProperties.OK:
-                        SpannableStringBuilder builder = new SpannableStringBuilder();
-                        builder.append(getString(R.string.login_email_sent));
-                        displaySnackbar(builder, false);
+                        displayCustomSnackbar(getString(R.string.login_email_sent), false);
                         break;
 
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -432,7 +418,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         break;
                 }
             } else {
-                Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_to_Server), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.error_connecting_server_try_again), Toast.LENGTH_LONG).show();
             }
         }
     }
