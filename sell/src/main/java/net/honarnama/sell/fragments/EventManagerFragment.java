@@ -1298,7 +1298,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             Spannable spannable = (Spannable) textView.getText();
 
             if (spannable != null && activity != null) {
-                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length()-1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
             textView.setOnClickListener(new View.OnClickListener() {

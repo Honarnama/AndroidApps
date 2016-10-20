@@ -908,7 +908,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             textView.setGravity(Gravity.CENTER);
             Spannable spannable = (Spannable) textView.getText();
             if (activity != null) {
-                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length() - 1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -731,7 +731,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                     case ReplyProperties.SERVER_ERROR:
                         setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
-                        displayCustomRetrySnackbar();
+                        displayRetrySnackbar();
                         displayShortToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
@@ -747,7 +747,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                             setStoreInfo(getStoreReply.store, true);
                         } else {
                             displayShortToast(getStringInFragment(R.string.error_getting_store_info));
-                            displayCustomRetrySnackbar();
+                            displayRetrySnackbar();
                             logE("Got OK code for getting user (id " + HonarnamaUser.getId() + ") store, but store was null. simpleRequest: " + simpleRequest);
                         }
 
@@ -756,7 +756,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             } else {
                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
-                displayCustomRetrySnackbar();
+                displayRetrySnackbar();
             }
         }
     }
@@ -1049,45 +1049,49 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         });
     }
 
-    public void displayCustomRetrySnackbar() {
+    public void displayRetrySnackbar() {
 
         dismissSnackbar();
-
         Activity activity = getActivity();
+
+        View sbView = null;
+        TextView textView = null;
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(" ").append(getStringInFragment(R.string.error_connecting_server_retry)).append(" ");
 
         if (!isAdded()) {
             return;
         }
 
-        mSnackbar = Snackbar.make(mCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
+        mSnackbar = Snackbar.make(mCoordinatorLayout, builder, Snackbar.LENGTH_INDEFINITE);
         if (mSnackbar == null || activity == null) {
             return;
         }
-        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) mSnackbar.getView();
-        TextView textView = (TextView) snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setVisibility(View.INVISIBLE);
 
-        View snackView = activity.getLayoutInflater().inflate(R.layout.snackbar, null);
-        TextView textViewTop = (TextView) snackView.findViewById(R.id.snack_text);
-        textViewTop.setText(getStringInFragment(R.string.error_connecting_server_retry));
-
-        textViewTop.setText("ey babab");
-
-
-        ImageButton imageBtn = (ImageButton) snackView.findViewById(R.id.snack_action);
-        imageBtn.setVisibility(View.VISIBLE);
-        imageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    new getStoreAsync().execute();
-                    dismissSnackbar();
-                }
+        sbView = mSnackbar.getView();
+        if (sbView != null) {
+            textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            sbView.setBackgroundColor(getResources().getColor(R.color.amber));
+        }
+        if (textView != null) {
+            textView.setBackgroundColor(getResources().getColor(R.color.amber));
+            textView.setSingleLine(false);
+            textView.setGravity(Gravity.CENTER);
+            Spannable spannable = (Spannable) textView.getText();
+            if (activity != null) {
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length()-1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
-        });
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        new getStoreAsync().execute();
+                        dismissSnackbar();
+                    }
+                }
+            });
+        }
 
-        snackbarLayout.setBackgroundColor(getResources().getColor(R.color.amber));
-        snackbarLayout.addView(snackView, 0);
 
         if (isAdded() && mSnackbar != null) {
             mSnackbar.show();
