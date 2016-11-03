@@ -4,15 +4,15 @@ package net.honarnama.browse.fragment;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.activity.ChooseArtCategoryActivity;
+import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.model.Item;
-import net.honarnama.base.activity.ChooseArtCategoryActivity;
-import net.honarnama.base.model.Province;
-import net.honarnama.base.utils.NetworkManager;
 
 import android.content.Context;
 import android.content.Intent;

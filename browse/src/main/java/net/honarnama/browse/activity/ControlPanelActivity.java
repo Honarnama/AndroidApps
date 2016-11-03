@@ -142,7 +142,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         setContentView(R.layout.activity_main);
 
         mContactFragment = ContactFragment.getInstance();
-        mAboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+        mAboutFragment = AboutFragment.getInstance();
         mBookmarksFragment = BookmarksFragment.getInstance();
 
         mMainFragmentAdapter =
@@ -373,7 +373,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .color(getResources().getColor(R.color.dark_cyan))
                                     .icon(GoogleMaterial.Icon.gmd_info_outline);
                     menuItem.setIcon(aboutDrawable);
-                    AboutFragment aboutFragment = AboutFragment.getInstance(HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
+                    AboutFragment aboutFragment = AboutFragment.getInstance();
                     switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
                     break;
                 } else {

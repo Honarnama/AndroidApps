@@ -133,11 +133,6 @@ message Account {
     UNSPECIFIED = 2;
   }
   Gender gender = 4;
-  enum ActivationMethod {
-    EMAIL = 0;
-    TELEGRAM = 1;
-  }
-  ActivationMethod activationMethod = 5;
 }
 
 message WhoAmIReply {
@@ -174,7 +169,6 @@ message CreateAccountReply {
     EMPTY_ACCOUNT = 5;
   }
   ErrorCode errorCode = 2;
-  string telegramActivationCode = 3;
 }
 
 message UpdateAccountReply {
@@ -418,17 +412,59 @@ message CreateMessageReply {
 
 /////////////////////////////////////////////////////////////////////////////
 service BrowseService {
-  rpc GetItems(GetItemsRequest) returns (GetItemsReply) {
+  rpc GetItems(BrowseItemsRequest) returns (BrowseItemsReply) {
   }
+
+  rpc GetStores(BrowseStoresRequest) returns (BrowseStoresReply) {
+  }
+
+  rpc GetEvents(BrowseEventsRequest) returns (BrowseEventsReply) {
+  }
+
 }
 
-message GetItemsRequest {
+message BrowseItemsRequest {
   RequestProperties requestProperties = 1;
-  LocationId locationId = 2;
-  ArtCategoryId artCategoryId = 3;
+  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
+  ArtCategoryId artCategoryQuery = 3;
   uint32 minPrice = 4; // 1000 toman, floor round
   uint32 maxPrice = 5; // 1000 toman, ceil round
   string searchTerm = 6;
-  int64 lastItemTimestamp = 7;
-  uint32 page = 8;
+  int64 nextPageId = 7;
+}
+
+message BrowseItemsReply {
+  ReplyProperties replyProperties = 1;
+  int64 nextPageId = 2;
+  repeated Item items = 3;
+}
+
+
+message BrowseStoresRequest {
+  RequestProperties requestProperties = 1;
+  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
+  string searchTerm = 3;
+  int64 nextPageId = 4;
+}
+
+message BrowseStoresReply {
+  ReplyProperties replyProperties = 1;
+  int64 nextPageId = 2;
+  repeated Store stores = 3;
+}
+
+message BrowseEventsRequest {
+  RequestProperties requestProperties = 1;
+  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
+  uint32 eventCategoryQuery = 3;
+  int64 startAt = 4;
+  int64 endAt = 5;
+  string searchTerm = 6;
+  int64 nextPageId = 7;
+}
+
+message BrowseEventsReply {
+  ReplyProperties replyProperties = 1;
+  int64 nextPageId = 2;
+  repeated Event events = 3;
 }
