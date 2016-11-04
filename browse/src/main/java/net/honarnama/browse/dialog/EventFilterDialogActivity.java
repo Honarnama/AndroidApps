@@ -312,7 +312,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         final Province provinces = new Province();
         final City city = new City();
 
-        mProvinceEditText.setHint(getString(R.string.getting_information));
+        mProvinceEditText.setHint(getString(R.string.select));
         mCityEditEext.setHint(getString(R.string.getting_information));
 
         provinces.getAllProvincesSorted().

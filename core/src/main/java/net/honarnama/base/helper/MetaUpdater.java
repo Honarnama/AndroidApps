@@ -30,11 +30,11 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
  */
 public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
     public final static String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/metaUpdater";
-    MetaUpdateListener metaCallback;
+    MetaUpdateListener mMetaCallback;
     long mMetaVersion = 0;
 
     public MetaUpdater(MetaUpdateListener metaCallback, long metaVersion) {
-        this.metaCallback = metaCallback;
+        mMetaCallback = metaCallback;
         mMetaVersion = metaVersion;
     }
 
@@ -50,56 +50,22 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
     }
 
 
-    protected void onPostExecute(final MetaReply reply) {
-        if (reply != null) {
+    protected void onPostExecute(final MetaReply metaReply) {
+        if (metaReply != null) {
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Meta reply:" + reply);
+                Log.d(DEBUG_TAG, "meta reply: " + metaReply);
             }
-            switch (reply.replyProperties.statusCode) {
+            switch (metaReply.replyProperties.statusCode) {
                 case ReplyProperties.OK:
                     if (BuildConfig.DEBUG) {
-                        Log.d(DEBUG_TAG, "Updating Meta to: " + reply.replyProperties.etag);
+                        Log.d(DEBUG_TAG, "Updating Meta to: " + metaReply.replyProperties.etag);
                     }
-                    final net.honarnama.nano.ArtCategory[] artCategories = reply.artCategories;
-                    final EventCategory[] eventCategories = reply.eventCategories;
-                    final Location[] locations = reply.locations;
-
-                    ArtCategory.resetArtCategories(artCategories).onSuccessTask(new Continuation<Void, Task<Void>>() {
-                        @Override
-                        public Task<Void> then(Task<Void> task) throws Exception {
-                            return net.honarnama.base.model.EventCategory.resetEventCategories(eventCategories);
-                        }
-                    }).onSuccessTask(new Continuation<Void, Task<Void>>() {
-                        @Override
-                        public Task<Void> then(Task<Void> task) throws Exception {
-                            return net.honarnama.base.model.Location.resetLocations(locations);
-                        }
-                    }).continueWith(new Continuation<Void, Object>() {
-                        @Override
-                        public Object then(Task<Void> task) throws Exception {
-                            if (metaCallback != null) {
-                                metaCallback.onMetaUpdateDone(ReplyProperties.OK);
-                            }
-                            if (task.isFaulted()) {
-                                if (BuildConfig.DEBUG) {
-                                    Log.e(DEBUG_TAG, "Error while trying to update meta data. // Error: " + task.getError());
-                                } else {
-                                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to update meta data. // Error: " + task.getError());
-                                }
-                            } else {
-                                SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
-                                editor.putLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, reply.replyProperties.etag);
-                                editor.commit();
-                                return null;
-                            }
-                            return null;
-                        }
-                    });
+                    updateLocalMeta(metaReply);
                     break;
 
                 case ReplyProperties.NOT_MODIFIED:
-                    if (metaCallback != null) {
-                        metaCallback.onMetaUpdateDone(ReplyProperties.NOT_MODIFIED);
+                    if (mMetaCallback != null) {
+                        mMetaCallback.onMetaUpdateDone(ReplyProperties.NOT_MODIFIED);
                     }
                     if (BuildConfig.DEBUG) {
                         Log.d(DEBUG_TAG, "Meta is not modified.");
@@ -107,8 +73,8 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                     break;
 
                 case ReplyProperties.SERVER_ERROR:
-                    if (metaCallback != null) {
-                        metaCallback.onMetaUpdateDone(ReplyProperties.SERVER_ERROR);
+                    if (mMetaCallback != null) {
+                        mMetaCallback.onMetaUpdateDone(ReplyProperties.SERVER_ERROR);
                     }
                     if (BuildConfig.DEBUG) {
                         Log.e(DEBUG_TAG, "Server error occured trying to update meta.");
@@ -118,34 +84,72 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                     break;
 
                 case ReplyProperties.UPGRADE_REQUIRED:
-                    if (metaCallback != null) {
-                        metaCallback.onMetaUpdateDone(ReplyProperties.UPGRADE_REQUIRED);
+                    if (mMetaCallback != null) {
+                        mMetaCallback.onMetaUpdateDone(ReplyProperties.UPGRADE_REQUIRED);
                     }
                     break;
 
                 case ReplyProperties.CLIENT_ERROR:
-                    if (metaCallback != null) {
-                        metaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
+                    if (mMetaCallback != null) {
+                        mMetaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
                     }
                     break;
 
                 case ReplyProperties.NOT_AUTHORIZED:
-                    if (metaCallback != null) {
-                        metaCallback.onMetaUpdateDone(ReplyProperties.NOT_AUTHORIZED);
+                    if (mMetaCallback != null) {
+                        mMetaCallback.onMetaUpdateDone(ReplyProperties.NOT_AUTHORIZED);
                     }
                     break;
             }
 
         } else {
 
-            if (metaCallback != null) {
-                metaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
+            if (mMetaCallback != null) {
+                mMetaCallback.onMetaUpdateDone(ReplyProperties.CLIENT_ERROR);
             }
             if (BuildConfig.DEBUG) {
-                Log.d(DEBUG_TAG, "Meta reply was null");
+                Log.d(DEBUG_TAG, "meta reply was null");
             }
 
         }
+    }
+
+    private void updateLocalMeta(final MetaReply metaReply) {
+        final net.honarnama.nano.ArtCategory[] artCategories = metaReply.artCategories;
+        final EventCategory[] eventCategories = metaReply.eventCategories;
+        final Location[] locations = metaReply.locations;
+
+        ArtCategory.resetArtCategories(artCategories).onSuccessTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Void> task) throws Exception {
+                return net.honarnama.base.model.EventCategory.resetEventCategories(eventCategories);
+            }
+        }).onSuccessTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(Task<Void> task) throws Exception {
+                return net.honarnama.base.model.Location.resetLocations(locations);
+            }
+        }).continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                if (mMetaCallback != null) {
+                    mMetaCallback.onMetaUpdateDone(ReplyProperties.OK);
+                }
+                if (task.isFaulted()) {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(DEBUG_TAG, "Error while trying to update meta data. // Error: " + task.getError());
+                    } else {
+                        Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to update meta data. // Error: " + task.getError());
+                    }
+                } else {
+                    SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+                    editor.putLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, metaReply.replyProperties.etag);
+                    editor.commit();
+                    return null;
+                }
+                return null;
+            }
+        });
     }
 
     // Not to be run in the UI thread

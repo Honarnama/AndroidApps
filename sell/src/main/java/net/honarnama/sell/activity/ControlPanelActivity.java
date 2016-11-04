@@ -30,6 +30,7 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -168,7 +169,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                 }
             }
         };
-        long metaVersion = HonarnamaBaseApp.getCommonSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
+        long metaVersion = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_SELL_APP, Context.MODE_PRIVATE).getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
         MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
         metaUpdater.execute();
 

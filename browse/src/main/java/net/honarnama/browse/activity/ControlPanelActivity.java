@@ -5,6 +5,8 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.helper.MetaUpdater;
+import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
@@ -28,9 +30,11 @@ import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.CommonUtil;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
+import net.honarnama.nano.ReplyProperties;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -115,7 +119,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public Dialog mSetDefaultLocationDialog;
 
     public TreeMap<Number, Province> mProvincesTreeMap = new TreeMap();
-//    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    //    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
     public int mDefaultProvinceId;
     public String mDefaultProvinceName;
     public int mSelectedProvinceId = -1;
@@ -227,6 +231,24 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         changeLocationTitle();
 
         handleExternalIntent(getIntent());
+
+        MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
+            @Override
+            public void onMetaUpdateDone(int replyCode) {
+                if (net.honarnama.base.BuildConfig.DEBUG) {
+                    logD("Meta Update replyCode: " + replyCode);
+                }
+                switch (replyCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
+                        break;
+                }
+            }
+        };
+        long metaVersion = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_BROWSE_APP, Context.MODE_PRIVATE).getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
+        MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
+        metaUpdater.execute();
+
     }
 
 

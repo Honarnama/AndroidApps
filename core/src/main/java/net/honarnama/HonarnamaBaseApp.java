@@ -31,7 +31,6 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String PRODUCTION_TAG = "Honarnama";
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 1000;
 
-    public static final int INTENT_TELEGRAM_CODE = 2000;
     public static final int INTENT_REGISTER_CODE = 2001;
 
     public static final int INTENT_CHOOSE_CATEGORY_CODE = 3000;
@@ -41,8 +40,6 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_FILTER_SHOP_CODE = 4002;
 
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
-    public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_MOBILE";
-    public static final String EXTRA_KEY_TELEGRAM_CODE = "EXTRA_KEY_TELEGRAM_CODE";
     public static final String EXTRA_KEY_INTENT_CALLER = "intent_origin";
     public static final String EXTRA_KEY_PROVINCE_ID = "selectedProvinceId";
     public static final String EXTRA_KEY_PROVINCE_NAME = "selectedProvinceName";
@@ -63,8 +60,6 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String PREF_KEY_BROWSE_APP_RATED = "browse_app_rated";
     public static final String PREF_KEY_SELL_APP_RATED = "sell_app_rated";
     public static final String PREF_KEY_LOGIN_TOKEN = "login_token";
-    public static final String PREF_KEY_TELEGRAM_TOKEN = "telegram_token";
-    public static final String PREF_KEY_TELEGRAM_TOKEN_SET_DATE = "telegram_token_set_date";
 
     public static String PREF_KEY_META_VERSION = "meta_version";
 
