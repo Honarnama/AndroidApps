@@ -77,9 +77,7 @@ public class City {
     public static int ALL_CITY_ID = 0;
     public static String ALL_CITY_NAME = "تمام شهرها";
 
-
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreehMap = new TreeMap<>();
-
 
     public Task<TreeMap<Number, HashMap<Integer, String>>> getAllCitiesSorted(final int parentId) {
 
@@ -98,6 +96,10 @@ public class City {
                         HashMap<Integer, String> tempMap = new HashMap();
                         tempMap.put(city.getId(), city.getName());
                         mCityOrderedTreehMap.put(city.getOrder(), tempMap);
+                    }
+
+                    if (BuildConfig.DEBUG) {
+                        Log.d(DEBUG_TAG, "City list: " + mCityOrderedTreehMap);
                     }
                     tcs.trySetResult(mCityOrderedTreehMap);
                 }
@@ -128,8 +130,14 @@ public class City {
                     city.setOrder(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ORDER)));
                     cities.add(city);
                 } while (cursor.moveToNext());
+                tcs.trySetResult(cities);
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.e(DEBUG_TAG, "No cities for specified province id " + parentId + "found.");
+                }
+                tcs.trySetError(new Exception("No cities for specified province id " + parentId + "found."));
             }
-            tcs.trySetResult(cities);
+
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get city list for province: " + parentId, e);

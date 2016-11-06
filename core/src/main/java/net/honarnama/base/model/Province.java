@@ -79,7 +79,7 @@ public class Province {
 
         final TaskCompletionSource<TreeMap<Number, Province>> tcs = new TaskCompletionSource<>();
 
-        findProvincesAsync().continueWith(new Continuation<List<Province>, Object>() {
+        getProvincesAsync().continueWith(new Continuation<List<Province>, Object>() {
             @Override
             public Object then(Task<List<Province>> task) throws Exception {
                 if (task.isFaulted()) {
@@ -102,7 +102,7 @@ public class Province {
         return tcs.getTask();
     }
 
-    public Task<List<Province>> findProvincesAsync() {
+    public Task<List<Province>> getProvincesAsync() {
         final TaskCompletionSource<List<Province>> tcs = new TaskCompletionSource<>();
         List<Province> provinces = new ArrayList<>();
 
@@ -120,8 +120,14 @@ public class Province {
                     province.setOrder(cursor.getInt(cursor.getColumnIndex(COL_LOCATIONS_ORDER)));
                     provinces.add(province);
                 } while (cursor.moveToNext());
+                tcs.trySetResult(provinces);
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.e(DEBUG_TAG, "No provinces cached.");
+                }
+                tcs.trySetError(new Exception("No provinces cached."));
             }
-            tcs.trySetResult(provinces);
+
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.e(DEBUG_TAG, "Error while trying to get province list.", e);

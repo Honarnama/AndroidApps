@@ -232,22 +232,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         handleExternalIntent(getIntent());
 
-        MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
-            @Override
-            public void onMetaUpdateDone(int replyCode) {
-                if (net.honarnama.base.BuildConfig.DEBUG) {
-                    logD("Meta Update replyCode: " + replyCode);
-                }
-                switch (replyCode) {
-                    case ReplyProperties.UPGRADE_REQUIRED:
-                        displayUpgradeRequiredDialog();
-                        break;
-                }
-            }
-        };
-        long metaVersion = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_BROWSE_APP, Context.MODE_PRIVATE).getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
-        MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
-        metaUpdater.execute();
+        checkAndUpdateMeta();
 
     }
 

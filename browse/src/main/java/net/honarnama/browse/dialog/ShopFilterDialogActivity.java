@@ -137,6 +137,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
             }
         });
 
+        checkAndUpdateMeta();
     }
 
     @Override
@@ -171,6 +172,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     break;
                 }
+                checkAndUpdateMeta();
                 mRefetchProvinces.setVisibility(View.GONE);
                 mRefetchCities.setVisibility(View.GONE);
                 fetchProvincesAndCities();
@@ -219,6 +221,11 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
+
+                    mRefetchProvinces.setVisibility(View.VISIBLE);
+                    mRefetchCities.setVisibility(View.VISIBLE);
+                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+
                     if ((mDialog.isShowing())) {
                         Toast.makeText(mActivity, mActivity.getString(R.string.error_getting_city_list) + mActivity.getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
