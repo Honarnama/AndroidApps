@@ -142,7 +142,7 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
                         Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error while trying to update meta data. // Error: " + task.getError());
                     }
                 } else {
-                    SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+                    SharedPreferences.Editor editor = HonarnamaBaseApp.getAppSharedPref().edit();
                     editor.putLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, metaReply.replyProperties.etag);
                     editor.commit();
                     return null;

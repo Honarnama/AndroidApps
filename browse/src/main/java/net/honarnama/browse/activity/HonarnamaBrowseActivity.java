@@ -4,6 +4,8 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.activity.HonarnamaBaseActivity;
 import net.honarnama.base.helper.MetaUpdater;
 import net.honarnama.base.interfaces.MetaUpdateListener;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
 import net.honarnama.nano.ReplyProperties;
 
 import android.content.Context;
@@ -24,20 +26,20 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
         mSharedPreferences = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_BROWSE_APP, Context.MODE_PRIVATE);
     }
 
-    public int getDefaultLocationProvinceId() {
-        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, 0);
+    public int getUserLocationProvinceId() {
+        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_ID, Province.ALL_PROVINCE_ID);
     }
 
-    public int getDefaultLocationCityId() {
-        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, 0);
+    public int getUserLocationCityId() {
+        return mSharedPreferences.getInt(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_ID, City.ALL_CITY_ID);
     }
 
 
-    public String getDefaultLocationProvinceName() {
+    public String getUserLocationProvinceName() {
         return mSharedPreferences.getString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_PROVINCE_NAME, "");
     }
 
-    public String getDefaultLocationCityName() {
+    public String getUserLocationCityName() {
         return mSharedPreferences.getString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, "");
     }
 
@@ -59,5 +61,6 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
         MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
         metaUpdater.execute();
     }
+
 
 }

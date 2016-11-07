@@ -5,6 +5,7 @@ import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.activity.ChooseArtCategoryActivity;
+import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -51,8 +52,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mEmptyListContainer;
     public RelativeLayout mFilterContainer;
     private Province mSelectedProvince;
-    private String mSelectedProvinceId;
-    private String mSelectedCityId;
+    private int mSelectedProvinceId;
+    private int mSelectedCityId;
     private String mSelectedProvinceName;
     private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
@@ -293,9 +294,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             case HonarnamaBaseApp.INTENT_FILTER_ITEMS_CODE:
 
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedProvinceId = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID);
+                    mSelectedProvinceId = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME);
-                    mSelectedCityId = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID);
+                    mSelectedCityId = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mMinPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, -1);
                     mMinPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE);
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
@@ -303,6 +304,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
 
+                    logD("Filter city to city id: " + mSelectedCityId);
                     changeFilterTitle();
 
                     listItems();

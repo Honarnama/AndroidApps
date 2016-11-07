@@ -5,8 +5,6 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
-import net.honarnama.base.helper.MetaUpdater;
-import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
@@ -30,11 +28,9 @@ import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.CommonUtil;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
-import net.honarnama.nano.ReplyProperties;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -223,10 +219,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
         mNavFooter.setOnClickListener(this);
 
-        mSelectedProvinceId = mDefaultProvinceId = getDefaultLocationProvinceId();
-        mSelectedCityId = mDefaultCityId = getDefaultLocationCityId();
-        mSelectedProvinceName = mDefaultProvinceName = getDefaultLocationProvinceName();
-        mSelectedCityName = mDefaultCityName = getDefaultLocationCityName();
+        mSelectedProvinceId = mDefaultProvinceId = getUserLocationProvinceId();
+        mSelectedCityId = mDefaultCityId = getUserLocationCityId();
+        mSelectedProvinceName = mDefaultProvinceName = getUserLocationProvinceName();
+        mSelectedCityName = mDefaultCityName = getUserLocationCityName();
 
         changeLocationTitle();
 

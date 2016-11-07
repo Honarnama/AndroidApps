@@ -110,11 +110,11 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         Intent intent = getIntent();
         mSelectedProvinceId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, -1);
         if (mSelectedProvinceId < 0) {
-            mSelectedProvinceId = getDefaultLocationProvinceId();
+            mSelectedProvinceId = getUserLocationProvinceId();
         }
         mSelectedCityId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
         if (mSelectedCityId < 0) {
-            mSelectedCityId = getDefaultLocationCityId();
+            mSelectedCityId = getUserLocationCityId();
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
@@ -124,6 +124,9 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         if (mSelectedCityId < 0) {
             mSelectedCityId = City.ALL_CITY_ID;
         }
+
+        findViewById(R.id.apply_filter).setOnClickListener(this);
+        findViewById(R.id.remove_filter).setOnClickListener(this);
 
         fetchProvincesAndCities();
 
@@ -314,14 +317,12 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
     }
 
     public void fetchProvincesAndCities() {
-        findViewById(R.id.apply_filter).setOnClickListener(this);
-        findViewById(R.id.remove_filter).setOnClickListener(this);
 
         final Province provinces = new Province();
         final City city = new City();
 
         mProvinceEditText.setHint(getString(R.string.select));
-        mCityEditEext.setHint(getString(R.string.getting_information));
+        mCityEditEext.setHint(City.ALL_CITY_NAME);
 
         provinces.getAllProvincesSorted().
                 continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
@@ -336,9 +337,6 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Province province : mProvincesObjectsTreeMap.values()) {
-                                if (mSelectedProvinceId < 0) {
-                                    mSelectedProvinceId = province.getId();
-                                }
                                 mProvincesHashMap.put(province.getId(), province.getName());
                             }
                             mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
@@ -353,7 +351,8 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
-                if (task.isFaulted()) {
+
+                if (task.isFaulted() && mSelectedProvinceId > 0) {
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
                     mCityEditEext.setHint(EventFilterDialogActivity.this.getString(R.string.error_occured));
@@ -361,11 +360,9 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                     Toast.makeText(EventFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
+
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            if (mSelectedCityId < 0) {
-                                mSelectedCityId = citySet.getKey();
-                            }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
@@ -378,6 +375,7 @@ public class EventFilterDialogActivity extends HonarnamaBrowseActivity implement
                     mCityEditEext.setText(mCityHashMap.get(mSelectedCityId));
 
                 }
+
                 return null;
             }
         });

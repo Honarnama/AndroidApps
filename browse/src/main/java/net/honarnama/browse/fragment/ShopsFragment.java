@@ -6,6 +6,8 @@ import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -37,9 +39,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mOnErrorRetry;
     public RelativeLayout mFilterContainer;
 
-    private String mSelectedProvinceId;
+    private int mSelectedProvinceId;
     private String mSelectedProvinceName;
-    private String mSelectedCityId;
+    private int mSelectedCityId;
 
     ShopsAdapter mShopsAdapter;
 
@@ -215,9 +217,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         switch (requestCode) {
             case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedProvinceId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID);
+                    mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
-                    mSelectedCityId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID);
+                    mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
                     changeFilterTitle();

@@ -39,6 +39,8 @@ public class Province {
     public int mId;
     public int mParentId;
 
+    public static int ALL_PROVINCE_ID = 0;
+
     public String getName() {
         return mName;
     }

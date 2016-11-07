@@ -109,11 +109,11 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         Intent intent = getIntent();
         mSelectedProvinceId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, -1);
         if (mSelectedProvinceId < 0) {
-            mSelectedProvinceId = getDefaultLocationProvinceId();
+            mSelectedProvinceId = getUserLocationProvinceId();
         }
         mSelectedCityId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
         if (mSelectedCityId < 0) {
-            mSelectedCityId = getDefaultLocationCityId();
+            mSelectedCityId = getUserLocationCityId();
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
@@ -318,11 +318,12 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
     }
 
     public void fetchProvincesAndCities() {
+
         final Province provinces = new Province();
         final City city = new City();
 
         mProvinceEditText.setHint(getString(R.string.select));
-        mCityEditEext.setHint(getString(R.string.getting_information));
+        mCityEditEext.setHint(City.ALL_CITY_NAME);
 
         provinces.getAllProvincesSorted().
                 continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
@@ -337,9 +338,6 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                         } else {
                             mProvincesObjectsTreeMap = task.getResult();
                             for (Province province : mProvincesObjectsTreeMap.values()) {
-                                if (mSelectedProvinceId < 0) {
-                                    mSelectedProvinceId = province.getId();
-                                }
                                 mProvincesHashMap.put(province.getId(), province.getName());
                             }
                             mProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
@@ -354,7 +352,8 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
-                if (task.isFaulted()) {
+
+                if (task.isFaulted() && mSelectedProvinceId > 0) {
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
                     mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
@@ -362,11 +361,9 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                     Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
                     mCityOrderedTreeMap = task.getResult();
+
                     for (HashMap<Integer, String> cityMap : mCityOrderedTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
-                            if (mSelectedCityId < 0) {
-                                mSelectedCityId = citySet.getKey();
-                            }
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }

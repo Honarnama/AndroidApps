@@ -72,6 +72,7 @@ public abstract class HonarnamaBaseApp extends Application {
 
     private static HonarnamaBaseApp singleton;
     private static SharedPreferences mCommonSharedPref;
+    private static SharedPreferences mAppSharedPref;
 
     public static String PACKAGE_NAME;
 
@@ -101,8 +102,16 @@ public abstract class HonarnamaBaseApp extends Application {
             }
         }
 
-        setCommonSharedPref(getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE));
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        setCommonSharedPref(getSharedPreferences(HonarnamaBaseApp.PREF_NAME_COMMON, Context.MODE_PRIVATE));
+
+        if (PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
+            setAppSharedPref(getSharedPreferences(PREF_NAME_SELL_APP, Context.MODE_PRIVATE));
+        } else {
+            setAppSharedPref(getSharedPreferences(PREF_NAME_BROWSE_APP, Context.MODE_PRIVATE));
+        }
+
 
 //        try {
 //            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
@@ -120,8 +129,16 @@ public abstract class HonarnamaBaseApp extends Application {
         mCommonSharedPref = commonSharedPref;
     }
 
+    public static void setAppSharedPref(SharedPreferences appSharedPref) {
+        mAppSharedPref = appSharedPref;
+    }
+
     public static SharedPreferences getCommonSharedPref() {
         return mCommonSharedPref;
+    }
+
+    public static SharedPreferences getAppSharedPref() {
+        return mAppSharedPref;
     }
 
     abstract public Tracker getDefaultTracker();
