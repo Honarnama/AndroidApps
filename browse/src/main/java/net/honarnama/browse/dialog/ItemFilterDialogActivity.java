@@ -180,8 +180,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         findViewById(R.id.apply_filter).setOnClickListener(this);
         findViewById(R.id.remove_filter).setOnClickListener(this);
 
-        fetchProvincesAndCities();
-
         IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +189,8 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         });
 
         checkAndUpdateMeta();
+
+        fetchProvincesAndCities();
 
     }
 

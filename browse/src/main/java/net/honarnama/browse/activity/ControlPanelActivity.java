@@ -115,7 +115,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public Dialog mSetDefaultLocationDialog;
 
     public TreeMap<Number, Province> mProvincesTreeMap = new TreeMap();
-    //    public HashMap<String, String> mProvincesHashMap = new HashMap<String, String>();
+    public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
+
     public int mDefaultProvinceId;
     public String mDefaultProvinceName;
     public int mSelectedProvinceId = -1;
@@ -734,10 +735,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     break;
                 }
+                checkAndUpdateMeta();
                 mRefetchProvinces.setVisibility(View.GONE);
                 mRefetchCities.setVisibility(View.GONE);
-                // TODO:
-                // GRPCUtils.getInstance().UpdateMeta()
+                fetchProvincesAndCities();
                 break;
 
         }
@@ -870,6 +871,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mRefetchCities = (IconicsImageView) mSetDefaultLocationDialog.findViewById(R.id.refetchCities);
         mRefetchCities.setOnClickListener(this);
 
+        fetchProvincesAndCities();
 
         Button registerLocationBtn = (Button) mSetDefaultLocationDialog.findViewById(R.id.register_location_btn);
         Button bikhialBtn = (Button) mSetDefaultLocationDialog.findViewById(R.id.bikhial_btn);
@@ -891,10 +893,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     editor.putString(HonarnamaBaseApp.PREF_KEY_DEFAULT_LOCATION_CITY_NAME, mDefaultCityName);
                     editor.commit();
                     changeLocationTitle();
+                    mSetDefaultLocationDialog.dismiss();
                 } else {
-                    Toast.makeText(ControlPanelActivity.this, ControlPanelActivity.this.getString(R.string.error_occured) + " استان یا شهر انتخاب نشده بود.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ControlPanelActivity.this, "استان یا شهر انتخاب نشده است!", Toast.LENGTH_LONG).show();
                 }
-                mSetDefaultLocationDialog.dismiss();
             }
         });
         bikhialBtn.setOnClickListener(new View.OnClickListener() {
@@ -930,7 +932,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mSelectedProvinceId = mSelectedProvince.getId();
                 mSelectedProvinceName = mSelectedProvince.getName();
                 mDefaultProvinceEditText.setText(mSelectedProvinceName);
-
                 rePopulateCityList();
                 if (provinceDialog.isShowing()) {
                     provinceDialog.dismiss();
@@ -948,6 +949,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
                 if (task.isFaulted()) {
+
+                    mRefetchProvinces.setVisibility(View.VISIBLE);
+                    mRefetchCities.setVisibility(View.VISIBLE);
+                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+
                     if ((mSetDefaultLocationDialog.isShowing())) {
                         Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                     }
@@ -956,7 +962,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     for (HashMap<Integer, String> cityMap : mCityTreeMap.values()) {
                         for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
-
                         }
                     }
 
@@ -971,6 +976,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
     }
+
 
     private void displayCityDialog() {
         ListView cityListView;
@@ -1003,6 +1009,73 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         cityDialog.setCancelable(true);
         cityDialog.setTitle(getString(R.string.select_city));
         cityDialog.show();
+    }
+
+
+    public void fetchProvincesAndCities() {
+
+        final Province provinces = new Province();
+        final City city = new City();
+
+        mDefaultProvinceEditText.setHint(getString(R.string.select));
+        mDefaultCityEditText.setHint(City.ALL_CITY_NAME);
+
+        provinces.getAllProvincesSorted().
+                continueWith(new Continuation<TreeMap<Number, Province>, Object>() {
+                    @Override
+                    public Object then(Task<TreeMap<Number, Province>> task) throws Exception {
+                        if (task.isFaulted()) {
+                            mRefetchProvinces.setVisibility(View.VISIBLE);
+                            mRefetchCities.setVisibility(View.VISIBLE);
+                            mDefaultProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+                            logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
+                            Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+                        } else {
+                            mProvincesTreeMap = task.getResult();
+                            for (Province province : mProvincesTreeMap.values()) {
+                                mProvincesHashMap.put(province.getId(), province.getName());
+                            }
+                            mDefaultProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                        }
+                        return null;
+                    }
+                }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
+            @Override
+            public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
+                return city.getAllCitiesSorted(mSelectedProvinceId);
+            }
+        }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
+            @Override
+            public Object then(Task<TreeMap<Number, HashMap<Integer, String>>> task) throws Exception {
+
+                if (task.isFaulted() && mSelectedProvinceId > 0) {
+                    mRefetchProvinces.setVisibility(View.VISIBLE);
+                    mRefetchCities.setVisibility(View.VISIBLE);
+                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+                    logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), task.getError());
+                    Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
+                } else {
+                    mCityTreeMap = task.getResult();
+
+                    for (HashMap<Integer, String> cityMap : mCityTreeMap.values()) {
+                        for (Map.Entry<Integer, String> citySet : cityMap.entrySet()) {
+                            mCityHashMap.put(citySet.getKey(), citySet.getValue());
+                        }
+                    }
+
+                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
+                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+                    mCityTreeMap.put(0, allCitiesHashMap);
+
+                    mDefaultCityEditText.setText(mCityHashMap.get(mSelectedCityId));
+
+                }
+
+                return null;
+            }
+        });
+
     }
 
 }
