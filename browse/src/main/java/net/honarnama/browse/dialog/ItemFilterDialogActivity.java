@@ -122,8 +122,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             mSelectedProvinceId = getUserLocationProvinceId();
         }
         mSelectedCityId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
+        logD("last filtered city id: " + mSelectedCityId);
         if (mSelectedCityId < 0) {
             mSelectedCityId = getUserLocationCityId();
+            logD("user default city id: " + mSelectedCityId);
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
@@ -135,7 +137,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         }
 
         logD("Selected city id: " + mSelectedCityId);
-        mSelectedCityName = City.ALL_CITY_NAME;
 
         mMinPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.min_price);
         mMaxPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.max_price);
@@ -155,7 +156,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
                 perisanPriceList[i] = price;
             }
         }
-
 
         if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX)) {
             mMinPriceIndex = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, 0);
@@ -370,9 +370,9 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     public void removeFilters() {
         Intent data = new Intent();
-        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME, "");
-        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, "");
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_NAME, "");
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, "");

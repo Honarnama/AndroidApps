@@ -57,9 +57,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public int mSelectedCatId = -1;
     public String mSelectedCatName;
 
-    private int mSelectedProvinceId;
+    private int mSelectedProvinceId = -1;
     private String mSelectedProvinceName;
-    private int mSelectedCityId;
+    private int mSelectedCityId = -1;
 
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mLoadingCircle;

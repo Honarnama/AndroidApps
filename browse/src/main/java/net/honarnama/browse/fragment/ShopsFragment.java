@@ -39,9 +39,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mOnErrorRetry;
     public RelativeLayout mFilterContainer;
 
-    private int mSelectedProvinceId;
+    private int mSelectedProvinceId = -1;
     private String mSelectedProvinceName;
-    private int mSelectedCityId;
+    private int mSelectedCityId = -1;
 
     ShopsAdapter mShopsAdapter;
 

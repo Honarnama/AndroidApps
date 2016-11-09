@@ -306,9 +306,9 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     public void removeFilters() {
         Intent data = new Intent();
-        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, -1);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, "");
-        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, "");
+        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, -1);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);

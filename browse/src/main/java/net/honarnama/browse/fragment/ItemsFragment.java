@@ -52,8 +52,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mEmptyListContainer;
     public RelativeLayout mFilterContainer;
     private Province mSelectedProvince;
-    private int mSelectedProvinceId;
-    private int mSelectedCityId;
+    private int mSelectedProvinceId = -1;
+    private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
     private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
