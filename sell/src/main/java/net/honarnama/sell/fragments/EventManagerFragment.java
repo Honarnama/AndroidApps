@@ -316,7 +316,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         }
                         break;
                     default:
-                        displayLongToast(getStringInFragment(R.string.error_occured));
+                        displayLongToast(getStringInFragment(R.string.error_getting_info));
                         break;
                 }
             }
@@ -1044,7 +1044,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         switch (getEventReply.errorCode) {
                             case GetEventReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") event. simpleRequest: " + simpleRequest);
-                                displayShortToast(getStringInFragment(R.string.error_occured));
+                                displayShortToast(getStringInFragment(R.string.error_getting_info));
                                 break;
 
                             case GetEventReply.EVENT_NOT_FOUND:
@@ -1180,14 +1180,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         switch (createOrUpdateEventReply.errorCode) {
                             case CreateOrUpdateEventReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for createOrUpdateEventReply. createOrUpdateEventRequest: " + createOrUpdateEventRequest + ". User id: " + HonarnamaUser.getId());
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case CreateOrUpdateEventReply.EVENT_NOT_FOUND:
                                 cToastMsg = getStringInFragment(R.string.event_not_found);
                                 break;
                             case CreateOrUpdateEventReply.EMPTY_EVENT:
                                 logE("createOrUpdateEventReply was EMPTY_EVENT. createOrUpdateEventRequest: " + createOrUpdateEventRequest);
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case CreateOrUpdateEventReply.STORE_NOT_CREATED:
                                 cToastMsg = getStringInFragment(R.string.store_not_created);

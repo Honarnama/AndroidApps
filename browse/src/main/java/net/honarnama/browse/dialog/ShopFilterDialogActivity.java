@@ -224,7 +224,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
 
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
-                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_getting_info));
 
                     if ((mDialog.isShowing())) {
                         Toast.makeText(mActivity, mActivity.getString(R.string.error_getting_city_list) + mActivity.getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
@@ -332,7 +332,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                         if (task.isFaulted()) {
                             mRefetchProvinces.setVisibility(View.VISIBLE);
                             mRefetchCities.setVisibility(View.VISIBLE);
-                            mProvinceEditText.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+                            mProvinceEditText.setHint(ShopFilterDialogActivity.this.getString(R.string.error_getting_info));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
                             Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                         } else {
@@ -356,7 +356,7 @@ public class ShopFilterDialogActivity extends HonarnamaBrowseActivity implements
                 if (task.isFaulted() && mSelectedProvinceId > 0) {
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
-                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_occured));
+                    mCityEditEext.setHint(ShopFilterDialogActivity.this.getString(R.string.error_getting_info));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), task.getError());
                     Toast.makeText(ShopFilterDialogActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {

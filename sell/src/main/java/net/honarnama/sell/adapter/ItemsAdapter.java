@@ -1,8 +1,5 @@
 package net.honarnama.sell.adapter;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 import com.crashlytics.android.Crashlytics;
 import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
@@ -258,7 +255,7 @@ public class ItemsAdapter extends BaseAdapter {
                                 break;
                             case DeleteItemReply.NO_CLIENT_ERROR:
                                 mItemsFragment.logE("Got NO_CLIENT_ERROR code for updating item. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
-                                mItemsFragment.displayShortToast(mContext.getString(R.string.error_occured));
+                                mItemsFragment.displayShortToast(mContext.getString(R.string.error_getting_info));
                                 break;
                         }
                         break;

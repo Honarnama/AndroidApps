@@ -221,7 +221,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
 
                     case ReplyProperties.CLIENT_ERROR:
                         logE("Got CLIENT_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
-                        Toast.makeText(LoginActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.error_getting_info), Toast.LENGTH_LONG).show();
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
@@ -393,7 +393,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                                 break;
                             case SendLoginEmailReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for registering user. sendLoginEmailReply: " + sendLoginEmailReply + ". sendLoginEmailRequest: " + sendLoginEmailRequest);
-                                Toast.makeText(LoginActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, getString(R.string.error_getting_info), Toast.LENGTH_LONG).show();
                                 break;
                         }
 //                        logE("Sign-up Failed. errorCode: " + sendLoginEmailReply.errorCode +

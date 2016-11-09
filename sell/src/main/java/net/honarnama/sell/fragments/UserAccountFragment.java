@@ -16,7 +16,6 @@ import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.UpdateAccountReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
-import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
@@ -246,7 +245,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case UpdateAccountReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code updateAccountReply. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". user Id: " + HonarnamaUser.getId());
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case UpdateAccountReply.ACCOUNT_NOT_FOUND:
                                 cToastMsg = getStringInFragment(R.string.account_not_found);

@@ -211,7 +211,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
                         switch (ReplyProperties.CLIENT_ERROR) {
                             case CreateMessageReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code createMessageReply. createMessageRequest: " + createMessageRequest);
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case CreateMessageReply.INVALID_TO_ERROR:
                                 //TODO not implemented yet

@@ -221,7 +221,7 @@
     <string name="contact_no">شماره تماس</string>
     <string name="contact_body">متن پیام</string>
     <string name="contact_sent_successfully">پیام شما با موفقیت ارسال شد. با تشکر.</string>
-    <string name="error_occured">خطا در دریافت اطلاعات.</string>
+    <string name="error_getting_info">خطا در دریافت اطلاعات.</string>
     <string name="sending">در حال ارسال...</string>
     <string name="uncaught_exception_msg">متاسفانه خطایی رخ داد. این مشکل در نسخه بعد برطرف خواهد
         شد.

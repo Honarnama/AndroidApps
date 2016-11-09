@@ -169,7 +169,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
 
                             case GetItemReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for getItemsReply. simpleRequest: " + simpleRequest + ". User id: " + HonarnamaUser.getId());
-                                displayShortToast(getStringInFragment(R.string.error_occured));
+                                displayShortToast(getStringInFragment(R.string.error_getting_info));
                                 break;
                         }
                         break;

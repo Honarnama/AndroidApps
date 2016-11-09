@@ -266,11 +266,11 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
                                 break;
                             case CreateAccountReply.EMPTY_ACCOUNT:
                                 logE("EMPTY_ACCOUNT reply received for creating account. createAccountReply: " + createAccountReply + ". sendLoginEmailRequest: " + createOrUpdateAccountRequest);
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_getting_info) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
                                 break;
                             case CreateAccountReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for registering user. createAccountReply: " + createAccountReply + ". sendLoginEmailRequest: " + createOrUpdateAccountRequest);
-                                Toast.makeText(RegisterActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_getting_info), Toast.LENGTH_LONG).show();
                                 break;
                         }
 //                        logE("Sign-up Failed. errorCode: " + createAccountReply.errorCode +

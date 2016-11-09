@@ -566,7 +566,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                             case GetItemReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for getting item in EditItemFragment. getOrDeleteItemRequest: " + getOrDeleteItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
-                                displayShortToast(getStringInFragment(R.string.error_occured));
+                                displayShortToast(getStringInFragment(R.string.error_getting_info));
                                 break;
 
                             case GetItemReply.ITEM_NOT_FOUND:
@@ -827,7 +827,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         switch (createOrUpdateItemReply.errorCode) {
                             case CreateOrUpdateItemReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for updating item. cCreateOrUpdateItemRequest: " + cCreateOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case CreateOrUpdateItemReply.FORBIDDEN:
                                 logE("Got FORBIDDEN reply while trying createOrUpdateItem. cCreateOrUpdateItemRequest: " + cCreateOrUpdateItemRequest + ". User Id: " + HonarnamaUser.getId() + ".");
@@ -838,7 +838,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                 break;
                             case CreateOrUpdateItemReply.EMPTY_ITEM:
                                 logE("CreateOrUpdateItemReply was EMPTY_ITEM. cCreateOrUpdateItemRequest: " + cCreateOrUpdateItemRequest);
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
                             case CreateOrUpdateItemReply.STORE_NOT_CREATED:
                                 cToastMsg = getStringInFragment(R.string.store_not_created);

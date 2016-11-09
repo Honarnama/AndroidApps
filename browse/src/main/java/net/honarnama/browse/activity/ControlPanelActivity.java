@@ -952,7 +952,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
-                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_getting_info));
 
                     if ((mSetDefaultLocationDialog.isShowing())) {
                         Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
@@ -992,7 +992,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                HashMap<Integer, String> selectedCity = mCityTreeMap.get(position + 1);
+                HashMap<Integer, String> selectedCity = mCityTreeMap.get(position+1);
                 for (int key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }
@@ -1027,7 +1027,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         if (task.isFaulted()) {
                             mRefetchProvinces.setVisibility(View.VISIBLE);
                             mRefetchCities.setVisibility(View.VISIBLE);
-                            mDefaultProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+                            mDefaultProvinceEditText.setHint(ControlPanelActivity.this.getString(R.string.error_getting_info));
                             logE("Getting Province Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
                             Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_province_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                         } else {
@@ -1035,14 +1035,14 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                             for (Province province : mProvincesTreeMap.values()) {
                                 mProvincesHashMap.put(province.getId(), province.getName());
                             }
-                            mDefaultProvinceEditText.setText(mProvincesHashMap.get(mSelectedProvinceId));
+                            mDefaultProvinceEditText.setText(mProvincesHashMap.get(mDefaultProvinceId));
                         }
                         return null;
                     }
                 }).continueWithTask(new Continuation<Object, Task<TreeMap<Number, HashMap<Integer, String>>>>() {
             @Override
             public Task<TreeMap<Number, HashMap<Integer, String>>> then(Task<Object> task) throws Exception {
-                return city.getAllCitiesSorted(mSelectedProvinceId);
+                return city.getAllCitiesSorted(mDefaultProvinceId);
             }
         }).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
@@ -1051,7 +1051,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (task.isFaulted() && mSelectedProvinceId > 0) {
                     mRefetchProvinces.setVisibility(View.VISIBLE);
                     mRefetchCities.setVisibility(View.VISIBLE);
-                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_occured));
+                    mDefaultCityEditText.setHint(ControlPanelActivity.this.getString(R.string.error_getting_info));
                     logE("Getting City List Task Failed. Msg: " + task.getError().getMessage() + "//  Error: " + task.getError(), task.getError());
                     Toast.makeText(ControlPanelActivity.this, getString(R.string.error_getting_city_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
                 } else {
@@ -1063,12 +1063,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         }
                     }
 
-                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
-                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-                    mCityTreeMap.put(0, allCitiesHashMap);
+//                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+//                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
+//                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
+//                    mCityTreeMap.put(0, allCitiesHashMap);
 
-                    mDefaultCityEditText.setText(mCityHashMap.get(mSelectedCityId));
+                    mDefaultCityEditText.setText(mCityHashMap.get(mDefaultCityId));
 
                 }
 

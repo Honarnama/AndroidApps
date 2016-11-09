@@ -61,7 +61,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -272,7 +271,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     default:
-                        displayLongToast(getStringInFragment(R.string.error_occured));
+                        displayLongToast(getStringInFragment(R.string.error_getting_info));
                         break;
                 }
             }
@@ -724,7 +723,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                             case GetStoreReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for getting user (id " + HonarnamaUser.getId() + ") store. simpleRequest: " + simpleRequest);
-                                displayShortToast(getStringInFragment(R.string.error_occured));
+                                displayShortToast(getStringInFragment(R.string.error_getting_info));
                                 break;
                         }
                         break;
@@ -861,7 +860,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         switch (createOrUpdateStoreReply.errorCode) {
                             case CreateOrUpdateStoreReply.NO_CLIENT_ERROR:
                                 logE("Got NO_CLIENT_ERROR code for createOrUpdate user (id " + HonarnamaUser.getId() + ") store. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest);
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
 
                             case CreateOrUpdateStoreReply.DUPLICATE_NAME:
@@ -875,7 +874,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
                             case CreateOrUpdateStoreReply.EMPTY_STORE:
                                 logE("createOrUpdateStoreReply was EMPTY_STORE. createOrUpdateStoreRequest: " + createOrUpdateStoreRequest);
-                                cToastMsg = getStringInFragment(R.string.error_occured);
+                                cToastMsg = getStringInFragment(R.string.error_getting_info);
                                 break;
 
                             case CreateOrUpdateStoreReply.ALREADY_HAS_STORE:
