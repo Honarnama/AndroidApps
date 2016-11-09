@@ -325,7 +325,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        mMainTabBar.deselectAllTabs();
         switch (menuItem.getItemId()) {
             case R.id.item_location:
                 displaySetDefaultLocationDialog();
@@ -341,11 +340,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     menuItem.setIcon(bookmarksDrawable);
                     BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
                     switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
+                    mMainTabBar.deselectAllTabs();
                 } else {
                     menuItem.setChecked(false);
                 }
                 break;
-
 
             case R.id.item_contact_us:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -358,10 +357,12 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     menuItem.setIcon(contactDrawable);
                     ContactFragment contactFragment = ContactFragment.getInstance();
                     switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
-                    break;
+                    mMainTabBar.deselectAllTabs();
                 } else {
                     menuItem.setChecked(false);
                 }
+                break;
+
             case R.id.item_rules:
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(HonarnamaBaseApp.WEB_ADDRESS));
@@ -379,10 +380,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     menuItem.setIcon(aboutDrawable);
                     AboutFragment aboutFragment = AboutFragment.getInstance();
                     switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
-                    break;
+                    mMainTabBar.deselectAllTabs();
                 } else {
                     menuItem.setChecked(false);
                 }
+                break;
 
             case R.id.item_share_us:
                 Intent sendIntent = new Intent();
@@ -1062,11 +1064,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
-
-//                    mCityHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-//                    HashMap<Integer, String> allCitiesHashMap = new HashMap<>();
-//                    allCitiesHashMap.put(City.ALL_CITY_ID, City.ALL_CITY_NAME);
-//                    mCityTreeMap.put(0, allCitiesHashMap);
 
                     mDefaultCityEditText.setText(mCityHashMap.get(mDefaultCityId));
 
