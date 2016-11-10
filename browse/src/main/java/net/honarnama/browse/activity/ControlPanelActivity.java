@@ -401,7 +401,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
             case R.id.item_switch_app:
                 try {
-                    if (CommonUtil.isPackageInstalled("net.honarnama.sell")) {
+                    if (CommonUtil.isPackageInstalled(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.sell");
                         startActivity(launchIntent);
                     } else {
