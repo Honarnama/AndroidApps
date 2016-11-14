@@ -3,6 +3,7 @@ package net.honarnama;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
+import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.CommunicationServiceGrpc;
 import net.honarnama.nano.MetaServiceGrpc;
 import net.honarnama.nano.RequestProperties;
@@ -123,6 +124,12 @@ public class GRPCUtils {
         // TODO: cache
         return CommunicationServiceGrpc.newBlockingStub(mChannel);
     }
+
+    public BrowseServiceGrpc.BrowseServiceBlockingStub getBrowseServiceGrpc() {
+        // TODO: cache
+        return BrowseServiceGrpc.newBlockingStub(mChannel);
+    }
+
 
     public void processReplyProperties() {
         //TODO

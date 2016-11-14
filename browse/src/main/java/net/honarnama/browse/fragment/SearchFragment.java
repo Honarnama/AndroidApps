@@ -254,7 +254,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         mLoadingCircle.setVisibility(View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
         mOnErrorRetry.setVisibility(View.GONE);
-        List<Item> emptyList = new ArrayList<>();
+        ArrayList emptyList = new ArrayList<>();
         mItemsAdapter.setItems(emptyList);
         mItemsAdapter.notifyDataSetChanged();
 //TODO

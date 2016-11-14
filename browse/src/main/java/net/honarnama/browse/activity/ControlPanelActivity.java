@@ -89,7 +89,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private MainTabBar mMainTabBar;
     private int mShopId;
     private int mEventId;
-    private int mItemId;
+    private long mItemId;
     public TextView mTitle;
 
     private DrawerLayout mDrawer;
@@ -520,7 +520,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         switchFragment(EventPageFragment.getInstance(eventId), isExternal, getResources().getString(R.string.art_event));
     }
 
-    public void displayItemPage(int itemId, boolean isExternal) {
+    public void displayItemPage(long itemId, boolean isExternal) {
         setItemId(itemId);
         switchFragment(ItemPageFragment.getInstance(itemId), isExternal, "مشاهده محصول");
         //TODO SET ITEM CATEGORY AS TITLE
@@ -535,7 +535,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mEventId = eventId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(long itemId) {
         mItemId = itemId;
     }
 

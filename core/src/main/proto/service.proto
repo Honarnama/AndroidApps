@@ -83,14 +83,14 @@ message EventCategory {
   uint32 order = 3;
 }
 
-message LocationId {
+message LocationCriteria {
   uint32 countryId = 1;
   uint32 provinceId = 2;
   uint32 cityId = 3;
   uint32 neighborhoodId = 4;
 }
 
-message ArtCategoryId {
+message ArtCategoryCriteria {
   uint32 level1Id = 1;
   uint32 level2Id = 2;
 }
@@ -221,7 +221,7 @@ enum ReviewStatus {
 message Store {
   uint64 id = 1; // Just for gets
   uint64 ownerId = 2; // Will be ignored in update
-  LocationId locationId = 3;
+  LocationCriteria locationCriteria = 3;
   string name = 4;
   string description = 5;
   string publicCellNumber = 6;
@@ -268,7 +268,7 @@ message Item {
   uint64 id = 1; // Will be ignored in create
   uint64 ownerId = 2; // Will be ignored in update
   uint64 storeId = 3; // Just for gets
-  ArtCategoryId artCategoryId = 4;
+  ArtCategoryCriteria artCategoryCriteria = 4;
   string name = 5;
   string description = 6;
   uint64 price = 7;
@@ -346,7 +346,7 @@ message Event {
   string name = 5;
   string description = 6;
   bool active = 7;
-  LocationId locationId = 8;
+  LocationCriteria locationCriteria = 8;
   string address = 9;
   // Represents seconds of UTC time since Unix epoch
   int64 startAt = 10;
@@ -425,8 +425,8 @@ service BrowseService {
 
 message BrowseItemsRequest {
   RequestProperties requestProperties = 1;
-  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
-  ArtCategoryId artCategoryQuery = 3;
+  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
+  ArtCategoryCriteria artCategoryCriteria = 3;
   uint32 minPrice = 4; // 1000 toman, floor round
   uint32 maxPrice = 5; // 1000 toman, ceil round
   string searchTerm = 6;
@@ -442,7 +442,7 @@ message BrowseItemsReply {
 
 message BrowseStoresRequest {
   RequestProperties requestProperties = 1;
-  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
+  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
   string searchTerm = 3;
   int64 nextPageId = 4;
 }
@@ -455,8 +455,8 @@ message BrowseStoresReply {
 
 message BrowseEventsRequest {
   RequestProperties requestProperties = 1;
-  LocationId locationQuery = 2; // empty for whole country, otherwise province or state id
-  uint32 eventCategoryQuery = 3;
+  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
+  uint32 eventCategoryCriteria = 3;
   int64 startAt = 4;
   int64 endAt = 5;
   string searchTerm = 6;

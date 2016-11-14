@@ -3,7 +3,9 @@ package net.honarnama.browse.fragment;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.activity.ChooseArtCategoryActivity;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
@@ -13,8 +15,15 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
-import net.honarnama.browse.model.Item;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseItemsReply;
+import net.honarnama.nano.BrowseItemsRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.LocationCriteria;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,13 +40,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
+
 /**
  * Created by elnaz on 2/11/16.
  */
 public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
-    public String mSelectedCategoryId;
+    public int mSelectedCategoryId;
     public String mSelectedCategoryName;
 
     public int mMinPriceIndex = -1;
@@ -51,7 +62,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     public RelativeLayout mEmptyListContainer;
     public RelativeLayout mFilterContainer;
-    private Province mSelectedProvince;
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
@@ -125,10 +135,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Item selectedItem = mItemsAdapter.getItem(position - 1);
+        net.honarnama.nano.Item selectedItem = mItemsAdapter.getItem(position - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedItem != null) {
-            controlPanelActivity.displayItemPage(selectedItem.getId(), false);
+            controlPanelActivity.displayItemPage(selectedItem.id, false);
         }
     }
 
@@ -136,7 +146,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onClick(View v) {
         if (v.getId() == R.id.category_filter_btn) {
             Intent intent = new Intent(getActivity(), ChooseArtCategoryActivity.class);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_BROWSE_APP);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_CHOOSE_CATEGORY_CODE);
         }
@@ -156,11 +165,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                return;
+            if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                controlPanelActivity.refreshTopFragment();
             }
-            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-            controlPanelActivity.refreshTopFragment();
+
         }
     }
 
@@ -196,6 +205,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     public void listItems() {
+        new getItemsAsync().execute();
 //TODO
 //        final ParseQuery<Store> storeQuery = new ParseQuery<Store>(Store.class);
 //        storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
@@ -283,7 +293,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
                     mSelectedCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryFilterButton.setText(mSelectedCategoryName);
-                    mSelectedCategoryId = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID);
+                    mSelectedCategoryId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
 
                     mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
@@ -322,6 +332,125 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
             mFilterTextView.setText(getResources().getString(R.string.item_filter));
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+        }
+    }
+
+
+    public class getItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
+        BrowseItemsRequest browseItemsRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isAdded()) {
+                mEmptyListContainer.setVisibility(View.GONE);
+                mOnErrorRetry.setVisibility(View.GONE);
+                mLoadingCircle.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected BrowseItemsReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseItemsRequest = new BrowseItemsRequest();
+            browseItemsRequest.requestProperties = rp;
+
+            ArtCategoryCriteria artCategoryCriteria = new ArtCategoryCriteria();
+
+            if (mIsFilterSubCategoryRowSelected) {
+                if (mSubCatList == null && mSubCatList.isEmpty()) {
+                    artCategoryCriteria.level1Id = mSelectedCategoryId;
+                }
+            } else {
+                artCategoryCriteria.level2Id = mSelectedCategoryId;
+            }
+
+            browseItemsRequest.artCategoryCriteria = artCategoryCriteria;
+
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseItemsRequest.locationCriteria = locationCriteria;
+
+            //TODO filter price
+
+            BrowseItemsReply getItemsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting items is: " + browseItemsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                getItemsReply = stub.getItems(browseItemsRequest);
+                return getItemsReply;
+            } catch (Exception e) {
+                logE("Error running getItems request. request: " + browseItemsRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseItemsReply browseItemsReply) {
+            super.onPostExecute(browseItemsReply);
+
+            mLoadingCircle.setVisibility(View.GONE);
+
+            Activity activity = getActivity();
+
+            if (browseItemsReply != null) {
+                switch (browseItemsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        if (isAdded()) {
+                            mItemsAdapter.setItems(null);
+                            mEmptyListContainer.setVisibility(View.VISIBLE);
+                            mItemsAdapter.notifyDataSetChanged();
+                            mOnErrorRetry.setVisibility(View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Item[] items = browseItemsReply.items;
+                            ArrayList itemsList = new ArrayList();
+                            for (net.honarnama.nano.Item item : items) {
+                                itemsList.add(0, item);
+                            }
+                            mItemsAdapter.setItems(itemsList);
+                            mItemsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mItemsAdapter.setItems(null);
+                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                    mItemsAdapter.notifyDataSetChanged();
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+
+            }
         }
     }
 

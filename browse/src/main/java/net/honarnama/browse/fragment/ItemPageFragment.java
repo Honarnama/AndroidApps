@@ -100,10 +100,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         return "مشاهده محصول";
     }
 
-    public synchronized static ItemPageFragment getInstance(int itemId) {
+    public synchronized static ItemPageFragment getInstance(long itemId) {
         ItemPageFragment itemPageFragment = new ItemPageFragment();
         Bundle args = new Bundle();
-        args.putInt("itemId", itemId);
+        args.putLong("itemId", itemId);
         itemPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return itemPageFragment;

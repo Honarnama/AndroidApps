@@ -365,7 +365,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             case R.id.choose_art_category_btn:
                 if (activity != null) {
                     Intent intent = new Intent(activity, ChooseArtCategoryActivity.class);
-                    intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_INTENT_CALLER, HonarnamaBaseApp.PREF_NAME_SELL_APP);
                     startActivityForResult(intent, HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE);
                 }
                 break;

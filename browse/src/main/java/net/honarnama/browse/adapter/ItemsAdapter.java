@@ -4,13 +4,15 @@ import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import net.honarnama.browse.HonarnamaBrowseApp;
-import net.honarnama.browse.R;
-import net.honarnama.browse.model.Item;
 import net.honarnama.base.model.ArtCategory;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.browse.HonarnamaBrowseApp;
+import net.honarnama.browse.R;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.Item;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import bolts.Continuation;
+import bolts.Task;
 
 /**
  * Created by elnaz on 2/15/16.
@@ -75,11 +80,22 @@ public class ItemsAdapter extends BaseAdapter {
 
         final Item item = mItems.get(position);
         // Setting all values in listview
-        mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
-        mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
+        mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.name));
+        mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.description));
 
-        ArtCategory category = item.getCategory();
-        mViewHolder.itemCat.setText(category.getName());
+        ArtCategoryCriteria categoryCriteria = item.artCategoryCriteria;
+        new ArtCategory().getCategoryNameById(categoryCriteria.level1Id).continueWith(new Continuation<String, Object>() {
+            @Override
+            public Object then(Task<String> task) throws Exception {
+                if (task.isFaulted()) {
+                    Log.e(DEBUG_TAG, "Error getiing art cat name.");
+                } else {
+                    mViewHolder.itemCat.setText(task.getResult());
+                }
+                return null;
+            }
+        });
+
 
         //TODO load image
 //        ParseFile image = item.getParseFile(Item.IMAGE_1);
@@ -120,7 +136,7 @@ public class ItemsAdapter extends BaseAdapter {
     }
 
 
-    public void setItems(List<Item> itemList) {
+    public void setItems(ArrayList<Item> itemList) {
         mItems = itemList;
     }
 

@@ -272,9 +272,9 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        net.honarnama.base.model.Item selectedItem = (Item) mItemsAdapter.getItem(position);
+        net.honarnama.nano.Item selectedItem = mItemsAdapter.getItem(position);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayItemPage(selectedItem.getId(), false);
+        controlPanelActivity.displayItemPage(selectedItem.id, false);
     }
 
     @Override
