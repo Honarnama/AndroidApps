@@ -211,14 +211,14 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
     public void returnSelectedCategory() {
         Intent data = new Intent();
         if (isFilterSubCategoryRowSelected(mSelectedCategoryObjectId)) {
-            ArrayList<Integer> subCats = new ArrayList<>();
             data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED, true);
-            if (mSelectedCategoryObjectId.equals(mAllSubCategoriesFilterObjectId)) {
-                data.putIntegerArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
-            } else {
-                subCats = mCategoriesHierarchyHashMap.get(mFilterSubCatParentHashMap.get(mSelectedCategoryObjectId));
-                data.putIntegerArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
-            }
+//            ArrayList<Integer> subCats = new ArrayList<>();
+//            if (mSelectedCategoryObjectId.equals(mAllSubCategoriesFilterObjectId)) {
+//                data.putIntegerArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
+//            } else {
+//                subCats = mCategoriesHierarchyHashMap.get(mFilterSubCatParentHashMap.get(mSelectedCategoryObjectId));
+//                data.putIntegerArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS, subCats);
+//            }
         }
 
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME, mCategoriesNameHashMap.get(mSelectedCategoryObjectId));

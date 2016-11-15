@@ -49,6 +49,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
     public int mSelectedCategoryId;
+    public int mSelectedCategoryParentId;
     public String mSelectedCategoryName;
 
     public int mMinPriceIndex = -1;
@@ -65,7 +66,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
-    private ArrayList<String> mSubCatList = new ArrayList<>();
+//    private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
     private boolean mIsAllIranChecked = true;
     private boolean mIsFilterApplied = false;
@@ -289,13 +290,14 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 if (resultCode == getActivity().RESULT_OK) {
 
                     boolean isFilterSubCategoryRowSelected = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_SUB_CAT_ROW_SELECTED, false);
-                    ArrayList<String> subCatList = data.getStringArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS);
+//                    ArrayList<String> subCatList = data.getStringArrayListExtra(HonarnamaBaseApp.EXTRA_KEY_SUB_CATS);
 
                     mSelectedCategoryName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_NAME);
                     mCategoryFilterButton.setText(mSelectedCategoryName);
                     mSelectedCategoryId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
+                    mSelectedCategoryParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
 
-                    mSubCatList = subCatList;
+//                    mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
                     listItems();
                 }
@@ -358,9 +360,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             ArtCategoryCriteria artCategoryCriteria = new ArtCategoryCriteria();
 
             if (mIsFilterSubCategoryRowSelected) {
-                if (mSubCatList == null && mSubCatList.isEmpty()) {
-                    artCategoryCriteria.level1Id = mSelectedCategoryId;
-                }
+//                if (mSubCatList == null && mSubCatList.isEmpty()) {
+                artCategoryCriteria.level1Id = mSelectedCategoryParentId;
+//                }
             } else {
                 artCategoryCriteria.level2Id = mSelectedCategoryId;
             }
@@ -435,6 +437,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                             ArrayList itemsList = new ArrayList();
                             for (net.honarnama.nano.Item item : items) {
                                 itemsList.add(0, item);
+                            }
+
+                            if (itemsList.size() == 0) {
+                                mEmptyListContainer.setVisibility(View.VISIBLE);
                             }
                             mItemsAdapter.setItems(itemsList);
                             mItemsAdapter.notifyDataSetChanged();
