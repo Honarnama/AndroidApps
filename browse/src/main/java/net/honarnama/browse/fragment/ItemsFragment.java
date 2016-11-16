@@ -293,8 +293,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
             browseItemsRequest.locationCriteria = locationCriteria;
 
-            //TODO filter price
-
             BrowseItemsReply getItemsReply;
             if (BuildConfig.DEBUG) {
                 logD("Request for getting items is: " + browseItemsRequest);

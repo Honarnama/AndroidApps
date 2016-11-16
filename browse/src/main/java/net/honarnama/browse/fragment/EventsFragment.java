@@ -5,7 +5,9 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -17,7 +19,17 @@ import net.honarnama.base.adapter.EventCategoriesAdapter;
 import net.honarnama.base.model.Event;
 import net.honarnama.base.model.EventCategory;
 import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseEventsReply;
+import net.honarnama.nano.BrowseEventsRequest;
+import net.honarnama.nano.BrowseItemsReply;
+import net.honarnama.nano.BrowseItemsRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.LocationCriteria;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +52,7 @@ import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 
 public class EventsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -149,10 +162,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Event selectedEvent = mEventsAdapter.getItem(i - 1);
+        net.honarnama.nano.Event selectedEvent = mEventsAdapter.getItem(i - 1);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedEvent != null) {
-            controlPanelActivity.displayEventPage(selectedEvent.getId(), false);
+            controlPanelActivity.displayEventPage(selectedEvent.id, false);
         }
     }
 
@@ -238,11 +251,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     public void listEvents() {
 
-        EventCategory eventCategory = null;
+//        EventCategory eventCategory = null;
+//
+//        if (mSelectedCatId >= 0 && !mFilterAllCategoryRowSelected) {
+//            eventCategory = EventCategory.getCategoryById(mSelectedCatId);
+//        }
 
-        if (mSelectedCatId >= 0 && !mFilterAllCategoryRowSelected) {
-            eventCategory = EventCategory.getCategoryById(mSelectedCatId);
-        }
+        new getEventsAsync().execute();
 
         mEventsAdapter = new EventsAdapter(getContext());
         mListView.setAdapter(mEventsAdapter);
@@ -315,6 +330,118 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }
+
+
+    public class getEventsAsync extends AsyncTask<Void, Void, BrowseEventsReply> {
+        BrowseEventsRequest browseEventsRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isAdded()) {
+                mEmptyListContainer.setVisibility(View.GONE);
+                mOnErrorRetry.setVisibility(View.GONE);
+                mLoadingCircle.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected BrowseEventsReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseEventsRequest = new BrowseEventsRequest();
+            browseEventsRequest.requestProperties = rp;
+
+            if (mSelectedCatId > 0) {
+                browseEventsRequest.eventCategoryCriteria = mSelectedCatId;
+            }
+
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseEventsRequest.locationCriteria = locationCriteria;
+
+            BrowseEventsReply browseEventsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting events is: " + browseEventsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+               return  stub.getEvents(browseEventsRequest);
+            } catch (Exception e) {
+                logE("Error running getEvents request. request: " + browseEventsRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseEventsReply browseEventsReply) {
+            super.onPostExecute(browseEventsReply);
+
+            mLoadingCircle.setVisibility(View.GONE);
+
+            Activity activity = getActivity();
+
+            if (browseEventsReply != null) {
+                switch (browseEventsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        if (isAdded()) {
+                            mEventsAdapter.setEvents(null);
+                            mEmptyListContainer.setVisibility(View.VISIBLE);
+                            mEventsAdapter.notifyDataSetChanged();
+                            mOnErrorRetry.setVisibility(View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Event[] events = browseEventsReply.events;
+                            ArrayList eventsList = new ArrayList();
+                            for (net.honarnama.nano.Event event : events) {
+                                eventsList.add(0, event);
+                            }
+                            if (eventsList.size() == 0) {
+                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                            }
+                            mEventsAdapter.setEvents(eventsList);
+                            mEventsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mEventsAdapter.setEvents(null);
+                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                    mEventsAdapter.notifyDataSetChanged();
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+    }
+
 
 
 }

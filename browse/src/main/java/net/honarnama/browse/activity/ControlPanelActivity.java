@@ -88,7 +88,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private int mActiveTab;
     private MainTabBar mMainTabBar;
     private int mShopId;
-    private int mEventId;
+    private long mEventId;
     private long mItemId;
     public TextView mTitle;
 
@@ -514,7 +514,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         switchFragment(ShopPageFragment.getInstance(shopId), isExternal, getResources().getString(R.string.art_shop));
     }
 
-    public void displayEventPage(int eventId, boolean isExternal) {
+    public void displayEventPage(long eventId, boolean isExternal) {
         setEventId(eventId);
 //        mMainTabBar.deselectAllTabs();
         switchFragment(EventPageFragment.getInstance(eventId), isExternal, getResources().getString(R.string.art_event));
@@ -531,7 +531,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mShopId = shopId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(long eventId) {
         mEventId = eventId;
     }
 

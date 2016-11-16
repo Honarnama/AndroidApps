@@ -55,10 +55,10 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         return getString(R.string.art_event);
     }
 
-    public synchronized static EventPageFragment getInstance(int eventId) {
+    public synchronized static EventPageFragment getInstance(long eventId) {
         EventPageFragment eventPageFragment = new EventPageFragment();
         Bundle args = new Bundle();
-        args.putInt("eventId", eventId);
+        args.putLong("eventId", eventId);
         eventPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return eventPageFragment;

@@ -5,8 +5,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.honarnama.browse.R;
-import net.honarnama.base.model.Event;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.nano.Event;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -66,9 +66,10 @@ public class EventsAdapter extends BaseAdapter {
             mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
         }
 
-        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.getName()));
-        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.getDescription()));
-        mViewHolderWithImage.place.setText(event.getCity().getName());
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.name));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.description));
+        //TODO
+        mViewHolderWithImage.place.setText(event.locationCriteria.cityId+"");
 
 //TODO
         File image = null;

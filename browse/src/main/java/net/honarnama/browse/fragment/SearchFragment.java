@@ -6,12 +6,11 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.browse.model.Item;
 import net.honarnama.browse.model.Shop;
-import net.honarnama.base.model.Event;
 import net.honarnama.base.model.Store;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
+import net.honarnama.nano.Event;
 
 import android.content.Context;
 import android.content.Intent;
