@@ -20,7 +20,7 @@ import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.PriceFormatterTextWatcher;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.base.utils.WindowUtil;
-import net.honarnama.nano.ArtCategoryId;
+import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.CreateOrUpdateItemReply;
 import net.honarnama.nano.CreateOrUpdateItemRequest;
 import net.honarnama.nano.GetItemReply;
@@ -623,12 +623,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mItemId = item.id;
             Activity activity = getActivity();
 
-            if (item.artCategoryId.level2Id > 0) {
-                mCategoryParentId = item.artCategoryId.level1Id;
-                mCategoryId = item.artCategoryId.level2Id;
+            if (item.artCategoryCriteria.level2Id > 0) {
+                mCategoryParentId = item.artCategoryCriteria.level1Id;
+                mCategoryId = item.artCategoryCriteria.level2Id;
             } else {
                 mCategoryParentId = 0;
-                mCategoryId = item.artCategoryId.level1Id;
+                mCategoryId = item.artCategoryCriteria.level1Id;
             }
 
             setTextInFragment(mTitleEditText, item.name);
@@ -739,12 +739,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             cCreateOrUpdateItemRequest.item.name = title;
             cCreateOrUpdateItemRequest.item.description = description;
             cCreateOrUpdateItemRequest.item.price = price;
-            cCreateOrUpdateItemRequest.item.artCategoryId = new ArtCategoryId();
+            cCreateOrUpdateItemRequest.item.artCategoryCriteria = new ArtCategoryCriteria();
             if (mCategoryParentId == 0) {
-                cCreateOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryId;
+                cCreateOrUpdateItemRequest.item.artCategoryCriteria.level1Id = mCategoryId;
             } else {
-                cCreateOrUpdateItemRequest.item.artCategoryId.level1Id = mCategoryParentId;
-                cCreateOrUpdateItemRequest.item.artCategoryId.level2Id = mCategoryId;
+                cCreateOrUpdateItemRequest.item.artCategoryCriteria.level1Id = mCategoryParentId;
+                cCreateOrUpdateItemRequest.item.artCategoryCriteria.level2Id = mCategoryId;
             }
 
             cCreateOrUpdateItemRequest.changingImage = new int[4];

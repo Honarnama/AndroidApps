@@ -29,7 +29,7 @@ import net.honarnama.nano.CreateOrUpdateEventReply;
 import net.honarnama.nano.CreateOrUpdateEventRequest;
 import net.honarnama.nano.GetEventReply;
 import net.honarnama.nano.HonarnamaProto;
-import net.honarnama.nano.LocationId;
+import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
@@ -894,8 +894,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             setTextInFragment(mCellNumberEditText, event.cellNumber);
 
             mSelectedCatId = event.eventCategoryId;
-            mSelectedProvinceId = event.locationId.provinceId;
-            mSelectedCityId = event.locationId.cityId;
+            mSelectedProvinceId = event.locationCriteria.provinceId;
+            mSelectedCityId = event.locationCriteria.cityId;
 
             Province province = Province.getProvinceById(mSelectedProvinceId);
             City city = City.getCityById(mSelectedCityId);
@@ -1115,9 +1115,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             createOrUpdateEventRequest.event.active = (mActiveBtn != null) ? mActiveBtn.isChecked() : false;
             createOrUpdateEventRequest.event.startAt = mStartDate.getTime() / 1000;
             createOrUpdateEventRequest.event.endAt = mEndDate.getTime() / 1000;
-            createOrUpdateEventRequest.event.locationId = new LocationId();
-            createOrUpdateEventRequest.event.locationId.provinceId = mSelectedProvinceId;
-            createOrUpdateEventRequest.event.locationId.cityId = mSelectedCityId;
+            createOrUpdateEventRequest.event.locationCriteria = new LocationCriteria();
+            createOrUpdateEventRequest.event.locationCriteria.provinceId = mSelectedProvinceId;
+            createOrUpdateEventRequest.event.locationCriteria.cityId = mSelectedCityId;
 
             if (mBannerImageView != null && mBannerImageView.isDeleted()) {
                 createOrUpdateEventRequest.changingBanner = HonarnamaProto.DELETE;

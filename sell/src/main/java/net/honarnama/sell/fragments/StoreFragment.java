@@ -26,7 +26,7 @@ import net.honarnama.nano.CreateOrUpdateStoreReply;
 import net.honarnama.nano.CreateOrUpdateStoreRequest;
 import net.honarnama.nano.GetStoreReply;
 import net.honarnama.nano.HonarnamaProto;
-import net.honarnama.nano.LocationId;
+import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.SellServiceGrpc;
@@ -548,7 +548,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             setTextInFragment(mPhoneNumberEditText, store.publicPhoneNumber);
             setTextInFragment(mCellNumberEditText, store.publicCellNumber);
 
-            LocationId storeLocation = store.locationId;
+            LocationCriteria storeLocation = store.locationCriteria;
             City city = City.getCityById(storeLocation.cityId);
             Province province = Province.getProvinceById(storeLocation.provinceId);
 
@@ -802,9 +802,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 createOrUpdateStoreRequest.changingBanner = HonarnamaProto.NOOP;
             }
 
-            createOrUpdateStoreRequest.store.locationId = new LocationId();
-            createOrUpdateStoreRequest.store.locationId.provinceId = mSelectedProvinceId;
-            createOrUpdateStoreRequest.store.locationId.cityId = mSelectedCityId;
+            createOrUpdateStoreRequest.store.locationCriteria = new LocationCriteria();
+            createOrUpdateStoreRequest.store.locationCriteria.provinceId = mSelectedProvinceId;
+            createOrUpdateStoreRequest.store.locationCriteria.cityId = mSelectedCityId;
         }
 
         @Override
