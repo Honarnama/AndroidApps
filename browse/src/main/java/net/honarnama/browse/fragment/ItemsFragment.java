@@ -45,6 +45,8 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 /**
  * Created by elnaz on 2/11/16.
  */
+
+// TODO test paging
 public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
@@ -66,7 +68,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
-//    private ArrayList<String> mSubCatList = new ArrayList<>();
+    //    private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
     private boolean mIsAllIranChecked = true;
     private boolean mIsFilterApplied = false;
@@ -174,109 +176,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
     }
 
-    class onQueryLoadListener {
-//        @Override
-//        public void onLoading() {
-//            mEmptyListContainer.setVisibility(View.GONE);
-//            mOnErrorRetry.setVisibility(View.GONE);
-//            mLoadingCircle.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        public void onLoaded(List objects, Exception e) {
-//
-//            mLoadingCircle.setVisibility(View.GONE);
-//            if (e == null) {
-//                if ((objects != null) && objects.size() > 0) {
-//                    mEmptyListContainer.setVisibility(View.GONE);
-//                } else {
-//                    mEmptyListContainer.setVisibility(View.VISIBLE);
-//                }
-//            } else {
-//                mEmptyListContainer.setVisibility(View.VISIBLE);
-//                if (((ParseException) e).getCode() != ParseException.OBJECT_NOT_FOUND) {
-//                    logE("Error Querying Items: " + e, e);
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        }
-    }
-
     public void listItems() {
         new getItemsAsync().execute();
-//TODO
-//        final ParseQuery<Store> storeQuery = new ParseQuery<Store>(Store.class);
-//        storeQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
-//        storeQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
-
-//        if (!mIsAllIranChecked) {
-//            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-//                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
-//                storeQuery.whereEqualTo(Store.PROVINCE, province);
-//            }
-//
-//            if (!TextUtils.isEmpty(mSelectedCityId)) {
-//                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
-//                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-//                    storeQuery.whereEqualTo(Store.CITY, city);
-//                }
-//            }
-//        }
-//        ArrayList<ArtCategory> queryCategoryIds = new ArrayList<>();
-//        if (!(mIsFilterSubCategoryRowSelected == true && (mSubCatList == null || mSubCatList.isEmpty()))) {
-//
-//            ArrayList<String> querySubCatIds = new ArrayList<>();
-//            if (mSubCatList == null || mSubCatList.isEmpty()) {
-//                if (!TextUtils.isEmpty(mSelectedCategoryId)) {
-//                    querySubCatIds.add(mSelectedCategoryId);
-//                }
-//            } else {
-//                querySubCatIds = mSubCatList;
-//            }
-//
-//            for (int i = 0; i < querySubCatIds.size(); i++) {
-//                ArtCategory category = ParseObject.createWithoutData(ArtCategory.class, querySubCatIds.get(i));
-//                queryCategoryIds.add(category);
-//            }
-//
-//        }
-//
-//        final ArrayList<ArtCategory> finalQueryCategoryIds = queryCategoryIds;
-//
-////        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-////                new ParseQueryAdapter.QueryFactory<ParseObject>() {
-////                    public ParseQuery create() {
-////                        ParseQuery<Item> parseQuery = new ParseQuery<Item>(Item.class);
-////                        parseQuery.whereEqualTo(Item.STATUS, Item.STATUS_CODE_VERIFIED);
-////                        parseQuery.whereEqualTo(Item.VALIDITY_CHECKED, true);
-////                        parseQuery.whereExists(Item.STORE);
-////
-////                        if (!mIsAllIranChecked) {
-////                            parseQuery.whereMatchesQuery(Item.STORE, storeQuery);
-////                        }
-////
-////                        if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
-////                            parseQuery.whereGreaterThanOrEqualTo(Item.PRICE, Integer.valueOf(mMinPriceValue));
-////                        }
-////
-////                        if (mMaxPriceIndex > -1 && mMaxPriceValue != null && !(mMaxPriceValue.equals("MAX"))) {
-////                            parseQuery.whereLessThanOrEqualTo(Item.PRICE, Integer.valueOf(mMaxPriceValue));
-////                        }
-////
-////                        if (finalQueryCategoryIds != null && !(finalQueryCategoryIds.isEmpty())) {
-////                            parseQuery.whereContainedIn(Item.CATEGORY, finalQueryCategoryIds);
-////                        }
-////                        parseQuery.include(Item.CATEGORY);
-////                        return parseQuery;
-////                    }
-////                };
-
         mItemsAdapter = new ItemsAdapter(getContext());
         mListView.setAdapter(mItemsAdapter);
-
     }
 
 
@@ -368,6 +271,15 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
 
             browseItemsRequest.artCategoryCriteria = artCategoryCriteria;
+
+
+            if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
+                browseItemsRequest.minPrice = Integer.valueOf(mMinPriceValue);
+            }
+
+            if (mMaxPriceIndex > -1 && mMaxPriceValue != null && !(mMaxPriceValue.equals("MAX"))) {
+                browseItemsRequest.maxPrice = Integer.valueOf(mMaxPriceValue);
+            }
 
             LocationCriteria locationCriteria = new LocationCriteria();
             if (!mIsAllIranChecked) {
