@@ -12,6 +12,7 @@ import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.Item;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,40 +98,39 @@ public class ItemsAdapter extends BaseAdapter {
         });
 
 
-        //TODO load image
-//        ParseFile image = item.getParseFile(Item.IMAGE_1);
-//        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-//
-//        if (image != null) {
-//            Uri imageUri = Uri.parse(image.getUrl());
-//            Picasso.with(mContext).load(imageUri.toString())
-//                    .error(R.drawable.camera_insta)
-//                    .into(mViewHolder.icon, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-//                        }
-//                    });
-//        } else {
-        Picasso.with(mContext).load(R.drawable.camera_insta)
-                .error(R.drawable.camera_insta)
-                .into(mViewHolder.icon, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                    }
+        String image = item.images[0];
+        mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
 
-                    @Override
-                    public void onError() {
-                        mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
-                    }
-                });
-//        }
+        if (image != null) {
+            Uri imageUri = Uri.parse(image);
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Picasso.with(mContext).load(R.drawable.camera_insta)
+                    .error(R.drawable.camera_insta)
+                    .into(mViewHolder.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        }
         return convertView;
 
     }
