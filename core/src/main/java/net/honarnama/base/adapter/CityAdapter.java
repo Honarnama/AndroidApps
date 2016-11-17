@@ -4,6 +4,7 @@ package net.honarnama.base.adapter;
 import net.honarnama.base.R;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,9 @@ public class CityAdapter extends BaseAdapter {
 
         TextView provinceNameTextView = (TextView) rowView.findViewById(R.id.province_name_text_view);
 
+        if(mCityIdsList.get(position) == 0){
+            provinceNameTextView.setBackgroundColor(mContext.getResources().getColor(R.color.amber_super_extra_light));
+        }
         provinceNameTextView.setText(mCityNameList.get(position));
         return rowView;
     }
