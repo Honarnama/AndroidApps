@@ -4,11 +4,13 @@ import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import net.honarnama.base.model.City;
 import net.honarnama.browse.R;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.nano.Event;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,28 +70,26 @@ public class EventsAdapter extends BaseAdapter {
 
         mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(event.name));
         mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(event.description));
-        //TODO
-        mViewHolderWithImage.place.setText(event.locationCriteria.cityId+"");
+        mViewHolderWithImage.place.setText(City.getCityById(event.locationCriteria.cityId).getName());
 
-//TODO
-        File image = null;
+        String image = event.banner;
         mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
 
         if (image != null) {
-//            Uri imageUri = Uri.parse(image.getUrl());
-//            Picasso.with(mContext).load(imageUri.toString())
-//                    .error(R.drawable.party_flags)
-//                    .into(mViewHolderWithImage.icon, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
-//                        }
-//                    });
+            Uri imageUri = Uri.parse(image);
+            Picasso.with(mContext).load(imageUri.toString())
+                    .error(R.drawable.party_flags)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
         } else {
             Picasso.with(mContext).load(R.drawable.party_flags)
                     .error(R.drawable.party_flags)

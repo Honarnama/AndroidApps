@@ -78,7 +78,6 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-
         mActivity = ItemFilterDialogActivity.this;
         mProvinceEditText = (EditText) findViewById(R.id.province_edit_text);
         mProvinceEditText.setOnClickListener(this);
