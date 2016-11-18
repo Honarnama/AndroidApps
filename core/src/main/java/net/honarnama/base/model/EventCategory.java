@@ -111,7 +111,7 @@ public class EventCategory {
         SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
         if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
-            query += " WHERE " + COL_EVENT_CAT_ORDER + " > 1 ";
+            query += " WHERE " + COL_EVENT_CAT_ID + " > 0 ";
         }
         query += " ORDER BY " + COL_EVENT_CAT_ORDER + " ASC";
         Cursor cursor = db.rawQuery(query, null);
