@@ -5,17 +5,26 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.dialog.ShopFilterDialogActivity;
-import net.honarnama.base.model.Store;
-import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.BrowseStoresReply;
+import net.honarnama.nano.BrowseStoresRequest;
+import net.honarnama.nano.LocationCriteria;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
+import net.honarnama.nano.Store;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +37,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 
 public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -105,7 +118,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         Store selectedStore = mShopsAdapter.getItem(i);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (selectedStore != null) {
-            controlPanelActivity.displayShopPage(selectedStore.getId(), false);
+            controlPanelActivity.displayShopPage(selectedStore.id, false);
         }
     }
 
@@ -151,7 +164,10 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     public void listShops() {
-        //TODO list only shops having items
+        new getShopsAsync().execute();
+        mShopsAdapter = new ShopsAdapter(getContext());
+        mListView.setAdapter(mShopsAdapter);
+
 //        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
 //                new ParseQueryAdapter.QueryFactory<ParseObject>() {
 //                    public ParseQuery create() {
@@ -207,8 +223,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //                }
 //            }
 //        });
-        mShopsAdapter = new ShopsAdapter(getContext());
-        mListView.setAdapter(mShopsAdapter);
+
     }
 
     @Override
@@ -238,6 +253,113 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
             mFilterTextView.setText(getResources().getString(R.string.filter_geo));
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+        }
+    }
+
+
+    public class getShopsAsync extends AsyncTask<Void, Void, BrowseStoresReply> {
+        BrowseStoresRequest browseStoresRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isAdded()) {
+                mEmptyListContainer.setVisibility(View.GONE);
+                mOnErrorRetry.setVisibility(View.GONE);
+                mLoadingCircle.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected BrowseStoresReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseStoresRequest = new BrowseStoresRequest();
+            browseStoresRequest.requestProperties = rp;
+
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseStoresRequest.locationCriteria = locationCriteria;
+
+            BrowseStoresReply browseStoresReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting stores is: " + browseStoresRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                return stub.getStores(browseStoresRequest);
+            } catch (Exception e) {
+                logE("Error running getEvents request. request: " + browseStoresRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseStoresReply browseStoresReply) {
+            super.onPostExecute(browseStoresReply);
+
+            mLoadingCircle.setVisibility(View.GONE);
+
+            Activity activity = getActivity();
+
+            if (browseStoresReply != null) {
+                switch (browseStoresReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        if (isAdded()) {
+                            mShopsAdapter.setShops(null);
+                            mEmptyListContainer.setVisibility(View.VISIBLE);
+                            mShopsAdapter.notifyDataSetChanged();
+                            mOnErrorRetry.setVisibility(View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Store[] stores = browseStoresReply.stores;
+                            ArrayList shopsList = new ArrayList();
+                            for (net.honarnama.nano.Store store : stores) {
+                                shopsList.add(0, store);
+                            }
+                            if (shopsList.size() == 0) {
+                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                            }
+                            mShopsAdapter.setShops(shopsList);
+                            mShopsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mShopsAdapter.setShops(null);
+                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                    mShopsAdapter.notifyDataSetChanged();
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+
+            }
         }
     }
 

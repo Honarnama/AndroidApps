@@ -6,11 +6,10 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.browse.model.Shop;
-import net.honarnama.base.model.Store;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.nano.Event;
+import net.honarnama.nano.Store;
 
 import android.content.Context;
 import android.content.Intent;
@@ -291,13 +290,13 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         mShopsAdapter.setShops(emptyList);
         mShopsAdapter.notifyDataSetChanged();
 
-        Shop.search(msearchTerm).continueWith(new Continuation<List<Store>, Object>() {
-            @Override
-            public Object then(Task<List<Store>> task) throws Exception {
-
-                mLoadingCircle.setVisibility(View.GONE);
-                mEmptyListContainer.setVisibility(View.VISIBLE);
-                mListView.setEmptyView(mEmptyListContainer);
+//        Shop.search(msearchTerm).continueWith(new Continuation<List<Store>, Object>() {
+//            @Override
+//            public Object then(Task<List<Store>> task) throws Exception {
+//
+//                mLoadingCircle.setVisibility(View.GONE);
+//                mEmptyListContainer.setVisibility(View.VISIBLE);
+//                mListView.setEmptyView(mEmptyListContainer);
 //
 //                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
 //                    logE("Searching shops with search term" + msearchTerm + " failed. Error: " + task.getError(), task.getError());
@@ -311,9 +310,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 //                    mShopsAdapter.setShops(foundItems);
 //                    mShopsAdapter.notifyDataSetChanged();
 //                }
-                return null;
-            }
-        });
+//                return null;
+//            }
+//        });
     }
 
     public void searchEvents() {

@@ -4,11 +4,16 @@ import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import net.honarnama.browse.R;
-import net.honarnama.base.model.Store;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.base.model.City;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.browse.HonarnamaBrowseApp;
+import net.honarnama.browse.R;
+import net.honarnama.nano.Store;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +28,14 @@ import java.util.List;
  * Created by elnaz on 2/13/16.
  */
 public class ShopsAdapter extends BaseAdapter {
-
+    public final static String DEBUG_TAG = HonarnamaBrowseApp.PRODUCTION_TAG + "/ShopsAdapter";
     Context mContext;
     List<Store> mShops;
     private static LayoutInflater mInflater = null;
 
     public ShopsAdapter(Context context) {
         mContext = context;
-        mShops = new ArrayList<Store>();
+        mShops = new ArrayList();
         mInflater = LayoutInflater.from(mContext);
     }
 
@@ -63,45 +68,46 @@ public class ShopsAdapter extends BaseAdapter {
             mViewHolderWithImage = (ViewHolderWithImage) convertView.getTag();
         }
 
-        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.getName()));
-        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.getDescription()));
-        mViewHolderWithImage.shopPlace.setText(store.getCity().getName());
-        //TODO load image
+        mViewHolderWithImage.title.setText(TextUtil.convertEnNumberToFa(store.name));
+        mViewHolderWithImage.desc.setText(TextUtil.convertEnNumberToFa(store.description));
+        mViewHolderWithImage.shopPlace.setText(City.getCityById(store.locationCriteria.cityId).getName());
 
-//        ParseFile image = store.getParseFile(Shop.LOGO);
-//        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
-//        if (image != null) {
-//            Uri imageUri = Uri.parse(image.getUrl());
-//            Picasso.with(mContext).load(imageUri.toString())
-//                    .error(R.drawable.default_logo_hand)
-//                    .into(mViewHolderWithImage.icon, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-//                        }
-//                    });
-//        } else {
-        Picasso.with(mContext).load(R.drawable.default_logo_hand)
-                .error(R.drawable.default_logo_hand)
-                .into(mViewHolderWithImage.icon, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                    }
+        String image = store.logo.trim();
+        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.VISIBLE);
 
-                    @Override
-                    public void onError() {
-                        mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
-                    }
-                });
-//        }
+        if (image.trim().length() > 0) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "shop image: " + image);
+            }
+            Picasso.with(mContext).load(image)
+                    .error(R.drawable.default_logo_hand)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            Picasso.with(mContext).load(R.drawable.default_logo_hand)
+                    .error(R.drawable.default_logo_hand)
+                    .into(mViewHolderWithImage.icon, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mViewHolderWithImage.shopLogoLoadingPanel.setVisibility(View.GONE);
+                        }
+                    });
+        }
         return convertView;
-
     }
 
     public void setShops(List<Store> shopList) {

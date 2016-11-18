@@ -4,13 +4,16 @@ import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
-import net.honarnama.browse.R;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.browse.HonarnamaBrowseApp;
+import net.honarnama.browse.R;
 import net.honarnama.nano.Event;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +21,6 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import java.util.List;
  * Created by elnaz on 2/13/16.
  */
 public class EventsAdapter extends BaseAdapter {
+    public final static String DEBUG_TAG = HonarnamaBrowseApp.PRODUCTION_TAG + "/EventsAdapter";
 
     Context mContext;
     List<Event> mEvents;
@@ -58,8 +61,6 @@ public class EventsAdapter extends BaseAdapter {
         final Event event = mEvents.get(position);
         final ViewHolderWithImage mViewHolderWithImage;
 
-//        ParseFile eventBanner = event.getParseFile(Event.BANNER);
-
         if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
             convertView = View.inflate(mContext, R.layout.event_row, null);
             mViewHolderWithImage = new ViewHolderWithImage(convertView);
@@ -75,7 +76,10 @@ public class EventsAdapter extends BaseAdapter {
         String image = event.banner;
         mViewHolderWithImage.imageLoadingPanel.setVisibility(View.VISIBLE);
 
-        if (image != null) {
+        if (image.trim().length() > 0) {
+            if (BuildConfig.DEBUG) {
+                Log.d(DEBUG_TAG, "event image: " + image);
+            }
             Uri imageUri = Uri.parse(image);
             Picasso.with(mContext).load(imageUri.toString())
                     .error(R.drawable.party_flags)

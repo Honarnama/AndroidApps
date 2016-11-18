@@ -67,10 +67,10 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         return getString(R.string.art_shop);
     }
 
-    public synchronized static ShopPageFragment getInstance(int shopId) {
+    public synchronized static ShopPageFragment getInstance(long shopId) {
         ShopPageFragment shopPageFragment = new ShopPageFragment();
         Bundle args = new Bundle();
-        args.putInt("shopId", shopId);
+        args.putLong("shopId", shopId);
         shopPageFragment.setArguments(args);
 //        shopPageFragment.setOwner(owner);
         return shopPageFragment;

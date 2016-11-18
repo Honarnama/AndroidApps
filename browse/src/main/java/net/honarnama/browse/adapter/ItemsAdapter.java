@@ -31,7 +31,7 @@ import bolts.Task;
  * Created by elnaz on 2/15/16.
  */
 public class ItemsAdapter extends BaseAdapter {
-    public final static String DEBUG_TAG = HonarnamaBrowseApp.PRODUCTION_TAG + "/Adapter";
+    public final static String DEBUG_TAG = HonarnamaBrowseApp.PRODUCTION_TAG + "/ItemsAdapter";
     Context mContext;
     List<Item> mItems;
     private static LayoutInflater mInflater = null;
@@ -101,7 +101,7 @@ public class ItemsAdapter extends BaseAdapter {
         String image = item.images[0];
         mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
 
-        if (image != null) {
+        if (image.trim().length() > 0) {
             Uri imageUri = Uri.parse(image);
             Picasso.with(mContext).load(imageUri.toString())
                     .error(R.drawable.camera_insta)

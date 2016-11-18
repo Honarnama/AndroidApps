@@ -13,7 +13,7 @@ import android.util.Log;
  */
 public class HonarnamaBrowseApp extends HonarnamaBaseApp {
 
-    public static final String PRODUCTION_TAG = "HonarnamaBrowse";
+    public static final String PRODUCTION_TAG = "Browse";
 
     public static final String EXTRA_KEY_MIN_PRICE_INDEX = "minPriceIndex";
     public static final String EXTRA_KEY_MIN_PRICE_VALUE = "minPriceValue";

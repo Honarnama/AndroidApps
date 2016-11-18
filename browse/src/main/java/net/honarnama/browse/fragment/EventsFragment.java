@@ -373,7 +373,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
             try {
                 BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
-               return  stub.getEvents(browseEventsRequest);
+                return stub.getEvents(browseEventsRequest);
             } catch (Exception e) {
                 logE("Error running getEvents request. request: " + browseEventsRequest + ". Error: " + e, e);
             }
@@ -441,7 +441,5 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
         }
     }
-
-
 
 }
