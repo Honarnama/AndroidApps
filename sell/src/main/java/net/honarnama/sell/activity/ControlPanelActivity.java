@@ -350,7 +350,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton("بله", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            if (!HonarnamaBaseApp.getCommonSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
+                            if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
                                 askToRate();
                             } else {
                                 finish();

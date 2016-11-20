@@ -30,7 +30,9 @@ import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -46,6 +48,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -396,7 +399,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 break;
 
             case R.id.item_support_us:
-                callBazaarRateIntent();
+                callBazaarRatingIntent();
                 break;
 
             case R.id.item_switch_app:
@@ -632,11 +635,21 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             if (mActiveTab != TAB_ITEMS) {
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
-                if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
-                    askToRate();
-                } else {
-                    finish();
-                }
+
+                new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.DialogStyle))
+                        .setTitle("تایید خروج")
+                        .setMessage("می‌خوای از برنامه خارج بشی؟")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("بله", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
+                                    askToRate();
+                                } else {
+                                    finish();
+                                }
+                            }
+                        })
+                        .setNegativeButton("نه می‌مونم", null).show();
             }
         }
     }
@@ -815,43 +828,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         super.onStop();
     }
 
-
-    public void askToRate() {
-        final Dialog dialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
-        dialog.setCancelable(false);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.ask_for_starts_dialog);
-        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
-        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
-        letsRateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callBazaarRateIntent();
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, true);
-                editor.commit();
-
-                dialog.dismiss();
-                finish();
-            }
-        });
-        rateLaterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.show();
-    }
-
-    public void callBazaarRateIntent() {
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBrowseApp.getInstance().getPackageName()));
-        intent.setPackage("com.farsitel.bazaar");
-        startActivity(intent);
-    }
-
     public void displaySetDefaultLocationDialog() {
 
         mSetDefaultLocationDialog = new Dialog(ControlPanelActivity.this, R.style.CustomDialogTheme);
@@ -994,7 +970,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                HashMap<Integer, String> selectedCity = mCityTreeMap.get(position+1);
+                HashMap<Integer, String> selectedCity = mCityTreeMap.get(position + 1);
                 for (int key : selectedCity.keySet()) {
                     mSelectedCityId = key;
                 }

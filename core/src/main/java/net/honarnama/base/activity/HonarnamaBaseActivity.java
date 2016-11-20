@@ -117,7 +117,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 callBazaarRatingIntent();
-                SharedPreferences.Editor editor = HonarnamaBaseApp.getCommonSharedPref().edit();
+                SharedPreferences.Editor editor = HonarnamaBaseApp.getAppSharedPref().edit();
                 if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, true);
                 } else {

@@ -99,6 +99,10 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             }
         }
 
+        if (BuildConfig.DEBUG) {
+            logD("Art Categories Hierarchy: " + mCategoriesHierarchyHashMap);
+        }
+
         setNodeCategories();
         populateList();
     }
@@ -136,6 +140,11 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
                 mCurrentArtCategoriesObjectIds.put(index, objectId);
                 mCurrentArtCategoriesName.put(index, mCategoriesNameHashMap.get(objectId));
             }
+        }
+
+        if (BuildConfig.DEBUG) {
+            logD("Selected Cat ids: "+ mCurrentArtCategoriesObjectIds);
+            logD("Selected Cat names: "+ mCurrentArtCategoriesName);
         }
 
         mCategoriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
