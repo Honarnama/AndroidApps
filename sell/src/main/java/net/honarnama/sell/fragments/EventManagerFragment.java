@@ -436,7 +436,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 break;
 
             case R.id.event_cat_button:
-                displayChooseEventCategoryDialog();
+                displayEventCategoryDialog();
                 break;
 
             case R.id.event_province_edit_text:
@@ -602,7 +602,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     }
 
 
-    private void displayChooseEventCategoryDialog() {
+    private void displayEventCategoryDialog() {
 
         ListView eventCatsListView;
         EventCategoriesAdapter eventCatsAdapter;
@@ -904,7 +904,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             EventCategory eventCategory = EventCategory.getCategoryById(mSelectedCatId);
 
             if (eventCategory == null) {
-                displayShortToast(getStringInFragment(R.string.error_finding_category_name) + getStringInFragment(R.string.check_net_connection));
+                displayLongToast(getStringInFragment(R.string.error_finding_category_name) + getStringInFragment(R.string.check_net_connection));
+                setTextInFragment(mEventCatBtn, getStringInFragment(R.string.error_getting_info));
+                mSelectedCatId = -1;
             } else {
                 setTextInFragment(mEventCatBtn, eventCategory.getName());
             }
@@ -1298,7 +1300,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             Spannable spannable = (Spannable) textView.getText();
 
             if (spannable != null && activity != null) {
-                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length()-1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length() - 1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
             textView.setOnClickListener(new View.OnClickListener() {

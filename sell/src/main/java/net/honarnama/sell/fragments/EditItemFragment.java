@@ -598,7 +598,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         } else {
                             if (isAdded()) {
                                 setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
-                                displayShortToast(getStringInFragment(R.string.error_getting_event_info));
+                                displayShortToast(getStringInFragment(R.string.error_getting_item_info));
                                 displayRetrySnackbar();
                                 logE("Got OK code for getting item (id " + mItemId + "), but item was null. getOrDeleteItemRequest: " + getOrDeleteItemRequest);
                             }
@@ -640,6 +640,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 public Object then(Task<String> task) throws Exception {
                     if (task.isFaulted()) {
                         displayLongToast(getStringInFragment(R.string.error_finding_category_name) + getStringInFragment(R.string.check_net_connection));
+                        setTextInFragment(mChooseCategoryButton, getStringInFragment(R.string.error_getting_info));
+                        mCategoryId = -1;
+                        mCategoryParentId = -1;
                     } else {
                         setTextInFragment(mChooseCategoryButton, task.getResult());
                     }
