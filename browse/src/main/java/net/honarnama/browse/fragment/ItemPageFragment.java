@@ -4,23 +4,38 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
+import com.mikepenz.iconics.view.IconicsTextView;
 import com.parse.ImageSelector;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.base.model.Store;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
+import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
-import net.honarnama.browse.model.Item;
-import net.honarnama.base.model.Store;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.ObservableScrollView;
-import net.honarnama.base.utils.TextUtil;
+import net.honarnama.browse.model.Bookmark;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseItemsReply;
+import net.honarnama.nano.BrowseItemsRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.Item;
+import net.honarnama.nano.LocationCriteria;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -43,13 +58,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import bolts.Continuation;
+import bolts.Task;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
+
 /**
  * Created by elnaz on 2/15/16.
  */
 public class ItemPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static ShopPageFragment mShopPageFragment;
     private Tracker mTracker;
-//    public ProgressBar mBannerProgressBar;
+    public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
     public TextView mPriceTextView;
@@ -61,6 +80,12 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public LinearLayout mInnerLayout;
     public RelativeLayout mSimilarTitleContainer;
 
+    public IconicsImageView mBookmarkBack;
+    public FloatingActionButton mFab;
+    public RelativeLayout mDeletedItemMsg;
+    public RelativeLayout mInfoContainer;
+    public RelativeLayout mSimilarItemsContainer;
+
 
     static TextView mDotsText[];
     private int mDotsCount;
@@ -71,7 +96,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public IconicsImageView mBookmarkImageView;
     public IconicsImageView mRemoveBoomarkImageView;
 
-    public String mItemId;
+    public long mItemId;
 
     ImageAdapter mImageAdapter;
 
@@ -127,14 +152,12 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_item_page, container, false);
-        mItemId = getArguments().getString("itemId");
+        mItemId = getArguments().getLong("itemId");
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
         mDefaultImageView = (ImageSelector) rootView.findViewById(R.id.item_default_image_view);
-
-//        mBannerProgressBar = (ProgressBar) rootView.findViewById(R.id.banner_progress_bar);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
         mPriceTextView = (TextView) rootView.findViewById(R.id.price);
@@ -167,17 +190,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
-        final IconicsImageView bookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
-        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        final RelativeLayout deletedItemMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_item_msg);
-        final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
-        final RelativeLayout similarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
+        mBookmarkBack = (IconicsImageView) rootView.findViewById(R.id.bookmark_back);
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        mDeletedItemMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_item_msg);
+        mInfoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
+        mSimilarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
 
-        similarItemsContainer.setVisibility(View.GONE);
-        mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
-        mDefaultImageView.setVisibility(View.VISIBLE);
-        mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
-        mOnErrorRetry.setVisibility(View.GONE);
+        new getItemAsync().execute();
+
 //        Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
 //            @Override
 //            public Object then(Task<ParseObject> task) throws Exception {
@@ -534,10 +554,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             //TODO
 //            similarItemImage.loadInBackground(item.getParseFile(Item.IMAGE_1));
-            similarItemTitle.setText(TextUtil.convertEnNumberToFa(item.getName()));
+            similarItemTitle.setText(TextUtil.convertEnNumberToFa(item.name));
 
             NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
-            String formattedPrice = formatter.format(item.getPrice());
+            String formattedPrice = formatter.format(item.price);
             String price = TextUtil.convertEnNumberToFa(formattedPrice);
 
             similarPostPrice.setText(price + " " + getString(R.string.toman));
@@ -552,7 +572,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             similarItemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    controlPanelActivity.displayItemPage(item.getId(), false);
+                    controlPanelActivity.displayItemPage(item.id, false);
                 }
             });
 
@@ -574,6 +594,211 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
     }
 
+
+    public class getItemAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
+        BrowseItemsRequest browseItemsRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isAdded()) {
+                mSimilarItemsContainer.setVisibility(View.GONE);
+                mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
+                mDefaultImageView.setVisibility(View.VISIBLE);
+                mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
+                mOnErrorRetry.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        protected BrowseItemsReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseItemsRequest = new BrowseItemsRequest();
+            browseItemsRequest.requestProperties = rp;
+
+            browseItemsRequest.id = mItemId;
+
+            BrowseItemsReply getItemsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting single item is: " + browseItemsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                getItemsReply = stub.getItems(browseItemsRequest);
+                return getItemsReply;
+            } catch (Exception e) {
+                logE("Error running getItems request. request: " + browseItemsRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseItemsReply browseItemsReply) {
+            super.onPostExecute(browseItemsReply);
+
+            mInfoProgreeBarContainer.setVisibility(View.GONE);
+
+            Activity activity = getActivity();
+
+            if (browseItemsReply != null) {
+                switch (browseItemsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        if (isAdded()) {
+                            mOnErrorRetry.setVisibility(View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Item[] items = browseItemsReply.items;
+                            ArrayList<Item> itemsList = new ArrayList<>();
+                            for (net.honarnama.nano.Item item : items) {
+                                itemsList.add(0, item);
+                            }
+
+                            if (itemsList.size() == 0) {
+                                if (isVisible()) {
+                                    displayLongToast(getStringInFragment(R.string.error_item_no_longer_exists));
+                                }
+                                mDeletedItemMsg.setVisibility(View.VISIBLE);
+                            } else {
+
+                                loadItemInfo(itemsList.get(0));
+                            }
+
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+    }
+
+    private void loadItemInfo(net.honarnama.nano.Item item) {
+
+        mFab.setVisibility(View.VISIBLE);
+        mDefaultImageView.setVisibility(View.GONE);
+        mInfoContainer.setVisibility(View.VISIBLE);
+        mOnErrorRetry.setVisibility(View.GONE);
+        mShare.setVisibility(View.VISIBLE);
+        mItem = item;
+
+        boolean isBookmarked = new Bookmark().isBookmarkedAlready(mItem.id);
+
+        if (isBookmarked) {
+            mBookmarkImageView.setVisibility(View.GONE);
+            mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+        } else {
+            mBookmarkImageView.setVisibility(View.VISIBLE);
+            mRemoveBoomarkImageView.setVisibility(View.GONE);
+        }
+        mBookmarkBack.setVisibility(View.VISIBLE);
+
+        mNameTextView.setText(TextUtil.convertEnNumberToFa(mItem.name));
+        NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
+        String formattedPrice = formatter.format(mItem.price);
+        String price = TextUtil.convertEnNumberToFa(formattedPrice);
+        mPriceTextView.setText(price + " ");
+
+        mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.description));
+
+        mPlaceTextView.setText("استان. شهر");
+        mShopNameTextView.append("اسم فروشگاه");
+
+        Picasso.with(mContext).load(R.drawable.default_logo_hand)
+                .error(R.drawable.camera_insta)
+                .into(mShopLogo, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                });
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+//                ContactDialog contactDialog = new ContactDialog();
+//                contactDialog.showDialog(getActivity(), mShop.getPhoneNumber(), mShop.getCellNumber(),
+//                        getResources().getString(R.string.item_contact_dialog_warning_msg));
+
+            }
+        });
+
+        String[] images = mItem.images;
+        List<String> nonNullImages = new ArrayList<String>();
+        for (int i = 0; i < net.honarnama.base.model.Item.NUMBER_OF_IMAGES; i++) {
+            if (images[i] != null) {
+                nonNullImages.add(images[i]);
+            }
+        }
+        mImageAdapter.setImages(nonNullImages);
+        mImageAdapter.notifyDataSetChanged();
+
+        mDotsCount = mImageAdapter.getCount();
+        if (mDotsCount > 1) {
+            mDotsText = new IconicsTextView[mDotsCount];
+            for (int i = 0; i < mDotsCount; i++) {
+                mDotsText[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
+                mDotsText[i].setText("{gmd-brightness-1}");
+                mDotsText[i].setTextSize(8);
+                if (i == 0) {
+                    mDotsText[i].setPadding(0, 10, 0, 0);
+                } else {
+                    mDotsText[i].setPadding(0, 10, 10, 0);
+                }
+                mDotsText[i].setTypeface(null, Typeface.BOLD);
+                mDotsText[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
+                mDotsLayout.addView(mDotsText[i]);
+            }
+        }
+
+
+        mSimilarItemsContainer.setVisibility(View.VISIBLE);
+        //TODO
+//        Item.getSimilarItemsByCategory(mItem.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
+//            @Override
+//            public Object then(Task<List<Item>> task) throws Exception {
+//                mSimilarItemsProgressBar.setVisibility(View.GONE);
+//                if (task.isFaulted()) {
+//                    logE("Finding similar items failed. " + task.getError());
+//                    similarItemsContainer.setVisibility(View.GONE);
+//                } else {
+//                    List<Item> similarItems = task.getResult();
+//                    if (similarItems.size() > 0) {
+////                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
+//                        addSimilarItems(similarItems);
+//                    } else {
+//                        similarItemsContainer.setVisibility(View.GONE);
+//                    }
+//                }
+//                return null;
+//            }
+//        });
+    }
 }
 
 

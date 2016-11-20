@@ -21,7 +21,7 @@ import java.util.List;
 public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    List<ImageSelector> mImages = new ArrayList<>();
+    List<String> mImages = new ArrayList<>();
     private static LayoutInflater mInflater = null;
 
     public ImageAdapter(Context c) {
@@ -29,7 +29,7 @@ public class ImageAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(mContext);
     }
 
-    public void setImages(List<ImageSelector> images) {
+    public void setImages(List<String> images) {
         mImages = images;
     }
 

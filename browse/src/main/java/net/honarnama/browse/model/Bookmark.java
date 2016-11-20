@@ -81,8 +81,8 @@ public class Bookmark extends HonarnamaBaseModel {
         return db.delete(TABLE_BOOKMARKS, COL_BOOKMARK_ITEM_ID + "=" + itemId, null) > 0;
     }
 
-    public boolean isBookmarkedAlready(String itemId) {
-        SQLiteDatabase db = DatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+    public boolean isBookmarkedAlready(long itemId) {
+        SQLiteDatabase db = BrowseDatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_BOOKMARKS + " WHERE " + COL_BOOKMARK_ITEM_ID + " = " + itemId;
         Cursor cursor = db.rawQuery(query, null);
         try {

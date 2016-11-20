@@ -431,6 +431,8 @@ message BrowseItemsRequest {
   uint32 maxPrice = 5; // 1000 toman, ceil round
   string searchTerm = 6;
   int64 nextPageId = 7;
+  uint64 id = 8;
+  uint64 storeId = 9;
 }
 
 message BrowseItemsReply {
@@ -445,6 +447,7 @@ message BrowseStoresRequest {
   LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
   string searchTerm = 3;
   int64 nextPageId = 4;
+  uint64 id = 5;
 }
 
 message BrowseStoresReply {
@@ -461,6 +464,8 @@ message BrowseEventsRequest {
   int64 after = 5;
   string searchTerm = 6;
   int64 nextPageId = 7;
+  uint64 id = 8;
+  uint64 storeId = 9;
 }
 
 message BrowseEventsReply {
