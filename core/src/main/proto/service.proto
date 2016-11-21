@@ -8,468 +8,487 @@ package protobuf;
 
 /// Commons /////////////////////////////////////////////////////////////////
 message AndroidClientInfo {
-  int32 sdkVersion = 1;
-  string model = 2;
-  string product = 3;
-  string osBuild = 4;
-  string hardware = 5;
-  string device = 6;
-  string mccMnc = 7;
-  string locale = 8;
-  string country = 9;
+    int32 sdkVersion = 1;
+    string model = 2;
+    string product = 3;
+    string osBuild = 4;
+    string hardware = 5;
+    string device = 6;
+    string mccMnc = 7;
+    string locale = 8;
+    string country = 9;
 }
 
 message RequestProperties {
-  uint64 ifNotMatchEtag = 1;
-  string userAuthToken = 2;
-  string clientId = 3;
-  int32 clientVersion = 4;
-  AndroidClientInfo androidClientInfo = 5;
+    uint64 ifNotMatchEtag = 1;
+    string userAuthToken = 2;
+    string clientId = 3;
+    int32 clientVersion = 4;
+    AndroidClientInfo androidClientInfo = 5;
 }
 
 message ReplyProperties {
-  enum StatusCode {
-    OK = 0;
-    NOT_MODIFIED = 1;  // Only if ifNotMatchEtag was set
-    CLIENT_ERROR = 2;
-    SERVER_ERROR = 3;
-    NOT_AUTHORIZED = 4;
-    UPGRADE_REQUIRED = 5;
-  }
-  StatusCode statusCode = 1;
-  uint32 maxAgeMinutes = 2;
-  uint64 etag = 3;
-  string serverVersion = 4;
-  string errorMessage = 5;
-  string newUserAuthToken = 6;
+    enum StatusCode {
+        OK = 0;
+        NOT_MODIFIED = 1; // Only if ifNotMatchEtag was set
+        CLIENT_ERROR = 2;
+        SERVER_ERROR = 3;
+        NOT_AUTHORIZED = 4;
+        UPGRADE_REQUIRED = 5;
+    }
+    StatusCode statusCode = 1;
+    uint32 maxAgeMinutes = 2;
+    uint64 etag = 3;
+    string serverVersion = 4;
+    string errorMessage = 5;
+    string newUserAuthToken = 6;
 }
 
 message SimpleRequest {
-  RequestProperties requestProperties = 1;
+    RequestProperties requestProperties = 1;
 }
 
 enum RemoteFileActions {
-  NOOP = 0;
-  PUT = 1;
-  DELETE = 2;
+    NOOP = 0;
+    PUT = 1;
+    DELETE = 2;
 }
 
 /// Meta --------------------------------------------------
 message Location {
-  uint32 id = 1;
-  uint32 parentId = 2;
-  string name = 3;
-  uint32 order = 4;
-  enum LocType {
-    COUNTRY = 0;
-    PROVINCE = 1;
-    CITY = 2;
-    NEIGHBORHOOD = 3;
-  }
-  LocType locType = 5;
+    uint32 id = 1;
+    uint32 parentId = 2;
+    string name = 3;
+    uint32 order = 4;
+    enum LocType {
+        COUNTRY = 0;
+        PROVINCE = 1;
+        CITY = 2;
+        NEIGHBORHOOD = 3;
+    }
+    LocType locType = 5;
 }
 
 message ArtCategory {
-  uint32 id = 1;
-  uint32 parentId = 2;
-  string name = 3;
-  uint32 order = 4;
-  bool allSubCatFilterType = 5;
+    uint32 id = 1;
+    uint32 parentId = 2;
+    string name = 3;
+    uint32 order = 4;
+    bool allSubCatFilterType = 5;
 }
 
 message EventCategory {
-  uint32 id = 1;
-  string name = 2;
-  uint32 order = 3;
+    uint32 id = 1;
+    string name = 2;
+    uint32 order = 3;
 }
 
 message LocationCriteria {
-  uint32 countryId = 1;
-  uint32 provinceId = 2;
-  uint32 cityId = 3;
-  uint32 neighborhoodId = 4;
+    uint32 countryId = 1;
+    uint32 provinceId = 2;
+    uint32 cityId = 3;
+    uint32 neighborhoodId = 4;
 }
 
 message ArtCategoryCriteria {
-  uint32 level1Id = 1;
-  uint32 level2Id = 2;
+    uint32 level1Id = 1;
+    uint32 level2Id = 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 service MetaService {
-  rpc Meta(SimpleRequest) returns (MetaReply) {
-  }
+    rpc Meta (SimpleRequest) returns (MetaReply) {
+    }
 }
 
 message MetaReply {
-  ReplyProperties replyProperties = 1;
-  repeated Location locations = 2;
-  repeated int32 removedLocations = 3 [packed=true];
-  repeated ArtCategory artCategories = 4;
-  repeated int32 removedArtCategories = 5 [packed=true];
-  repeated EventCategory eventCategories = 6;
-  repeated int32 removedEventCategories = 7 [packed=true];
+    ReplyProperties replyProperties = 1;
+    repeated Location locations = 2;
+    repeated int32 removedLocations = 3 [packed = true];
+    repeated ArtCategory artCategories = 4;
+    repeated int32 removedArtCategories = 5 [packed = true];
+    repeated EventCategory eventCategories = 6;
+    repeated int32 removedEventCategories = 7 [packed = true];
 }
 
 /////////////////////////////////////////////////////////////////////////////
 service AuthService {
-  rpc CreateAccount(CreateOrUpdateAccountRequest) returns (CreateAccountReply) {
-  }
-  rpc UpdateAccount(CreateOrUpdateAccountRequest) returns (UpdateAccountReply) {
-  }
-  rpc WhoAmI(SimpleRequest) returns (WhoAmIReply) {
-  }
-  rpc SendLoginEmail(SendLoginEmailRequest) returns (SendLoginEmailReply) {
-  }
+    rpc CreateAccount (CreateOrUpdateAccountRequest) returns (CreateAccountReply) {
+    }
+    rpc UpdateAccount (CreateOrUpdateAccountRequest) returns (UpdateAccountReply) {
+    }
+    rpc WhoAmI (SimpleRequest) returns (WhoAmIReply) {
+    }
+    rpc SendLoginEmail (SendLoginEmailRequest) returns (SendLoginEmailReply) {
+    }
 }
 
 message Account {
-  uint64 id = 1; // Will be ignored in create
-  string name = 2;
-  string email = 3;
-  enum Gender {
-    FEMALE = 0;
-    MALE = 1;
-    UNSPECIFIED = 2;
-  }
-  Gender gender = 4;
+    uint64 id = 1; // Will be ignored in create
+    string name = 2;
+    string email = 3;
+    enum Gender {
+        FEMALE = 0;
+        MALE = 1;
+        UNSPECIFIED = 2;
+    }
+    Gender gender = 4;
 }
 
 message WhoAmIReply {
-  ReplyProperties replyProperties = 1;
-  Account account = 2;
+    ReplyProperties replyProperties = 1;
+    Account account = 2;
 }
 
 message SendLoginEmailRequest {
-  RequestProperties requestProperties = 1;
-  string email = 2;
+    RequestProperties requestProperties = 1;
+    string email = 2;
 }
 
 message SendLoginEmailReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ACCOUNT_NOT_FOUND = 1;
-    INVALID_EMAIL = 2;
-  }
-  ErrorCode errorCode = 2;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ACCOUNT_NOT_FOUND = 1;
+        INVALID_EMAIL = 2;
+    }
+    ErrorCode errorCode = 2;
 }
 
 message CreateOrUpdateAccountRequest {
-  RequestProperties requestProperties = 1;
-  Account account = 2;
+    RequestProperties requestProperties = 1;
+    Account account = 2;
 }
 
 message CreateAccountReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    INVALID_EMAIL = 1;
-    DUPLICATE_EMAIL = 2;
-    EMPTY_ACCOUNT = 5;
-  }
-  ErrorCode errorCode = 2;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        INVALID_EMAIL = 1;
+        DUPLICATE_EMAIL = 2;
+        EMPTY_ACCOUNT = 5;
+    }
+    ErrorCode errorCode = 2;
 }
 
 message UpdateAccountReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ACCOUNT_NOT_FOUND = 1;
-    FORBIDDEN = 2;
-    EMPTY_ACCOUNT = 3;
-  }
-  ErrorCode errorCode = 2;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ACCOUNT_NOT_FOUND = 1;
+        FORBIDDEN = 2;
+        EMPTY_ACCOUNT = 3;
+    }
+    ErrorCode errorCode = 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 service SellService {
 
-  rpc GetMyStore(SimpleRequest) returns (GetStoreReply) {
-  }
-  rpc CreateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
-  }
-  rpc UpdateStore(CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
-  }
+    rpc GetMyStore (SimpleRequest) returns (GetStoreReply) {
+    }
+    rpc CreateStore (CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
+    }
+    rpc UpdateStore (CreateOrUpdateStoreRequest) returns (CreateOrUpdateStoreReply) {
+    }
 
-  rpc GetItems(SimpleRequest) returns (GetItemsReply) {
-  }
-  rpc GetItem(GetOrDeleteItemRequest) returns (GetItemReply) {
-  }
-  rpc CreateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
-  }
-  rpc UpdateItem(CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
-  }
-  rpc DeleteItem(GetOrDeleteItemRequest) returns (DeleteItemReply) {
-  }
+    rpc GetItems (SimpleRequest) returns (GetItemsReply) {
+    }
+    rpc GetItem (GetOrDeleteItemRequest) returns (GetItemReply) {
+    }
+    rpc CreateItem (CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
+    }
+    rpc UpdateItem (CreateOrUpdateItemRequest) returns (CreateOrUpdateItemReply) {
+    }
+    rpc DeleteItem (GetOrDeleteItemRequest) returns (DeleteItemReply) {
+    }
 
-  rpc GetMyEvent(SimpleRequest) returns (GetEventReply) {
-  }
-  rpc CreateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
-  }
-  rpc UpdateEvent(CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
-  }
+    rpc GetMyEvent (SimpleRequest) returns (GetEventReply) {
+    }
+    rpc CreateEvent (CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
+    }
+    rpc UpdateEvent (CreateOrUpdateEventRequest) returns (CreateOrUpdateEventReply) {
+    }
 }
 
 enum ReviewStatus {
-  NOT_REVIEWED = 0;
-  CHANGES_NEEDED = 1;
-  APPROVED = 2;
+    NOT_REVIEWED = 0;
+    CHANGES_NEEDED = 1;
+    APPROVED = 2;
 }
 
 /// Store -------------------------------------------------
 message Store {
-  uint64 id = 1; // Just for gets
-  uint64 ownerId = 2; // Will be ignored in update
-  LocationCriteria locationCriteria = 3;
-  string name = 4;
-  string description = 5;
-  string publicCellNumber = 6;
-  string publicPhoneNumber = 7;
-  string logo = 8; // Just for gets
-  string banner = 9; // Just for gets
-  ReviewStatus reviewStatus = 10; // Will be ignored in create and update
+    uint64 id = 1; // Just for gets
+    uint64 ownerId = 2; // Will be ignored in update
+    LocationCriteria locationCriteria = 3;
+    string name = 4;
+    string description = 5;
+    string publicCellNumber = 6;
+    string publicPhoneNumber = 7;
+    string logo = 8; // Just for gets
+    string banner = 9; // Just for gets
+    ReviewStatus reviewStatus = 10; // Will be ignored in create and update
 }
 
 message GetStoreReply {
-  ReplyProperties replyProperties = 1;
-  Store store = 2;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    STORE_NOT_FOUND = 1;
-  }
-  ErrorCode errorCode = 3;
+    ReplyProperties replyProperties = 1;
+    Store store = 2;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        STORE_NOT_FOUND = 1;
+    }
+    ErrorCode errorCode = 3;
 }
 
 message CreateOrUpdateStoreRequest {
-  RequestProperties requestProperties = 1;
-  Store store = 2;
-  RemoteFileActions changingLogo = 3;
-  RemoteFileActions changingBanner = 4;
+    RequestProperties requestProperties = 1;
+    Store store = 2;
+    RemoteFileActions changingLogo = 3;
+    RemoteFileActions changingBanner = 4;
 }
 
 message CreateOrUpdateStoreReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ALREADY_HAS_STORE = 1; // Only while creating
-    DUPLICATE_NAME = 2;
-    STORE_NOT_FOUND = 3; // Only while updating
-    EMPTY_STORE = 4; // Only while updating
-  }
-  ErrorCode errorCode = 2;
-  Store uptodateStore = 3;
-  string logoModificationUrl = 4;
-  string bannerModificationUrl = 5;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ALREADY_HAS_STORE = 1; // Only while creating
+        DUPLICATE_NAME = 2;
+        STORE_NOT_FOUND = 3; // Only while updating
+        EMPTY_STORE = 4; // Only while updating
+    }
+    ErrorCode errorCode = 2;
+    Store uptodateStore = 3;
+    string logoModificationUrl = 4;
+    string bannerModificationUrl = 5;
 }
 
 /// Item --------------------------------------------------
 message Item {
-  uint64 id = 1; // Will be ignored in create
-  uint64 ownerId = 2; // Will be ignored in update
-  uint64 storeId = 3; // Just for gets
-  ArtCategoryCriteria artCategoryCriteria = 4;
-  string name = 5;
-  string description = 6;
-  uint64 price = 7;
-  repeated string images = 8; // Just for gets
-  ReviewStatus reviewStatus = 9; // Will be ignored in create and update
-  int64 publishTimestamp = 10;
+    uint64 id = 1; // Will be ignored in create
+    uint64 ownerId = 2; // Will be ignored in update
+    uint64 storeId = 3; // Just for gets
+    ArtCategoryCriteria artCategoryCriteria = 4;
+    string name = 5;
+    string description = 6;
+    uint64 price = 7;
+    repeated string images = 8; // Just for gets
+    ReviewStatus reviewStatus = 9; // Will be ignored in create and update
+    int64 publishTimestamp = 10;
 }
 
 message GetItemsReply {
-  ReplyProperties replyProperties = 1;
-  repeated Item items = 2;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    STORE_NOT_CREATED = 1;
-  }
-  ErrorCode errorCode = 3;
+    ReplyProperties replyProperties = 1;
+    repeated Item items = 2;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        STORE_NOT_CREATED = 1;
+    }
+    ErrorCode errorCode = 3;
 }
 
 message GetOrDeleteItemRequest {
-  RequestProperties requestProperties = 1;
-  uint64 id = 2;
+    RequestProperties requestProperties = 1;
+    uint64 id = 2;
 }
 
 message GetItemReply {
-  ReplyProperties replyProperties = 1;
-  Item item = 2;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ITEM_NOT_FOUND = 1;
-    FORBIDDEN = 2;
-  }
-  ErrorCode errorCode = 3;
+    ReplyProperties replyProperties = 1;
+    Item item = 2;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ITEM_NOT_FOUND = 1;
+        FORBIDDEN = 2;
+    }
+    ErrorCode errorCode = 3;
 }
 
 message CreateOrUpdateItemRequest {
-  RequestProperties requestProperties = 1;
-  Item item = 2;
-  repeated RemoteFileActions changingImage = 3;
+    RequestProperties requestProperties = 1;
+    Item item = 2;
+    repeated RemoteFileActions changingImage = 3;
 }
 
 message CreateOrUpdateItemReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    FORBIDDEN = 1;
-    ITEM_NOT_FOUND = 2; // Only while updating
-    EMPTY_ITEM = 3; // Only while updating
-    STORE_NOT_CREATED = 4;
-    // INVALID_NAME = 5;
-    // INVALID_DESC = 6;
-    // INVALID_CATEGORY = 7;
-    // INVALID_PRICE = 8;
-  }
-  ErrorCode errorCode = 2;
-  Item uptodateItem = 3;
-  repeated string imageModificationUrl = 4;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        FORBIDDEN = 1;
+        ITEM_NOT_FOUND = 2; // Only while updating
+        EMPTY_ITEM = 3; // Only while updating
+        STORE_NOT_CREATED = 4;
+        // INVALID_NAME = 5;
+        // INVALID_DESC = 6;
+        // INVALID_CATEGORY = 7;
+        // INVALID_PRICE = 8;
+    }
+    ErrorCode errorCode = 2;
+    Item uptodateItem = 3;
+    repeated string imageModificationUrl = 4;
 }
 
 message DeleteItemReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ITEM_NOT_FOUND = 1;
-    FORBIDDEN = 2;
-  }
-  ErrorCode errorCode = 2;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ITEM_NOT_FOUND = 1;
+        FORBIDDEN = 2;
+    }
+    ErrorCode errorCode = 2;
 }
 
 /// Event --------------------------------------------------
 message Event {
-  uint64 id = 1; // Will be ignored in create
-  uint64 ownerId = 2; // Will be ignored in update
-  uint64 storeId = 3; // Just for gets
-  uint32 eventCategoryId = 4;
-  string name = 5;
-  string description = 6;
-  bool active = 7;
-  LocationCriteria locationCriteria = 8;
-  string address = 9;
-  // Represents seconds of UTC time since Unix epoch
-  int64 startAt = 10;
-  int64 endAt = 11;
-  string cellNumber = 12;
-  string phoneNumber = 13;
-  string banner = 14; // Just for gets
-  ReviewStatus reviewStatus = 15; // Will be ignored in create and update
+    uint64 id = 1; // Will be ignored in create
+    uint64 ownerId = 2; // Will be ignored in update
+    uint64 storeId = 3; // Just for gets
+    uint32 eventCategoryId = 4;
+    string name = 5;
+    string description = 6;
+    bool active = 7;
+    LocationCriteria locationCriteria = 8;
+    string address = 9;
+    // Represents seconds of UTC time since Unix epoch
+    int64 startAt = 10;
+    int64 endAt = 11;
+    string cellNumber = 12;
+    string phoneNumber = 13;
+    string banner = 14; // Just for gets
+    ReviewStatus reviewStatus = 15; // Will be ignored in create and update
 }
 
 message GetEventReply {
-  ReplyProperties replyProperties = 1;
-  Event event = 2;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    EVENT_NOT_FOUND = 1;
-  }
-  ErrorCode errorCode = 3;
+    ReplyProperties replyProperties = 1;
+    Event event = 2;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        EVENT_NOT_FOUND = 1;
+    }
+    ErrorCode errorCode = 3;
 }
 
 message CreateOrUpdateEventRequest {
-  RequestProperties requestProperties = 1;
-  Event event = 2;
-  RemoteFileActions changingBanner = 3;
+    RequestProperties requestProperties = 1;
+    Event event = 2;
+    RemoteFileActions changingBanner = 3;
 }
 
 message CreateOrUpdateEventReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    ALREADY_HAS_EVENT = 1; // Only while creating
-    STORE_NOT_CREATED = 3; // Only while creating
-    EVENT_NOT_FOUND = 4; // Only while updating
-    EMPTY_EVENT = 5; // Only while updating
-  }
-  ErrorCode errorCode = 2;
-  Event uptodateEvent = 3;
-  string bannerModificationUrl = 4;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ALREADY_HAS_EVENT = 1; // Only while creating
+        STORE_NOT_CREATED = 3; // Only while creating
+        EVENT_NOT_FOUND = 4; // Only while updating
+        EMPTY_EVENT = 5; // Only while updating
+    }
+    ErrorCode errorCode = 2;
+    Event uptodateEvent = 3;
+    string bannerModificationUrl = 4;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 service CommunicationService {
-  rpc CreateMessage(CreateMessageRequest) returns (CreateMessageReply) {
-  }
+    rpc CreateMessage (CreateMessageRequest) returns (CreateMessageReply) {
+    }
 }
 
 message CreateMessageRequest {
-  RequestProperties requestProperties = 1;
-  uint64 toUserId = 2;
-  uint64 inReplyTo = 3;
-  string message = 4;
+    RequestProperties requestProperties = 1;
+    uint64 toUserId = 2;
+    uint64 inReplyTo = 3;
+    string message = 4;
 }
 
 message CreateMessageReply {
-  ReplyProperties replyProperties = 1;
-  enum ErrorCode {
-    NO_CLIENT_ERROR = 0;
-    INVALID_TO_ERROR = 1;
-    TOO_MUCH_MESSAGES_ERROR = 2;
-  }
-  ErrorCode errorCode = 2;
+    ReplyProperties replyProperties = 1;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        INVALID_TO_ERROR = 1;
+        TOO_MUCH_MESSAGES_ERROR = 2;
+    }
+    ErrorCode errorCode = 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 service BrowseService {
-  rpc GetItems(BrowseItemsRequest) returns (BrowseItemsReply) {
-  }
+    rpc GetItems (BrowseItemsRequest) returns (BrowseItemsReply) {
+    }
 
-  rpc GetStores(BrowseStoresRequest) returns (BrowseStoresReply) {
-  }
+    rpc GetStores (BrowseStoresRequest) returns (BrowseStoresReply) {
+    }
 
-  rpc GetEvents(BrowseEventsRequest) returns (BrowseEventsReply) {
-  }
+    rpc GetEvents (BrowseEventsRequest) returns (BrowseEventsReply) {
+    }
+
+    rpc GetItem (BrowseItemRequest) returns (BrowseItemReply) {
+    }
 
 }
 
 message BrowseItemsRequest {
-  RequestProperties requestProperties = 1;
-  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
-  ArtCategoryCriteria artCategoryCriteria = 3;
-  uint32 minPrice = 4; // 1000 toman, floor round
-  uint32 maxPrice = 5; // 1000 toman, ceil round
-  string searchTerm = 6;
-  int64 nextPageId = 7;
-  uint64 id = 8;
-  uint64 storeId = 9;
+    RequestProperties requestProperties = 1;
+    LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
+    ArtCategoryCriteria artCategoryCriteria = 3;
+    uint32 minPrice = 4; // 1000 toman, floor round
+    uint32 maxPrice = 5; // 1000 toman, ceil round
+    string searchTerm = 6;
+    int64 nextPageId = 7;
+    uint64 id = 8;
+    uint64 storeId = 9;
 }
 
 message BrowseItemsReply {
-  ReplyProperties replyProperties = 1;
-  int64 nextPageId = 2;
-  repeated Item items = 3;
+    ReplyProperties replyProperties = 1;
+    int64 nextPageId = 2;
+    repeated Item items = 3;
 }
 
 
 message BrowseStoresRequest {
-  RequestProperties requestProperties = 1;
-  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
-  string searchTerm = 3;
-  int64 nextPageId = 4;
-  uint64 id = 5;
+    RequestProperties requestProperties = 1;
+    LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
+    string searchTerm = 3;
+    int64 nextPageId = 4;
+    uint64 id = 5;
 }
 
 message BrowseStoresReply {
-  ReplyProperties replyProperties = 1;
-  int64 nextPageId = 2;
-  repeated Store stores = 3;
+    ReplyProperties replyProperties = 1;
+    int64 nextPageId = 2;
+    repeated Store stores = 3;
 }
 
 message BrowseEventsRequest {
-  RequestProperties requestProperties = 1;
-  LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
-  uint32 eventCategoryCriteria = 3;
-  int64 before = 4;
-  int64 after = 5;
-  string searchTerm = 6;
-  int64 nextPageId = 7;
-  uint64 id = 8;
-  uint64 storeId = 9;
+    RequestProperties requestProperties = 1;
+    LocationCriteria locationCriteria = 2; // empty for whole country, otherwise province or state id
+    uint32 eventCategoryCriteria = 3;
+    int64 before = 4;
+    int64 after = 5;
+    string searchTerm = 6;
+    int64 nextPageId = 7;
+    uint64 id = 8;
+    uint64 storeId = 9;
 }
 
 message BrowseEventsReply {
-  ReplyProperties replyProperties = 1;
-  int64 nextPageId = 2;
-  repeated Event events = 3;
+    ReplyProperties replyProperties = 1;
+    int64 nextPageId = 2;
+    repeated Event events = 3;
+}
+
+message BrowseItemRequest {
+    RequestProperties requestProperties = 1;
+    uint64 id = 2;
+}
+
+message BrowseItemReply {
+    ReplyProperties replyProperties = 1;
+    Item item = 2;
+    Store store = 3;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        ITEM_NOT_FOUND = 1;
+    }
+    ErrorCode errorCode = 4;
 }

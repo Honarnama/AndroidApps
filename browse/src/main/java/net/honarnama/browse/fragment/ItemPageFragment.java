@@ -23,6 +23,8 @@ import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.model.Bookmark;
 import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseItemReply;
+import net.honarnama.nano.BrowseItemRequest;
 import net.honarnama.nano.BrowseItemsReply;
 import net.honarnama.nano.BrowseItemsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
@@ -595,8 +597,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     }
 
 
-    public class getItemAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
-        BrowseItemsRequest browseItemsRequest;
+    public class getItemAsync extends AsyncTask<Void, Void, BrowseItemReply> {
+        BrowseItemRequest browseItemRequest;
 
         @Override
         protected void onPreExecute() {
@@ -611,37 +613,37 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         @Override
-        protected BrowseItemsReply doInBackground(Void... voids) {
+        protected BrowseItemReply doInBackground(Void... voids) {
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
-            browseItemsRequest = new BrowseItemsRequest();
-            browseItemsRequest.requestProperties = rp;
+            browseItemRequest = new BrowseItemRequest();
+            browseItemRequest.requestProperties = rp;
 
-            browseItemsRequest.id = mItemId;
+            browseItemRequest.id = mItemId;
 
-            BrowseItemsReply getItemsReply;
+            BrowseItemReply getItemReply;
             if (BuildConfig.DEBUG) {
-                logD("Request for getting single item is: " + browseItemsRequest);
+                logD("Request for getting single item is: " + browseItemRequest);
             }
             try {
                 BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
-                getItemsReply = stub.getItems(browseItemsRequest);
-                return getItemsReply;
+                getItemReply = stub.getItem(browseItemRequest);
+                return getItemReply;
             } catch (Exception e) {
-                logE("Error running getItems request. request: " + browseItemsRequest + ". Error: " + e, e);
+                logE("Error running getItems request. request: " + browseItemRequest + ". Error: " + e, e);
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(BrowseItemsReply browseItemsReply) {
-            super.onPostExecute(browseItemsReply);
+        protected void onPostExecute(BrowseItemReply browseItemReply) {
+            super.onPostExecute(browseItemReply);
 
             mInfoProgreeBarContainer.setVisibility(View.GONE);
 
             Activity activity = getActivity();
 
-            if (browseItemsReply != null) {
-                switch (browseItemsReply.replyProperties.statusCode) {
+            if (browseItemReply != null) {
+                switch (browseItemReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
                         if (activity != null) {
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
@@ -651,7 +653,12 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
-                        // TODO
+                        if (browseItemReply.errorCode == BrowseItemReply.ITEM_NOT_FOUND) {
+                            if (isVisible()) {
+                                displayLongToast(getStringInFragment(R.string.error_item_no_longer_exists));
+                            }
+                            mDeletedItemMsg.setVisibility(View.VISIBLE);
+                        }
                         break;
                     case ReplyProperties.SERVER_ERROR:
                         if (isAdded()) {
@@ -665,22 +672,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
                     case ReplyProperties.OK:
                         if (isAdded()) {
-                            net.honarnama.nano.Item[] items = browseItemsReply.items;
-                            ArrayList<Item> itemsList = new ArrayList<>();
-                            for (net.honarnama.nano.Item item : items) {
-                                itemsList.add(0, item);
-                            }
-
-                            if (itemsList.size() == 0) {
-                                if (isVisible()) {
-                                    displayLongToast(getStringInFragment(R.string.error_item_no_longer_exists));
-                                }
-                                mDeletedItemMsg.setVisibility(View.VISIBLE);
-                            } else {
-
-                                loadItemInfo(itemsList.get(0));
-                            }
-
+                            net.honarnama.nano.Item item = browseItemReply.item;
+                            loadItemInfo(item);
                         }
                         break;
                 }
