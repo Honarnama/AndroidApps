@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
 import net.honarnama.base.model.Store;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.ObservableScrollView;
@@ -543,10 +545,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         super.onResume();
     }
 
-    public void addSimilarItems(List<Item> items) {
+    public void addSimilarItems(net.honarnama.nano.Item[] items) {
 
-        for (int i = 0; i < items.size(); i++) {
-            final Item item = items.get(i);
+        for (int i = 0; i < items.length; i++) {
+            final Item item = items[i];
 
             View similarItemLayout = getActivity().getLayoutInflater().inflate(R.layout.similar_item_layout, null);
 
@@ -673,7 +675,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     case ReplyProperties.OK:
                         if (isAdded()) {
                             net.honarnama.nano.Item item = browseItemReply.item;
-                            loadItemInfo(item);
+                            net.honarnama.nano.Store store = browseItemReply.store;
+                            net.honarnama.nano.Item[] similarItems = browseItemReply.similarItems;
+                            loadItemInfo(item, store, similarItems);
                         }
                         break;
                 }
@@ -687,7 +691,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
     }
 
-    private void loadItemInfo(net.honarnama.nano.Item item) {
+    private void loadItemInfo(net.honarnama.nano.Item item, net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {
 
         mFab.setVisibility(View.VISIBLE);
         mDefaultImageView.setVisibility(View.GONE);
@@ -715,8 +719,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.description));
 
-        mPlaceTextView.setText("استان. شهر");
-        mShopNameTextView.append("اسم فروشگاه");
+        String provinceName = Province.getProvinceById(store.locationCriteria.provinceId).getName();
+        String cityName = City.getCityById(store.locationCriteria.cityId).getName();
+
+        mPlaceTextView.setText(provinceName + "،" + " " + cityName);
+        mShopNameTextView.append(store.name);
 
         Picasso.with(mContext).load(R.drawable.default_logo_hand)
                 .error(R.drawable.camera_insta)
@@ -771,27 +778,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
 
         mSimilarItemsContainer.setVisibility(View.VISIBLE);
-        //TODO
-//        Item.getSimilarItemsByCategory(mItem.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
-//            @Override
-//            public Object then(Task<List<Item>> task) throws Exception {
-//                mSimilarItemsProgressBar.setVisibility(View.GONE);
-//                if (task.isFaulted()) {
-//                    logE("Finding similar items failed. " + task.getError());
-//                    similarItemsContainer.setVisibility(View.GONE);
-//                } else {
-//                    List<Item> similarItems = task.getResult();
-//                    if (similarItems.size() > 0) {
-////                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
-//                        addSimilarItems(similarItems);
-//                    } else {
-//                        similarItemsContainer.setVisibility(View.GONE);
-//                    }
-//                }
-//                return null;
-//            }
-//        });
+        if (similarItems.length == 0) {
+            mSimilarItemsContainer.setVisibility(View.GONE);
+        } else {
+            mSimilarTitleContainer.setVisibility(View.VISIBLE);
+            addSimilarItems(similarItems);
+        }
     }
+
 }
 
 

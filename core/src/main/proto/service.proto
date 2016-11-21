@@ -486,9 +486,10 @@ message BrowseItemReply {
     ReplyProperties replyProperties = 1;
     Item item = 2;
     Store store = 3;
+    repeated Item similarItems = 4;
     enum ErrorCode {
         NO_CLIENT_ERROR = 0;
         ITEM_NOT_FOUND = 1;
     }
-    ErrorCode errorCode = 4;
+    ErrorCode errorCode = 5;
 }
