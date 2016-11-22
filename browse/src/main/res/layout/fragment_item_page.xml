@@ -170,19 +170,6 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <ProgressBar
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        style="@style/GenericProgressIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitCenter"
-                        android:layout_below="@id/similar_title_container"
-                        android:layout_centerInParent="true"
-                        android:background="@android:color/transparent"
-                        android:layout_gravity="center"
-                        android:id="@+id/similar_items_progress_bar"
-                        />
-
                 <HorizontalScrollView
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/similar_items_hsv"

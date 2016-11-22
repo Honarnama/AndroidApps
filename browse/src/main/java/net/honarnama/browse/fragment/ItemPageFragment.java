@@ -23,15 +23,12 @@ import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
+import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Bookmark;
-import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.BrowseItemReply;
 import net.honarnama.nano.BrowseItemRequest;
-import net.honarnama.nano.BrowseItemsReply;
-import net.honarnama.nano.BrowseItemsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.Item;
-import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
@@ -62,8 +59,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import bolts.Continuation;
-import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
@@ -105,7 +100,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     ImageAdapter mImageAdapter;
 
     public RelativeLayout mShopContainer;
-    public Store mShop;
 
     public Item mItem;
     LayoutParams mLayoutParams;
@@ -120,7 +114,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public ImageSelector mDefaultImageView;
 
     public LinearLayout mInfoProgreeBarContainer;
-    public ProgressBar mSimilarItemsProgressBar;
 
     public RelativeLayout mOnErrorRetry;
 
@@ -179,7 +172,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mRemoveBoomarkImageView.setOnClickListener(this);
 
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.item_shop_container);
-        mShopContainer.setOnClickListener(this);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
 
@@ -189,7 +181,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
         mInfoProgreeBarContainer = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
-        mSimilarItemsProgressBar = (ProgressBar) rootView.findViewById(R.id.similar_items_progress_bar);
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
@@ -474,11 +465,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         }
 
-        if (v.getId() == R.id.item_shop_container) {
-            ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-            controlPanelActivity.displayShopPage(mShop.getId(), false);
-        }
-
         if (v.getId() == R.id.on_error_retry_container) {
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 return;
@@ -607,7 +593,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             super.onPreExecute();
             if (isAdded()) {
                 mSimilarItemsContainer.setVisibility(View.GONE);
-                mSimilarItemsProgressBar.setVisibility(View.VISIBLE);
                 mDefaultImageView.setVisibility(View.VISIBLE);
                 mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
                 mOnErrorRetry.setVisibility(View.GONE);
@@ -691,7 +676,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
     }
 
-    private void loadItemInfo(net.honarnama.nano.Item item, net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {
+    private void loadItemInfo(net.honarnama.nano.Item item, final net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {
 
         mFab.setVisibility(View.VISIBLE);
         mDefaultImageView.setVisibility(View.GONE);
@@ -725,6 +710,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mPlaceTextView.setText(provinceName + "،" + " " + cityName);
         mShopNameTextView.append(store.name);
 
+        mShopContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                controlPanelActivity.displayShopPage(store.id, false);
+            }
+        });
+
         Picasso.with(mContext).load(R.drawable.default_logo_hand)
                 .error(R.drawable.camera_insta)
                 .into(mShopLogo, new Callback() {
@@ -740,16 +733,15 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
-//                ContactDialog contactDialog = new ContactDialog();
-//                contactDialog.showDialog(getActivity(), mShop.getPhoneNumber(), mShop.getCellNumber(),
-//                        getResources().getString(R.string.item_contact_dialog_warning_msg));
+                ContactDialog contactDialog = new ContactDialog();
+                contactDialog.showDialog(getActivity(), store.publicPhoneNumber, store.publicCellNumber,
+                        getResources().getString(R.string.item_contact_dialog_warning_msg));
 
             }
         });
 
         String[] images = mItem.images;
-        List<String> nonNullImages = new ArrayList<String>();
+        List<String> nonNullImages = new ArrayList<>();
         for (int i = 0; i < net.honarnama.base.model.Item.NUMBER_OF_IMAGES; i++) {
             if (images[i] != null) {
                 nonNullImages.add(images[i]);
@@ -776,12 +768,10 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         }
 
-
-        mSimilarItemsContainer.setVisibility(View.VISIBLE);
         if (similarItems.length == 0) {
             mSimilarItemsContainer.setVisibility(View.GONE);
         } else {
-            mSimilarTitleContainer.setVisibility(View.VISIBLE);
+            mSimilarItemsContainer.setVisibility(View.VISIBLE);
             addSimilarItems(similarItems);
         }
     }
