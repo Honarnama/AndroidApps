@@ -1,10 +1,10 @@
 package net.honarnama.browse.model;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.model.HonarnamaBaseModel;
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.helper.BrowseDatabaseHelper;
-import net.honarnama.base.helper.DatabaseHelper;
-import net.honarnama.base.model.HonarnamaBaseModel;
+import net.honarnama.nano.*;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -62,18 +62,18 @@ public class Bookmark extends HonarnamaBaseModel {
         return null;
     }
 
-    public static void bookmarkItem(Item item) throws SQLException {
+    public static void bookmarkItem(net.honarnama.nano.Item item) throws SQLException {
         SQLiteDatabase db = BrowseDatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getWritableDatabase();
         ContentValues values = new ContentValues();
         if (BuildConfig.DEBUG) {
             Log.d(DEBUG_TAG, "Bookmark Item: " + item);
         }
-        values.put(COL_BOOKMARK_ITEM_ID, item.getId());
+        values.put(COL_BOOKMARK_ITEM_ID, item.id);
         values.put(COL_BOOKMARK_CREATE_DATE, System.currentTimeMillis());
         db.insertOrThrow(TABLE_BOOKMARKS, null, values);
     }
 
-    public static boolean removeBookmark(final String itemId) {
+    public static boolean removeBookmark(final Long itemId) {
         if (BuildConfig.DEBUG) {
             Log.d(DEBUG_TAG, "Remove Bookmark with id: " + itemId);
         }

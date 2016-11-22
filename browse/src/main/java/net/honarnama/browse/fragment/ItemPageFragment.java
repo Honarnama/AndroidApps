@@ -14,7 +14,6 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
-import net.honarnama.base.model.Store;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.base.utils.TextUtil;
@@ -35,6 +34,7 @@ import net.honarnama.nano.RequestProperties;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.SQLException;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -53,12 +53,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import bolts.Continuation;
+import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
@@ -404,7 +407,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public void onClick(View v) {
 
         if (v.getId() == R.id.item_share_container || v.getId() == R.id.share_item_icon || v.getId() == R.id.share_item_text) {
-
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, mNameTextView.getText().toString());
@@ -415,25 +417,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (v.getId() == R.id.bookmark) {
-            //TODO
-//            Bookmark.bookmarkItem(mItem).continueWith(new Continuation<Boolean, Object>() {
-//                @Override
-//                public Object then(Task<Boolean> task) throws Exception {
-//                    if (task.isFaulted()) {
-//
-//                    } else {
-//
-//                        if (task.getResult() == true) {
-//                            if (isVisible()) {
-//                                Toast.makeText(getActivity(), "محصول نشان شد.", Toast.LENGTH_SHORT).show();
-//                            }
-//                            mBookmarkImageView.setVisibility(View.GONE);
-//                            mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
-//                        }
-//                    }
-//                    return null;
-//                }
-//            });
+            try {
+                Bookmark.bookmarkItem(mItem);
+                displayShortToast(getStringInFragment(R.string.item_got_bookmarked));
+                mBookmarkImageView.setVisibility(View.GONE);
+                mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+            } catch (SQLException sqlEx) {
+                displayShortToast(getStringInFragment(R.string.error_bookmarking_item));
+            }
         }
 
         if (v.getId() == R.id.remove_bookmark) {
@@ -441,28 +432,18 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             confirmationDialog.showDialog(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO
-//                    Bookmark.removeBookmark(mItem).continueWith(new Continuation<Boolean, Object>() {
-//                        @Override
-//                        public Object then(Task<Boolean> task) throws Exception {
-//                            confirmationDialog.dismiss();
-//                            if (task.isFaulted()) {
-//
-//                            } else {
-//                                if (task.getResult() == true) {
-//                                    if (isVisible()) {
-//                                        Toast.makeText(getActivity(), "نشان محصول حذف شد.", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                    mBookmarkImageView.setVisibility(View.VISIBLE);
-//                                    mRemoveBoomarkImageView.setVisibility(View.GONE);
-//                                }
-//                            }
-//                            return null;
-//                        }
-//                    });
+                    try {
+                        Bookmark.removeBookmark(mItem.id);
+                        displayShortToast("نشان محصول حذف شد.");
+                        mBookmarkImageView.setVisibility(View.VISIBLE);
+                        mRemoveBoomarkImageView.setVisibility(View.GONE);
+                    } catch (Exception ex) {
+                        logE("Error removing bookmar. ex: ", ex);
+                        displayShortToast("خطا در حذف نشان محصول.");
+                    }
+                    confirmationDialog.dismiss();
                 }
             });
-
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
@@ -674,6 +655,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             }
         }
+
     }
 
     private void loadItemInfo(net.honarnama.nano.Item item, final net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {

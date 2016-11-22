@@ -63,5 +63,7 @@
     <string name="error_wrong_price_range">محدوده قیمت نادرست است.</string>
     <string name="error_min_price_greater_than_max_price">حداقل قیمت بیشتر از حداکثر قیمت است.
     </string>
+    <string name="item_got_bookmarked">محصول نشان شد.</string>
+    <string name="error_bookmarking_item">خطا در نشان کردن محصول.</string>
 
 </resources>
