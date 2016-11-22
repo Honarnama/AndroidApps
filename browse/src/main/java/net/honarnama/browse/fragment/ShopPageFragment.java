@@ -5,7 +5,12 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
 
+import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -17,7 +22,15 @@ import net.honarnama.base.model.Store;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.nano.BrowseItemReply;
+import net.honarnama.nano.BrowseItemRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.BrowseStoreReply;
+import net.honarnama.nano.BrowseStoreRequest;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,10 +46,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bolts.Continuation;
 import bolts.Task;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by elnaz on 2/15/16.
@@ -58,9 +73,17 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private RelativeLayout mShare;
-    public String mShopId;
+    public long mShopId;
+
+    public LinearLayout mItemsloadingCircle;
+
+    RelativeLayout mEmptyListContainer;
 
     public RelativeLayout mOnErrorRetry;
+
+    public FloatingActionButton mFab;
+
+    public RelativeLayout mInfoContainer;
 
     @Override
     public String getTitle(Context context) {
@@ -94,11 +117,11 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_shop_page, container, false);
-        mShopId = getArguments().getString("shopId");
+        mShopId = getArguments().getLong("shopId");
 
         mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
-        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
+        mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.store_fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
@@ -120,128 +143,21 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mOnErrorRetry.setOnClickListener(this);
 
         final RelativeLayout deletedShopMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_shop_msg);
-        final RelativeLayout infoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
+        mInfoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
-        final LinearLayout itemsloadingCircle = (LinearLayout) rootView.findViewById(R.id.shop_items_loading_circle);
-        emptyListContainer.setVisibility(View.GONE);
-        itemsloadingCircle.setVisibility(View.VISIBLE);
+        mItemsloadingCircle = (LinearLayout) rootView.findViewById(R.id.shop_items_loading_circle);
+        mEmptyListContainer.setVisibility(View.GONE);
+        mItemsloadingCircle.setVisibility(View.VISIBLE);
 
-        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         mItemsAdapter = new ItemsAdapter(getActivity());
         mOnErrorRetry.setVisibility(View.GONE);
-        Shop.getShopById(mShopId).continueWith(new Continuation<Store, Boolean>() {
-            @Override
-            public Boolean then(Task<Store> task) throws Exception {
-                if (task.isFaulted()) {
-//                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
-//                        if (isVisible()) {
-//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_shop_no_longer_exists), Toast.LENGTH_SHORT).show();
-//                        }
-//                        deletedShopMsg.setVisibility(View.VISIBLE);
-//                    } else {
-//                        logE("Getting Shop  with id " + mShopId + " failed. Error: " + task.getError(), task.getError());
-//                        if (isVisible()) {
-//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_displaying_shop) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-//                        }
-//                        mOnErrorRetry.setVisibility(View.VISIBLE);
-//                    }
-                    itemsloadingCircle.setVisibility(View.GONE);
-                    return false;
-                } else {
-                    fab.setVisibility(View.VISIBLE);
-                    infoContainer.setVisibility(View.VISIBLE);
-                    mOnErrorRetry.setVisibility(View.GONE);
-                    mShare.setVisibility(View.VISIBLE);
-                    final Store shop = task.getResult();
-                    //TODO
-//                    mOwner = shop.getParseUser(Store.OWNER);
-                    mShopName.setText(TextUtil.convertEnNumberToFa(shop.getName()));
-                    mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.getDescription()));
-
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ContactDialog contactDialog = new ContactDialog();
-                            contactDialog.showDialog(getActivity(), shop.getPhoneNumber(), shop.getCellNumber(),
-                                    getResources().getString(R.string.item_contact_dialog_warning_msg));
-
-                        }
-                    });
-
-                    String province = shop.getProvince().getName();
-                    String city = shop.getCity().getName();
-
-                    mShopPlace.setText(province + "، " + city);
-
-                    mLogoProgressBar.setVisibility(View.VISIBLE);
-                    //TODO
-//                    mLogoImageView.loadInBackground(shop.getParseFile(Store.LOGO), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//                            mLogoProgressBar.setVisibility(View.GONE);
-//                            if (e != null) {
-//                                logE("Getting  logo image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error:" + e, "", e);
-//                                if (isVisible()) {
-//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_logo) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        }
-//                    });
-
-                    mBannerProgressBar.setVisibility(View.VISIBLE);
-                    //TODO
-//                    mBannerImageView.loadInBackground(shop.getParseFile(Store.BANNER), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//                            mBannerProgressBar.setVisibility(View.GONE);
-//                            if (e != null) {
-//                                logE("Getting  banner image for shop " + mShopId + " failed. Code: " + e.getCode() + " // Msg: " + e.getMessage() + " // Error: " + e, "", e);
-//                                if (isVisible()) {
-//                                    Toast.makeText(getActivity(), getString(R.string.error_displaying_store_banner) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        }
-//                    });
-                }
-                return true;
-            }
-        }).continueWithTask(new Continuation<Boolean, Task<List<Item>>>() {
-            @Override
-            public Task<List<Item>> then(Task<Boolean> task) throws Exception {
-//                if (task.getResult() == true && mOwner != null) {
-//                    return Item.getItemsByOwner(mOwner);
-//                } else {
-//                    return Task.forError(new ParseException(ParseException.OBJECT_NOT_FOUND, "Shop is not verified or no shop found"));
-//                }
-                return null;
-            }
-        }).continueWith(new Continuation<List<Item>, Object>() {
-            @Override
-            public Object then(Task<List<Item>> task) throws Exception {
-                itemsloadingCircle.setVisibility(View.GONE);
-//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-//                    logE("Getting items for shop " + mShopId + " failed. Error: " + task.getError(), task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
-//                    List<Item> shopItems = task.getResult();
-//                    if (shopItems.size() == 0) {
-//                        mListView.setEmptyView(emptyListContainer);
-//                        emptyListContainer.setVisibility(View.VISIBLE);
-//                    }
-//                    mItemsAdapter.setItems(shopItems);
-//                    mItemsAdapter.notifyDataSetChanged();
-//                    WindowUtil.setListViewHeightBasedOnChildren(mListView);
-//                }
-                return null;
-            }
-        });
 
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
 
+        new getStoreAsync().execute();
         return rootView;
 
     }
@@ -282,7 +198,142 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         int scrollY = mScrollView.getScrollY();
         // Add parallax effect
         mBannerFrameLayout.setTranslationY(scrollY * 0.5f);
+    }
+
+    public class getStoreAsync extends AsyncTask<Void, Void, BrowseStoreReply> {
+        BrowseStoreRequest browseStoreRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isAdded()) {
+                mOnErrorRetry.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        protected BrowseStoreReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseStoreRequest = new BrowseStoreRequest();
+            browseStoreRequest.requestProperties = rp;
+
+            browseStoreRequest.id = mShopId;
+
+            BrowseStoreReply getStoreReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting single store is: " + browseStoreRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                getStoreReply = stub.getStore(browseStoreRequest);
+                return getStoreReply;
+            } catch (Exception e) {
+                logE("Error running getStore request. request: " + browseStoreRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseStoreReply browseStoreReply) {
+            super.onPostExecute(browseStoreReply);
+
+            mItemsloadingCircle.setVisibility(View.GONE);
+
+            Activity activity = getActivity();
+
+            if (browseStoreReply != null) {
+                switch (browseStoreReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        if (browseStoreReply.errorCode == BrowseStoreReply.STORE_NOT_FOUND) {
+                            if (isVisible()) {
+                                displayLongToast(getStringInFragment(R.string.error_shop_no_longer_exists));
+                            }
+                        }
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        if (isAdded()) {
+                            mOnErrorRetry.setVisibility(View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        }
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Store store = browseStoreReply.store;
+                            net.honarnama.nano.Item[] shopItems = browseStoreReply.items;
+                            loadStoreInfo(store, shopItems);
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
 
     }
+
+    private void loadStoreInfo(final net.honarnama.nano.Store shop, net.honarnama.nano.Item[] shopItems) {
+
+        mFab.setVisibility(View.VISIBLE);
+        mInfoContainer.setVisibility(View.VISIBLE);
+        mOnErrorRetry.setVisibility(View.GONE);
+        mShare.setVisibility(View.VISIBLE);
+
+        mShopName.setText(TextUtil.convertEnNumberToFa(shop.name));
+        mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.description));
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContactDialog contactDialog = new ContactDialog();
+                contactDialog.showDialog(getActivity(), shop.publicPhoneNumber, shop.publicCellNumber,
+                        getResources().getString(R.string.item_contact_dialog_warning_msg));
+
+            }
+        });
+
+        String province = Province.getProvinceById(shop.locationCriteria.provinceId).getName();
+        String city = City.getCityById(shop.locationCriteria.cityId).getName();
+
+        mShopPlace.setText(province + "، " + city);
+
+
+        mLogoProgressBar.setVisibility(View.VISIBLE);
+        mBannerProgressBar.setVisibility(View.VISIBLE);
+
+        mLogoImageView.setSource(shop.logo, mLogoProgressBar);
+        mBannerImageView.setSource(shop.banner, mBannerProgressBar);
+
+
+        if (shopItems.length == 0) {
+            mListView.setEmptyView(mEmptyListContainer);
+            mEmptyListContainer.setVisibility(View.VISIBLE);
+
+            ArrayList itemsList = new ArrayList();
+            for (net.honarnama.nano.Item item : shopItems) {
+                itemsList.add(0, item);
+            }
+
+            mItemsAdapter.setItems(itemsList);
+            mItemsAdapter.notifyDataSetChanged();
+            WindowUtil.setListViewHeightBasedOnChildren(mListView);
+        }
+    }
+
 
 }

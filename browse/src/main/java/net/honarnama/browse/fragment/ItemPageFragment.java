@@ -195,132 +195,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         new getItemAsync().execute();
 
-//        Item.getItemById(mItemId).continueWith(new Continuation<ParseObject, Object>() {
-//            @Override
-//            public Object then(Task<ParseObject> task) throws Exception {
-//                mInfoProgreeBarContainer.setVisibility(View.GONE);
-//                if (task.isFaulted()) {
-//                    if (((ParseException) task.getError()).getCode() == ParseException.OBJECT_NOT_FOUND) {
-//                        if (isVisible()) {
-//                            Toast.makeText(getActivity(), getActivity().getString(R.string.error_item_no_longer_exists), Toast.LENGTH_SHORT).show();
-//                        }
-//                        deletedItemMsg.setVisibility(View.VISIBLE);
-//
-//                    } else {
-//                        logE("Getting item with id " + mItemId + " for item page failed. Error: " + task.getError(), "", task.getError());
-//                        mOnErrorRetry.setVisibility(View.VISIBLE);
-//                    }
-//                    return null;
-//                } else {
-//                    fab.setVisibility(View.VISIBLE);
-//                    mDefaultImageView.setVisibility(View.GONE);
-//                    infoContainer.setVisibility(View.VISIBLE);
-//                    mOnErrorRetry.setVisibility(View.GONE);
-//                    mShare.setVisibility(View.VISIBLE);
-//                    mItem = (Item) task.getResult();
-//
-//                    Bookmark.isBookmarkedAlready(mItem).continueWith(new Continuation<Boolean, Object>() {
-//                        @Override
-//                        public Object then(Task<Boolean> task) throws Exception {
-//                            if (task.isFaulted()) {
-//
-//                            } else {
-//                                boolean isBookmarked = task.getResult();
-//                                if (isBookmarked) {
-//                                    mBookmarkImageView.setVisibility(View.GONE);
-//                                    mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
-//                                } else {
-//                                    mBookmarkImageView.setVisibility(View.VISIBLE);
-//                                    mRemoveBoomarkImageView.setVisibility(View.GONE);
-//                                }
-//                                bookmarkBack.setVisibility(View.VISIBLE);
-//                            }
-//                            return null;
-//                        }
-//                    });
-//
-//                    mNameTextView.setText(TextUtil.convertEnNumberToFa(mItem.getName()));
-//                    NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
-//                    String formattedPrice = formatter.format(mItem.getPrice());
-//                    String price = TextUtil.convertEnNumberToFa(formattedPrice);
-//                    mPriceTextView.setText(price + " ");
-//
-//                    mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.getDescription()));
-//
-//                    mShop = mItem.getStore();
-//                    mPlaceTextView.setText(mShop.getProvince().getString(Province.NAME) + "، " + mShop.getCity().getString(City.NAME));
-//                    mShopNameTextView.append(TextUtil.convertEnNumberToFa(mShop.getName()));
-//                    mShopLogo.loadInBackground(mShop.getLogo(), new GetDataCallback() {
-//                        @Override
-//                        public void done(byte[] data, ParseException e) {
-//                        }
-//                    });
-//
-//                    fab.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            ContactDialog contactDialog = new ContactDialog();
-//                            contactDialog.showDialog(getActivity(), mShop.getPhoneNumber(), mShop.getCellNumber(),
-//                                    getResources().getString(R.string.item_contact_dialog_warning_msg));
-//
-//                        }
-//                    });
-//
-////                    mBannerProgressBar.setVisibility(View.VISIBLE);
-//
-//                    ParseFile[] images = mItem.getImages();
-//                    List<ParseFile> nonNullImages = new ArrayList<ParseFile>();
-//                    for (int i = 0; i < net.honarnama.core.model.Item.NUMBER_OF_IMAGES; i++) {
-//                        if (images[i] != null) {
-//                            nonNullImages.add(images[i]);
-//                        }
-//                    }
-//                    mImageAdapter.setImages(nonNullImages);
-//                    mImageAdapter.notifyDataSetChanged();
-//
-//                    mDotsCount = mImageAdapter.getCount();
-//                    if (mDotsCount > 1) {
-//                        mDotsText = new IconicsTextView[mDotsCount];
-//                        for (int i = 0; i < mDotsCount; i++) {
-//                            mDotsText[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
-//                            mDotsText[i].setText("{gmd-brightness-1}");
-//                            mDotsText[i].setTextSize(8);
-//                            if (i == 0) {
-//                                mDotsText[i].setPadding(0, 10, 0, 0);
-//                            } else {
-//                                mDotsText[i].setPadding(0, 10, 10, 0);
-//                            }
-//                            mDotsText[i].setTypeface(null, Typeface.BOLD);
-//                            mDotsText[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
-//                            mDotsLayout.addView(mDotsText[i]);
-//                        }
-//                    }
-//                    similarItemsContainer.setVisibility(View.VISIBLE);
-//                    Item.getSimilarItemsByCategory(mItem.getCategory(), mItemId).continueWith(new Continuation<List<Item>, Object>() {
-//                        @Override
-//                        public Object then(Task<List<Item>> task) throws Exception {
-//                            mSimilarItemsProgressBar.setVisibility(View.GONE);
-//                            if (task.isFaulted()) {
-//                                logE("Finding similar items failed. " + task.getError());
-//                                similarItemsContainer.setVisibility(View.GONE);
-//                            } else {
-//                                List<Item> similarItems = task.getResult();
-//                                if (similarItems.size() > 0) {
-////                                    mSimilarTitleContainer.setVisibility(View.VISIBLE);
-//                                    addSimilarItems(similarItems);
-//                                } else {
-//                                    similarItemsContainer.setVisibility(View.GONE);
-//                                }
-//                            }
-//                            return null;
-//                        }
-//                    });
-//                }
-//
-//                return null;
-//            }
-//        });
-
         //here we create the gallery and set our adapter created before
         Gallery gallery = (Gallery) rootView.findViewById(R.id.gallery);
         gallery.setAdapter(mImageAdapter);
@@ -397,9 +271,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         });
 
-
         return rootView;
-
     }
 
     @Override
@@ -598,7 +470,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                 getItemReply = stub.getItem(browseItemRequest);
                 return getItemReply;
             } catch (Exception e) {
-                logE("Error running getItems request. request: " + browseItemRequest + ". Error: " + e, e);
+                logE("Error running getItem request. request: " + browseItemRequest + ". Error: " + e, e);
             }
             return null;
         }

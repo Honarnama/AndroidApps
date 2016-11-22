@@ -424,6 +424,8 @@ service BrowseService {
     rpc GetItem (BrowseItemRequest) returns (BrowseItemReply) {
     }
 
+    rpc GetStore(BrowseStoreRequest) returns (BrowseStoreReply) {
+    }
 }
 
 message BrowseItemsRequest {
@@ -490,6 +492,22 @@ message BrowseItemReply {
     enum ErrorCode {
         NO_CLIENT_ERROR = 0;
         ITEM_NOT_FOUND = 1;
+    }
+    ErrorCode errorCode = 5;
+}
+
+message BrowseStoreRequest {
+    RequestProperties requestProperties = 1;
+    uint64 id = 2;
+}
+
+message BrowseStoreReply {
+    ReplyProperties replyProperties = 1;
+    Store store = 2;
+    repeated Item items = 3;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        STORE_NOT_FOUND = 1;
     }
     ErrorCode errorCode = 5;
 }
