@@ -42,7 +42,9 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -53,15 +55,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import bolts.Continuation;
-import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
@@ -108,7 +107,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     LayoutParams mLayoutParams;
     LinearLayout mNext, mPrev;
     int mSimilarItemViewWidth;
-    //    GestureDetector mGestureDetector = null;
+    GestureDetector mGestureDetector = null;
     HorizontalScrollView mHorizontalScrollView;
     ArrayList<View> mSimilarItemsList = new ArrayList<>();
     int mWidth;
@@ -380,7 +379,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         });
 
         mHorizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.similar_items_hsv);
-//        mGestureDetector = new GestureDetector(new MyGestureDetector());
+        mGestureDetector = new GestureDetector(new MyGestureDetector());
 
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -388,15 +387,15 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mSimilarItemViewWidth = mWidth / 3;
 
 
-//        mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (mGestureDetector.onTouchEvent(event)) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+        mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (mGestureDetector.onTouchEvent(event)) {
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
         return rootView;
@@ -472,22 +471,22 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     }
 
-//    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
-//        @Override
-//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-//                               float velocityY) {
-//            if (e1.getX() < e2.getX()) {
-//                mCurrPosition = getVisibleViews("left");
-//            } else {
-//                mCurrPosition = getVisibleViews("right");
-//            }
-//
-//            mHorizontalScrollView.smoothScrollTo(mSimilarItemsList.get(mCurrPosition)
-//                    .getLeft(), 0);
-//            return true;
-//        }
-//
-//    }
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                               float velocityY) {
+            if (e1.getX() < e2.getX()) {
+                mCurrPosition = getVisibleViews("left");
+            } else {
+                mCurrPosition = getVisibleViews("right");
+            }
+
+            mHorizontalScrollView.smoothScrollTo(mSimilarItemsList.get(mCurrPosition)
+                    .getLeft(), 0);
+            return true;
+        }
+
+    }
 
     public int getVisibleViews(String direction) {
         Rect hitRect = new Rect();
