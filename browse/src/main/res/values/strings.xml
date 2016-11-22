@@ -58,6 +58,8 @@
     <string name="filter_geo">فیلتر کردن محدوده جغرافیایی</string>
     <string name="set_default_location">تعیین مکان جغرافیایی</string>
     <string name="exit_app">خروج از برنامه</string>
+    <string name="exit_app_title">تایید خروج از برنامه</string>
+    <string name="exit_app_confirmation">میخوای از برنامه خارج بشی؟</string>
     <string name="register_location">ثبت مکان</string>
     <string name="bikhial">بی خیال</string>
     <string name="error_wrong_price_range">محدوده قیمت نادرست است.</string>
@@ -65,5 +67,9 @@
     </string>
     <string name="item_got_bookmarked">محصول نشان شد.</string>
     <string name="error_bookmarking_item">خطا در نشان کردن محصول.</string>
+    <string name="remove_bookmark_dialog_title">حذف از فهرست محصولات نشان شده</string>
+    <string name="remove_bookmark_dialog_msg">آیا می‌خواهید محصول را از فهرست محصولات نشان شده‌تان
+        حذف کنید؟
+    </string>
 
 </resources>

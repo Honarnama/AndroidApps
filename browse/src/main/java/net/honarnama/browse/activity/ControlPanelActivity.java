@@ -2,6 +2,7 @@ package net.honarnama.browse.activity;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
@@ -9,6 +10,7 @@ import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
+import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
@@ -16,6 +18,7 @@ import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.NoNetFragment;
 import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
+import net.honarnama.browse.model.Bookmark;
 import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.browse.widget.MainTabBar;
 import net.honarnama.base.adapter.CityAdapter;
@@ -43,6 +46,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -113,7 +117,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public static final int ITEM_IDENTIFIER_SUPPORT = 6;
     public static final int ITEM_IDENTIFIER_SWAP = 7;
     public static final int ITEM_IDENTIFIER_EXIT = 8;
-
 
     public Dialog mSetDefaultLocationDialog;
 
@@ -636,20 +639,22 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
 
-                new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.DialogStyle))
-                        .setTitle("تایید خروج")
-                        .setMessage("می‌خوای از برنامه خارج بشی؟")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton("بله", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
-                                    askToRate();
-                                } else {
-                                    finish();
-                                }
-                            }
-                        })
-                        .setNegativeButton("نه می‌مونم", null).show();
+                final ConfirmationDialog confirmationDialog = new ConfirmationDialog(ControlPanelActivity.this,
+                        getString(R.string.exit_app_title),
+                        getString(R.string.exit_app_confirmation)
+                );
+                confirmationDialog.showDialog(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
+                            askToRate();
+                        } else {
+                            finish();
+                        }
+                        confirmationDialog.dismiss();
+                    }
+                });
+
             }
         }
     }

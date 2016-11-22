@@ -9,17 +9,29 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Created by elnaz on 3/2/16.
  */
 public class ConfirmationDialog extends Dialog {
 
-    public ConfirmationDialog(Context context) {
+    TextView mTitleTV;
+    TextView mMsgTV;
+
+    public ConfirmationDialog(Context context, String title, String msg) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(true);
         setContentView(R.layout.confirmation_dilaog);
+        try {
+            mTitleTV = (TextView) findViewById(R.id.confirm_title);
+            mMsgTV = (TextView) findViewById(R.id.contact_warning);
+            mTitleTV.setText(title);
+            mMsgTV.setText(msg);
+        } catch (Exception ex) {
+
+        }
     }
 
     public void showDialog(View.OnClickListener onYesClickListener) {
@@ -32,7 +44,6 @@ public class ConfirmationDialog extends Dialog {
                 dismiss();
             }
         });
-
 
         Button yesButton = (Button) findViewById(R.id.yes);
         yesButton.setOnClickListener(onYesClickListener);
