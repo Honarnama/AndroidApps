@@ -2,6 +2,8 @@ package com.parse;
 
 import com.crashlytics.android.Crashlytics;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -26,6 +28,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.File;
@@ -495,6 +498,25 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public void setDeleted(boolean deleted) {
         mDeleted = deleted;
+    }
+
+    public void setSource(String imageUri, final ProgressBar progressbar) {
+        if (imageUri.trim().length() == 0) {
+            return;
+        }
+        Picasso.with(mContext).load(imageUri.toString())
+                .error(R.drawable.party_flags)
+                .into(this, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        progressbar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        progressbar.setVisibility(View.GONE);
+                    }
+                });
     }
 
 }

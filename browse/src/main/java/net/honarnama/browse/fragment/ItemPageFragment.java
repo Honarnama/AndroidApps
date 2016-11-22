@@ -727,7 +727,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         String[] images = mItem.images;
         List<String> nonNullImages = new ArrayList<>();
         for (int i = 0; i < net.honarnama.base.model.Item.NUMBER_OF_IMAGES; i++) {
-            if (images[i] != null) {
+            if (images[i].trim().length() > 0) {
                 nonNullImages.add(images[i]);
             }
         }
