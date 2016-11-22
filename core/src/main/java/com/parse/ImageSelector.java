@@ -509,12 +509,16 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 .into(this, new Callback() {
                     @Override
                     public void onSuccess() {
-                        progressbar.setVisibility(View.GONE);
+                        if (progressbar != null) {
+                            progressbar.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override
                     public void onError() {
-                        progressbar.setVisibility(View.GONE);
+                        if (progressbar != null) {
+                            progressbar.setVisibility(View.GONE);
+                        }
                     }
                 });
     }
