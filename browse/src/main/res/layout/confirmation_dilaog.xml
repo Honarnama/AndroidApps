@@ -22,7 +22,7 @@
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    app:iiv_color="@color/red"
+                    app:iiv_color="@color/amber_primary_dark"
                     app:iiv_icon="gmd-warning"
                     android:layout_toRightOf="@+id/confirm_title"
             />
@@ -64,7 +64,7 @@
                     android:text="بله"
                     android:id="@+id/yes"
                     android:layout_marginLeft="5dp"
-                    android:background="@drawable/yes_button_back"
+                    android:background="@drawable/round_corner_cyan_back"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:paddingTop="5dp"
@@ -77,7 +77,7 @@
                     android:text="بی‌خیال"
                     android:id="@+id/close_button"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/no_button_back"
+                    android:background="@drawable/round_corner_red_back"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:paddingTop="5dp"
