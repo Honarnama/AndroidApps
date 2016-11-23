@@ -7,7 +7,7 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layoutDirection="rtl"
-                android:background="?android:windowBackground"
+                android:background="@color/gray_super_extra_light"
         >
     <LinearLayout
             android:id="@+id/loading_circle_container"
