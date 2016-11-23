@@ -171,7 +171,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             sendIntent.putExtra(Intent.EXTRA_SUBJECT,
                     getString(R.string.art_shop) + " " + mShopName.getText());
             sendIntent.putExtra(Intent.EXTRA_TEXT, "سلام،" + "\n" + "غرفه هنری " + mShopName.getText() + " تو برنامه هنرما رو ببین: " +
-                    "\n" + HonarnamaBaseApp.WEB_ADDRESS + "/shop/" + mShopId);
+                    "\n" + HonarnamaBaseApp.WEB_ADDRESS + "/store/" + mShopId);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         }
@@ -312,28 +312,28 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mShopPlace.setText(province + "، " + city);
 
+        if (shop.logo.trim().length() > 0) {
+            mLogoProgressBar.setVisibility(View.VISIBLE);
+            mLogoImageView.setSource(shop.logo, mLogoProgressBar);
+        }
 
-        mLogoProgressBar.setVisibility(View.VISIBLE);
-        mBannerProgressBar.setVisibility(View.VISIBLE);
-
-        mLogoImageView.setSource(shop.logo, mLogoProgressBar);
-        mBannerImageView.setSource(shop.banner, mBannerProgressBar);
-
+        if (shop.banner.trim().length() > 0) {
+            mBannerProgressBar.setVisibility(View.VISIBLE);
+            mBannerImageView.setSource(shop.banner, mBannerProgressBar);
+        }
 
         if (shopItems.length == 0) {
             mListView.setEmptyView(mEmptyListContainer);
             mEmptyListContainer.setVisibility(View.VISIBLE);
-
+        } else {
             ArrayList itemsList = new ArrayList();
             for (net.honarnama.nano.Item item : shopItems) {
                 itemsList.add(0, item);
             }
-
             mItemsAdapter.setItems(itemsList);
             mItemsAdapter.notifyDataSetChanged();
             WindowUtil.setListViewHeightBasedOnChildren(mListView);
         }
+
     }
-
-
 }
