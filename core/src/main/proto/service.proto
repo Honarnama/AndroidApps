@@ -424,7 +424,10 @@ service BrowseService {
     rpc GetItem (BrowseItemRequest) returns (BrowseItemReply) {
     }
 
-    rpc GetStore(BrowseStoreRequest) returns (BrowseStoreReply) {
+    rpc GetStore (BrowseStoreRequest) returns (BrowseStoreReply) {
+    }
+
+    rpc GetEvent (BrowseEventRequest) returns (BrowseEventReply) {
     }
 }
 
@@ -509,5 +512,22 @@ message BrowseStoreReply {
         NO_CLIENT_ERROR = 0;
         STORE_NOT_FOUND = 1;
     }
-    ErrorCode errorCode = 5;
+    ErrorCode errorCode = 4;
 }
+
+message BrowseEventRequest {
+    RequestProperties requestProperties = 1;
+    uint64 id = 2;
+}
+
+message BrowseEventReply {
+    ReplyProperties replyProperties = 1;
+    Event event = 2;
+    Store store = 3;
+    enum ErrorCode {
+        NO_CLIENT_ERROR = 0;
+        EVENT_NOT_FOUND = 1;
+    }
+    ErrorCode errorCode = 4;
+}
+

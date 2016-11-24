@@ -75,8 +75,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mPriceTextView;
     public TextView mDescTextView;
     public TextView mPlaceTextView;
-    public TextView mShopNameTextView;
-    public ImageSelector mShopLogo;
+
     private LinearLayout mDotsLayout;
     public LinearLayout mInnerLayout;
     public RelativeLayout mSimilarTitleContainer;
@@ -102,6 +101,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     ImageAdapter mImageAdapter;
 
     public RelativeLayout mShopContainer;
+    public TextView mShopNameTextView;
+    public ImageSelector mShopLogo;
 
     public Item mItem;
     LayoutParams mLayoutParams;
@@ -291,8 +292,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             try {
                 Bookmark.bookmarkItem(mItem);
                 displayShortToast(getStringInFragment(R.string.item_got_bookmarked));
-                mBookmarkImageView.setVisibility(View.GONE);
-                mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+                setVisibilityInFragment(mBookmarkImageView, View.GONE);
+                setVisibilityInFragment(mRemoveBoomarkImageView, View.VISIBLE);
             } catch (SQLException sqlEx) {
                 displayShortToast(getStringInFragment(R.string.error_bookmarking_item));
             }
@@ -309,8 +310,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     try {
                         Bookmark.removeBookmark(mItem.id);
                         displayShortToast("نشان محصول حذف شد.");
-                        mBookmarkImageView.setVisibility(View.VISIBLE);
-                        mRemoveBoomarkImageView.setVisibility(View.GONE);
+                        setVisibilityInFragment(mBookmarkImageView, View.VISIBLE);
+                        setVisibilityInFragment(mRemoveBoomarkImageView, View.GONE);
                     } catch (Exception ex) {
                         logE("Error removing bookmar. ex: ", ex);
                         displayShortToast("خطا در حذف نشان محصول.");
@@ -433,8 +434,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }, 10);
 
         if (mSimilarItemsList.size() > 3) {
-            mPrev.setVisibility(View.VISIBLE);
-            mNext.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mPrev, View.VISIBLE);
+            setVisibilityInFragment(mNext, View.VISIBLE);
         }
     }
 
@@ -445,12 +446,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mSimilarItemsContainer.setVisibility(View.GONE);
-                mDefaultImageView.setVisibility(View.VISIBLE);
-                mInfoProgreeBarContainer.setVisibility(View.VISIBLE);
-                mOnErrorRetry.setVisibility(View.GONE);
-            }
+            setVisibilityInFragment(mSimilarItemsContainer, View.GONE);
+            setVisibilityInFragment(mDefaultImageView, View.VISIBLE);
+            setVisibilityInFragment(mInfoProgreeBarContainer, View.VISIBLE);
+            setVisibilityInFragment(mOnErrorRetry, View.GONE);
+            setVisibilityInFragment(mDeletedItemMsg, View.GONE);
         }
 
         @Override
@@ -479,7 +479,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         protected void onPostExecute(BrowseItemReply browseItemReply) {
             super.onPostExecute(browseItemReply);
 
-            mInfoProgreeBarContainer.setVisibility(View.GONE);
+            setVisibilityInFragment(mInfoProgreeBarContainer, View.GONE);
 
             Activity activity = getActivity();
 
@@ -490,7 +490,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         } else {
-                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                            logE("Uncaught error code for getting item. browse request: " + browseItemRequest);
                         }
                         break;
                     case ReplyProperties.CLIENT_ERROR:
@@ -498,14 +498,15 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                             if (isVisible()) {
                                 displayLongToast(getStringInFragment(R.string.error_item_no_longer_exists));
                             }
-                            mDeletedItemMsg.setVisibility(View.VISIBLE);
+                            setVisibilityInFragment(mDeletedItemMsg, View.VISIBLE);
+                        } else {
+                            setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                            displayLongToast(getStringInFragment(R.string.error_displaying_item) + getStringInFragment(R.string.check_net_connection));
                         }
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            mOnErrorRetry.setVisibility(View.VISIBLE);
-                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -522,10 +523,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                 }
 
             } else {
-                if (isAdded()) {
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
-
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
             }
         }
 
@@ -533,38 +531,38 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     private void loadItemInfo(net.honarnama.nano.Item item, final net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {
 
-        mFab.setVisibility(View.VISIBLE);
-        mDefaultImageView.setVisibility(View.GONE);
-        mInfoContainer.setVisibility(View.VISIBLE);
-        mOnErrorRetry.setVisibility(View.GONE);
-        mShare.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mFab, View.VISIBLE);
+        setVisibilityInFragment(mDefaultImageView, View.GONE);
+        setVisibilityInFragment(mInfoContainer, View.VISIBLE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
+        setVisibilityInFragment(mShare, View.VISIBLE);
         mItem = item;
 
         boolean isBookmarked = new Bookmark().isBookmarkedAlready(mItem.id);
 
         if (isBookmarked) {
-            mBookmarkImageView.setVisibility(View.GONE);
-            mRemoveBoomarkImageView.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mBookmarkImageView, View.GONE);
+            setVisibilityInFragment(mRemoveBoomarkImageView, View.VISIBLE);
         } else {
-            mBookmarkImageView.setVisibility(View.VISIBLE);
-            mRemoveBoomarkImageView.setVisibility(View.GONE);
+            setVisibilityInFragment(mBookmarkImageView, View.VISIBLE);
+            setVisibilityInFragment(mRemoveBoomarkImageView, View.GONE);
         }
-        mBookmarkBack.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mBookmarkBack, View.VISIBLE);
 
-        mNameTextView.setText(TextUtil.convertEnNumberToFa(mItem.name));
+        setTextInFragment(mNameTextView, TextUtil.convertEnNumberToFa(mItem.name));
         NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
         String formattedPrice = formatter.format(mItem.price);
         String price = TextUtil.convertEnNumberToFa(formattedPrice);
-        mPriceTextView.setText(price + " ");
 
-        mDescTextView.setText(TextUtil.convertEnNumberToFa(mItem.description));
+        setTextInFragment(mPriceTextView, price + " ");
+        setTextInFragment(mDescTextView, TextUtil.convertEnNumberToFa(mItem.description));
 
         String provinceName = Province.getProvinceById(store.locationCriteria.provinceId).getName();
         String cityName = City.getCityById(store.locationCriteria.cityId).getName();
 
-        mPlaceTextView.setText(provinceName + "،" + " " + cityName);
-        mShopNameTextView.append(store.name);
+        setTextInFragment(mPlaceTextView, provinceName + "،" + " " + cityName);
 
+        setTextInFragment(mShopNameTextView, "محصولی از " + store.name);
         mShopContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -624,9 +622,9 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (similarItems.length == 0) {
-            mSimilarItemsContainer.setVisibility(View.GONE);
+            setVisibilityInFragment(mSimilarItemsContainer, View.GONE);
         } else {
-            mSimilarItemsContainer.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mSimilarItemsContainer, View.VISIBLE);
             addSimilarItems(similarItems);
         }
     }

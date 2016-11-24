@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray_super_extra_light"
-        >
+>
     <net.honarnama.base.utils.ObservableScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,7 +14,7 @@
             android:layoutDirection="rtl"
             android:id="@+id/fragment_scroll_view"
             android:background="@color/gray_super_extra_light"
-            >
+    >
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
@@ -24,12 +24,12 @@
                         android:layoutDirection="rtl"
                         android:paddingBottom="66dp"
                         android:background="@color/gray_super_extra_light"
-                >
+        >
 
             <RelativeLayout android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/event_banner_container"
-                    >
+            >
 
                 <FrameLayout
                         android:id="@+id/event_banner_frame_layout"
@@ -54,7 +54,7 @@
                             android:adjustViewBounds="true"
                             app:removable="true"
                             app:imageSelectorIndex="1"
-                            />
+                    />
                     <ProgressBar
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             style="@style/GenericProgressIndicator"
@@ -66,14 +66,14 @@
                             android:layout_gravity="center"
                             android:id="@+id/banner_progress_bar"
                             android:visibility="gone"
-                            />
+                    />
                     <View android:id="@+id/fade_bg"
                           android:layout_width="fill_parent"
                           android:layout_height="?attr/actionBarSize"
                           android:background="@drawable/fade_back"
                           android:visibility="visible"
                           android:layout_alignParentTop="true"
-                            />
+                    />
 
                     <RelativeLayout android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                                     android:id="@+id/event_share_container"
                                     android:visibility="gone"
                                     android:clickable="true"
-                            >
+                    >
                         <com.mikepenz.iconics.view.IconicsImageView
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
@@ -92,7 +92,7 @@
                                 android:layout_marginRight="16dp"
                                 android:id="@+id/share_event"
 
-                                />
+                        />
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:text="@string/share_us"
@@ -101,7 +101,7 @@
                                   android:paddingRight="5dp"
                                   android:layout_toLeftOf="@id/share_event"
                                   android:layout_marginTop="16dp"
-                                />
+                        />
                     </RelativeLayout>
 
                 </FrameLayout>
@@ -117,7 +117,7 @@
                     android:id="@+id/event_info_progress_bar"
                     android:layout_gravity="center"
                     android:layout_centerInParent="true"
-                    />
+            />
 
 
             <RelativeLayout android:layout_width="match_parent"
@@ -125,7 +125,7 @@
                             android:layout_below="@id/event_banner_container"
                             android:id="@+id/event_info_container"
                             android:visibility="gone"
-                    >
+            >
                 <TextView
                         android:layout_margin="10dp"
                         android:id="@+id/event_name_text_view"
@@ -133,7 +133,7 @@
                         android:layout_centerHorizontal="true"
                         android:paddingRight="5dp"
                         android:paddingLeft="5dp"
-                        />
+                />
 
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                               android:gravity="right"
                               android:id="@+id/place_container"
                               android:layout_marginRight="5dp"
-                        >
+                >
 
                     <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="28dp"
@@ -151,7 +151,7 @@
                             app:iiv_icon="gmd-place"
                             android:paddingBottom="5dp"
                             android:id="@+id/event_place_icon"
-                            />
+                    />
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               style="@style/tiny_text_view"
@@ -159,7 +159,7 @@
                               android:textSize="14sp"
                               android:textColor="@color/extra_dark_green"
                               android:layout_gravity="right|bottom"
-                            />
+                    />
                 </LinearLayout>
 
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
                           android:background="@drawable/round_corner_white_back"
                           android:padding="10dp"
                           android:lineSpacingExtra="5dp"
-                        />
+                />
 
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                           style="@style/default_text_view"
@@ -186,7 +186,7 @@
                           android:background="@drawable/round_corner_white_back"
                           android:padding="10dp"
                           android:lineSpacingExtra="5dp"
-                        />
+                />
 
 
                 <TextView
@@ -208,7 +208,87 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="false"
+                />
+
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginLeft="5dp"
+                                android:id="@+id/event_shop_container"
+                                android:gravity="right|center_vertical"
+                                android:layout_below="@id/address"
+                >
+
+                    <RelativeLayout android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/important_bar_background"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="60dp"
+                                    android:layout_marginRight="10dp"
+                    >
+
+                        <TextView android:id="@+id/shop_name_text_view"
+                                  android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  style="@style/tiny_text_view"
+                                  android:text="رویدادی از:"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:textStyle="bold"
+                                  android:textSize="14sp"
                         />
+
+                        <TextView android:id="@+id/view_shop_all_items"
+                                  android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_below="@id/shop_name_text_view"
+                                  style="@style/tiny_text_view"
+                                  android:paddingTop="4dp"
+                                  android:text="@string/view_shop_and_items"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                        />
+                    </RelativeLayout>
+
+                    <RelativeLayout android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/shop_logo_container"
+                                    android:layout_alignParentRight="true"
+                    >
+
+                        <com.parse.ImageSelector
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/store_logo_image_view"
+                                android:src="@drawable/default_logo_hand"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:scaleType="fitCenter"
+                                app:riv_corner_radius="20dip"
+                                app:riv_border_width="0dip"
+                                app:riv_border_color="@color/gray_super_extra_light"
+                                app:riv_oval="true"
+                                android:scaleX="1"
+                                android:scaleY="1"
+                                android:layout_centerVertical="true"
+                        />
+
+                        <ProgressBar
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                style="@style/GenericProgressIndicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:scaleType="fitCenter"
+                                android:background="@android:color/transparent"
+                                android:id="@+id/logo_progress_bar"
+                                android:visibility="gone"
+                        />
+
+                    </RelativeLayout>
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -221,7 +301,7 @@
                             android:layout_below="@id/event_banner_container"
                             android:layout_marginTop="20dp"
                             android:gravity="center"
-                    >
+            >
 
                 <TextView android:id="@+id/deleted_event_text"
                           android:layout_width="wrap_content"
@@ -235,7 +315,7 @@
                           android:paddingLeft="10dp"
                           android:paddingRight="30dp"
                           android:text="@string/error_event_no_longer_exists"
-                        />
+                />
 
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:id="@+id/deleted_event_icon"
@@ -246,7 +326,7 @@
                         android:layout_toRightOf="@id/deleted_event_text"
                         android:layout_marginLeft="-24dp"
                         android:layout_centerVertical="true"
-                        />
+                />
             </RelativeLayout>
 
 
@@ -255,7 +335,7 @@
                             android:layout_below="@id/event_banner_container"
                             android:id="@+id/on_error_retry_container"
                             android:visibility="gone"
-                    >
+            >
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="20dp"
@@ -264,7 +344,7 @@
                         android:layout_height="56dp"
                         app:iiv_icon="gmd-sync"
                         app:iiv_color="@color/gray_dark"
-                        />
+                />
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           style="@style/tiny_text_view"
@@ -272,7 +352,7 @@
                           android:id="@+id/on_error_retry_text_view"
                           android:layout_below="@id/on_error_retry_icon"
                           android:layout_centerHorizontal="true"
-                        />
+                />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -287,5 +367,5 @@
             android:src="@android:drawable/stat_sys_phone_call"
             app:fabSize="normal"
             android:visibility="gone"
-            />
+    />
 </android.support.design.widget.CoordinatorLayout>

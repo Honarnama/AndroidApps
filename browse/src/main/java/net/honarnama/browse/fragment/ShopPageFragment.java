@@ -85,6 +85,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public RelativeLayout mInfoContainer;
 
+    public RelativeLayout mDeletedShopMsg;
+
     @Override
     public String getTitle(Context context) {
         return getString(R.string.art_shop);
@@ -142,17 +144,17 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
-        final RelativeLayout deletedShopMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_shop_msg);
+        mDeletedShopMsg = (RelativeLayout) rootView.findViewById(R.id.deleted_shop_msg);
         mInfoContainer = (RelativeLayout) rootView.findViewById(R.id.store_info_container);
 
         mItemsloadingCircle = (LinearLayout) rootView.findViewById(R.id.shop_items_loading_circle);
-        mEmptyListContainer.setVisibility(View.GONE);
-        mItemsloadingCircle.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        setVisibilityInFragment(mItemsloadingCircle, View.VISIBLE);
 
         mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         mItemsAdapter = new ItemsAdapter(getActivity());
-        mOnErrorRetry.setVisibility(View.GONE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
 
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
@@ -206,9 +208,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mOnErrorRetry.setVisibility(View.GONE);
-            }
+            setVisibilityInFragment(mOnErrorRetry, View.GONE);
+            setVisibilityInFragment(mDeletedShopMsg, View.GONE);
         }
 
         @Override
@@ -237,7 +238,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         protected void onPostExecute(BrowseStoreReply browseStoreReply) {
             super.onPostExecute(browseStoreReply);
 
-            mItemsloadingCircle.setVisibility(View.GONE);
+            setVisibilityInFragment(mItemsloadingCircle, View.GONE);
 
             Activity activity = getActivity();
 
@@ -253,16 +254,15 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         break;
                     case ReplyProperties.CLIENT_ERROR:
                         if (browseStoreReply.errorCode == BrowseStoreReply.STORE_NOT_FOUND) {
-                            if (isVisible()) {
-                                displayLongToast(getStringInFragment(R.string.error_shop_no_longer_exists));
-                            }
+                            displayLongToast(getStringInFragment(R.string.error_shop_no_longer_exists));
+                            setVisibilityInFragment(mDeletedShopMsg, View.VISIBLE);
+                        } else {
+                            logE("Uncaught error code for getting shop. browse request: " + browseStoreRequest);
                         }
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            mOnErrorRetry.setVisibility(View.VISIBLE);
-                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -278,9 +278,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                 }
 
             } else {
-                if (isAdded()) {
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
 
             }
         }
@@ -289,20 +287,20 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     private void loadStoreInfo(final net.honarnama.nano.Store shop, net.honarnama.nano.Item[] shopItems) {
 
-        mFab.setVisibility(View.VISIBLE);
-        mInfoContainer.setVisibility(View.VISIBLE);
-        mOnErrorRetry.setVisibility(View.GONE);
-        mShare.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mFab, View.VISIBLE);
+        setVisibilityInFragment(mInfoContainer, View.VISIBLE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
+        setVisibilityInFragment(mShare, View.VISIBLE);
 
-        mShopName.setText(TextUtil.convertEnNumberToFa(shop.name));
-        mShopDesc.setText(TextUtil.convertEnNumberToFa(shop.description));
+        setTextInFragment(mShopName, TextUtil.convertEnNumberToFa(shop.name));
+        setTextInFragment(mShopDesc, TextUtil.convertEnNumberToFa(shop.description));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ContactDialog contactDialog = new ContactDialog();
                 contactDialog.showDialog(getActivity(), shop.publicPhoneNumber, shop.publicCellNumber,
-                        getResources().getString(R.string.item_contact_dialog_warning_msg));
+                        getStringInFragment(R.string.item_contact_dialog_warning_msg));
 
             }
         });
@@ -310,21 +308,21 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         String province = Province.getProvinceById(shop.locationCriteria.provinceId).getName();
         String city = City.getCityById(shop.locationCriteria.cityId).getName();
 
-        mShopPlace.setText(province + "، " + city);
+        setTextInFragment(mShopPlace, province + "، " + city);
 
         if (shop.logo.trim().length() > 0) {
-            mLogoProgressBar.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mLogoProgressBar, View.VISIBLE);
             mLogoImageView.setSource(shop.logo, mLogoProgressBar);
         }
 
         if (shop.banner.trim().length() > 0) {
-            mBannerProgressBar.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
             mBannerImageView.setSource(shop.banner, mBannerProgressBar);
         }
 
         if (shopItems.length == 0) {
             mListView.setEmptyView(mEmptyListContainer);
-            mEmptyListContainer.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
         } else {
             ArrayList itemsList = new ArrayList();
             for (net.honarnama.nano.Item item : shopItems) {

@@ -125,17 +125,23 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
     public void displayLongToast(String message) {
         try {
-            Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
+            Activity activity = getActivity();
+            if (isAdded() && activity != null && !activity.isFinishing()) {
+                Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
+            }
         } catch (Exception e) {
-            logE("Exception displaying dialog. e: " + e);
+            logD("Exception displaying dialog. e: " + e);
         }
     }
 
     public void displayShortToast(String message) {
         try {
-            Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
+            Activity activity = getActivity();
+            if (isAdded() && activity != null && !activity.isFinishing()) {
+                Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
-            logE("Exception displaying dialog. e: " + e);
+            logD("Exception displaying dialog. e: " + e);
         }
     }
 

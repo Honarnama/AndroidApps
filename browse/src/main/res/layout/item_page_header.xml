@@ -268,7 +268,7 @@
                           android:layout_below="@id/shop_name_text_view"
                           style="@style/tiny_text_view"
                           android:paddingTop="4dp"
-                          android:text="مشاهده تمامی محصولات این غرفه"
+                          android:text="@string/view_shop_and_items"
                           android:singleLine="true"
                           android:ellipsize="end"
                         />
