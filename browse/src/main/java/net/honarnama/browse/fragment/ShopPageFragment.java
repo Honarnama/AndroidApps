@@ -269,6 +269,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         break;
 
                     case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Store store = browseStoreReply.store;
                             net.honarnama.nano.Item[] shopItems = browseStoreReply.items;

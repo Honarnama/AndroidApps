@@ -264,41 +264,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     }
 
 
-    class onQueryLoadListener {
-//        //TODO remove this listener
-//        @Override
-//        public void onLoading() {
-//            mEmptyListContainer.setVisibility(View.GONE);
-//            mOnErrorRetry.setVisibility(View.GONE);
-//            mLoadingCircle.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        public void onLoaded(List objects, Exception e) {
-//
-//            mLoadingCircle.setVisibility(View.GONE);
-//            if (e == null) {
-//                if ((objects != null) && objects.size() > 0) {
-//                    mEmptyListContainer.setVisibility(View.GONE);
-//                } else {
-//                    mEmptyListContainer.setVisibility(View.VISIBLE);
-//                }
-//            } else {
-//                mEmptyListContainer.setVisibility(View.VISIBLE);
-//                if (((ParseException) e).getCode() == ParseException.OBJECT_NOT_FOUND) {
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_event_found), Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), getString(R.string.error_getting_event_list) + getString(R.string.check_net_connection), Toast.LENGTH_SHORT).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -338,11 +303,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mEmptyListContainer.setVisibility(View.GONE);
-                mOnErrorRetry.setVisibility(View.GONE);
-                mLoadingCircle.setVisibility(View.VISIBLE);
-            }
+            setVisibilityInFragment(mEmptyListContainer, View.GONE);
+            setVisibilityInFragment(mOnErrorRetry, View.GONE);
+            setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         }
 
         @Override
@@ -384,7 +347,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         protected void onPostExecute(BrowseEventsReply browseEventsReply) {
             super.onPostExecute(browseEventsReply);
 
-            mLoadingCircle.setVisibility(View.GONE);
+            setVisibilityInFragment(mLoadingCircle, View.GONE);
 
             Activity activity = getActivity();
 
@@ -402,19 +365,18 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                         // TODO
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            mEventsAdapter.setEvents(null);
-                            mEmptyListContainer.setVisibility(View.VISIBLE);
-                            mEventsAdapter.notifyDataSetChanged();
-                            mOnErrorRetry.setVisibility(View.VISIBLE);
-                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        mEventsAdapter.setEvents(null);
+                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                        mEventsAdapter.notifyDataSetChanged();
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         break;
 
                     case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Event[] events = browseEventsReply.events;
                             ArrayList eventsList = new ArrayList();
@@ -422,7 +384,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                                 eventsList.add(0, event);
                             }
                             if (eventsList.size() == 0) {
-                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
                             mEventsAdapter.setEvents(eventsList);
                             mEventsAdapter.notifyDataSetChanged();
@@ -431,13 +393,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 }
 
             } else {
-                if (isAdded()) {
-                    mEventsAdapter.setEvents(null);
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
-                    mEventsAdapter.notifyDataSetChanged();
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
-
+                mEventsAdapter.setEvents(null);
+                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                mEventsAdapter.notifyDataSetChanged();
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
             }
         }
     }

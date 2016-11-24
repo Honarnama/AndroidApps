@@ -513,6 +513,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         break;
 
                     case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Item item = browseItemReply.item;
                             net.honarnama.nano.Store store = browseItemReply.store;

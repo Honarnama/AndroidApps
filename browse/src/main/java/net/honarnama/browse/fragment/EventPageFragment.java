@@ -341,6 +341,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                         break;
 
                     case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Event event = browseEventReply.event;
                             net.honarnama.nano.Store store = browseEventReply.store;

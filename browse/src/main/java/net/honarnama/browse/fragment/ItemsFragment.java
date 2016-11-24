@@ -247,11 +247,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isAdded()) {
-                mEmptyListContainer.setVisibility(View.GONE);
-                mOnErrorRetry.setVisibility(View.GONE);
-                mLoadingCircle.setVisibility(View.VISIBLE);
-            }
+            setVisibilityInFragment(mEmptyListContainer, View.GONE);
+            setVisibilityInFragment(mOnErrorRetry, View.GONE);
+            setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         }
 
         @Override
@@ -311,7 +309,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         protected void onPostExecute(BrowseItemsReply browseItemsReply) {
             super.onPostExecute(browseItemsReply);
 
-            mLoadingCircle.setVisibility(View.GONE);
+            setVisibilityInFragment(mLoadingCircle, View.GONE);
 
             Activity activity = getActivity();
 
@@ -329,19 +327,18 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         // TODO
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        if (isAdded()) {
-                            mItemsAdapter.setItems(null);
-                            mEmptyListContainer.setVisibility(View.VISIBLE);
-                            mItemsAdapter.notifyDataSetChanged();
-                            mOnErrorRetry.setVisibility(View.VISIBLE);
-                            displayLongToast(getStringInFragment(R.string.server_error_try_again));
-                        }
+                        mItemsAdapter.setItems(null);
+                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                        mItemsAdapter.notifyDataSetChanged();
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
                         break;
 
                     case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Item[] items = browseItemsReply.items;
                             ArrayList itemsList = new ArrayList();
@@ -350,7 +347,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                             }
 
                             if (itemsList.size() == 0) {
-                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
                             mItemsAdapter.setItems(itemsList);
                             mItemsAdapter.notifyDataSetChanged();
@@ -359,13 +356,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 }
 
             } else {
-                if (isAdded()) {
-                    mItemsAdapter.setItems(null);
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
-                    mItemsAdapter.notifyDataSetChanged();
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
-                }
-
+                mItemsAdapter.setItems(null);
+                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                mItemsAdapter.notifyDataSetChanged();
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
             }
         }
     }
