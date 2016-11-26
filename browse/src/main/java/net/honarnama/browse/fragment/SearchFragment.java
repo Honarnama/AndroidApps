@@ -1,7 +1,12 @@
 package net.honarnama.browse.fragment;
 
+import com.mikepenz.iconics.view.IconicsImageView;
+
 import net.honarnama.GRPCUtils;
+import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.model.City;
+import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -10,6 +15,7 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
+import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.nano.BrowseEventsReply;
 import net.honarnama.nano.BrowseEventsRequest;
 import net.honarnama.nano.BrowseItemsReply;
@@ -18,6 +24,7 @@ import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoresReply;
 import net.honarnama.nano.BrowseStoresRequest;
 import net.honarnama.nano.Event;
+import net.honarnama.nano.Item;
 import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
@@ -37,6 +44,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -68,8 +76,16 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     private ToggleButton mEventsToggleButton;
 
     public RelativeLayout mOnErrorRetry;
-
     public SearchSegment mSearchSegment;
+
+    private boolean mIsAllIranChecked = true;
+    public RelativeLayout mFilterContainer;
+    private boolean mIsFilterApplied = false;
+    private TextView mFilterTextView;
+    private IconicsImageView mFilterIcon;
+    private int mSelectedProvinceId = -1;
+    private String mSelectedProvinceName;
+    private int mSelectedCityId = -1;
 
     public synchronized static SearchFragment getInstance() {
         if (mSearchFragment == null) {
@@ -86,6 +102,11 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mSearchEditText = (EditText) rootView.findViewById(R.id.serach_term);
         mSearchButton = rootView.findViewById(R.id.search_btn);
+
+        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
+        mFilterContainer.setOnClickListener(this);
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
 
         mItemsToggleButton = (ToggleButton) rootView.findViewById(R.id.items_tg_btn);
         mShopsToggleButton = (ToggleButton) rootView.findViewById(R.id.shops_tg_btn);
@@ -160,16 +181,29 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 }
             }
         }
-//        mSearchEditText.requestFocus();
+        mSearchEditText.requestFocus();
         InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
-        mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
+//        mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
+                if (resultCode == getActivity().RESULT_OK) {
+                    mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
+                    mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
+                    mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
+                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+                    changeFilterTitle();
+                    search();
+                }
+                break;
+        }
     }
 
 
@@ -187,72 +221,31 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
         if (mSearchSegment == SearchSegment.ITEMS) {
-            //TODO
-//            ParseObject selectedItem = (ParseObject) mItemsAdapter.getItem(position);
-//            if (selectedItem != null) {
-//                controlPanelActivity.displayItemPage(selectedItem.getObjectId(), false);
-//            }
+            Item selectedItem = mItemsAdapter.getItem(position);
+            if (selectedItem != null) {
+                controlPanelActivity.displayItemPage(selectedItem.id, false);
+            }
         }
 
         if (mSearchSegment == SearchSegment.SHOPS) {
-            //TODO
-//            ParseObject selectedShop = (ParseObject) mShopsAdapter.getItem(position);
-//            if (selectedShop != null) {
-//                controlPanelActivity.displayShopPage(selectedShop.getObjectId(), false);
-//            }
+            Store selectedShop = mShopsAdapter.getItem(position);
+            if (selectedShop != null) {
+                controlPanelActivity.displayShopPage(selectedShop.id, false);
+            }
         }
 
         if (mSearchSegment == SearchSegment.EVENTS) {
-            //TODO
-//            ParseObject selectedEvent = (ParseObject) mEventsAdapter.getItem(position);
-//            if (selectedEvent != null) {
-//                controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
-//            }
+            Event selectedEvent = mEventsAdapter.getItem(position);
+            if (selectedEvent != null) {
+                controlPanelActivity.displayEventPage(selectedEvent.id, false);
+            }
         }
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_btn) {
-            logD("search btn clicked.");
-            if (isVisible()) {
-                WindowUtil.hideKeyboard(getActivity());
-            }
-            msearchTerm = mSearchEditText.getText().toString().trim();
-            if (TextUtils.isEmpty(msearchTerm)) {
-                if (isVisible()) {
-                    Toast.makeText(getActivity(), "عبارت مورد جستجو را وارد نکردید.", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-
-            if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                return;
-            }
-
-            mEmptyListContainer.setVisibility(View.GONE);
-            mLoadingCircle.setVisibility(View.VISIBLE);
-            mListView.setEmptyView(mLoadingCircle);
-            mOnErrorRetry.setVisibility(View.GONE);
-
-            if (mItemsToggleButton.isChecked()) {
-                mListView.setAdapter(mItemsAdapter);
-                mSearchSegment = SearchSegment.ITEMS;
-                searchItems();
-                return;
-            }
-            if (mShopsToggleButton.isChecked()) {
-                mListView.setAdapter(mShopsAdapter);
-                mSearchSegment = SearchSegment.SHOPS;
-                searchShops();
-                return;
-            }
-            if (mEventsToggleButton.isChecked()) {
-                mListView.setAdapter(mEventsAdapter);
-                mSearchSegment = SearchSegment.EVENTS;
-                searchEvents();
-                return;
-            }
+            search();
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
@@ -261,6 +254,14 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             }
             ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
             controlPanelActivity.refreshTopFragment();
+        }
+
+        if (v.getId() == R.id.filter_container) {
+            Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
+            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
         }
     }
 
@@ -351,6 +352,18 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             browseItemsRequest.requestProperties = rp;
 
             browseItemsRequest.searchTerm = msearchTerm;
+
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseItemsRequest.locationCriteria = locationCriteria;
 
             BrowseItemsReply getItemsReply;
             if (BuildConfig.DEBUG) {
@@ -446,6 +459,18 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             browseStoresRequest.requestProperties = rp;
 
             browseStoresRequest.searchTerm = msearchTerm;
+
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseStoresRequest.locationCriteria = locationCriteria;
 
             BrowseStoresReply browseStoresReply;
             if (BuildConfig.DEBUG) {
@@ -543,6 +568,18 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
             browseEventsRequest.searchTerm = msearchTerm;
 
+            LocationCriteria locationCriteria = new LocationCriteria();
+            if (!mIsAllIranChecked) {
+                if (mSelectedProvinceId > 0) {
+                    locationCriteria.provinceId = mSelectedProvinceId;
+                }
+
+                if (mSelectedCityId > 0) {
+                    locationCriteria.cityId = mSelectedCityId;
+                }
+            }
+            browseEventsRequest.locationCriteria = locationCriteria;
+
             BrowseEventsReply browseEventsReply;
             if (BuildConfig.DEBUG) {
                 logD("Request for searching events is: " + browseEventsRequest);
@@ -619,5 +656,57 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         }
     }
 
+    private void changeFilterTitle() {
+        if (mIsFilterApplied) {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
+            mFilterTextView.setText(R.string.change_filter);
+            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+        } else {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
+            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
+            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+        }
+    }
+
+    public void search() {
+        if (isVisible()) {
+            WindowUtil.hideKeyboard(getActivity());
+        }
+        msearchTerm = mSearchEditText.getText().toString().trim();
+        if (TextUtils.isEmpty(msearchTerm)) {
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "عبارت مورد جستجو را وارد نکردید.", Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+
+        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+            return;
+        }
+
+        mEmptyListContainer.setVisibility(View.GONE);
+        mLoadingCircle.setVisibility(View.VISIBLE);
+        mListView.setEmptyView(mLoadingCircle);
+        mOnErrorRetry.setVisibility(View.GONE);
+
+        if (mItemsToggleButton.isChecked()) {
+            mListView.setAdapter(mItemsAdapter);
+            mSearchSegment = SearchSegment.ITEMS;
+            searchItems();
+            return;
+        }
+        if (mShopsToggleButton.isChecked()) {
+            mListView.setAdapter(mShopsAdapter);
+            mSearchSegment = SearchSegment.SHOPS;
+            searchShops();
+            return;
+        }
+        if (mEventsToggleButton.isChecked()) {
+            mListView.setAdapter(mEventsAdapter);
+            mSearchSegment = SearchSegment.EVENTS;
+            searchEvents();
+            return;
+        }
+    }
 }
 

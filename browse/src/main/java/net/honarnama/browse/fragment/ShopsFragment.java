@@ -50,11 +50,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private Tracker mTracker;
     private FragmentActivity mFragmentActivity;
     public RelativeLayout mOnErrorRetry;
-    public RelativeLayout mFilterContainer;
-
-    private int mSelectedProvinceId = -1;
-    private String mSelectedProvinceName;
-    private int mSelectedCityId = -1;
 
     ShopsAdapter mShopsAdapter;
 
@@ -62,9 +57,13 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public LinearLayout mLoadingCircle;
 
     private boolean mIsAllIranChecked = true;
+    public RelativeLayout mFilterContainer;
     private boolean mIsFilterApplied = false;
     private TextView mFilterTextView;
     private IconicsImageView mFilterIcon;
+    private int mSelectedProvinceId = -1;
+    private String mSelectedProvinceName;
+    private int mSelectedCityId = -1;
 
     private ListView mListView;
 
@@ -167,63 +166,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         new getShopsAsync().execute();
         mShopsAdapter = new ShopsAdapter(getContext());
         mListView.setAdapter(mShopsAdapter);
-
-//        ParseQueryAdapter.QueryFactory<ParseObject> filterFactory =
-//                new ParseQueryAdapter.QueryFactory<ParseObject>() {
-//                    public ParseQuery create() {
-//
-//                        ParseQuery<Store> parseQuery = new ParseQuery<Store>(Store.class);
-//                        parseQuery.whereEqualTo(Store.STATUS, Store.STATUS_CODE_VERIFIED);
-//                        parseQuery.whereEqualTo(Store.VALIDITY_CHECKED, true);
-//                        parseQuery.include(Store.CITY);
-//
-//                        if (!mIsAllIranChecked) {
-//                            if (!TextUtils.isEmpty(mSelectedProvinceId)) {
-//                                Province province = ParseObject.createWithoutData(Province.class, mSelectedProvinceId);
-//                                parseQuery.whereEqualTo(Store.PROVINCE, province);
-//                            }
-//
-//                            if (!TextUtils.isEmpty(mSelectedCityId)) {
-//                                if (!mSelectedCityId.equals(City.ALL_CITY_ID)) {
-//                                    City city = ParseObject.createWithoutData(City.class, mSelectedCityId);
-//                                    parseQuery.whereEqualTo(Store.CITY, city);
-//                                }
-//                            }
-//                        }
-//                        return parseQuery;
-//                    }
-//                };
-//
-//        mShopsAdapter = new ShopsParseAdapter(getContext(), filterFactory);
-//
-//
-//        mShopsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
-//            @Override
-//            public void onLoading() {
-//                mLoadingCircle.setVisibility(View.VISIBLE);
-//                mEmptyListContainer.setVisibility(View.GONE);
-//                mOnErrorRetry.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onLoaded(List objects, Exception e) {
-//                mLoadingCircle.setVisibility(View.GONE);
-//                if (e == null) {
-//                    if ((objects != null) && objects.size() > 0) {
-//                        mEmptyListContainer.setVisibility(View.GONE);
-//                    } else {
-//                        mEmptyListContainer.setVisibility(View.VISIBLE);
-//                    }
-//                } else {
-//                    mEmptyListContainer.setVisibility(View.VISIBLE);
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), getString(R.string.error_occured) + getString(R.string.please_check_internet_connection), Toast.LENGTH_SHORT).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-
     }
 
     @Override
