@@ -5,17 +5,17 @@
                 android:layout_height="match_parent"
                 android:id="@+id/item_row_outer_container"
                 android:descendantFocusability="blocksDescendants"
-        >
+>
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_corner_white_back"
-            >
+    >
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/item_row_image_container"
-                >
+        >
             <RelativeLayout
                     style="@style/GenericProgressBackground"
                     android:id="@+id/item_icon_loading_panel"
@@ -25,11 +25,11 @@
                     android:layout_margin="5dp"
                     android:layout_alignParentRight="true"
                     android:background="@drawable/bordered_box"
-                    >
+            >
                 <ProgressBar
                         style="@style/GenericProgressIndicator"
                         android:layout_centerInParent="true"
-                        />
+                />
             </RelativeLayout>
 
             <com.parse.ImageSelector
@@ -43,7 +43,7 @@
                     app:riv_border_width="1dp"
                     app:riv_border_color="@color/gray_light"
                     android:src="@drawable/camera_insta"
-                    />
+            />
         </RelativeLayout>
 
 
@@ -58,7 +58,7 @@
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:ellipsize="end"
-                />
+        />
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                   style="@style/default_text_view"
@@ -72,43 +72,38 @@
                   android:maxLines="2"
                   android:ellipsize="end"
                   android:textSize="14sp"
-                />
+        />
 
-        <RelativeLayout android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_toLeftOf="@id/item_row_image_container"
-                        android:layout_below="@id/item_row_desc"
                         android:layout_alignParentBottom="true"
-                >
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical|right"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="10dp"
-                    >
+                        android:layout_marginRight="5dp"
+        >
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/item_row_cat"
-                        style="@style/tiny_text_view"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/text_bar_back"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="30dp"
-                        android:gravity="right|center_vertical"
-                        />
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/hierarchy"
-                        android:id="@+id/item_cat_icon"
-                        android:gravity="right|center_vertical"
-                        android:layout_centerVertical="true"
-                        />
-            </RelativeLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_row_cat"
+                    style="@style/tiny_text_view"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/text_bar_back"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="30dp"
+                    android:gravity="right|center_vertical"
+            />
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/hierarchy"
+                    android:id="@+id/item_cat_icon"
+                    android:gravity="right|center_vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+            />
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
