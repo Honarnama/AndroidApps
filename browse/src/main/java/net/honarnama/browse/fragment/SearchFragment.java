@@ -10,7 +10,8 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseEventsReply;
+import net.honarnama.nano.BrowseEventsRequest;
 import net.honarnama.nano.BrowseItemsReply;
 import net.honarnama.nano.BrowseItemsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
@@ -52,7 +53,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
     ItemsAdapter mItemsAdapter;
     ShopsAdapter mShopsAdapter;
-    EventsAdapter mEventsAdapterr;
+    EventsAdapter mEventsAdapter;
 
     String msearchTerm;
     public EditText mSearchEditText;
@@ -122,7 +123,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
         mShopsAdapter = new ShopsAdapter(HonarnamaBrowseApp.getInstance());
-        mEventsAdapterr = new EventsAdapter(HonarnamaBrowseApp.getInstance());
+        mEventsAdapter = new EventsAdapter(HonarnamaBrowseApp.getInstance());
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
@@ -153,7 +154,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                     mEventsToggleButton.setChecked(true);
                     mItemsToggleButton.setChecked(false);
                     mShopsToggleButton.setChecked(false);
-                    mListView.setAdapter(mEventsAdapterr);
+                    mListView.setAdapter(mEventsAdapter);
                     searchEvents();
                 }
             }
@@ -198,7 +199,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         if (mSearchSegment == SearchSegment.EVENTS) {
             //TODO
-//            ParseObject selectedEvent = (ParseObject) mEventsAdapterr.getItem(position);
+//            ParseObject selectedEvent = (ParseObject) mEventsAdapter.getItem(position);
 //            if (selectedEvent != null) {
 //                controlPanelActivity.displayEventPage(selectedEvent.getObjectId(), false);
 //            }
@@ -245,7 +246,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 return;
             }
             if (mEventsToggleButton.isChecked()) {
-                mListView.setAdapter(mEventsAdapterr);
+                mListView.setAdapter(mEventsAdapter);
                 mSearchSegment = SearchSegment.EVENTS;
                 if (!TextUtils.isEmpty(msearchTerm)) {
                     searchEvents();
@@ -342,8 +343,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         mListView.setEmptyView(mLoadingCircle);
         mOnErrorRetry.setVisibility(View.GONE);
         List<Event> emptyList = new ArrayList<>();
-        mEventsAdapterr.setEvents(emptyList);
-        mEventsAdapterr.notifyDataSetChanged();
+        mEventsAdapter.setEvents(emptyList);
+        mEventsAdapter.notifyDataSetChanged();
 
         //TODO
 //        Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
@@ -362,12 +363,14 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 //                } else {
 //                    mOnErrorRetry.setVisibility(View.GONE);
 //                    List<Event> foundItems = task.getResult();
-//                    mEventsAdapterr.setEvents(foundItems);
-//                    mEventsAdapterr.notifyDataSetChanged();
+//                    mEventsAdapter.setEvents(foundItems);
+//                    mEventsAdapter.notifyDataSetChanged();
 //                }
 //                return null;
 //            }
 //        });
+
+        new searchEventsAsync().execute();
     }
 
     public void resetFields() {
@@ -487,6 +490,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                     mEmptyListContainer.setVisibility(View.VISIBLE);
                     mItemsAdapter.notifyDataSetChanged();
                     mOnErrorRetry.setVisibility(View.VISIBLE);
+                    displayLongToast(getStringInFragment(R.string.check_net_connection));
                 }
             }
         }
@@ -583,6 +587,99 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                 mShopsAdapter.notifyDataSetChanged();
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                displayLongToast(getStringInFragment(R.string.check_net_connection));
+            }
+        }
+    }
+
+    public class searchEventsAsync extends AsyncTask<Void, Void, BrowseEventsReply> {
+        BrowseEventsRequest browseEventsRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected BrowseEventsReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseEventsRequest = new BrowseEventsRequest();
+            browseEventsRequest.requestProperties = rp;
+
+            browseEventsRequest.searchTerm = msearchTerm;
+
+            BrowseEventsReply browseEventsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for searching events is: " + browseEventsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                browseEventsReply = stub.getEvents(browseEventsRequest);
+                return browseEventsReply;
+            } catch (Exception e) {
+                logE("Error searching events request. request: " + browseEventsRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseEventsReply browseEventsReply) {
+            super.onPostExecute(browseEventsReply);
+
+            setVisibilityInFragment(mLoadingCircle, View.GONE);
+            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+            mListView.setEmptyView(mEmptyListContainer);
+
+            Activity activity = getActivity();
+
+            if (browseEventsReply != null) {
+                switch (browseEventsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        mEventsAdapter.setEvents(null);
+                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                        mEventsAdapter.notifyDataSetChanged();
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error searching events. request: " + browseEventsRequest);
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
+                        if (isAdded()) {
+                            net.honarnama.nano.Event[] events = browseEventsReply.events;
+                            ArrayList eventsList = new ArrayList();
+                            for (net.honarnama.nano.Event event : events) {
+                                eventsList.add(0, event);
+                            }
+                            if (eventsList.size() == 0) {
+                                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                            }
+                            mEventsAdapter.setEvents(eventsList);
+                            mEventsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                mEventsAdapter.setEvents(null);
+                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                mEventsAdapter.notifyDataSetChanged();
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }
