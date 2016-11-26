@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -158,8 +159,12 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                     searchEvents();
                 }
             }
-
         }
+//        mSearchEditText.requestFocus();
+        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
+        mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
     }
 
     @Override
