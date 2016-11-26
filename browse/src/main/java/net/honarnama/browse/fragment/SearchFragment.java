@@ -209,6 +209,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_btn) {
+            logD("search btn clicked.");
             if (isVisible()) {
                 WindowUtil.hideKeyboard(getActivity());
             }
@@ -232,25 +233,19 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             if (mItemsToggleButton.isChecked()) {
                 mListView.setAdapter(mItemsAdapter);
                 mSearchSegment = SearchSegment.ITEMS;
-                if (!TextUtils.isEmpty(msearchTerm)) {
-                    searchItems();
-                }
+                searchItems();
                 return;
             }
             if (mShopsToggleButton.isChecked()) {
                 mListView.setAdapter(mShopsAdapter);
                 mSearchSegment = SearchSegment.SHOPS;
-                if (!TextUtils.isEmpty(msearchTerm)) {
-                    searchShops();
-                }
+                searchShops();
                 return;
             }
             if (mEventsToggleButton.isChecked()) {
                 mListView.setAdapter(mEventsAdapter);
                 mSearchSegment = SearchSegment.EVENTS;
-                if (!TextUtils.isEmpty(msearchTerm)) {
-                    searchEvents();
-                }
+                searchEvents();
                 return;
             }
         }
@@ -265,6 +260,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void searchItems() {
+        if (TextUtils.isEmpty(msearchTerm)) {
+            return;
+        }
         mEmptyListContainer.setVisibility(View.GONE);
         mLoadingCircle.setVisibility(View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
@@ -272,35 +270,13 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         ArrayList emptyList = new ArrayList<>();
         mItemsAdapter.setItems(emptyList);
         mItemsAdapter.notifyDataSetChanged();
-//TODO
-//        Item.search(msearchTerm).continueWith(new Continuation<List<Item>, Object>() {
-//            @Override
-//            public Object then(Task<List<Item>> task) throws Exception {
-//                mLoadingCircle.setVisibility(View.GONE);
-//                mEmptyListContainer.setVisibility(View.VISIBLE);
-//                mListView.setEmptyView(mEmptyListContainer);
-//
-//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-//                    logE("Searching items with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_items_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                } else {
-//
-//                    mOnErrorRetry.setVisibility(View.GONE);
-//                    List<Item> foundItems = task.getResult();
-//                    mItemsAdapter.setItems(foundItems);
-//                    mItemsAdapter.notifyDataSetChanged();
-//                }
-//                return null;
-//            }
-//        });
         new searchItemsAsync().execute();
-
     }
 
     public void searchShops() {
+        if (TextUtils.isEmpty(msearchTerm)) {
+            return;
+        }
         mEmptyListContainer.setVisibility(View.GONE);
         mLoadingCircle.setVisibility(View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
@@ -308,36 +284,13 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         List<Store> emptyList = new ArrayList<>();
         mShopsAdapter.setShops(emptyList);
         mShopsAdapter.notifyDataSetChanged();
-
-//        Shop.search(msearchTerm).continueWith(new Continuation<List<Store>, Object>() {
-//            @Override
-//            public Object then(Task<List<Store>> task) throws Exception {
-//
-//                mLoadingCircle.setVisibility(View.GONE);
-//                mEmptyListContainer.setVisibility(View.VISIBLE);
-//                mListView.setEmptyView(mEmptyListContainer);
-//
-//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-//                    logE("Searching shops with search term" + msearchTerm + " failed. Error: " + task.getError(), task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_shop_list) + getString(R.string.check_net_connection), Toast.LENGTH_LONG).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                } else {
-//                    mOnErrorRetry.setVisibility(View.GONE);
-//                    List<Store> foundItems = task.getResult();
-//                    mShopsAdapter.setShops(foundItems);
-//                    mShopsAdapter.notifyDataSetChanged();
-//                }
-//                return null;
-//            }
-//        });
-
         new searchShopsAsync().execute();
     }
 
     public void searchEvents() {
-
+        if (TextUtils.isEmpty(msearchTerm)) {
+            return;
+        }
         mEmptyListContainer.setVisibility(View.GONE);
         mLoadingCircle.setVisibility(View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
@@ -345,41 +298,18 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         List<Event> emptyList = new ArrayList<>();
         mEventsAdapter.setEvents(emptyList);
         mEventsAdapter.notifyDataSetChanged();
-
-        //TODO
-//        Event.search(msearchTerm).continueWith(new Continuation<List<Event>, Object>() {
-//            @Override
-//            public Object then(Task<List<Event>> task) throws Exception {
-//                mLoadingCircle.setVisibility(View.GONE);
-//                mEmptyListContainer.setVisibility(View.VISIBLE);
-//                mListView.setEmptyView(mEmptyListContainer);
-//
-//                if (task.isFaulted() && ((ParseException) task.getError()).getCode() != ParseException.OBJECT_NOT_FOUND) {
-//                    logE("Searching events with search term" + msearchTerm + " failed. Error: " + task.getError(), "", task.getError());
-//                    if (isVisible()) {
-//                        Toast.makeText(getActivity(), HonarnamaBrowseApp.getInstance().getString(R.string.error_getting_event_list) + getString(R.string.please_check_internet_connection), Toast.LENGTH_LONG).show();
-//                    }
-//                    mOnErrorRetry.setVisibility(View.VISIBLE);
-//                } else {
-//                    mOnErrorRetry.setVisibility(View.GONE);
-//                    List<Event> foundItems = task.getResult();
-//                    mEventsAdapter.setEvents(foundItems);
-//                    mEventsAdapter.notifyDataSetChanged();
-//                }
-//                return null;
-//            }
-//        });
-
         new searchEventsAsync().execute();
     }
 
     public void resetFields() {
-//        if (mSearchEditText != null) {
-//            mSearchEditText.setText("");
-//            mItemsToggleButton.setChecked(true);
-//            mShopsToggleButton.setChecked(false);
-//            mEventsToggleButton.setChecked(false);
-//        }
+        if (mSearchEditText != null) {
+            logD("reset search fields.");
+            mSearchEditText.setText("");
+            mItemsToggleButton.setChecked(true);
+            mShopsToggleButton.setChecked(false);
+            mEventsToggleButton.setChecked(false);
+            msearchTerm = "";
+        }
     }
 
     @Override
