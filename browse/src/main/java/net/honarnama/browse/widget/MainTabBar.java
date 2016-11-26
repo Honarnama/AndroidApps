@@ -58,8 +58,8 @@ public class MainTabBar extends LinearLayout {
     private void init() {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
-        mSelectedTabColor = getContext().getResources().getColor(R.color.amber);
-        mNotSelectedTabColor = getContext().getResources().getColor(R.color.gray);
+        mSelectedTabColor = getContext().getResources().getColor(R.color.dark_cyan);
+        mNotSelectedTabColor = getContext().getResources().getColor(R.color.gray_dark);
 
         Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),
                 new IconicsDrawable(mContext)
