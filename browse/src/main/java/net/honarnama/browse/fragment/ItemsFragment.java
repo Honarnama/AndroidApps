@@ -332,6 +332,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         mItemsAdapter.notifyDataSetChanged();
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getItems request. request: " + browseItemsRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

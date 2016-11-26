@@ -1,16 +1,28 @@
 package net.honarnama.browse.fragment;
 
+import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.WindowUtil;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.BrowseItemsReply;
+import net.honarnama.nano.BrowseItemsRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.BrowseStoresReply;
+import net.honarnama.nano.BrowseStoresRequest;
 import net.honarnama.nano.Event;
+import net.honarnama.nano.LocationCriteria;
+import net.honarnama.nano.ReplyProperties;
+import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.Store;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,9 +41,7 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import bolts.Continuation;
-import bolts.Task;
-
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by elnaz on 2/11/16.
@@ -221,19 +231,25 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             if (mItemsToggleButton.isChecked()) {
                 mListView.setAdapter(mItemsAdapter);
                 mSearchSegment = SearchSegment.ITEMS;
-                searchItems();
+                if (!TextUtils.isEmpty(msearchTerm)) {
+                    searchItems();
+                }
                 return;
             }
             if (mShopsToggleButton.isChecked()) {
                 mListView.setAdapter(mShopsAdapter);
                 mSearchSegment = SearchSegment.SHOPS;
-                searchShops();
+                if (!TextUtils.isEmpty(msearchTerm)) {
+                    searchShops();
+                }
                 return;
             }
             if (mEventsToggleButton.isChecked()) {
                 mListView.setAdapter(mEventsAdapterr);
                 mSearchSegment = SearchSegment.EVENTS;
-                searchEvents();
+                if (!TextUtils.isEmpty(msearchTerm)) {
+                    searchEvents();
+                }
                 return;
             }
         }
@@ -279,6 +295,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 //                return null;
 //            }
 //        });
+        new searchItemsAsync().execute();
+
     }
 
     public void searchShops() {
@@ -313,6 +331,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 //                return null;
 //            }
 //        });
+
+        new searchShopsAsync().execute();
     }
 
     public void searchEvents() {
@@ -376,7 +396,196 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             stringValue = toString;
             intValue = value;
         }
-
     }
+
+    public class searchItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
+        BrowseItemsRequest browseItemsRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected BrowseItemsReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseItemsRequest = new BrowseItemsRequest();
+            browseItemsRequest.requestProperties = rp;
+
+            browseItemsRequest.searchTerm = msearchTerm;
+
+            BrowseItemsReply getItemsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for searching items is: " + browseItemsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                getItemsReply = stub.getItems(browseItemsRequest);
+                return getItemsReply;
+            } catch (Exception e) {
+                logE("Error running getItems in search fragment request. request: " + browseItemsRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseItemsReply browseItemsReply) {
+            super.onPostExecute(browseItemsReply);
+
+            mLoadingCircle.setVisibility(View.GONE);
+            mEmptyListContainer.setVisibility(View.VISIBLE);
+            mListView.setEmptyView(mEmptyListContainer);
+
+            Activity activity = getActivity();
+
+            if (browseItemsReply != null) {
+                switch (browseItemsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        mItemsAdapter.setItems(null);
+                        mEmptyListContainer.setVisibility(View.VISIBLE);
+                        mItemsAdapter.notifyDataSetChanged();
+                        mOnErrorRetry.setVisibility(View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error searching items. request: " + browseItemsRequest);
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        mOnErrorRetry.setVisibility(View.GONE);
+                        if (isAdded()) {
+                            net.honarnama.nano.Item[] items = browseItemsReply.items;
+                            ArrayList itemsList = new ArrayList();
+                            for (net.honarnama.nano.Item item : items) {
+                                itemsList.add(0, item);
+                            }
+
+                            if (itemsList.size() == 0) {
+                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                            }
+                            mItemsAdapter.setItems(itemsList);
+                            mItemsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                if (isAdded()) {
+                    mItemsAdapter.setItems(null);
+                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                    mItemsAdapter.notifyDataSetChanged();
+                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    public class searchShopsAsync extends AsyncTask<Void, Void, BrowseStoresReply> {
+        BrowseStoresRequest browseStoresRequest;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected BrowseStoresReply doInBackground(Void... voids) {
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseStoresRequest = new BrowseStoresRequest();
+            browseStoresRequest.requestProperties = rp;
+
+            browseStoresRequest.searchTerm = msearchTerm;
+
+            BrowseStoresReply browseStoresReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for searching stores is: " + browseStoresRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                browseStoresReply = stub.getStores(browseStoresRequest);
+                return browseStoresReply;
+            } catch (Exception e) {
+                logE("Error running getStores request in search fragment. request: " + browseStoresRequest + ". Error: " + e, e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(BrowseStoresReply browseStoresReply) {
+            super.onPostExecute(browseStoresReply);
+
+            setVisibilityInFragment(mLoadingCircle, View.GONE);
+            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+            if (mListView != null) {
+                mListView.setEmptyView(mEmptyListContainer);
+            }
+
+            Activity activity = getActivity();
+
+            if (browseStoresReply != null) {
+                switch (browseStoresReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+
+                    case ReplyProperties.SERVER_ERROR:
+                        mShopsAdapter.setShops(null);
+                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                        mShopsAdapter.notifyDataSetChanged();
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server Error searching shops. request: " + browseStoresRequest);
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
+                        if (isAdded()) {
+                            net.honarnama.nano.Store[] stores = browseStoresReply.stores;
+                            ArrayList shopsList = new ArrayList();
+                            for (net.honarnama.nano.Store store : stores) {
+                                shopsList.add(0, store);
+                            }
+                            if (shopsList.size() == 0) {
+                                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                            }
+                            mShopsAdapter.setShops(shopsList);
+                            mShopsAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+
+            } else {
+                mShopsAdapter.setShops(null);
+                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                mShopsAdapter.notifyDataSetChanged();
+                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+            }
+        }
+    }
+
 }
 

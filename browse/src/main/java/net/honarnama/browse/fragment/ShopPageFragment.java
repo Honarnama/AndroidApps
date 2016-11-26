@@ -263,6 +263,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                     case ReplyProperties.SERVER_ERROR:
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getstore request. request: " + browseStoreRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

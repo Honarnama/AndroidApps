@@ -507,6 +507,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                     case ReplyProperties.SERVER_ERROR:
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getItem request. request: " + browseItemRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

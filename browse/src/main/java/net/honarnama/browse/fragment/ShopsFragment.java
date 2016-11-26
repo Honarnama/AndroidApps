@@ -294,7 +294,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
                 return stub.getStores(browseStoresRequest);
             } catch (Exception e) {
-                logE("Error running getEvents request. request: " + browseStoresRequest + ". Error: " + e, e);
+                logE("Error running getStores request. request: " + browseStoresRequest + ". Error: " + e, e);
             }
             return null;
         }
@@ -326,6 +326,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         mShopsAdapter.notifyDataSetChanged();
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getStores request. request: " + browseStoresRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

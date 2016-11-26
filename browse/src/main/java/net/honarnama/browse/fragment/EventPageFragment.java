@@ -335,6 +335,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
                     case ReplyProperties.SERVER_ERROR:
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getEvent request. request: " + browseEventRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

@@ -370,6 +370,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                         mEventsAdapter.notifyDataSetChanged();
                         setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error running getEvents request. request: " + browseEventsRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
