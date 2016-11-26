@@ -526,6 +526,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
             } else {
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
         }
 

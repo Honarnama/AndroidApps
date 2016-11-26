@@ -353,6 +353,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
             } else {
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
         }
 

@@ -361,6 +361,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                 mItemsAdapter.notifyDataSetChanged();
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }
