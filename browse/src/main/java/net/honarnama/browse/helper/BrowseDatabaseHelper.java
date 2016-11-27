@@ -33,13 +33,23 @@ public class BrowseDatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_BOOKMARKS = "bookmarks";
     public static final String COL_BOOKMARK_ID = "id";
     public static final String COL_BOOKMARK_ITEM_ID = "item_id";
+    public static final String COL_BOOKMARK_ITEM_NAME = "item_name";
+    public static final String COL_BOOKMARK_ITEM_DESC = "item_desc";
+    public static final String COL_BOOKMARK_ITEM_CAT_L1 = "item_cat_l1";
+    public static final String COL_BOOKMARK_ITEM_CAT_L2 = "item_cat_l2";
+    public static final String COL_BOOKMARK_ITEM_IMG = "item_img";
     public static final String COL_BOOKMARK_CREATE_DATE = "bookmarked_create_date";
 
 
     public static final String CREATE_TABLE_BOOKMARKS = "CREATE TABLE " + TABLE_BOOKMARKS +
             "(" +
             COL_BOOKMARK_ID + " INTEGER PRIMARY KEY autoincrement," + // Define a primary key
-            COL_BOOKMARK_ITEM_ID + " TEXT," +
+            COL_BOOKMARK_ITEM_ID + " INTEGER," +
+            COL_BOOKMARK_ITEM_NAME + " TEXT," +
+            COL_BOOKMARK_ITEM_DESC + " TEXT," +
+            COL_BOOKMARK_ITEM_CAT_L1 + " INTEGER," +
+            COL_BOOKMARK_ITEM_CAT_L2 + " INTEGER," +
+            COL_BOOKMARK_ITEM_IMG + " TEXT," +
             COL_BOOKMARK_CREATE_DATE + " int " +
             ")";
 

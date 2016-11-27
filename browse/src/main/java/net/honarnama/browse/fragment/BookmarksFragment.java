@@ -1,12 +1,19 @@
 package net.honarnama.browse.fragment;
 
 
+import net.honarnama.GRPCUtils;
+import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.BookmarksAdapter;
+import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Bookmark;
 import net.honarnama.base.model.Item;
+import net.honarnama.nano.BrowseItemReply;
+import net.honarnama.nano.BrowseItemRequest;
+import net.honarnama.nano.BrowseServiceGrpc;
+import net.honarnama.nano.RequestProperties;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
+
 /**
  * Created by elnaz on 2/11/16.
  */
@@ -26,7 +37,9 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     public static BookmarksFragment mBookmarksFragment;
     private ListView mListView;
 
-    BookmarksAdapter mBookmarksAdapter;
+    ItemsAdapter mItemsAdapter;
+    public LinearLayout mLoadingCircle;
+    public RelativeLayout mEmptyListContainer;
 
     public synchronized static BookmarksFragment getInstance() {
 //        if (mBookmarksFragment == null) {
@@ -41,31 +54,16 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
         View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
-        final RelativeLayout emptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
-        mListView.setEmptyView(emptyListContainer);
+        mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
+        mListView.setEmptyView(mEmptyListContainer);
 
-        final LinearLayout loadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
-        mBookmarksAdapter = new BookmarksAdapter(HonarnamaBrowseApp.getInstance());
-        //TODO
-//        mBookmarksAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener() {
-//            @Override
-//            public void onLoading() {
-//                loadingCircle.setVisibility(View.VISIBLE);
-//                emptyListContainer.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onLoaded(List objects, Exception e) {
-//                loadingCircle.setVisibility(View.GONE);
-//
-//                if (mBookmarksAdapter.isEmpty()) {
-//                    emptyListContainer.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-        mListView.setAdapter(mBookmarksAdapter);
+        mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
+
+        mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
+        new getBookmarks().execute();
         return rootView;
     }
 
@@ -87,10 +85,42 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Bookmark selectedBookmark = (Bookmark) mBookmarksAdapter.getItem(position);
-        Item selectedItem = selectedBookmark.getItem();
+        net.honarnama.nano.Item selectedItem = mItemsAdapter.getItem(position);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        controlPanelActivity.displayItemPage(selectedItem.getId(), false);
+        if (selectedItem != null) {
+            controlPanelActivity.displayItemPage(selectedItem.id, false);
+        }
+    }
+
+    public class getBookmarks extends AsyncTask<Void, Void, ArrayList<net.honarnama.nano.Item>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingCircle.setVisibility(View.VISIBLE);
+            mEmptyListContainer.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected ArrayList<net.honarnama.nano.Item> doInBackground(Void... voids) {
+            ArrayList<net.honarnama.nano.Item> items = new Bookmark().getAllBookmarks();
+            if (BuildConfig.DEBUG) {
+                logD("bookmarked items: " + items);
+            }
+            return items;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<net.honarnama.nano.Item> bookmarkedItems) {
+            mLoadingCircle.setVisibility(View.GONE);
+
+            if (bookmarkedItems.size() == 0) {
+                mEmptyListContainer.setVisibility(View.VISIBLE);
+            }
+
+            mItemsAdapter.setItems(bookmarkedItems);
+            mItemsAdapter.notifyDataSetChanged();
+        }
     }
 
 }

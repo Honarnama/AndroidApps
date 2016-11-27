@@ -4,7 +4,8 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.model.HonarnamaBaseModel;
 import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.helper.BrowseDatabaseHelper;
-import net.honarnama.nano.*;
+import net.honarnama.nano.ArtCategoryCriteria;
+import net.honarnama.nano.Item;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -12,8 +13,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_CREATE_DATE;
+import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_CAT_L1;
+import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_CAT_L2;
+import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_DESC;
 import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_ID;
+import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_IMG;
+import static net.honarnama.browse.helper.BrowseDatabaseHelper.COL_BOOKMARK_ITEM_NAME;
 import static net.honarnama.browse.helper.BrowseDatabaseHelper.TABLE_BOOKMARKS;
 
 /**
@@ -69,6 +77,11 @@ public class Bookmark extends HonarnamaBaseModel {
             Log.d(DEBUG_TAG, "Bookmark Item: " + item);
         }
         values.put(COL_BOOKMARK_ITEM_ID, item.id);
+        values.put(COL_BOOKMARK_ITEM_NAME, item.name);
+        values.put(COL_BOOKMARK_ITEM_DESC, item.description);
+        values.put(COL_BOOKMARK_ITEM_CAT_L1, item.artCategoryCriteria.level1Id);
+        values.put(COL_BOOKMARK_ITEM_CAT_L2, item.artCategoryCriteria.level2Id);
+        values.put(COL_BOOKMARK_ITEM_IMG, item.images[0]);
         values.put(COL_BOOKMARK_CREATE_DATE, System.currentTimeMillis());
         db.insertOrThrow(TABLE_BOOKMARKS, null, values);
     }
@@ -97,6 +110,46 @@ public class Bookmark extends HonarnamaBaseModel {
             }
         }
         return false;
+    }
+
+    public ArrayList<Item> getAllBookmarks() {
+
+        ArrayList<Item> bookmarkedItems = new ArrayList<>();
+        SQLiteDatabase db = BrowseDatabaseHelper.getInstance(HonarnamaBaseApp.getInstance()).getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_BOOKMARKS;
+        Cursor cursor = db.rawQuery(query, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
+                    Item item = new Item();
+                    item.id = cursor.getLong(cursor.getColumnIndex(COL_BOOKMARK_ITEM_ID));
+                    item.name = cursor.getString(cursor.getColumnIndex(COL_BOOKMARK_ITEM_NAME));
+                    item.description = cursor.getString(cursor.getColumnIndex(COL_BOOKMARK_ITEM_DESC));
+
+                    item.artCategoryCriteria = new ArtCategoryCriteria();
+                    item.artCategoryCriteria.level1Id = cursor.getInt(cursor.getColumnIndex(COL_BOOKMARK_ITEM_CAT_L1));
+                    item.artCategoryCriteria.level2Id = cursor.getInt(cursor.getColumnIndex(COL_BOOKMARK_ITEM_CAT_L2));
+
+                    item.images = new String[1];
+                    item.images[0] = cursor.getString(cursor.getColumnIndex(COL_BOOKMARK_ITEM_IMG));
+
+                    bookmarkedItems.add(item);
+                    cursor.moveToNext();
+                }
+                if (net.honarnama.base.BuildConfig.DEBUG) {
+                    logD("getting all bookmarked items result: " + bookmarkedItems);
+                }
+            }
+
+        } catch (Exception e) {
+            logE("Error while getting bookmarked items.", e);
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return bookmarkedItems;
     }
 
 }

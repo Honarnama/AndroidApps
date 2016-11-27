@@ -23,14 +23,14 @@ import java.util.List;
  */
 public class BookmarksAdapter extends BaseAdapter {
     //TODO  convert parseQueryAdapter to baseAdapter (What would happen to long lists)
-    List<Bookmark> mBookmarks = new ArrayList<>();
+    List<net.honarnama.nano.Item> mBookmarks = new ArrayList<>();
     Context mContext;
 
     public BookmarksAdapter(Context context) {
         mContext = context;
     }
 
-    public void setItems(List<Bookmark> items) {
+    public void setItems(List<net.honarnama.nano.Item> items) {
         mBookmarks = items;
     }
 
@@ -51,8 +51,7 @@ public class BookmarksAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Bookmark bookmark = mBookmarks.get(position);
-        Item item = (Item) bookmark.getItem();
+        net.honarnama.nano.Item item = mBookmarks.get(position);
 
         final MyViewHolder mViewHolder;
 
@@ -77,11 +76,12 @@ public class BookmarksAdapter extends BaseAdapter {
 //        });
 
         // Setting all values in listview
-        mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.getName()));
-        mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.getDescription()));
+        mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.name));
+        mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.description));
 
-        ArtCategory category = item.getCategory();
-        mViewHolder.itemCat.setText(category.getName());
+        //TODO
+//        ArtCategory category = item.artCategoryCriteria.level1Id();
+//        mViewHolder.itemCat.setText(category.getName());
 
         return convertView;
 
