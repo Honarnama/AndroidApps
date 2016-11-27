@@ -58,7 +58,7 @@ public class MainTabBar extends LinearLayout {
     private void init() {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
-        mSelectedTabColor = getContext().getResources().getColor(R.color.dark_cyan);
+        mSelectedTabColor = getContext().getResources().getColor(R.color.deep_orange);
         mNotSelectedTabColor = getContext().getResources().getColor(R.color.gray_dark);
 
         Tab homeTab = new Tab(Integer.valueOf(TAB_ITEMS),
