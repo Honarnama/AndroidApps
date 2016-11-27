@@ -45,8 +45,14 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
             Log.d(DEBUG_TAG, "Current meta version is: " + mMetaVersion);
         }
 
-        MetaReply metaReply = getMetaData(mMetaVersion);
-        return metaReply;
+        try {
+            MetaReply metaReply = getMetaData(mMetaVersion);
+            return metaReply;
+        } catch (Exception ex) {
+            Log.e(DEBUG_TAG, "Exception updatibg meta.", ex);
+        }
+
+        return null;
     }
 
 
