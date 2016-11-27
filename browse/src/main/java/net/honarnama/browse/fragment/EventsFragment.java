@@ -8,22 +8,19 @@ import com.mikepenz.iconics.view.IconicsImageView;
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.adapter.EventCategoriesAdapter;
 import net.honarnama.base.model.City;
+import net.honarnama.base.model.EventCategory;
 import net.honarnama.base.model.Province;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.dialog.EventFilterDialogActivity;
-import net.honarnama.base.adapter.EventCategoriesAdapter;
-import net.honarnama.base.model.Event;
-import net.honarnama.base.model.EventCategory;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.BrowseEventsReply;
 import net.honarnama.nano.BrowseEventsRequest;
-import net.honarnama.nano.BrowseItemsReply;
-import net.honarnama.nano.BrowseItemsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
@@ -400,6 +397,14 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (isVisible()) {
+            WindowUtil.hideKeyboard(getActivity());
         }
     }
 
