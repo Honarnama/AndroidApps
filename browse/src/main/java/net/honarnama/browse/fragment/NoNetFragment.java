@@ -7,6 +7,8 @@ import net.honarnama.base.utils.NetworkManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,7 +34,14 @@ public class NoNetFragment extends HonarnamaBrowseFragment implements View.OnCli
         final View rootView = inflater.inflate(R.layout.fragment_no_network, container, false);
         mRetryIcon = (ImageView) rootView.findViewById(R.id.no_network_fragment_retry_icon);
         mRetryIcon.setOnClickListener(this);
+        setHasOptionsMenu(true);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -56,6 +65,15 @@ public class NoNetFragment extends HonarnamaBrowseFragment implements View.OnCli
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 controlPanelActivity.refreshNoNetFragment();
                 break;
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 }

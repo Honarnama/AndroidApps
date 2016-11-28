@@ -18,7 +18,11 @@ import net.honarnama.nano.RequestProperties;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -64,7 +68,17 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
         new getBookmarks().execute();
+
+        setHasOptionsMenu(true);
+
         return rootView;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
     }
 
 
@@ -120,6 +134,15 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
             mItemsAdapter.setItems(bookmarkedItems);
             mItemsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

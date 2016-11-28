@@ -30,6 +30,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -107,7 +109,10 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mListView.setOnItemClickListener(this);
+
         listShops();
+
+        setHasOptionsMenu(false);
 
         return rootView;
     }
@@ -124,6 +129,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
 
@@ -298,6 +304,16 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        logD("onCreateOptionsMenu of shopsfragment.");
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

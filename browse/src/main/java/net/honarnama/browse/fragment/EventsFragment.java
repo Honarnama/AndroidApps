@@ -13,7 +13,6 @@ import net.honarnama.base.model.City;
 import net.honarnama.base.model.EventCategory;
 import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -34,6 +33,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -141,7 +142,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             public Object then(Task<List<EventCategory>> task) throws Exception {
                 if (task.isFaulted()) {
                     logE("Getting Event Task Failed. Msg: " + task.getError().getMessage() + " // Error: " + task.getError(), task.getError());
-                    displayShortToast(getString(R.string.error_getting_event_cat_list) + getString(R.string.check_net_connection));
+                    displayShortToast(getStringInFragment(R.string.error_getting_event_cat_list) + getStringInFragment(R.string.check_net_connection));
                 } else {
                     mEventCategories = task.getResult();
                     if (mEventCategories != null) {
@@ -154,6 +155,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
         });
         listEvents();
+        setHasOptionsMenu(false);
         return rootView;
     }
 
@@ -169,8 +171,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -401,10 +405,12 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (isVisible()) {
-            WindowUtil.hideKeyboard(getActivity());
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        logD("onCreateOptionsMenu of eventsfragment.");
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

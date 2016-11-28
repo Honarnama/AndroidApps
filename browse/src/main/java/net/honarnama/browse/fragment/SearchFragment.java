@@ -34,18 +34,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -65,8 +67,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     EventsAdapter mEventsAdapter;
 
     String msearchTerm;
-    public EditText mSearchEditText;
-    public View mSearchButton;
+    //    public EditText mSearchEditText;
+//    public View mSearchButton;
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mLoadingCircle;
 
@@ -100,8 +102,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        mSearchEditText = (EditText) rootView.findViewById(R.id.serach_term);
-        mSearchButton = rootView.findViewById(R.id.search_btn);
+//        mSearchEditText = (EditText) rootView.findViewById(R.id.serach_term);
+//        mSearchButton = rootView.findViewById(R.id.search_btn);
 
         mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
@@ -141,7 +143,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
         mListView = (ListView) rootView.findViewById(R.id.listView);
 
-        mSearchButton.setOnClickListener(this);
+//        mSearchButton.setOnClickListener(this);
 
         mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
         mShopsAdapter = new ShopsAdapter(HonarnamaBrowseApp.getInstance());
@@ -152,12 +154,15 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
         mListView.setOnItemClickListener(this);
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().invalidateOptionsMenu();
         if (mSearchSegment != null) {
             if (mSearchSegment == SearchSegment.ITEMS) {
                 mItemsToggleButton.setChecked(true);
@@ -181,10 +186,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                 }
             }
         }
-        mSearchEditText.requestFocus();
-        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
-//        mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+//        mSearchEditText.requestFocus();
+//        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
 
     }
 
@@ -209,7 +213,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
     @Override
     public String getTitle(Context context) {
-        return getString(R.string.hornama);
+        return getStringInFragment(R.string.hornama);
     }
 
     @Override
@@ -244,9 +248,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.search_btn) {
-            search();
-        }
+//        if (v.getId() == R.id.search_btn) {
+//            search();
+//        }
 
         if (v.getId() == R.id.on_error_retry_container) {
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -269,10 +273,11 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         if (TextUtils.isEmpty(msearchTerm)) {
             return;
         }
-        mEmptyListContainer.setVisibility(View.GONE);
-        mLoadingCircle.setVisibility(View.VISIBLE);
+
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
-        mOnErrorRetry.setVisibility(View.GONE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
         ArrayList emptyList = new ArrayList<>();
         mItemsAdapter.setItems(emptyList);
         mItemsAdapter.notifyDataSetChanged();
@@ -283,10 +288,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         if (TextUtils.isEmpty(msearchTerm)) {
             return;
         }
-        mEmptyListContainer.setVisibility(View.GONE);
-        mLoadingCircle.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
-        mOnErrorRetry.setVisibility(View.GONE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
         List<Store> emptyList = new ArrayList<>();
         mShopsAdapter.setShops(emptyList);
         mShopsAdapter.notifyDataSetChanged();
@@ -297,10 +302,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         if (TextUtils.isEmpty(msearchTerm)) {
             return;
         }
-        mEmptyListContainer.setVisibility(View.GONE);
-        mLoadingCircle.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
-        mOnErrorRetry.setVisibility(View.GONE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
         List<Event> emptyList = new ArrayList<>();
         mEventsAdapter.setEvents(emptyList);
         mEventsAdapter.notifyDataSetChanged();
@@ -308,14 +313,15 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void resetFields() {
-        if (mSearchEditText != null) {
-            logD("reset search fields.");
-            mSearchEditText.setText("");
-            mItemsToggleButton.setChecked(true);
-            mShopsToggleButton.setChecked(false);
-            mEventsToggleButton.setChecked(false);
-            msearchTerm = "";
-        }
+        //TODO
+//        if (mSearchEditText != null) {
+        logD("reset search fields.");
+//            mSearchEditText.setText("");
+        setCheckedInFragment(mItemsToggleButton, true);
+        setCheckedInFragment(mShopsToggleButton, false);
+        setCheckedInFragment(mEventsToggleButton, false);
+        msearchTerm = "";
+//        }
     }
 
     @Override
@@ -383,8 +389,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         protected void onPostExecute(BrowseItemsReply browseItemsReply) {
             super.onPostExecute(browseItemsReply);
 
-            mLoadingCircle.setVisibility(View.GONE);
-            mEmptyListContainer.setVisibility(View.VISIBLE);
+            setVisibilityInFragment(mLoadingCircle, View.GONE);
+            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
             mListView.setEmptyView(mEmptyListContainer);
 
             Activity activity = getActivity();
@@ -404,9 +410,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                         break;
                     case ReplyProperties.SERVER_ERROR:
                         mItemsAdapter.setItems(null);
-                        mEmptyListContainer.setVisibility(View.VISIBLE);
+                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                         mItemsAdapter.notifyDataSetChanged();
-                        mOnErrorRetry.setVisibility(View.VISIBLE);
+                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         logE("Server error searching items. request: " + browseItemsRequest);
                         break;
@@ -415,7 +421,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.OK:
-                        mOnErrorRetry.setVisibility(View.GONE);
+                        setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Item[] items = browseItemsReply.items;
                             ArrayList itemsList = new ArrayList();
@@ -424,7 +430,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
                             }
 
                             if (itemsList.size() == 0) {
-                                mEmptyListContainer.setVisibility(View.VISIBLE);
+                                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
                             mItemsAdapter.setItems(itemsList);
                             mItemsAdapter.notifyDataSetChanged();
@@ -435,9 +441,9 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             } else {
                 if (isAdded()) {
                     mItemsAdapter.setItems(null);
-                    mEmptyListContainer.setVisibility(View.VISIBLE);
+                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     mItemsAdapter.notifyDataSetChanged();
-                    mOnErrorRetry.setVisibility(View.VISIBLE);
+                    setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                     displayLongToast(getStringInFragment(R.string.check_net_connection));
                 }
             }
@@ -663,7 +669,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
         } else {
             mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
-            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
+            mFilterTextView.setText(getStringInFragment(R.string.filter_geo));
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }
@@ -672,11 +678,8 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         if (isVisible()) {
             WindowUtil.hideKeyboard(getActivity());
         }
-        msearchTerm = mSearchEditText.getText().toString().trim();
         if (TextUtils.isEmpty(msearchTerm)) {
-            if (isVisible()) {
-                Toast.makeText(getActivity(), "عبارت مورد جستجو را وارد نکردید.", Toast.LENGTH_LONG).show();
-            }
+            displayLongToast(getStringInFragment(R.string.enter_search_term));
             return;
         }
 
@@ -684,10 +687,10 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             return;
         }
 
-        mEmptyListContainer.setVisibility(View.GONE);
-        mLoadingCircle.setVisibility(View.VISIBLE);
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         mListView.setEmptyView(mLoadingCircle);
-        mOnErrorRetry.setVisibility(View.GONE);
+        setVisibilityInFragment(mOnErrorRetry, View.GONE);
 
         if (mItemsToggleButton.isChecked()) {
             mListView.setAdapter(mItemsAdapter);
@@ -707,6 +710,56 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             searchEvents();
             return;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        logD("onCreateOptionsMenu of searchfragment.");
+
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+
+        final MenuItem menuItem = menu.findItem(R.id.action_search);
+
+        final SearchView searchView = (SearchView) menuItem.getActionView();
+
+        if (menuItem == null) {
+            return;
+        }
+
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setVisible(true);
+
+        searchView.setQueryHint(getStringInFragment(R.string.enter_search_term));
+        searchView.setIconifiedByDefault(false);
+
+        View searchBtn = searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        final EditText searchET = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchBtn.setClickable(true);
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                msearchTerm = searchET.getText().toString().trim();
+                search();
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
+                msearchTerm = query.toString().trim();
+                search();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
 

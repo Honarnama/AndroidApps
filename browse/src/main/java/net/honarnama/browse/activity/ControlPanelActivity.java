@@ -441,11 +441,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 //            Fragment topFragment = fragments.get(fragments.size() - 1);
 
             if (topFragment != null) {
-
-                if (topFragment.getClass().getName() == mContactFragment.getClass().getName() ||
-                        topFragment.getClass().getName() == mAboutFragment.getClass().getName() ||
-                        topFragment.getClass().getName() == mBookmarksFragment.getClass().getName()
-                        ) {
+                if (isNavMenuFragment(topFragment)) {
                     FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
                     fragmentTransaction.remove(topFragment);
                     fragmentTransaction.commitAllowingStateLoss();
@@ -469,11 +465,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         try {
-
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
             Fragment topFragment = childFragmentManager.findFragmentById(R.id.child_fragment_root);
-
 
             if (!(NetworkManager.getInstance().isNetworkEnabled(true))) {
                 if (topFragment instanceof NoNetFragment) {
@@ -481,6 +475,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     return;
                 }
             }
+
             removeActiveTabTopNavMenuFragment();
 
             if (fragment.isAdded()) {
@@ -607,15 +602,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.setCurrentItem(selectedTabIndex);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
-//                .icon(GoogleMaterial.Icon.gmd_search)
-//                .color(Color.WHITE)
-//                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+////        getMenuInflater().inflate(R.menu.menu_main, menu);
+////        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
+////                .icon(GoogleMaterial.Icon.gmd_search)
+////                .color(Color.WHITE)
+////                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
+//        return true;
+//
+//    }
 
 
     @Override

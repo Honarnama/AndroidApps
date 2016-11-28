@@ -1,6 +1,9 @@
 package net.honarnama.browse.fragment;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.GRPCUtils;
@@ -29,6 +32,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -78,11 +83,22 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     public RelativeLayout mOnErrorRetry;
 
+    private Tracker mTracker;
+
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();
         }
         return mItemsFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("ItemsFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -116,19 +132,21 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         listItems();
         mListView.setOnItemClickListener(this);
 
+        setHasOptionsMenu(false);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
 
 
     @Override
     public String getTitle(Context context) {
-        return getString(R.string.hornama);
+        return getStringInFragment(R.string.hornama);
     }
 
     @Override
@@ -363,6 +381,17 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
+        }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        logD("onCreateOptionsMenu of itemsfragment.");
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

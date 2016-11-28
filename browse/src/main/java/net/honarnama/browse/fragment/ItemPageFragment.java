@@ -44,6 +44,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,6 +197,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mInfoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
         mSimilarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
 
+        setHasOptionsMenu(true);
+
         new getItemAsync().execute();
 
         //here we create the gallery and set our adapter created before
@@ -260,7 +265,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         mWidth = display.getWidth(); // deprecated
         mSimilarItemViewWidth = mWidth / 3;
-
 
         mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -385,6 +389,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().invalidateOptionsMenu();
     }
 
     public void addSimilarItems(net.honarnama.nano.Item[] items) {
@@ -632,6 +637,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
+        }
+    }
 }
 
 

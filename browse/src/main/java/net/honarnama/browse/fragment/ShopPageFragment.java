@@ -37,6 +37,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -159,9 +161,17 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
 
-        new getStoreAsync().execute();
-        return rootView;
+        setHasOptionsMenu(true);
 
+        new getStoreAsync().execute();
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -334,6 +344,14 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             mItemsAdapter.notifyDataSetChanged();
             WindowUtil.setListViewHeightBasedOnChildren(mListView);
         }
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_search_fragment, menu);
+        if (menu != null) {
+            menu.findItem(R.id.action_search).setVisible(false);
+        }
     }
 }
