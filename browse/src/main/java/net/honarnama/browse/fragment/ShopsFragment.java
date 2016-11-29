@@ -79,20 +79,26 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             mShopsFragment = new ShopsFragment();
         }
         return mShopsFragment;
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        logD("onCreate of shops fragment");
+
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ShopsFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        logD("onCreateView of shops fragment");
 
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         mListView = (ListView) rootView.findViewById(R.id.shops_listView);
@@ -129,12 +135,14 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
+        logD("onResume of shops fragment");
         getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
 
     @Override
     public void onAttach(Context context) {
+        logD("onattach of shops fragment");
         super.onAttach(context);
 
         if (context instanceof FragmentActivity) {
@@ -309,7 +317,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        logD("onCreateOptionsMenu of shopsfragment.");
+        logD("onCreateOptionsMenu of shops fragment.");
         menu.clear();
         inflater.inflate(R.menu.menu_search_fragment, menu);
         if (menu != null) {

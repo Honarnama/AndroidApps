@@ -103,6 +103,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("EventsFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
     }
 
     @Override
@@ -156,6 +157,8 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         });
         listEvents();
         setHasOptionsMenu(false);
+
+        logD("oncreateview of events frag");
         return rootView;
     }
 

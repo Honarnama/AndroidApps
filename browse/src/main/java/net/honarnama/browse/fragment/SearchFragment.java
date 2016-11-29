@@ -162,7 +162,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().invalidateOptionsMenu();
         if (mSearchSegment != null) {
             if (mSearchSegment == SearchSegment.ITEMS) {
                 mItemsToggleButton.setChecked(true);
@@ -189,6 +188,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 //        mSearchEditText.requestFocus();
 //        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        mgr.showSoftInput(mSearchEditText, InputMethodManager.SHOW_IMPLICIT);
+        getActivity().invalidateOptionsMenu();
 
     }
 

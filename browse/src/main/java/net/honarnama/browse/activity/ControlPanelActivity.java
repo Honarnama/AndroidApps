@@ -602,16 +602,16 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.setCurrentItem(selectedTabIndex);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-////        getMenuInflater().inflate(R.menu.menu_main, menu);
-////        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
-////                .icon(GoogleMaterial.Icon.gmd_search)
-////                .color(Color.WHITE)
-////                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
-//        return true;
-//
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
+//                .icon(GoogleMaterial.Icon.gmd_search)
+//                .color(Color.WHITE)
+//                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
+        return true;
+
+    }
 
 
     @Override
