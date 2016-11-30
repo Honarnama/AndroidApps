@@ -1,9 +1,9 @@
 package net.honarnama.browse.adapter;
 
+import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventsFragment;
 import net.honarnama.browse.fragment.ItemsFragment;
-import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopsFragment;
 
 import android.support.v4.app.Fragment;
@@ -13,9 +13,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.honarnama.browse.widget.MainTabBar.TAB_BOOKMARKS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 /**
@@ -30,7 +30,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
         fragmentsList.add(ChildFragment.getInstance(TAB_ITEMS));
         fragmentsList.add(ChildFragment.getInstance(TAB_EVENTS));
         fragmentsList.add(ChildFragment.getInstance(TAB_SHOPS));
-        fragmentsList.add(ChildFragment.getInstance(TAB_SEARCH));
+        fragmentsList.add(ChildFragment.getInstance(TAB_BOOKMARKS));
     }
 
     @Override
@@ -62,8 +62,8 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
             case TAB_EVENTS:
                 return EventsFragment.getInstance();
 
-            case TAB_SEARCH:
-                return SearchFragment.getInstance();
+            case TAB_BOOKMARKS:
+                return BookmarksFragment.getInstance();
 
         }
         return null;

@@ -28,7 +28,7 @@ public class MainTabBar extends LinearLayout {
 
     public static final int TAB_EVENTS = 2;
 
-    public static final int TAB_SEARCH = 3;
+    public static final int TAB_BOOKMARKS = 3;
 
 
     private int mSelectedTabColor;
@@ -73,10 +73,10 @@ public class MainTabBar extends LinearLayout {
                 new IconicsDrawable(mContext)
                         .icon(GoogleMaterial.Icon.gmd_event)
                         .sizeDp(20), R.string.events);
-        Tab favsTab = new Tab(Integer.valueOf(TAB_SEARCH),
+        Tab favsTab = new Tab(Integer.valueOf(TAB_BOOKMARKS),
                 new IconicsDrawable(mContext)
-                        .icon(GoogleMaterial.Icon.gmd_search)
-                        .sizeDp(20), R.string.search);
+                        .icon(GoogleMaterial.Icon.gmd_stars)
+                        .sizeDp(20), R.string.bookmarks);
         setTabs(new MainTabBar.Tab[]{
                 homeTab, shopsTab, eventsTab, favsTab
         }, TAB_ITEMS);
@@ -185,7 +185,7 @@ public class MainTabBar extends LinearLayout {
         deselectTabView(findViewWithTag(TAB_ITEMS));
         deselectTabView(findViewWithTag(TAB_EVENTS));
         deselectTabView(findViewWithTag(TAB_SHOPS));
-        deselectTabView(findViewWithTag(TAB_SEARCH));
+        deselectTabView(findViewWithTag(TAB_BOOKMARKS));
     }
 
     public void setOnTabItemClickListener(@NonNull OnTabItemClickListener onTabItemClickListener) {

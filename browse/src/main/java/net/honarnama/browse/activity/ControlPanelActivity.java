@@ -25,7 +25,6 @@ import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
 import net.honarnama.browse.fragment.NoNetFragment;
-import net.honarnama.browse.fragment.SearchFragment;
 import net.honarnama.browse.fragment.ShopPageFragment;
 import net.honarnama.browse.widget.LockableViewPager;
 import net.honarnama.browse.widget.MainTabBar;
@@ -72,7 +71,7 @@ import bolts.Task;
 
 import static net.honarnama.browse.widget.MainTabBar.TAB_EVENTS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_ITEMS;
-import static net.honarnama.browse.widget.MainTabBar.TAB_SEARCH;
+import static net.honarnama.browse.widget.MainTabBar.TAB_BOOKMARKS;
 import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener, View.OnClickListener {
@@ -329,22 +328,22 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case R.id.item_location:
                 displaySetDefaultLocationDialog();
                 break;
-            case R.id.item_bookmarks:
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    refreshNoNetFragment();
-                    menuItem.setChecked(true);
-                    IconicsDrawable bookmarksDrawable =
-                            new IconicsDrawable(ControlPanelActivity.this)
-                                    .color(getResources().getColor(R.color.dark_cyan))
-                                    .icon(GoogleMaterial.Icon.gmd_stars);
-                    menuItem.setIcon(bookmarksDrawable);
-                    BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
-                    switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
-                    mMainTabBar.deselectAllTabs();
-                } else {
-                    menuItem.setChecked(false);
-                }
-                break;
+//            case R.id.item_bookmarks:
+//                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+//                    refreshNoNetFragment();
+//                    menuItem.setChecked(true);
+//                    IconicsDrawable bookmarksDrawable =
+//                            new IconicsDrawable(ControlPanelActivity.this)
+//                                    .color(getResources().getColor(R.color.dark_cyan))
+//                                    .icon(GoogleMaterial.Icon.gmd_stars);
+//                    menuItem.setIcon(bookmarksDrawable);
+//                    BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
+//                    switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
+//                    mMainTabBar.deselectAllTabs();
+//                } else {
+//                    menuItem.setChecked(false);
+//                }
+//                break;
 
             case R.id.item_contact_us:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -455,8 +454,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public boolean isNavMenuFragment(Fragment fragment) {
         if (fragment.getClass().getName() == mContactFragment.getClass().getName() ||
-                fragment.getClass().getName() == mAboutFragment.getClass().getName() ||
-                fragment.getClass().getName() == mBookmarksFragment.getClass().getName()) {
+                fragment.getClass().getName() == mAboutFragment.getClass().getName()) {
             return true;
         }
         return false;
@@ -540,10 +538,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
         removeActiveTabTopNavMenuFragment();
-        if (mActiveTab == Integer.valueOf(TAB_SEARCH) && tag != Integer.valueOf(TAB_SEARCH)) {
-            SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
-            searchFragment.resetFields();
-        }
+//        if (mActiveTab == Integer.valueOf(TAB_SEARCH) && tag != Integer.valueOf(TAB_SEARCH)) {
+//            SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
+//            searchFragment.resetFields();
+//        }
         resetMenuIcons();
         mActiveTab = tag;
 
@@ -557,8 +555,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case TAB_SHOPS:
                 mViewPager.setCurrentItem(TAB_SHOPS, false);
                 break;
-            case TAB_SEARCH:
-                mViewPager.setCurrentItem(TAB_SEARCH, false);
+            case TAB_BOOKMARKS:
+                mViewPager.setCurrentItem(TAB_BOOKMARKS, false);
                 break;
             default:
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
