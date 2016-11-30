@@ -266,4 +266,6 @@
         از کافه بازار بگیرید.
     </string>
     <string name="message_limit_exceeded">محدودیت تعداد ارسال پیام در یک روز تمام شده است.</string>
+    <string name="apply">اعمال</string>
+    <string name="all_over_iran">سراسر ایران</string>
 </resources>

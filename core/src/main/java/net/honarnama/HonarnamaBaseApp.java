@@ -39,6 +39,9 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_FILTER_EVENT_CODE = 4001;
     public static final int INTENT_FILTER_SHOP_CODE = 4002;
 
+    public static final int INTENT_FILTER_ITEMS_LOCATION = 5001;
+
+
     public static final String EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL = "EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL";
     public static final String EXTRA_KEY_PROVINCE_ID = "selectedProvinceId";
     public static final String EXTRA_KEY_PROVINCE_NAME = "selectedProvinceName";

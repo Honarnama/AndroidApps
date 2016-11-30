@@ -1,0 +1,250 @@
+<net.honarnama.base.utils.ObservableScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:fadeScrollbars="false"
+        android:layoutDirection="rtl"
+>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:layoutDirection="rtl"
+    >
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/bordered_edit_text"
+                android:layout_below="@+id/close_button_container"
+                android:layout_margin="10dp"
+                android:id="@+id/filter_fields_container"
+                android:padding="0dp"
+        >
+            <!--<TextView-->
+            <!--style="@style/section_title"-->
+            <!--android:text="فیلتر رویدادها"-->
+            <!--android:id="@+id/item_filter_title"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--/>-->
+
+            <TextView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/geo_limit_title"
+                    style="@style/section_title"
+                    android:layout_centerHorizontal="true"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="5dp"
+                    android:text="محدوده جغرافیایی"
+                    android:textColor="@color/gray_light"
+                    android:layout_alignParentTop="true"
+            />
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/all_iran_container"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_below="@id/geo_limit_title"
+            >
+
+                <CheckBox
+                        android:layout_below="@+id/city_container"
+                        android:id="@+id/all_iran_checkbox"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_centerVertical="true"/>
+
+                <TextView style="@style/default_text_view"
+                          android:text="@string/all_over_iran"
+                          android:layout_centerVertical="true"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                />
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/provinces_container"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_below="@id/all_iran_container"
+            >
+                <TextView style="@style/default_text_view"
+                          android:text="@string/provine_label"
+                          android:layout_centerVertical="true"
+                          android:id="@+id/provinces_text_view"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                          android:textStyle="bold"
+                          android:layout_width="40dp"
+                          android:layout_gravity="center_vertical"
+                          android:gravity="center_vertical"
+                />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:layout_gravity="center_vertical"
+                >
+                    <EditText
+                            android:hint="@string/getting_information"
+                            android:id="@+id/province_edit_text"
+                            style="@style/bordered_edit_text"
+                            android:layout_marginRight="16dp"
+                    />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentLeft="true"
+                            app:iiv_icon="gmd-refresh"
+                            app:iiv_color="@color/gray_dark"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/refetchProvinces"
+                            android:visibility="gone"
+                            android:clickable="true"
+                    />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/city_container"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginRight="16dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_below="@id/provinces_container"
+            >
+                <TextView style="@style/default_text_view"
+                          android:text="@string/city_label"
+                          android:layout_centerVertical="true"
+                          android:id="@+id/city_text_view"
+                          android:editable="false"
+                          android:cursorVisible="false"
+                          android:focusable="false"
+                          android:clickable="true"
+                          android:textStyle="bold"
+                          android:layout_width="40dp"
+                          android:layout_gravity="center_vertical"
+                          android:gravity="center_vertical"
+                />
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:layout_gravity="center_vertical"
+                >
+                    <EditText
+                            android:hint="@string/getting_information"
+                            android:id="@+id/city_edit_text"
+                            style="@style/bordered_edit_text"
+                            android:layout_marginRight="16dp"
+                    />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentLeft="true"
+                            app:iiv_icon="gmd-refresh"
+                            app:iiv_color="@color/gray_dark"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/refetchCities"
+                            android:visibility="gone"
+                            android:clickable="true"
+                    />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <View style="@style/HorizontalSeparatorLine"
+                  android:layout_below="@id/city_container"
+                  android:layout_marginTop="30dp"
+                  android:background="@color/gray_extra_light"
+                  android:id="@+id/separator_line"
+            >
+            </View>
+
+
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/separator_line"
+                            android:layout_margin="5dp"
+                            android:id="@+id/filter_buttons_container"
+                            android:gravity="center"
+            >
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_below="@id/contact_warning"
+                              android:orientation="horizontal"
+                              android:layout_centerHorizontal="true"
+                              android:layout_marginBottom="10dp"
+                              android:layout_marginTop="10dp"
+                >
+                    <Button
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_weight="1"
+                            android:text="@string/apply"
+                            android:id="@+id/apply_filter"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/round_corner_cyan_back"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                    />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="-25dp"
+                        android:clickable="true"
+                        android:id="@+id/close_button_container"
+        >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:iiv_icon="gmd-lens"
+                    app:iiv_color="@color/super_extra_dark_red"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/close_button"
+            />
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    app:iiv_icon="gmd-close"
+                    app:iiv_color="@color/white"
+                    android:layout_centerInParent="true"
+                    android:id="@id/close_button"
+            />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</net.honarnama.base.utils.ObservableScrollView>

@@ -17,7 +17,9 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
+import net.honarnama.browse.dialog.EventFilterDialogActivity;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
+import net.honarnama.browse.dialog.LocationFilterDialogActivity;
 import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.BrowseItemsReply;
 import net.honarnama.nano.BrowseItemsRequest;
@@ -32,8 +34,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -69,7 +69,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public LinearLayout mLoadingCircle;
 
     public RelativeLayout mEmptyListContainer;
-    public RelativeLayout mFilterContainer;
+    public LinearLayout mFilterContainer;
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
@@ -109,7 +109,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
-        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
+        mFilterContainer = (LinearLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
@@ -131,6 +131,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         listItems();
         mListView.setOnItemClickListener(this);
+
+        rootView.findViewById(R.id.filter_location).setOnClickListener(this);
 
         return rootView;
     }
@@ -190,6 +192,15 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
 
         }
+
+        if (v.getId() == R.id.filter_location) {
+            Intent intent = new Intent(getActivity(), LocationFilterDialogActivity.class);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
+            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_LOCATION);
+        }
+
     }
 
     public void listItems() {
@@ -241,6 +252,19 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     listItems();
                 }
                 break;
+
+            case HonarnamaBaseApp.INTENT_FILTER_ITEMS_LOCATION:
+                if (resultCode == getActivity().RESULT_OK) {
+                    mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
+                    mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
+                    mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
+                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+                    //TODO
+//                    changeLocationFilterTitle();
+                    listItems();
+                }
+                break;
         }
     }
 
@@ -251,7 +275,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
         } else {
             mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
-            mFilterTextView.setText(getResources().getString(R.string.item_filter));
+            mFilterTextView.setText(getResources().getString(R.string.filter));
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }

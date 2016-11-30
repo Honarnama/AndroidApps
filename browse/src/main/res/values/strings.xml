@@ -43,8 +43,8 @@
         پیش از شرکت در رویداد، از صحت آن مطمئن شوید. هنرنما هیچ‌گونه منفعت و مسئولیتی در قبال شرکت
         شما در این رویداد ندارد.
     </string>
-    <string name="item_filter">
-        "فیلتر کردن (محدوده جغرافیایی و قیمت)"
+    <string name="filter">
+        فیلتر کردن
     </string>
     <string name="event_filter">فیلتر کردن رویدادها</string>
     <string name="switch_app">برنامه فروشندگان</string>

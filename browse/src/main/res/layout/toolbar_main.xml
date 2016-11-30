@@ -9,7 +9,7 @@
         android:layoutDirection="rtl"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp">
+>
     <!--
     <TextView
             android:id="@+id/toolbar_title"
@@ -31,6 +31,6 @@
             style="@style/Toolbar.TitleText"
             android:layout_gravity="right|center_vertical"
 
-            />
+    />
 
 </android.support.v7.widget.Toolbar>
