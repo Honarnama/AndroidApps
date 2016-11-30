@@ -47,6 +47,7 @@
     <color name="super_extra_dark_green">#1e3e12</color>
 
     <color name="orange">#FFAB40</color>
+    <color name="deep_orange_light">#FF7043</color>
     <color name="deep_orange">#FF5722</color>
     <color name="dark_orange">#EF6C00</color>
     <color name="extra_dark_orange">#E65100</color>
