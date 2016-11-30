@@ -132,14 +132,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         listItems();
         mListView.setOnItemClickListener(this);
 
-        setHasOptionsMenu(false);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
 
@@ -381,17 +379,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
-        }
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        logD("onCreateOptionsMenu of itemsfragment.");
-        menu.clear();
-        inflater.inflate(R.menu.menu_search_fragment, menu);
-        if (menu != null) {
-            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

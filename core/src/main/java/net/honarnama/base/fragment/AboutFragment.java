@@ -48,7 +48,6 @@ public class AboutFragment extends HonarnamaBaseFragment {
             logE("Error setting about us text: " + e, e);
         }
 
-        setHasOptionsMenu(false);
         return rootView;
     }
 

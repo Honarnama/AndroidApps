@@ -30,8 +30,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -86,8 +84,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        logD("onCreate of shops fragment");
-
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ShopsFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -97,8 +93,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        logD("onCreateView of shops fragment");
 
         final View rootView = inflater.inflate(R.layout.fragment_shops, container, false);
         mListView = (ListView) rootView.findViewById(R.id.shops_listView);
@@ -118,8 +112,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         listShops();
 
-        setHasOptionsMenu(false);
-
         return rootView;
     }
 
@@ -135,14 +127,11 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
-        logD("onResume of shops fragment");
-        getActivity().invalidateOptionsMenu();
         changeFilterTitle();
     }
 
     @Override
     public void onAttach(Context context) {
-        logD("onattach of shops fragment");
         super.onAttach(context);
 
         if (context instanceof FragmentActivity) {
@@ -312,16 +301,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
             }
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        logD("onCreateOptionsMenu of shops fragment.");
-        menu.clear();
-        inflater.inflate(R.menu.menu_search_fragment, menu);
-        if (menu != null) {
-            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

@@ -110,7 +110,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().invalidateOptionsMenu();
     }
 
 
@@ -157,8 +156,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.event_shop_container);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
-
-        setHasOptionsMenu(true);
 
         new getEventAsync().execute();
         return rootView;
@@ -360,14 +357,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_search_fragment, menu);
-        if (menu != null) {
-            menu.findItem(R.id.action_search).setVisible(false);
-        }
-    }
 }
 
 

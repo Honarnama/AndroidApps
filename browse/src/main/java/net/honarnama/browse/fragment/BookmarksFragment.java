@@ -1,29 +1,17 @@
 package net.honarnama.browse.fragment;
 
 
-import net.honarnama.GRPCUtils;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.BookmarksAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.model.Bookmark;
-import net.honarnama.base.model.Item;
-import net.honarnama.nano.BrowseItemReply;
-import net.honarnama.nano.BrowseItemRequest;
-import net.honarnama.nano.BrowseServiceGrpc;
-import net.honarnama.nano.RequestProperties;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -57,7 +45,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        logD("onCreateView of bookmarks fragment.");
         View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
@@ -71,8 +58,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
         mListView.setOnItemClickListener(this);
         new getBookmarks().execute();
 
-        setHasOptionsMenu(true);
-
         return rootView;
     }
 
@@ -80,10 +65,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     @Override
     public void onResume() {
         super.onResume();
-
-        logD("onResume of bookmarks fragment.");
-
-        getActivity().invalidateOptionsMenu();
     }
 
 
@@ -139,16 +120,6 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
             mItemsAdapter.setItems(bookmarkedItems);
             mItemsAdapter.notifyDataSetChanged();
-        }
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        logD("onCreateOptionsMenu of bookmarks fragment.");
-        inflater.inflate(R.menu.menu_search_fragment, menu);
-        if (menu != null) {
-            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 

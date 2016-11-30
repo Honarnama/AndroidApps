@@ -161,17 +161,12 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
 
-        setHasOptionsMenu(true);
-
-        new getStoreAsync().execute();
-
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -343,15 +338,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             mItemsAdapter.setItems(itemsList);
             mItemsAdapter.notifyDataSetChanged();
             WindowUtil.setListViewHeightBasedOnChildren(mListView);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_search_fragment, menu);
-        if (menu != null) {
-            menu.findItem(R.id.action_search).setVisible(false);
         }
     }
 }
