@@ -15,6 +15,7 @@
                     android:layout_alignParentTop="true"
                     android:background="@color/white"
                     android:elevation="4dp"
+                    android:id="@+id/filter_layer"
     >
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="?attr/actionBarSize"
@@ -29,7 +30,7 @@
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    app:iiv_color="@color/gray_dark"
+                    app:iiv_color="@color/dark_cyan"
                     app:iiv_icon="gmd-place"
                     android:id="@+id/place_icon"
             />
@@ -37,8 +38,8 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       style="@style/default_text_view"
                       android:id="@+id/location_criteria_text_view"
-                      android:text="@string/city"
-                      android:textColor="@color/gray_dark"
+                      android:text="@string/all_over_iran"
+                      android:textColor="@color/dark_cyan"
             />
 
         </LinearLayout>
@@ -83,7 +84,7 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_margin="5dp"
-            android:layout_below="@id/filter_container"
+            android:layout_below="@id/filter_layer"
     >
         <ProgressBar
                 style="?android:attr/progressBarStyle"
@@ -100,7 +101,7 @@
               android:dividerHeight="5dp"
               android:clipToPadding="false"
               android:padding="5dip"
-              android:layout_below="@id/filter_container"
+              android:layout_below="@id/filter_layer"
     />
 
     <RelativeLayout android:layout_width="wrap_content"

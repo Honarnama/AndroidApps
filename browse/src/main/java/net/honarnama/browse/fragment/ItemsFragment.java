@@ -83,6 +83,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     public RelativeLayout mOnErrorRetry;
 
+    public TextView mLocationCriteriaTextView;
+
     private Tracker mTracker;
 
     public synchronized static ItemsFragment getInstance() {
@@ -133,6 +135,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mListView.setOnItemClickListener(this);
 
         rootView.findViewById(R.id.filter_location).setOnClickListener(this);
+
+        mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
 
         return rootView;
     }
@@ -245,10 +249,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
-
                     logD("Filter city to city id: " + mSelectedCityId);
                     changeFilterTitle();
-
                     listItems();
                 }
                 break;
@@ -259,9 +261,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
-                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
-                    //TODO
-//                    changeLocationFilterTitle();
+                    changeLocationFilterTitle();
                     listItems();
                 }
                 break;
@@ -280,6 +280,19 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
     }
 
+    private void changeLocationFilterTitle() {
+        if (mIsAllIranChecked) {
+            setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
+        } else {
+            if (mSelectedCityId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.city) + " " + City.getCityById(mSelectedCityId).getName());
+            } else if (mSelectedProvinceId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.province) + " " + Province.getProvinceById(mSelectedProvinceId).getName());
+            } else {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
+            }
+        }
+    }
 
     public class getItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
         BrowseItemsRequest browseItemsRequest;

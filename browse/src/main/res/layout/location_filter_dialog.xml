@@ -172,47 +172,50 @@
             </LinearLayout>
 
 
-            <View style="@style/HorizontalSeparatorLine"
-                  android:layout_below="@id/city_container"
-                  android:layout_marginTop="30dp"
-                  android:background="@color/gray_extra_light"
-                  android:id="@+id/separator_line"
-            >
-            </View>
-
-
-            <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/separator_line"
-                            android:layout_margin="5dp"
-                            android:id="@+id/filter_buttons_container"
-                            android:gravity="center"
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_centerHorizontal="true"
+                          android:layout_below="@id/city_container"
+                          android:id="@+id/filter_buttons_container"
+                          android:gravity="center_horizontal"
             >
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_below="@id/contact_warning"
-                              android:orientation="horizontal"
-                              android:layout_centerHorizontal="true"
-                              android:layout_marginBottom="10dp"
-                              android:layout_marginTop="10dp"
-                >
-                    <Button
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_weight="1"
-                            android:text="@string/apply"
-                            android:id="@+id/apply_filter"
-                            android:layout_marginLeft="5dp"
-                            android:background="@drawable/round_corner_cyan_back"
-                            android:textColor="@color/white"
-                            android:textStyle="bold"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                    />
-
-                </LinearLayout>
-            </RelativeLayout>
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_centerVertical="true"
+                        android:text="@string/apply"
+                        android:id="@+id/apply_filter"
+                        android:gravity="center"
+                        android:layout_height="45dp"
+                        style="@style/core_wrap_button"
+                        android:background="@drawable/round_corner_cyan_back"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="20dp"
+                />
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/bikhial"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/bikhial_btn"
+                        android:gravity="center"
+                        android:layout_height="45dp"
+                        style="@style/core_wrap_button"
+                        android:background="@drawable/round_corner_red_back"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="20dp"
+                />
+            </LinearLayout>
 
         </RelativeLayout>
 

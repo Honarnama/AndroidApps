@@ -128,11 +128,19 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
 
         fetchProvincesAndCities();
 
-        IconicsImageView closeButton = (IconicsImageView) findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.close_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeFilters();
+                finish();
+            }
+        });
+
+        findViewById(R.id.bikhial_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeFilters();
+                finish();
             }
         });
 
@@ -291,7 +299,6 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME, mSelectedProvinceName);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
-        data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, true);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
         setResult(RESULT_OK, data);
         finish();
@@ -300,7 +307,6 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
     public void removeFilters() {
         Intent data = new Intent();
         setResult(RESULT_CANCELED, data);
-        finish();
     }
 
     public void fetchProvincesAndCities() {
