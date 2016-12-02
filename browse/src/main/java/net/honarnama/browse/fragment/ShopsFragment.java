@@ -3,8 +3,6 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.mikepenz.iconics.view.IconicsImageView;
-
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -15,7 +13,7 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.browse.dialog.ShopFilterDialogActivity;
+import net.honarnama.browse.dialog.LocationFilterDialogActivity;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoresReply;
 import net.honarnama.nano.BrowseStoresRequest;
@@ -28,7 +26,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +39,11 @@ import java.util.ArrayList;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-
 public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     //    ShopsAdapter mAdapter;
     public static ShopsFragment mShopsFragment;
     private Tracker mTracker;
-    private FragmentActivity mFragmentActivity;
     public RelativeLayout mOnErrorRetry;
 
     ShopsAdapter mShopsAdapter;
@@ -56,14 +51,11 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mLoadingCircle;
 
-    private boolean mIsAllIranChecked = true;
-    public RelativeLayout mFilterContainer;
-    private boolean mIsFilterApplied = false;
-    private TextView mFilterTextView;
-    private IconicsImageView mFilterIcon;
+    private TextView mLocationCriteriaTextView;
     private int mSelectedProvinceId = -1;
     private String mSelectedProvinceName;
     private int mSelectedCityId = -1;
+    private boolean mIsAllIranChecked = true;
 
     private ListView mListView;
 
@@ -100,10 +92,9 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
-        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
-        mFilterContainer.setOnClickListener(this);
-        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
-        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
+        rootView.findViewById(R.id.filter_location).setOnClickListener(this);
+
+        mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
 
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_shops_warning_container);
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
@@ -127,16 +118,16 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
-        changeFilterTitle();
+        changeLocationFilterTitle();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        if (context instanceof FragmentActivity) {
-            mFragmentActivity = (FragmentActivity) context;
-        }
+//
+//        if (context instanceof FragmentActivity) {
+//            mFragmentActivity = (FragmentActivity) context;
+//        }
     }
 
 
@@ -152,12 +143,12 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 controlPanelActivity.refreshTopFragment();
                 break;
 
-            case R.id.filter_container:
-                Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
+            case R.id.filter_location:
+                Intent intent = new Intent(getActivity(), LocationFilterDialogActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
-                getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
+                getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOPS_LOCATION);
                 break;
         }
     }
@@ -175,32 +166,32 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
+            case HonarnamaBaseApp.INTENT_FILTER_SHOPS_LOCATION:
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
-                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
-                    changeFilterTitle();
+                    changeLocationFilterTitle();
                     listShops();
                 }
                 break;
         }
     }
 
-    private void changeFilterTitle() {
-        if (mIsFilterApplied) {
-            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
-            mFilterTextView.setText(R.string.change_filter);
-            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+    private void changeLocationFilterTitle() {
+        if (mIsAllIranChecked) {
+            setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
         } else {
-            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
-            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
-            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
+            if (mSelectedCityId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.city) + " " + City.getCityById(mSelectedCityId).getName());
+            } else if (mSelectedProvinceId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.province) + " " + Province.getProvinceById(mSelectedProvinceId).getName());
+            } else {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
+            }
         }
     }
-
 
     public class getShopsAsync extends AsyncTask<Void, Void, BrowseStoresReply> {
         BrowseStoresRequest browseStoresRequest;
@@ -231,15 +222,14 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
             browseStoresRequest.locationCriteria = locationCriteria;
 
-            BrowseStoresReply browseStoresReply;
             if (BuildConfig.DEBUG) {
-                logD("Request for getting stores is: " + browseStoresRequest);
+                logD("Request for getting shops is: " + browseStoresRequest);
             }
             try {
                 BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
                 return stub.getStores(browseStoresRequest);
             } catch (Exception e) {
-                logE("Error running getStores request. request: " + browseStoresRequest + ". Error: " + e, e);
+                logE("Error running getshops request. request: " + browseStoresRequest + ". Error: " + e, e);
             }
             return null;
         }
