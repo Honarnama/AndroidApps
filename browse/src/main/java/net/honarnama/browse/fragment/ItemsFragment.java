@@ -145,6 +145,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public void onResume() {
         super.onResume();
         changeFilterTitle();
+        changeLocationFilterTitle();
     }
 
 
@@ -176,9 +177,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
         if (v.getId() == R.id.filter_container) {
             Intent intent = new Intent(getActivity(), ItemFilterDialogActivity.class);
-            intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
-            intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
             if (mMinPriceIndex > -1) {
                 intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, mMinPriceIndex);
             }
@@ -240,16 +238,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             case HonarnamaBaseApp.INTENT_FILTER_ITEMS_CODE:
 
                 if (resultCode == getActivity().RESULT_OK) {
-                    mSelectedProvinceId = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
-                    mSelectedProvinceName = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_NAME);
-                    mSelectedCityId = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mMinPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_INDEX, -1);
                     mMinPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE);
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
-                    mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
-                    logD("Filter city to city id: " + mSelectedCityId);
                     changeFilterTitle();
                     listItems();
                 }
