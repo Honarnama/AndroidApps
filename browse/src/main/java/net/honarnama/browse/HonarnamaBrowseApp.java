@@ -19,6 +19,7 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
     public static final String EXTRA_KEY_MIN_PRICE_VALUE = "minPriceValue";
     public static final String EXTRA_KEY_MAX_PRICE_INDEX = "maxPriceIndex";
     public static final String EXTRA_KEY_MAX_PRICE_VALUE = "maxPriceValue";
+    public static final String EXTRA_KEY_SEARCH_TERM = "searchTerm";
 
     @Override
     public void onCreate() {

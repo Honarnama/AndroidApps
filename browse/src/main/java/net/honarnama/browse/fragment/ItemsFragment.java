@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -63,6 +64,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public String mMinPriceValue;
     public int mMaxPriceIndex = -1;
     public String mMaxPriceValue;
+    public String mSearchTerm = "";
 
     ItemsAdapter mItemsAdapter;
     public Button mCategoryFilterButton;
@@ -184,6 +186,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             if (mMaxPriceIndex > -1) {
                 intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceIndex);
             }
+
+            intent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM, mSearchTerm);
+
             getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_ITEMS_CODE);
         }
 
@@ -243,6 +248,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mMaxPriceIndex = data.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
                     mMaxPriceValue = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE);
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+                    mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
                     changeFilterTitle();
                     listItems();
                 }
@@ -314,8 +320,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 artCategoryCriteria.level2Id = mSelectedCategoryId;
             }
 
-            browseItemsRequest.artCategoryCriteria = artCategoryCriteria;
+            browseItemsRequest.searchTerm = mSearchTerm;
 
+            browseItemsRequest.artCategoryCriteria = artCategoryCriteria;
 
             if (mMinPriceIndex > -1 && mMinPriceValue != null && !(mMinPriceValue.equals("MAX"))) {
                 browseItemsRequest.minPrice = Integer.valueOf(mMinPriceValue);

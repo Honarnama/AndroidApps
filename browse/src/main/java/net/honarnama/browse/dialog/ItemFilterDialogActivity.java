@@ -46,17 +46,10 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
 
     public Activity mActivity;
 
-    public int mSelectedProvinceId;
-    public String mSelectedProvinceName;
-
-    public Dialog mDialog;
-    public int mSelectedCityId;
-    public String mSelectedCityName;
-
-    private Province mSelectedProvince;
-
     HorizontalNumberPicker mMinPriceHorizontalPicker;
     HorizontalNumberPicker mMaxPriceHorizontalPicker;
+
+    public EditText mSearchEditText;
     public int mMinPriceIndex;
     public int mMaxPriceIndex;
 
@@ -70,25 +63,17 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         mActivity = ItemFilterDialogActivity.this;
 
         Intent intent = getIntent();
-        mSelectedProvinceId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_PROVINCE_ID, -1);
-        if (mSelectedProvinceId < 0) {
-            mSelectedProvinceId = getUserLocationProvinceId();
-        }
-        mSelectedCityId = intent.getIntExtra(HonarnamaBrowseApp.EXTRA_KEY_CITY_ID, -1);
-        logD("last filtered city id: " + mSelectedCityId);
-        if (mSelectedCityId < 0) {
-            mSelectedCityId = getUserLocationCityId();
-            logD("user default city id: " + mSelectedCityId);
-        }
-
-        if (mSelectedCityId < 0) {
-            mSelectedCityId = City.ALL_CITY_ID;
-        }
-
-        logD("Selected city id: " + mSelectedCityId);
 
         mMinPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.min_price);
         mMaxPriceHorizontalPicker = (HorizontalNumberPicker) this.findViewById(R.id.max_price);
+
+        mSearchEditText = (EditText) findViewById(R.id.serach_term);
+
+        if (intent.hasExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM)) {
+            mSearchEditText.setText(intent.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM));
+        } else {
+            mSearchEditText.setText("");
+        }
 
         String priceList[] = getResources().getStringArray(R.array.price_values);
         int priceListSize = priceList.length;
@@ -176,6 +161,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MIN_PRICE_VALUE, mMinPriceHorizontalPicker.getActualSelectedValue());
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, mMaxPriceHorizontalPicker.getSelectedIndex());
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, mMaxPriceHorizontalPicker.getActualSelectedValue());
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM, mSearchEditText.getText().toString().trim());
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, true);
         setResult(RESULT_OK, data);
         finish();
@@ -188,6 +174,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_INDEX, -1);
         data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_MAX_PRICE_VALUE, "");
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+        data.putExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM, "");
 
         setResult(RESULT_OK, data);
         finish();
