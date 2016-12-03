@@ -17,7 +17,7 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
-import net.honarnama.browse.dialog.EventFilterDialogActivity;
+import net.honarnama.browse.dialog.LocationFilterDialogActivity;
 import net.honarnama.nano.BrowseEventsReply;
 import net.honarnama.nano.BrowseEventsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
@@ -30,7 +30,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,16 +55,17 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     //    ShopsAdapter mAdapter;
     public static EventsFragment mEventsFragment;
     private Tracker mTracker;
-    private FragmentActivity mFragmentActivity;
     EventsAdapter mEventsAdapter;
     public RelativeLayout mOnErrorRetry;
     public Button mCategoryFilterButton;
-    public RelativeLayout mFilterContainer;
     List<EventCategory> mEventCategories = new ArrayList<>();
     public HashMap<Integer, String> mEventCategoriesHashMap = new HashMap<>();
     public int mSelectedCatId = -1;
     public String mSelectedCatName;
 
+    public TextView mLocationCriteriaTextView;
+
+    private boolean mIsAllIranChecked = true;
     private int mSelectedProvinceId = -1;
     private String mSelectedProvinceName;
     private int mSelectedCityId = -1;
@@ -75,12 +75,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
     private ListView mListView;
     private boolean mFilterAllCategoryRowSelected = false;
-
-    private TextView mFilterTextView;
-    private IconicsImageView mFilterIcon;
-
-    private boolean mIsAllIranChecked = true;
-    private boolean mIsFilterApplied = false;
 
     @Override
     public String getTitle(Context context) {
@@ -125,15 +119,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
 
-        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
-        mFilterContainer.setOnClickListener(this);
-
-        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
-        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
-
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mListView.setOnItemClickListener(this);
+
+        mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
+
+        rootView.findViewById(R.id.filter_location).setOnClickListener(this);
 
         final EventCategory eventCategory = new EventCategory();
         eventCategory.getAllEventCategoriesSorted().continueWith(new Continuation<List<EventCategory>, Object>() {
@@ -169,17 +161,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     @Override
     public void onResume() {
         super.onResume();
-        changeFilterTitle();
+        changeLocationFilterTitle();
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        if (context instanceof FragmentActivity) {
-            mFragmentActivity = (FragmentActivity) context;
-        }
     }
 
     public void onSelectedTabClick() {
@@ -202,14 +190,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 displayChooseEventCategoryDialog();
                 break;
 
-            case R.id.filter_container:
-                Intent intent = new Intent(getActivity(), EventFilterDialogActivity.class);
+            case R.id.filter_location:
+                Intent intent = new Intent(getActivity(), LocationFilterDialogActivity.class);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
-                getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_EVENT_CODE);
+                getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_EVENTS_LOCATION);
                 break;
-
         }
     }
 
@@ -266,34 +253,18 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case HonarnamaBaseApp.INTENT_FILTER_EVENT_CODE:
+            case HonarnamaBaseApp.INTENT_FILTER_EVENTS_LOCATION:
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
-                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
-
-                    changeFilterTitle();
-
+                    changeLocationFilterTitle();
                     listEvents();
                 }
                 break;
         }
     }
-
-    private void changeFilterTitle() {
-        if (mIsFilterApplied) {
-            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
-            mFilterTextView.setText(R.string.change_filter);
-            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
-        } else {
-            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
-            mFilterTextView.setText(getResources().getString(R.string.filter_geo));
-            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
-        }
-    }
-
 
     public class getEventsAsync extends AsyncTask<Void, Void, BrowseEventsReply> {
         BrowseEventsRequest browseEventsRequest;
@@ -328,7 +299,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
             browseEventsRequest.locationCriteria = locationCriteria;
 
-            BrowseEventsReply browseEventsReply;
             if (BuildConfig.DEBUG) {
                 logD("Request for getting events is: " + browseEventsRequest);
             }
@@ -400,5 +370,20 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
         }
     }
+
+    private void changeLocationFilterTitle() {
+        if (mIsAllIranChecked) {
+            setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
+        } else {
+            if (mSelectedCityId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.city) + " " + City.getCityById(mSelectedCityId).getName());
+            } else if (mSelectedProvinceId > 0) {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.province) + " " + Province.getProvinceById(mSelectedProvinceId).getName());
+            } else {
+                setTextInFragment(mLocationCriteriaTextView, getStringInFragment(R.string.all_over_iran));
+            }
+        }
+    }
+
 
 }

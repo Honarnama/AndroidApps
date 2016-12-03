@@ -7,36 +7,41 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layoutDirection="rtl"
-        >
+>
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/filter_container"
                     android:layout_alignParentTop="true"
-                    android:background="@drawable/bottom_shadow_back"
-            >
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                app:iiv_icon="cmd-filter"
-                app:iiv_color="@color/text_color"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentRight="true"
-                android:id="@+id/filter_icon"
-                android:layout_centerVertical="true"
-                />
+                    android:background="@color/white"
+                    android:elevation="4dp"
+                    android:id="@+id/filter_layer"
+    >
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="?attr/actionBarSize"
+                      android:layout_alignParentRight="true"
+                      android:layout_marginRight="16dp"
+                      android:layout_marginLeft="10dp"
+                      android:orientation="horizontal"
+                      android:gravity="center_vertical"
+                      android:id="@+id/filter_location"
 
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="?attr/actionBarSize"
-                  android:text="فیلتر کردن محدوده جغرافیایی"
-                  android:textSize="16sp"
-                  android:textColor="@color/text_color"
-                  android:layout_toLeftOf="@id/filter_icon"
-                  android:layout_centerVertical="true"
-                  android:gravity="center_vertical"
-                  android:id="@+id/filter_text_view"
-                />
+        >
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    app:iiv_color="@color/dark_cyan"
+                    app:iiv_icon="gmd-place"
+                    android:id="@+id/place_icon"
+            />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      style="@style/default_text_view"
+                      android:id="@+id/location_criteria_text_view"
+                      android:text="@string/all_over_iran"
+                      android:textColor="@color/dark_cyan"
+            />
+
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
@@ -47,8 +52,8 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_margin="5dp"
-            android:layout_below="@id/filter_container"
-            >
+            android:layout_below="@id/filter_layer"
+    >
         <ProgressBar
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
@@ -64,15 +69,15 @@
               android:dividerHeight="5dp"
               android:clipToPadding="false"
               android:padding="5dip"
-              android:layout_below="@id/filter_container"
-            />
+              android:layout_below="@id/filter_layer"
+    />
 
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/no_events_warning_container"
                     android:layout_centerInParent="true"
                     android:visibility="gone"
-            >
+    >
 
         <TextView android:id="@+id/empty_events_text_view"
                   android:layout_width="wrap_content"
@@ -86,7 +91,7 @@
                   android:paddingLeft="10dp"
                   android:paddingRight="30dp"
                   android:text="@string/no_event_found"
-                />
+        />
 
         <com.mikepenz.iconics.view.IconicsImageView
                 android:id="@+id/no_event_warning_image"
@@ -97,7 +102,7 @@
                 android:layout_toRightOf="@id/empty_events_text_view"
                 android:layout_marginLeft="-24dp"
                 android:layout_centerVertical="true"
-                />
+        />
     </RelativeLayout>
 
     <RelativeLayout android:layout_width="match_parent"
@@ -105,7 +110,7 @@
                     android:layout_below="@id/no_events_warning_container"
                     android:id="@+id/on_error_retry_container"
                     android:visibility="gone"
-            >
+    >
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
@@ -114,7 +119,7 @@
                 android:layout_height="56dp"
                 app:iiv_icon="gmd-sync"
                 app:iiv_color="@color/gray_dark"
-                />
+        />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/tiny_text_view"
@@ -122,7 +127,7 @@
                   android:id="@+id/on_error_retry_text_view"
                   android:layout_below="@id/on_error_retry_icon"
                   android:layout_centerHorizontal="true"
-                />
+        />
     </RelativeLayout>
 
 </RelativeLayout>
