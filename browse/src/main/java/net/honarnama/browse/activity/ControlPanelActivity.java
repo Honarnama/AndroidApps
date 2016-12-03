@@ -20,7 +20,6 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
-import net.honarnama.browse.fragment.BookmarksFragment;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
@@ -97,19 +96,17 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public ContactFragment mContactFragment;
     public AboutFragment mAboutFragment;
-    public BookmarksFragment mBookmarksFragment;
 
     public RelativeLayout mNavFooter;
 
     public static final int ITEM_IDENTIFIER_LOCATION = 0;
-    public static final int ITEM_IDENTIFIER_BOOKMARKS = 1;
-    public static final int ITEM_IDENTIFIER_CONTACT = 2;
-    public static final int ITEM_IDENTIFIER_RULES = 3;
-    public static final int ITEM_IDENTIFIER_ABOUT = 4;
-    public static final int ITEM_IDENTIFIER_SHARE = 5;
-    public static final int ITEM_IDENTIFIER_SUPPORT = 6;
-    public static final int ITEM_IDENTIFIER_SWAP = 7;
-    public static final int ITEM_IDENTIFIER_EXIT = 8;
+    public static final int ITEM_IDENTIFIER_CONTACT = 1;
+    public static final int ITEM_IDENTIFIER_RULES = 2;
+    public static final int ITEM_IDENTIFIER_ABOUT = 3;
+    public static final int ITEM_IDENTIFIER_SHARE = 4;
+    public static final int ITEM_IDENTIFIER_SUPPORT = 5;
+    public static final int ITEM_IDENTIFIER_SWAP = 6;
+    public static final int ITEM_IDENTIFIER_EXIT = 7;
 
     public Dialog mSetDefaultLocationDialog;
 
@@ -143,7 +140,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         mContactFragment = ContactFragment.getInstance();
         mAboutFragment = AboutFragment.getInstance();
-        mBookmarksFragment = BookmarksFragment.getInstance();
 
         mMainFragmentAdapter =
                 new MainFragmentAdapter(
@@ -264,13 +260,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         .icon(GoogleMaterial.Icon.gmd_place);
         menu.getItem(ITEM_IDENTIFIER_LOCATION).setIcon(locationDrawable);
         menu.getItem(ITEM_IDENTIFIER_LOCATION).setChecked(false);
-
-        IconicsDrawable bookmarksDrawable =
-                new IconicsDrawable(ControlPanelActivity.this)
-                        .color(getResources().getColor(R.color.gray_extra_dark))
-                        .icon(GoogleMaterial.Icon.gmd_stars);
-        menu.getItem(ITEM_IDENTIFIER_BOOKMARKS).setIcon(bookmarksDrawable);
-        menu.getItem(ITEM_IDENTIFIER_BOOKMARKS).setChecked(false);
 
         IconicsDrawable contactDrawable =
                 new IconicsDrawable(ControlPanelActivity.this)

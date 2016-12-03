@@ -3,29 +3,25 @@
 
     <group android:checkableBehavior="single"
            android:id="@+id/grp1"
-            >
+    >
         <item android:id="@+id/item_location"
               android:title="استان و شهر پیش‌فرض"
               android:checkable="false"
-                />
-
-        <item android:id="@+id/item_bookmarks"
-              android:title="@string/bookmarks"
-                />
+        />
     </group>
 
     <group android:checkableBehavior="single"
            android:id="@+id/grp2"
-            >
+    >
 
         <item android:id="@+id/item_contact_us"
               android:title="@string/contact_us"
-                />
+        />
 
         <item android:id="@+id/item_rules"
               android:title="@string/rules"
               android:checkable="false"
-                />
+        />
 
         <item android:id="@+id/item_about_us"
               android:title="@string/about_us"/>
@@ -33,29 +29,29 @@
         <item android:id="@+id/item_share_us"
               android:title="@string/share_us"
               android:checkable="false"
-                />
+        />
 
         <item android:id="@+id/item_support_us"
               android:title="@string/support_us"
               android:checkable="false"
-                />
+        />
 
         <item android:id="@+id/item_switch_app"
               android:title="@string/switch_app"
               android:checkable="false"
-                />
+        />
 
     </group>
 
 
     <group android:checkableBehavior="single"
            android:id="@+id/grp4"
-            >
+    >
 
         <item android:id="@+id/item_nav_title_exit_app"
               android:title="@string/exit_app"
               android:checkable="false"
-                />
+        />
         <item android:title=""
               android:orderInCategory="200"/>
     </group>
