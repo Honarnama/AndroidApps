@@ -270,11 +270,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private void changeFilterTitle() {
         if (mIsFilterApplied) {
             mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
-            mFilterTextView.setText(R.string.change_filter);
+            setTextInFragment(mFilterTextView, getStringInFragment(R.string.filtered));
             mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
         } else {
             mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
-            mFilterTextView.setText(getResources().getString(R.string.filter));
+            setTextInFragment(mFilterTextView, getStringInFragment(R.string.filter));
             mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }
