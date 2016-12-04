@@ -407,7 +407,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!mSharedPreferences.getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
                     askToRate();
                 } else {
-                    finish();
+                    exitApp();
                 }
                 break;
 
@@ -626,7 +626,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
                             askToRate();
                         } else {
-                            finish();
+                            exitApp();
                         }
                         confirmationDialog.dismiss();
                     }

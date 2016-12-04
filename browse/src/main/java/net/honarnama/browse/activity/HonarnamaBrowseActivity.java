@@ -62,5 +62,14 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
         metaUpdater.execute();
     }
 
+    public void exitApp() {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            finishAndRemoveTask();
+            System.exit(0);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
 
 }

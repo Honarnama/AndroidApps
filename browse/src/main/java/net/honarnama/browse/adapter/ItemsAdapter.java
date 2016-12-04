@@ -140,6 +140,10 @@ public class ItemsAdapter extends BaseAdapter {
         mItems = itemList;
     }
 
+    public void addItems(ArrayList<Item> itemList) {
+        mItems.addAll(itemList);
+    }
+
     private class MyViewHolder {
         TextView title;
         TextView desc;

@@ -15,6 +15,9 @@ public abstract class HonarnamaBrowseFragment extends HonarnamaBaseFragment {
 
     private boolean announced = false;
 
+    //TODO change to 24
+    public static final int PAGE_SIZE = 3;
+
     abstract public String getTitle(Context context);
 
     @Override

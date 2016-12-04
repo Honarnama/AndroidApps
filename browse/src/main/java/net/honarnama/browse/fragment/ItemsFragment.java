@@ -17,7 +17,6 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
-import net.honarnama.browse.dialog.EventFilterDialogActivity;
 import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.dialog.LocationFilterDialogActivity;
 import net.honarnama.nano.ArtCategoryCriteria;
@@ -32,13 +31,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -68,14 +68,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
     ItemsAdapter mItemsAdapter;
     public Button mCategoryFilterButton;
-    public LinearLayout mLoadingCircle;
 
     public RelativeLayout mEmptyListContainer;
     public LinearLayout mFilterContainer;
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
-    //    private ArrayList<String> mSubCatList = new ArrayList<>();
     private boolean mIsFilterSubCategoryRowSelected = false;
     private boolean mIsAllIranChecked = true;
     private boolean mIsFilterApplied = false;
@@ -88,6 +86,15 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public TextView mLocationCriteriaTextView;
 
     private Tracker mTracker;
+
+    boolean mUserScrolled = false;
+    public LinearLayout mLoadingCircle;
+
+    public RelativeLayout mLoadMoreProgressContainer;
+
+    public long mNextPageId = 0;
+    public boolean mHasMoreItems = true;
+
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -113,14 +120,16 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
+        mItemsAdapter = new ItemsAdapter(getContext());
+        mListView.setAdapter(mItemsAdapter);
+
         mFilterContainer = (LinearLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
-
-        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
-        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
@@ -131,12 +140,38 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView.addHeaderView(header);
 
-        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
-
-        listItems();
+        new getItemsAsync(false).execute();
         mListView.setOnItemClickListener(this);
 
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // If scroll state is touch scroll then set userScrolled
+                // true
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    mUserScrolled = true;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                // Now check if userScrolled is true and also check if
+                // the item is end then update list view and set
+                // userScrolled to false
+                if (mUserScrolled
+                        && firstVisibleItem + visibleItemCount == totalItemCount && mHasMoreItems) {
+                    mUserScrolled = false;
+                    new getItemsAsync(true).execute();
+                }
+
+            }
+        });
+
         rootView.findViewById(R.id.filter_location).setOnClickListener(this);
+
+        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        mLoadMoreProgressContainer = (RelativeLayout) rootView.findViewById(R.id.loadMoreProgressContainer);
 
         mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
 
@@ -197,7 +232,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 controlPanelActivity.refreshTopFragment();
             }
-
         }
 
         if (v.getId() == R.id.filter_location) {
@@ -209,13 +243,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
 
     }
-
-    public void listItems() {
-        new getItemsAsync().execute();
-        mItemsAdapter = new ItemsAdapter(getContext());
-        mListView.setAdapter(mItemsAdapter);
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -236,7 +263,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 //                    mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
-                    listItems();
+                    mNextPageId = 0;
+                    new getItemsAsync(false).execute();
                 }
                 break;
 
@@ -250,7 +278,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
                     mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
                     changeFilterTitle();
-                    listItems();
+                    mNextPageId = 0;
+                    new getItemsAsync(false).execute();
                 }
                 break;
 
@@ -261,7 +290,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
-                    listItems();
+                    mNextPageId = 0;
+                    new getItemsAsync(false).execute();
                 }
                 break;
         }
@@ -296,12 +326,25 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public class getItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
         BrowseItemsRequest browseItemsRequest;
 
+        boolean onScroll = false;
+
+        public getItemsAsync(boolean onScrollStateChanged) {
+            super();
+            this.onScroll = onScrollStateChanged;
+        }
+
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             setVisibilityInFragment(mEmptyListContainer, View.GONE);
             setVisibilityInFragment(mOnErrorRetry, View.GONE);
-            setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+
+            if (onScroll) {
+                setVisibilityInFragment(mLoadMoreProgressContainer, View.VISIBLE);
+            } else {
+                setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+            }
         }
 
         @Override
@@ -344,6 +387,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
             browseItemsRequest.locationCriteria = locationCriteria;
 
+            browseItemsRequest.nextPageId = mNextPageId;
+
             BrowseItemsReply getItemsReply;
             if (BuildConfig.DEBUG) {
                 logD("Request for getting items is: " + browseItemsRequest);
@@ -362,7 +407,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         protected void onPostExecute(BrowseItemsReply browseItemsReply) {
             super.onPostExecute(browseItemsReply);
 
+            if (BuildConfig.DEBUG) {
+                logD("browseItemsReply: " + browseItemsReply);
+            }
             setVisibilityInFragment(mLoadingCircle, View.GONE);
+            setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
 
             Activity activity = getActivity();
 
@@ -380,10 +429,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         // TODO
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        mItemsAdapter.setItems(null);
-                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-                        mItemsAdapter.notifyDataSetChanged();
-                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        if (mItemsAdapter.getCount() == 0) {
+                            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                            setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+//                            mItemsAdapter.addItems(null);
+//                            mItemsAdapter.notifyDataSetChanged();
+                        }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         logE("Server error running getItems request. request: " + browseItemsRequest);
                         break;
@@ -400,21 +451,36 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                                 itemsList.add(0, item);
                             }
 
-                            if (itemsList.size() == 0) {
+                            if (itemsList.size() < PAGE_SIZE) {
+                                mHasMoreItems = false;
+                            } else {
+                                mHasMoreItems = true;
+                            }
+
+                            mNextPageId = browseItemsReply.nextPageId;
+
+                            if (onScroll) {
+                                mItemsAdapter.addItems(itemsList);
+                            } else {
+                                mItemsAdapter.setItems(itemsList);
+                            }
+
+                            if (mItemsAdapter.getCount() == 0) {
                                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
-                            mItemsAdapter.setItems(itemsList);
                             mItemsAdapter.notifyDataSetChanged();
+
                         }
                         break;
                 }
 
             } else {
-                mItemsAdapter.setItems(null);
-                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-                mItemsAdapter.notifyDataSetChanged();
-                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 displayLongToast(getStringInFragment(R.string.check_net_connection));
+                if (mItemsAdapter.getCount() == 0) {
+                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                    setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                }
+
             }
         }
     }
