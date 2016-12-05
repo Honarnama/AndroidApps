@@ -31,7 +31,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -229,6 +228,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         if (v.getId() == R.id.on_error_retry_container) {
             if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
                 ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
                 controlPanelActivity.refreshTopFragment();
             }
@@ -263,7 +263,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 //                    mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
-                    mNextPageId = 0;
+                    onPreNewQuery();
                     new getItemsAsync(false).execute();
                 }
                 break;
@@ -278,7 +278,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
                     mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
                     changeFilterTitle();
-                    mNextPageId = 0;
+                    onPreNewQuery();
                     new getItemsAsync(false).execute();
                 }
                 break;
@@ -290,7 +290,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
-                    mNextPageId = 0;
+                    onPreNewQuery();
                     new getItemsAsync(false).execute();
                 }
                 break;
@@ -323,6 +323,15 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
     }
 
+    public void onPreNewQuery() {
+        mNextPageId = 0;
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        mItemsAdapter.setItems(null);
+        mItemsAdapter.notifyDataSetChanged();
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+    }
+
+
     public class getItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
         BrowseItemsRequest browseItemsRequest;
 
@@ -333,7 +342,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             this.onScroll = onScrollStateChanged;
         }
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -342,8 +350,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
             if (onScroll) {
                 setVisibilityInFragment(mLoadMoreProgressContainer, View.VISIBLE);
-            } else {
-                setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
             }
         }
 
