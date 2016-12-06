@@ -36,13 +36,16 @@ public class EventsAdapter extends BaseAdapter {
 
     public EventsAdapter(Context context) {
         mContext = context;
-        mEvents = new ArrayList<Event>();
+        mEvents = new ArrayList<>();
         mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return mEvents.size();
+        if (mEvents != null) {
+            return mEvents.size();
+        }
+        return 0;
     }
 
     @Override
@@ -126,6 +129,10 @@ public class EventsAdapter extends BaseAdapter {
 
     public void setEvents(List<Event> eventList) {
         mEvents = eventList;
+    }
+
+    public void addEvents(List<Event> eventList) {
+        mEvents.addAll(eventList);
     }
 
     private class ViewHolderWithImage {

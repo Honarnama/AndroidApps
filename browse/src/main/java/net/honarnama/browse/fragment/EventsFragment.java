@@ -3,8 +3,6 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import com.mikepenz.iconics.view.IconicsImageView;
-
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -34,6 +32,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -71,10 +70,20 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     private int mSelectedCityId = -1;
 
     public RelativeLayout mEmptyListContainer;
-    public LinearLayout mLoadingCircle;
 
     private ListView mListView;
     private boolean mFilterAllCategoryRowSelected = false;
+
+    boolean mUserScrolled = false;
+    public LinearLayout mLoadingCircle;
+
+    public RelativeLayout mLoadMoreProgressContainer;
+
+    public long mNextPageId = 0;
+    public boolean mHasMoreItems = true;
+
+    public boolean mOnScrollIsLoading = false;
+
 
     @Override
     public String getTitle(Context context) {
@@ -105,11 +114,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         final View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         mListView = (ListView) rootView.findViewById(R.id.events_listView);
 
+        mEventsAdapter = new EventsAdapter(getContext());
+        mListView.setAdapter(mEventsAdapter);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
         if (!TextUtils.isEmpty(mSelectedCatName)) {
-            mCategoryFilterButton.setText(mSelectedCatName);
+            setTextInFragment(mCategoryFilterButton, mSelectedCatName);
         }
         mCategoryFilterButton.setOnClickListener(this);
 
@@ -122,6 +133,38 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mListView.setOnItemClickListener(this);
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // If scroll state is touch scroll then set userScrolled
+                // true
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    mUserScrolled = true;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                // Now check if userScrolled is true and also check if
+                // the item is end then update list view and set
+                // userScrolled to false
+                if (mUserScrolled
+                        && firstVisibleItem + visibleItemCount == totalItemCount && mHasMoreItems) {
+
+                    if (!mOnScrollIsLoading) {
+                        mOnScrollIsLoading = true;
+                        mUserScrolled = false;
+                        getEvents(true);
+                    }
+                }
+
+            }
+        });
+
+        mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
+        mLoadMoreProgressContainer = (RelativeLayout) rootView.findViewById(R.id.loadMoreProgressContainer);
 
         mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
 
@@ -145,7 +188,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 return null;
             }
         });
-        listEvents();
+        getEvents(false);
         return rootView;
     }
 
@@ -178,12 +221,11 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
         switch (view.getId()) {
             case R.id.on_error_retry_container:
-                if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    return;
+                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                    setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+                    ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                    controlPanelActivity.refreshTopFragment();
                 }
-                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                controlPanelActivity.refreshTopFragment();
-
                 break;
 
             case R.id.category_filter_btn:
@@ -223,9 +265,10 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 EventCategory eventCategory = mEventCategories.get(position);
                 mSelectedCatId = eventCategory.getId();
                 mSelectedCatName = eventCategory.getName();
-                mCategoryFilterButton.setText(mSelectedCatName);
+                setTextInFragment(mCategoryFilterButton, mSelectedCatName);
                 eventCatDialog.dismiss();
-                listEvents();
+                onPreNewQuery();
+                getEvents(false);
             }
         });
         eventCatDialog.setCancelable(true);
@@ -233,21 +276,19 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         eventCatDialog.show();
     }
 
-
-    public void listEvents() {
-
-//        EventCategory eventCategory = null;
-//
-//        if (mSelectedCatId >= 0 && !mFilterAllCategoryRowSelected) {
-//            eventCategory = EventCategory.getCategoryById(mSelectedCatId);
-//        }
-
-        new getEventsAsync().execute();
-
-        mEventsAdapter = new EventsAdapter(getContext());
-        mListView.setAdapter(mEventsAdapter);
+    public void onPreNewQuery() {
+        mNextPageId = 0;
+        setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        mEventsAdapter.setEvents(null);
+        mEventsAdapter.notifyDataSetChanged();
+        setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
+        setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+        mUserScrolled = false;
     }
 
+    public void getEvents(boolean onScroll) {
+        new getEventsAsync(onScroll).execute();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -260,7 +301,8 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
-                    listEvents();
+                    onPreNewQuery();
+                    getEvents(false);
                 }
                 break;
         }
@@ -269,16 +311,31 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     public class getEventsAsync extends AsyncTask<Void, Void, BrowseEventsReply> {
         BrowseEventsRequest browseEventsRequest;
 
+        boolean onScroll = false;
+
+        public getEventsAsync(boolean onScrollStateChanged) {
+            super();
+            this.onScroll = onScrollStateChanged;
+        }
+
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             setVisibilityInFragment(mEmptyListContainer, View.GONE);
             setVisibilityInFragment(mOnErrorRetry, View.GONE);
-            setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+            if (onScroll) {
+                setVisibilityInFragment(mLoadMoreProgressContainer, View.VISIBLE);
+            }
         }
 
         @Override
         protected BrowseEventsReply doInBackground(Void... voids) {
+            if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+                return null;
+            }
+
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             browseEventsRequest = new BrowseEventsRequest();
             browseEventsRequest.requestProperties = rp;
@@ -299,6 +356,8 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             }
             browseEventsRequest.locationCriteria = locationCriteria;
 
+            browseEventsRequest.nextPageId = mNextPageId;
+
             if (BuildConfig.DEBUG) {
                 logD("Request for getting events is: " + browseEventsRequest);
             }
@@ -315,7 +374,14 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         protected void onPostExecute(BrowseEventsReply browseEventsReply) {
             super.onPostExecute(browseEventsReply);
 
+
+            if (BuildConfig.DEBUG) {
+                logD("browseEventsReply: " + browseEventsReply);
+            }
+
             setVisibilityInFragment(mLoadingCircle, View.GONE);
+            setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
+            mOnScrollIsLoading = false;
 
             Activity activity = getActivity();
 
@@ -333,12 +399,13 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                         // TODO
                         break;
                     case ReplyProperties.SERVER_ERROR:
-                        mEventsAdapter.setEvents(null);
-                        setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-                        mEventsAdapter.notifyDataSetChanged();
-                        setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        if (mEventsAdapter.getCount() == 0) {
+                            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                            setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                        }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         logE("Server error running getEvents request. request: " + browseEventsRequest);
+
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -352,21 +419,36 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                             for (net.honarnama.nano.Event event : events) {
                                 eventsList.add(0, event);
                             }
-                            if (eventsList.size() == 0) {
+
+                            if (eventsList.size() < PAGE_SIZE) {
+                                mHasMoreItems = false;
+                            } else {
+                                mHasMoreItems = true;
+                            }
+
+                            mNextPageId = browseEventsReply.nextPageId;
+
+                            if (onScroll) {
+                                mEventsAdapter.addEvents(eventsList);
+                            } else {
+                                mEventsAdapter.setEvents(eventsList);
+                            }
+
+                            if (mEventsAdapter.getCount() == 0) {
                                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
-                            mEventsAdapter.setEvents(eventsList);
                             mEventsAdapter.notifyDataSetChanged();
+
                         }
                         break;
                 }
 
             } else {
-                mEventsAdapter.setEvents(null);
-                setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-                mEventsAdapter.notifyDataSetChanged();
-                setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
-                displayLongToast(getStringInFragment(R.string.check_net_connection));
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
+                if (mEventsAdapter.getCount() == 0) {
+                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
+                    setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
+                }
             }
         }
     }
