@@ -188,6 +188,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 return null;
             }
         });
+        onPreNewQuery();
         getEvents(false);
         return rootView;
     }
