@@ -94,6 +94,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public long mNextPageId = 0;
     public boolean mHasMoreItems = true;
 
+    public boolean mOnScrollIsLoading = false;
+
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -139,7 +141,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView.addHeaderView(header);
 
-        new getItemsAsync(false).execute();
+        getItems(false);
         mListView.setOnItemClickListener(this);
 
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -160,8 +162,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 // userScrolled to false
                 if (mUserScrolled
                         && firstVisibleItem + visibleItemCount == totalItemCount && mHasMoreItems) {
-                    mUserScrolled = false;
-                    new getItemsAsync(true).execute();
+
+                    if (!mOnScrollIsLoading) {
+                        mOnScrollIsLoading = true;
+                        mUserScrolled = false;
+                        getItems(true);
+                    }
                 }
 
             }
@@ -264,7 +270,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 //                    mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
                     onPreNewQuery();
-                    new getItemsAsync(false).execute();
+                    getItems(false);
                 }
                 break;
 
@@ -279,7 +285,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
                     changeFilterTitle();
                     onPreNewQuery();
-                    new getItemsAsync(false).execute();
+                    getItems(false);
                 }
                 break;
 
@@ -291,7 +297,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
                     onPreNewQuery();
-                    new getItemsAsync(false).execute();
+                    getItems(false);
                 }
                 break;
         }
@@ -333,6 +339,10 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
 
+    public void getItems(boolean onScroll) {
+        new getItemsAsync(onScroll).execute();
+    }
+
     public class getItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
         BrowseItemsRequest browseItemsRequest;
 
@@ -356,6 +366,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         @Override
         protected BrowseItemsReply doInBackground(Void... voids) {
+
+            if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+                return null;
+            }
+
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             browseItemsRequest = new BrowseItemsRequest();
             browseItemsRequest.requestProperties = rp;
@@ -419,7 +434,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             }
             setVisibilityInFragment(mLoadingCircle, View.GONE);
             setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
-
+            mOnScrollIsLoading = false;
             Activity activity = getActivity();
 
             if (browseItemsReply != null) {
@@ -487,6 +502,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
+
+                setVisibilityInFragment(mLoadingCircle, View.GONE);
+                setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
 
             }
         }
