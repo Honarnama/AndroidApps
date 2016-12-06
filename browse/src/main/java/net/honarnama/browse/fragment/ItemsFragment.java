@@ -329,6 +329,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mItemsAdapter.setItems(null);
         mItemsAdapter.notifyDataSetChanged();
         setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
+        mUserScrolled = false;
     }
 
 
