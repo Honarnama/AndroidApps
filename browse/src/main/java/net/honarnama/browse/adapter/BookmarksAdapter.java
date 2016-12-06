@@ -36,6 +36,9 @@ public class BookmarksAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (mBookmarks != null) {
+            return mBookmarks.size();
+        }
         return 0;
     }
 

@@ -289,7 +289,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                 mShopsAdapter.notifyDataSetChanged();
                 setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
-                displayLongToast(getStringInFragment(R.string.check_net_connection));
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
             }
         }
     }

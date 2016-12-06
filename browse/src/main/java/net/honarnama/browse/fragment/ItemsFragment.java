@@ -334,6 +334,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         setVisibilityInFragment(mEmptyListContainer, View.GONE);
         mItemsAdapter.setItems(null);
         mItemsAdapter.notifyDataSetChanged();
+        setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
         setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
         mUserScrolled = false;
     }
@@ -358,7 +359,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             super.onPreExecute();
             setVisibilityInFragment(mEmptyListContainer, View.GONE);
             setVisibilityInFragment(mOnErrorRetry, View.GONE);
-
             if (onScroll) {
                 setVisibilityInFragment(mLoadMoreProgressContainer, View.VISIBLE);
             }
@@ -454,8 +454,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         if (mItemsAdapter.getCount() == 0) {
                             setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
-//                            mItemsAdapter.addItems(null);
-//                            mItemsAdapter.notifyDataSetChanged();
                         }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
                         logE("Server error running getItems request. request: " + browseItemsRequest);
@@ -497,15 +495,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 }
 
             } else {
-                displayLongToast(getStringInFragment(R.string.check_net_connection));
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
                 if (mItemsAdapter.getCount() == 0) {
                     setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
-
-                setVisibilityInFragment(mLoadingCircle, View.GONE);
-                setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
-
             }
         }
     }

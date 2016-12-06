@@ -41,7 +41,10 @@ public class ShopsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mShops.size();
+        if (mShops != null) {
+            return mShops.size();
+        }
+        return 0;
     }
 
     @Override
