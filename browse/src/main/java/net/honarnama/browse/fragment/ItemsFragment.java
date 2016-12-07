@@ -144,7 +144,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView.addHeaderView(header);
 
-        onPreNewQuery();
         getItems(false);
         mListView.setOnItemClickListener(this);
 
@@ -281,7 +280,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 //                    mSubCatList = subCatList;
                     mIsFilterSubCategoryRowSelected = isFilterSubCategoryRowSelected;
-                    onPreNewQuery();
                     getItems(false);
                 }
                 break;
@@ -296,7 +294,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
                     mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
                     changeFilterTitle();
-                    onPreNewQuery();
                     getItems(false);
                 }
                 break;
@@ -308,7 +305,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
-                    onPreNewQuery();
                     getItems(false);
                 }
                 break;
@@ -353,6 +349,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 
     public void getItems(boolean onScroll) {
+        if (!onScroll) {
+            onPreNewQuery();
+        }
         new getItemsAsync(onScroll).execute();
     }
 

@@ -188,7 +188,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 return null;
             }
         });
-        onPreNewQuery();
         getEvents(false);
         return rootView;
     }
@@ -268,7 +267,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                 mSelectedCatName = eventCategory.getName();
                 setTextInFragment(mCategoryFilterButton, mSelectedCatName);
                 eventCatDialog.dismiss();
-                onPreNewQuery();
                 getEvents(false);
             }
         });
@@ -288,6 +286,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
     }
 
     public void getEvents(boolean onScroll) {
+        if (!onScroll) {
+            onPreNewQuery();
+        }
         new getEventsAsync(onScroll).execute();
     }
 
@@ -302,7 +303,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
-                    onPreNewQuery();
                     getEvents(false);
                 }
                 break;
