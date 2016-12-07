@@ -375,7 +375,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         protected void onPostExecute(BrowseEventsReply browseEventsReply) {
             super.onPostExecute(browseEventsReply);
 
-
             if (BuildConfig.DEBUG) {
                 logD("browseEventsReply: " + browseEventsReply);
             }

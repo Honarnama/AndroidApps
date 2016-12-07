@@ -9,6 +9,7 @@ import net.honarnama.base.model.City;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.nano.Event;
 import net.honarnama.nano.Store;
 
 import android.content.Context;
@@ -115,6 +116,10 @@ public class ShopsAdapter extends BaseAdapter {
 
     public void setShops(List<Store> shopList) {
         mShops = shopList;
+    }
+
+    public void addShops(List<Store> shopList) {
+        mShops.addAll(shopList);
     }
 
     private class ViewHolderWithImage {

@@ -15,7 +15,6 @@ import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
-import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.nano.BrowseEventsReply;
 import net.honarnama.nano.BrowseEventsRequest;
 import net.honarnama.nano.BrowseItemsReply;
@@ -260,13 +259,13 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
             controlPanelActivity.refreshTopFragment();
         }
 
-        if (v.getId() == R.id.filter_container) {
-            Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
-            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
-            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
-        }
+//        if (v.getId() == R.id.filter_container) {
+//            Intent intent = new Intent(getActivity(), ShopFilterDialogActivity.class);
+//            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, mSelectedProvinceId);
+//            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
+//            intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
+//            getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOP_CODE);
+//        }
     }
 
     public void searchItems() {

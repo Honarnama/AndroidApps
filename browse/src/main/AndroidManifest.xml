@@ -100,14 +100,6 @@
         </activity>
 
         <activity
-                android:name="net.honarnama.browse.dialog.ShopFilterDialogActivity"
-                android:label="@string/filter"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Holo.Dialog.NoActionBar"
-        >
-        </activity>
-
-        <activity
                 android:name="net.honarnama.browse.dialog.LocationFilterDialogActivity"
                 android:label="@string/filter_geo"
                 android:screenOrientation="portrait"
