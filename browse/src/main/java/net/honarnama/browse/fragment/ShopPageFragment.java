@@ -161,6 +161,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
 
+        new getStoreAsync().execute();
+
         return rootView;
     }
 
