@@ -20,7 +20,7 @@
             android:layoutDirection="rtl"
             android:layout_below="@id/toolbar"
             android:fadeScrollbars="false"
-            >
+    >
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="match_parent">
             <net.honarnama.browse.widget.LockableViewPager
@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layoutDirection="rtl"
-                    />
+            />
 
             <net.honarnama.browse.widget.MainTabBar
                     android:id="@+id/tab_bar"
@@ -60,14 +60,14 @@
                 app:menu="@menu/drawer_view"
                 app:headerLayout="@layout/nav_header"
                 android:fadeScrollbars="false"
-                >
+        >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_gravity="bottom"
                           android:orientation="vertical"
-                    >
+            >
 
                 <TextView
                         android:id="@+id/empty_spacer"
@@ -75,12 +75,12 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:clickable="false"
-                        />
+                />
 
                 <include layout="@layout/footer"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
-                        ></include>
+                ></include>
 
             </LinearLayout>
 

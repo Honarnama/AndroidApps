@@ -79,7 +79,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         return getChildFragmentManager().getBackStackEntryCount() > 0;
     }
 
-    public int getNumberOfChild() {
+    public int getCountOfBackStack() {
         return getChildFragmentManager().getBackStackEntryCount();
     }
 
@@ -89,7 +89,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
         List<Fragment> fragments = childFragmentManager.getFragments();
 
-        if (childFragmentManager.getBackStackEntryCount() > 1) {
+        if (childFragmentManager != null && childFragmentManager.getBackStackEntryCount() > 1) {
             HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
             if (topFragment != null) {
 //                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
@@ -100,34 +100,39 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                         return true;
                     } else {
 
-                        FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+                        try {
+                            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
 //                        fragmentTransaction.remove(topFragment);
 //                        fragmentTransaction.commitAllowingStateLoss();
 
-                        if (childFragmentManager != null) {
-                            childFragmentManager.popBackStack();
-                            childFragmentManager.executePendingTransactions();
-                        }
-
-                        fragmentTransaction = childFragmentManager.beginTransaction();
-                        topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-
-                        if (topFragment != null) {
-//                            fragmentTransaction.remove(topFragment);
-//                            fragmentTransaction.commitAllowingStateLoss();
-                            childFragmentManager.popBackStack();
                             if (childFragmentManager != null) {
+                                childFragmentManager.popBackStack();
                                 childFragmentManager.executePendingTransactions();
                             }
-                        }
 
-                        if (childFragmentManager.getBackStackEntryCount() > 0) {
+                            fragmentTransaction = childFragmentManager.beginTransaction();
                             topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-                            TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
-                            toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
-                            return true;
 
-                        } else {
+                            if (topFragment != null) {
+//                            fragmentTransaction.remove(topFragment);
+//                            fragmentTransaction.commitAllowingStateLoss();
+                                childFragmentManager.popBackStack();
+                                if (childFragmentManager != null) {
+                                    childFragmentManager.executePendingTransactions();
+                                }
+                            }
+
+                            if (childFragmentManager.getBackStackEntryCount() > 0) {
+                                topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
+                                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
+                                toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
+                                return true;
+
+                            } else {
+                                return false;
+                            }
+                        } catch (Exception ex) {
+                            logE("Error on back press when top fragment is nonet fragment. ex: " + ex, ex);
                             return false;
                         }
                     }
@@ -137,7 +142,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                     topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                     TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
                     toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
-
                 }
 //                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
 //                toolbarTitle.setText(getString(R.string.hornama));
@@ -161,9 +165,9 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         } catch (Exception e) {
             logE("Exception while popping all fragments: " + e, e);
         }
-        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) getChildFragmentManager().findFragmentById(R.id.child_fragment_root);
-        controlPanelActivity.setTitle(topFragment.getTitle(controlPanelActivity));
+//        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+//        HonarnamaBaseFragment topFragment = (HonarnamaBaseFragment) getChildFragmentManager().findFragmentById(R.id.child_fragment_root);
+//        controlPanelActivity.setTitle(topFragment.getTitle(controlPanelActivity));
     }
 
     @Override
@@ -182,28 +186,31 @@ public class ChildFragment extends HonarnamaBrowseFragment {
     }
 
     public void onSelectedTabClick() {
-        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
-            popAllFragment();
 
-        } else {
-            if (getChildFragmentManager().getFragments() != null
-                    && getChildFragmentManager().getFragments().size() > 0) {
-                ((HonarnamaBrowseFragment) getChildFragmentManager().getFragments().get(0))
-                        .onSelectedTabClick();
-            }
-        }
+        popAllFragment();
+//        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
+//            popAllFragment();
+//
+//        } else {
+//            if (getChildFragmentManager().getFragments() != null
+//                    && getChildFragmentManager().getFragments().size() > 0) {
+//                ((HonarnamaBrowseFragment) getChildFragmentManager().getFragments().get(0))
+//                        .onSelectedTabClick();
+//            }
+//        }
 //        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
 //        controlPanelActivity.refreshTopFragment();
     }
 
     public void onTabClick() {
-        long now = System.currentTimeMillis();
-        if (mLastVisitTime > 0) {
-            if (now - mLastVisitTime > TIME_DELAY_TO_RESET_TAB) { // there's plenty of time that user hasn't visited this tab, she wouldn't remember existing content, so reset this tab
-                popAllFragment();
-            }
-        }
-        mLastVisitTime = now;
+        popAllFragment();
+//        long now = System.currentTimeMillis();
+//        if (mLastVisitTime > 0) {
+//            if (now - mLastVisitTime > TIME_DELAY_TO_RESET_TAB) { // there's plenty of time that user hasn't visited this tab, she wouldn't remember existing content, so reset this tab
+//                popAllFragment();
+//            }
+//        }
+//        mLastVisitTime = now;
 
 //        if (mTag == MainTabBar.TAB_SEARCH && getChildFragmentManager().getFragments() != null
 //                && getChildFragmentManager().getFragments().size() > 0) {

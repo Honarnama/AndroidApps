@@ -3,9 +3,10 @@
 
     <item android:state_checked="true"
           android:drawable="@color/gray_super_extra_light"
-            />
+    />
     <item
+            android:state_checked="false"
             android:drawable="@color/white"
-            />
+    />
 
 </selector>
