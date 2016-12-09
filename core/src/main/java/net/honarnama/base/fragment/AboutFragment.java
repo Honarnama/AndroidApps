@@ -59,6 +59,5 @@ public class AboutFragment extends HonarnamaBaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 }

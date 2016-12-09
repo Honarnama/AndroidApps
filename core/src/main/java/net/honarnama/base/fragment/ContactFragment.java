@@ -108,7 +108,6 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     public class CreateMessageAsync extends AsyncTask<Void, Void, CreateMessageReply> {
