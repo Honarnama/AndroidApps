@@ -12,7 +12,6 @@ import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.browse.adapter.EventsAdapter;
 import net.honarnama.browse.adapter.ShopsAdapter;
 import net.honarnama.browse.dialog.LocationFilterDialogActivity;
 import net.honarnama.nano.BrowseServiceGrpc;
@@ -340,7 +339,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         break;
                     case ReplyProperties.SERVER_ERROR:
                         if (mShopsAdapter.getCount() == 0) {
-                            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
@@ -385,7 +383,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             } else {
                 displayShortToast(getStringInFragment(R.string.check_net_connection));
                 if (mShopsAdapter.getCount() == 0) {
-                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
             }

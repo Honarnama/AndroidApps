@@ -463,7 +463,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         break;
                     case ReplyProperties.SERVER_ERROR:
                         if (mItemsAdapter.getCount() == 0) {
-                            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
@@ -508,7 +507,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             } else {
                 displayShortToast(getStringInFragment(R.string.check_net_connection));
                 if (mItemsAdapter.getCount() == 0) {
-                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
             }

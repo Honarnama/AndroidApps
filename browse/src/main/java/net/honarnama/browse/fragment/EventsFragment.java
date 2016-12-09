@@ -400,7 +400,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                         break;
                     case ReplyProperties.SERVER_ERROR:
                         if (mEventsAdapter.getCount() == 0) {
-                            setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                         }
                         displayLongToast(getStringInFragment(R.string.server_error_try_again));
@@ -446,7 +445,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
             } else {
                 displayShortToast(getStringInFragment(R.string.check_net_connection));
                 if (mEventsAdapter.getCount() == 0) {
-                    setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
             }

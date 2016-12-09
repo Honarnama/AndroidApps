@@ -149,7 +149,7 @@
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/empty_list_container"
+                    android:layout_centerInParent="true"
                     android:id="@+id/on_error_retry_container"
                     android:visibility="gone"
     >
