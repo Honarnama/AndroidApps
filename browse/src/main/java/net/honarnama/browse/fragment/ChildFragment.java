@@ -242,6 +242,6 @@ public class ChildFragment extends HonarnamaBrowseFragment {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-
     }
+
 }

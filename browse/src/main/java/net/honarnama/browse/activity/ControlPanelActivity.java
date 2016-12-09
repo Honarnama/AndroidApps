@@ -543,7 +543,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mActiveTab = tag;
 
         logD("onTabSelect :: trying to popAllFragment in " + tag + ". CPA");
-        mMainFragmentAdapter.getItem(tag).onTabClick();
 
         switch (tag) {
             case TAB_ITEMS:
@@ -562,6 +561,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
                 break;
         }
+
+        mMainFragmentAdapter.getItem(tag).onTabClick();
+        setTitle(getString(R.string.hornama));
     }
 
 
@@ -1050,6 +1052,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
     }
 
 }
