@@ -147,7 +147,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                logD("onPageScrolled to " + position + " of CPA");
                 mActiveTab = position;
                 ChildFragment childFragment = mMainFragmentAdapter.getItem(position);
                 if (!childFragment.hasContent()) {
@@ -414,7 +413,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void removeNavMenuFragmentFromStack() {
 
-        logD("removeNavMenuFragmentFromStack in CPA");
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
         Fragment topFragment = null;
@@ -542,8 +540,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         resetNavMenuIcons();
         mActiveTab = tag;
 
-        logD("onTabSelect :: trying to popAllFragment in " + tag + ". CPA");
-
         switch (tag) {
             case TAB_ITEMS:
                 mViewPager.setCurrentItem(TAB_ITEMS, false);
@@ -584,7 +580,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         }
 
         int tag = (int) tabTag;
-        logD("onSelectedTabClick :: trying to popAllFragment in " + tag + ". CPA");
         mMainFragmentAdapter.getItem(tag).onSelectedTabClick();
         resetNavMenuIcons();
 
