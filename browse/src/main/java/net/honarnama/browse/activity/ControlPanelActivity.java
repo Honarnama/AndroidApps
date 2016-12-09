@@ -646,6 +646,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onNewIntent(Intent intent) {
         // onResume gets called after this to handle the intent
+        logD("onNewIntent :: data= " + intent.getData());
         setIntent(intent);
         handleExternalIntent(intent);
     }
@@ -658,23 +659,37 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         if (data != null) {
             if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+
+                if (BuildConfig.DEBUG) {
+                    logD("intent action is  ACTION_VIEW");
+                }
                 List<String> segments = data.getPathSegments();
-                if (segments.size() > 1 && segments.get(0).equals("shop")) {
-                    long shopId = Long.valueOf(segments.get(1).replace("/", ""));
+
+                String host = data.getHost();
+                String path = data.getPath();
+
+                if (BuildConfig.DEBUG) {
+                    logD("pathsegments: " + segments);
+                    logD("host: " + host);
+                    logD("path: " + path);
+                }
+
+                if (host.equals("shop") && !TextUtils.isEmpty(path)) {
+                    long shopId = Long.valueOf(path.replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_SHOPS);
                     displayShopPage(shopId, true);
                     return;
                 }
 
-                if (segments.size() > 1 && segments.get(0).equals("event")) {
-                    long eventId = Long.valueOf(segments.get(1).replace("/", ""));
+                if (host.equals("event") && !TextUtils.isEmpty(path)) {
+                    long eventId = Long.valueOf(path.replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_EVENTS);
                     displayEventPage(eventId, true);
                     return;
                 }
 
-                if (segments.size() > 1 && segments.get(0).equals("item")) {
-                    long itemId = Long.valueOf(segments.get(1).replace("/", ""));
+                if (host.equals("item") && !TextUtils.isEmpty(path)) {
+                    long itemId = Long.valueOf(path.replace("/", ""));
                     mMainTabBar.setSelectedTab(TAB_ITEMS);
                     displayItemPage(itemId, true);
                     return;
