@@ -43,7 +43,7 @@ import java.util.Locale;
 
 public class ImageSelector extends RoundedImageView implements View.OnClickListener {
 
-    private static final String LOG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/"
+    private static final String DEBUG_TAG = HonarnamaBaseApp.PRODUCTION_TAG + "/"
             + ImageSelector.class.getName();
 
     final private Context mContext;
@@ -95,7 +95,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         mContext = context;
         init(attrs);
         if (BuildConfig.DEBUG && !announced) {
-            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "View created,\tadb catlog tag:   '" + LOG_TAG + ":V'");
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "View created,\tadb catlog tag:   '" + DEBUG_TAG + ":V'");
             announced = true;
         }
     }
@@ -177,13 +177,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
                             mSelectedImageUri = createImageFile();
-                            if (mSelectedImageUri != null) {
+                            if (mSelectedImageUri != null && mActivity != null) {
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImageUri);
                                 mActivity.startActivityForResult(
                                         takePictureIntent, mIntentCodeCapture);
                             }
                         } else {
-                            Log.w(LOG_TAG, "No activity for IMAGE_CAPTURE");
+                            Log.w(DEBUG_TAG, "No activity for IMAGE_CAPTURE");
                             Toast.makeText(mContext, R.string.image_selector_error_no_camera,
                                     Toast.LENGTH_LONG).show();
                         }
@@ -192,14 +192,16 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     case 1:
                         Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK,
                                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        mActivity.startActivityForResult(
-                                pickPhotoIntent, mIntentCodeSelect);
+                        if (mActivity != null) {
+                            mActivity.startActivityForResult(
+                                    pickPhotoIntent, mIntentCodeSelect);
+                        }
                         break;
 
                     case 2:
                         removeSelectedImage();
                         if (BuildConfig.DEBUG) {
-                            Log.d(LOG_TAG, "Image is removed");
+                            Log.d(DEBUG_TAG, "Image is removed");
                         }
                 }
                 dialog.dismiss();
@@ -224,7 +226,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     protected void imageSelected(Uri selectedImage, boolean cropped) {
         if (BuildConfig.DEBUG) {
-            Log.d(LOG_TAG, "imageSelected selectedImage= " + selectedImage +
+            Log.d(DEBUG_TAG, "imageSelected selectedImage= " + selectedImage +
                     " , cropped= " + cropped);
         }
 
@@ -234,7 +236,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
         File selectedImageFile = new File(selectedImage.getPath());
         if (!selectedImageFile.canRead()) {
-            Log.e(LOG_TAG, "File not readable. exists=" + selectedImageFile.exists());
+            Log.e(DEBUG_TAG, "File not readable. exists=" + selectedImageFile.exists());
             if (mOnImageSelectedListener != null) {
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
@@ -247,13 +249,18 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             mDeleted = false;
             setFileSet(true);
             if (BuildConfig.DEBUG) {
-                Log.d(LOG_TAG, "Image is set (through imageSelected)");
+                Log.d(DEBUG_TAG, "Image is set (through imageSelected)");
             }
             setImageURI(selectedImage);
         }
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
+
+        if (BuildConfig.DEBUG) {
+            Log.d(DEBUG_TAG, "Captured intent: " + intent);
+        }
+
         if ((requestCode < mIntentCodeCapture) || (requestCode > mIntentCodeCrop)) {
             return false;
         }
@@ -265,7 +272,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 } // else: crop will handle
             } else {
                 if (BuildConfig.DEBUG) {
-                    Log.i(LOG_TAG, "onActivityResult::mIntentCodeCapture resultCode= " + resultCode);
+                    Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeCapture resultCode= " + resultCode);
                 }
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
@@ -299,7 +306,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 //                }
 //
                 if (BuildConfig.DEBUG) {
-                    Log.d(LOG_TAG, "Converted mIntentCodeSelect selectedImageURI= " + selectedImageURI
+                    Log.d(DEBUG_TAG, "Converted mIntentCodeSelect selectedImageURI= " + selectedImageURI
                             + " to mSelectedImageUri= " + mSelectedImageUri);
                 }
 
@@ -308,7 +315,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 } // else: crop will handle
             } else {
                 if (BuildConfig.DEBUG) {
-                    Log.i(LOG_TAG, "onActivityResult::mIntentCodeSelect resultCode= " + resultCode);
+                    Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeSelect resultCode= " + resultCode);
                 }
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
@@ -317,7 +324,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 imageSelected(mTempImageUriCrop, false);
             } else {
                 if (BuildConfig.DEBUG) {
-                    Log.i(LOG_TAG, "onActivityResult::mIntentCodeCrop resultCode= " + resultCode);
+                    Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeCrop resultCode= " + resultCode);
                 }
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
@@ -346,13 +353,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             );
         } catch (IOException ex) {
             if (BuildConfig.DEBUG) {
-                Log.e(LOG_TAG, "While preparing for takePicture", ex);
+                Log.e(DEBUG_TAG, "While preparing for takePicture", ex);
                 ex.printStackTrace();
             } else {
                 StringWriter sw = new StringWriter();
                 ex.printStackTrace(new PrintWriter(sw));
                 String stackTrace = sw.toString();
-                Crashlytics.log(Log.ERROR, LOG_TAG, "While preparing for takePicture " + ex + ". stackTrace: " + stackTrace);
+                Crashlytics.log(Log.ERROR, DEBUG_TAG, "While preparing for takePicture " + ex + ". stackTrace: " + stackTrace);
             }
             return null;
         }
@@ -399,8 +406,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         Intent intent = new Intent(cropIntent);
         ResolveInfo res = resolveInfos.get(0);
         intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-        mActivity.startActivityForResult(intent, mIntentCodeCrop);
-
+        if (mActivity != null) {
+            mActivity.startActivityForResult(intent, mIntentCodeCrop);
+        }
         return true;
     }
 
