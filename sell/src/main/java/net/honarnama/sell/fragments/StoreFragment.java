@@ -127,6 +127,11 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         return getStringInFragment(R.string.nav_title_store_info);
     }
 
+    @Override
+    public String getKey() {
+        return "SF";
+    }
+
     private void setDirty(boolean dirty) {
         mDirty = dirty;
     }

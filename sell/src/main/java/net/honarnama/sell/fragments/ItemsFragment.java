@@ -54,6 +54,11 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
         return getStringInFragment(R.string.nav_title_items);
     }
 
+    @Override
+    public String getKey() {
+        return "IF";
+    }
+
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();

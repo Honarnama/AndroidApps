@@ -38,7 +38,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -73,7 +72,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
 
     private Toolbar mToolbar;
-    private Fragment mFragment;
+    private HonarnamaBaseFragment mFragment;
     private EditItemFragment mEditItemFragment;
     private ProgressDialog mWaitingProgressDialog;
 
@@ -83,6 +82,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
     public RelativeLayout mNavFooter;
+    private ItemsFragment mItemsFragment;
 
     @Override
     protected void onResume() {
@@ -95,6 +95,10 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
 
         super.onCreate(savedInstanceState);
+
+        mEditItemFragment = EditItemFragment.getInstance();
+        mItemsFragment = ItemsFragment.getInstance();
+
         if (!HonarnamaUser.isLoggedIn()) {
             if (BuildConfig.DEBUG) {
                 logD("User is not logged in!");
@@ -144,8 +148,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         mNavFooter = (RelativeLayout) findViewById(R.id.footer_container);
         mNavFooter.setOnClickListener(this);
 
-        mEditItemFragment = EditItemFragment.getInstance();
-
         processIntent(getIntent());
 
         if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -153,8 +155,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
             switchFragment(fragment);
             return;
         }
-
-        mDrawer.openDrawer(Gravity.RIGHT);
 
         MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
             @Override
@@ -176,6 +176,21 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         verifyStoragePermissions(this);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        String editItemFragmentKey = mEditItemFragment.getKey();
+        String lastFragmentKey;
+        if (savedInstanceState != null) {
+            lastFragmentKey = savedInstanceState.getString("fragment_key");
+            if (lastFragmentKey != null) {
+                if (lastFragmentKey.equals(editItemFragmentKey)) {
+                    mFragment = (HonarnamaBaseFragment) getSupportFragmentManager().findFragmentById(R.id.frame_container);
+                }
+            }
+        }
+    }
 
     private void setupDrawerContent() {
         mNavigationView.setNavigationItemSelectedListener(
@@ -261,6 +276,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+
         if (mFragment != null) {
             mFragment.onActivityResult(requestCode, resultCode, intent);
         }
@@ -603,6 +619,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
     @Override
     protected void onStop() {
+
         if (mWaitingProgressDialog != null) {
             if (mWaitingProgressDialog.isShowing()) {
                 mWaitingProgressDialog.dismiss();
@@ -613,8 +630,17 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
 //        releaseUpdateCheckService();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mFragment != null) {
+            outState.putString("fragment_key", mFragment.getKey());
+        }
+    }
 }

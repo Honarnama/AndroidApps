@@ -45,6 +45,11 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     @Override
+    public String getKey() {
+        return "NNF";
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

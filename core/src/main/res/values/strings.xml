@@ -40,13 +40,10 @@
     <string name="select_national_card_image_dialog_title">انتخاب تصویر</string>
     <string name="family_name">نام خانوادگی</string>
 
-    <string name="image_selector_error_no_camera">برنامه‌ای برای گرفتن عکس پیدا نشد</string>
-    <string name="image_selector_option_text_capture">دوربین</string>
-    <string name="image_selector_option_text_select">انتخاب از گالری</string>
-    <string name="image_selector_option_text_remove">حذف تصویر</string>
-
-    <string name="telegram_activation_dialog_title">فعال‌سازی حساب تلگرام</string>
-    <string name="telegram_activation_option_text">ارسال پیغام از طریق تلگرام این دستگاه</string>
+    <string name="error_no_camera_found">برنامه‌ای برای گرفتن عکس پیدا نشد</string>
+    <string name="capture_photo">دوربین</string>
+    <string name="select_from_gallery">انتخاب از گالری</string>
+    <string name="remove_photo">حذف تصویر</string>
 
     <string name="error_email_not_set">
 " آدرس ایمیل وارد نشده است. "
@@ -67,10 +64,6 @@
         آن یکی
         نیست. "
     </string>
-    <string name="error_national_card_image_is_not_set">" تصویر کارت ملی انتخاب نشده است. "</string>
-    <string name="error_bank_card_number_cant_be_empty">" شماره کارت عضو شتاب نمی‌تواند خالی باشد. "
-    </string>
-    <string name="error_bank_card_number_is_not_valid">" شماره کارت عضو شتاب معتبر نیست. "</string>
     <string name="error_login_username_is_empty">
         آدرس ایمیلی که با آن ثبت‌نام کرده‌اید را وارد کنید.
     </string>

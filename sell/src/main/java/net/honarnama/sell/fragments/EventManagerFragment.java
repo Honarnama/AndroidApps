@@ -150,6 +150,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         return getStringInFragment(R.string.nav_title_event_manager);
     }
 
+    @Override
+    public String getKey() {
+        return "EMF";
+    }
+
     private void setDirty(boolean dirty) {
         mDirty = dirty;
     }

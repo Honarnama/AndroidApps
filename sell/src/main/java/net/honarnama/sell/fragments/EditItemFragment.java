@@ -114,6 +114,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     public void reset(boolean createNew) {
+
         setTextInFragment(mTitleEditText, "");
         setTextInFragment(mDescriptionEditText, "");
         setTextInFragment(mPriceEditText, "");
@@ -173,6 +174,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     @Override
+    public String getKey() {
+        return "EIF";
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (isAdded()) {
@@ -187,6 +193,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
+
 //
 //        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
 //            Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
@@ -258,7 +265,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 (ImageSelector) rootView.findViewById(R.id.itemImage3),
                 (ImageSelector) rootView.findViewById(R.id.itemImage4)
         };
-
         mItemImageLoadingPannel = new RelativeLayout[]{
                 (RelativeLayout) rootView.findViewById(R.id.loadingPanel_1),
                 (RelativeLayout) rootView.findViewById(R.id.loadingPanel_2),
@@ -309,34 +315,23 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
             mTracker.setScreenName("EditItem");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
 
-            boolean savedDirty = false;
-            long savedItemId = -1;
-            if (savedInstanceState != null) {
-                savedDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
-                savedItemId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
+        if (savedInstanceState != null) {
+            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
+            mItemId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
+            for (ImageSelector imageSelector : mItemImages) {
+                imageSelector.restore(savedInstanceState);
             }
-
-            if (BuildConfig.DEBUG) {
-                logD("onCreateView :: savedDirty= " + savedDirty + ", savedItemId= " + savedItemId);
-            }
-
-            if (savedDirty) {
-                mDirty = true;
-                for (ImageSelector imageSelector : mItemImages) {
-                    imageSelector.restore(savedInstanceState);
-                }
-                mItemId = savedItemId;
-                setTextInFragment(mTitleEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_TITLE));
-                setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION));
-                setTextInFragment(mChooseCategoryButton, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME));
-                setTextInFragment(mPriceEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
-                mCategoryId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID);
-                mCategoryParentId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID);
-            } else {
-                if (mItemId >= 0) {
-                    new getItemAsync().execute();
-                }
+            setTextInFragment(mTitleEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_TITLE));
+            setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION));
+            setTextInFragment(mChooseCategoryButton, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME));
+            setTextInFragment(mPriceEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
+            mCategoryId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID);
+            mCategoryParentId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID);
+        } else {
+            if (mItemId >= 0) {
+                new getItemAsync().execute();
             }
         }
 
@@ -475,6 +470,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
                 break;
             default:
+
                 if (mItemImages != null) {
                     for (ImageSelector imageSelector : mItemImages) {
                         if (imageSelector != null && imageSelector.onActivityResult(requestCode, resultCode, data)) {
@@ -489,23 +485,23 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mDirty && isAdded()) {
-            if (mItemImages != null) {
-                for (ImageSelector imageSelector : mItemImages) {
-                    if (imageSelector != null) {
-                        imageSelector.onSaveInstanceState(outState);
-                    }
+
+        if (mItemImages != null) {
+            for (ImageSelector imageSelector : mItemImages) {
+                if (imageSelector != null) {
+                    imageSelector.onSaveInstanceState(outState);
                 }
             }
-            outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
-            outState.putLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
-            outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, getTextInFragment(mTitleEditText));
-            outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, getTextInFragment(mDescriptionEditText));
-            outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, getTextInFragment(mPriceEditText));
-            outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
-            outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID, mCategoryParentId);
-            outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, getTextInFragment(mChooseCategoryButton));
         }
+
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
+        outState.putLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, getTextInFragment(mTitleEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, getTextInFragment(mDescriptionEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_PRICE, getTextInFragment(mPriceEditText));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID, mCategoryParentId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, getTextInFragment(mChooseCategoryButton));
     }
 
     public class getItemAsync extends AsyncTask<Void, Void, GetItemReply> {

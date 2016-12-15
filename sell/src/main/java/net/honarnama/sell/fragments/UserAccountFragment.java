@@ -58,6 +58,11 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     @Override
+    public String getKey() {
+        return "UAF";
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

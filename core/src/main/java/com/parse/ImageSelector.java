@@ -92,6 +92,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         mContext = context;
         init(attrs);
         if (BuildConfig.DEBUG && !announced) {
@@ -162,12 +163,12 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         String[] imageSourceProviders;
         if (mIncludeRemoveImage && isFileSet()) {
             imageSourceProviders = new String[3];
-            imageSourceProviders[2] = mContext.getString(R.string.image_selector_option_text_remove);
+            imageSourceProviders[2] = mContext.getString(R.string.remove_photo);
         } else {
             imageSourceProviders = new String[2];
         }
-        imageSourceProviders[0] = mContext.getString(R.string.image_selector_option_text_capture);
-        imageSourceProviders[1] = mContext.getString(R.string.image_selector_option_text_select);
+        imageSourceProviders[0] = mContext.getString(R.string.capture_photo);
+        imageSourceProviders[1] = mContext.getString(R.string.select_from_gallery);
 
         changeImageOptionsDialog.setItems(imageSourceProviders, new DialogInterface.OnClickListener() {
             @Override
@@ -176,7 +177,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     case 0:
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                            mSelectedImageUri = createImageFile();
+                            mSelectedImageUri = createTempImageFile();
                             if (mSelectedImageUri != null && mActivity != null) {
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImageUri);
                                 mActivity.startActivityForResult(
@@ -184,7 +185,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                             }
                         } else {
                             Log.w(DEBUG_TAG, "No activity for IMAGE_CAPTURE");
-                            Toast.makeText(mContext, R.string.image_selector_error_no_camera,
+                            Toast.makeText(mContext, R.string.error_no_camera_found,
                                     Toast.LENGTH_LONG).show();
                         }
                         break;
@@ -232,6 +233,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
         if (selectedImage == null) {
             mOnImageSelectedListener.onImageSelectionFailed();
+            return;
         }
 
         File selectedImageFile = new File(selectedImage.getPath());
@@ -257,10 +259,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-        if (BuildConfig.DEBUG) {
-            Log.d(DEBUG_TAG, "Captured intent: " + intent);
-        }
-
         if ((requestCode < mIntentCodeCapture) || (requestCode > mIntentCodeCrop)) {
             return false;
         }
@@ -271,43 +269,20 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     imageSelected(mSelectedImageUri, false);
                 } // else: crop will handle
             } else {
-                if (BuildConfig.DEBUG) {
-                    Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeCapture resultCode= " + resultCode);
-                }
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
         } else if (requestCode == mIntentCodeSelect) {
+
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedImageURI = intent.getData();
                 String filePath = null;
-                Log.d("", "URI = " + selectedImageURI);
+                Log.d("", "selectedImageURI = " + selectedImageURI + ".");
                 if (selectedImageURI != null && "content".equals(selectedImageURI.getScheme())) {
                     filePath = FileUtil.getRealPathFromURI(HonarnamaBaseApp.getInstance(), selectedImageURI);
 
                     mSelectedImageUri = Uri.fromFile(new File(filePath));
                 } else {
                     mSelectedImageUri = selectedImageURI;
-                }
-
-
-//                String filePath = null;
-//                Uri _uri = intent.getData();
-//                Log.d("", "URI = " + _uri);
-//                if (_uri != null && "content".equals(_uri.getScheme())) {
-//                    Cursor cursor = mContext.getContentResolver().query(_uri,
-//                            new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
-//                            null, null, null);
-//                    cursor.moveToFirst();
-//                    filePath = cursor.getString(0);
-//                    cursor.close();
-//                    mSelectedImageUri = Uri.fromFile(new File(filePath));
-//                } else {
-//                    mSelectedImageUri = _uri;
-//                }
-//
-                if (BuildConfig.DEBUG) {
-                    Log.d(DEBUG_TAG, "Converted mIntentCodeSelect selectedImageURI= " + selectedImageURI
-                            + " to mSelectedImageUri= " + mSelectedImageUri);
                 }
 
                 if (!(mCropNeeded && crop())) {
@@ -320,8 +295,11 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
         } else if (requestCode == mIntentCodeCrop) {
+
+//            mTempImageUriCrop = intent.getData();
+
             if (resultCode == Activity.RESULT_OK) {
-                imageSelected(mTempImageUriCrop, false);
+                imageSelected(mTempImageUriCrop, true);
             } else {
                 if (BuildConfig.DEBUG) {
                     Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeCrop resultCode= " + resultCode);
@@ -335,7 +313,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return true;
     }
 
-    public Uri createImageFile() {
+    public Uri createTempImageFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(new Date());
         String imageFileName = "Honarnama_" + timeStamp;
@@ -377,7 +355,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             return false;
         }
 
-        mTempImageUriCrop = createImageFile();
+        mTempImageUriCrop = createTempImageFile();
 
         if (mTempImageUriCrop == null) {
             return false;
@@ -406,31 +384,32 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         Intent intent = new Intent(cropIntent);
         ResolveInfo res = resolveInfos.get(0);
         intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
         if (mActivity != null) {
             mActivity.startActivityForResult(intent, mIntentCodeCrop);
         }
         return true;
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-//        if (mSelectedImageUri != null) {
-//            File f = new File(mSelectedImageUri.getPath());
-//            if (f.canWrite()) {
-//                f.delete();
-//            }
-//        }
+//    @Override
+//    protected void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+////TODO remove temp image file
+////        if (BuildConfig.DEBUG) {
+////            Log.d(DEBUG_TAG, "onDetachedFromWindow // mTempImageUriCrop: " + mTempImageUriCrop + ". DEBUG_CODE: STOPPED_ACTIVITY");
+////        }
+////
+////        if (mTempImageUriCrop != null) {
+////            File f = new File(mTempImageUriCrop.getPath());
+////            if (f.canWrite()) {
+////                f.delete();
+////            }
+////        }
+//    }
 
-        if (mTempImageUriCrop != null) {
-            File f = new File(mTempImageUriCrop.getPath());
-            if (f.canWrite()) {
-                f.delete();
-            }
-        }
-    }
 
     public void onSaveInstanceState(Bundle outState) {
+
         String prefix = "ImageSelector_" + mImageSelectorIndex;
 
         if (mSelectedImageUri != null) {
@@ -447,9 +426,11 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
         outState.putBoolean(prefix + "_mChanged", mChanged);
         outState.putBoolean(prefix + "_mDeleted", mDeleted);
+
     }
 
     public void restore(Bundle savedInstanceState) {
+
         if (savedInstanceState != null) {
             String prefix = "ImageSelector_" + mImageSelectorIndex;
 //            mChanged = true;
@@ -470,8 +451,15 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             String _mFinalImageUri = savedInstanceState.getString(prefix + "_mFinalImageUri");
             if (_mFinalImageUri != null) {
                 mFinalImageUri = Uri.parse(_mFinalImageUri);
-                setImageDrawable(mDefaultDrawable);
+//                setImageDrawable(mDefaultDrawable);
+
+                if (mTempImageUriCrop != null) {
+                    imageSelected(mTempImageUriCrop, true);
+                } else if (mSelectedImageUri != null) {
+                    imageSelected(mSelectedImageUri, true);
+                }
             }
+
         }
     }
 
