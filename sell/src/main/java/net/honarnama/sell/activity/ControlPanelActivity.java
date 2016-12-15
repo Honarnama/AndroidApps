@@ -15,6 +15,7 @@ import net.honarnama.base.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.helper.MetaUpdater;
 import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.base.utils.CommonUtil;
+import net.honarnama.base.utils.FileUtil;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.nano.ReplyProperties;
@@ -37,6 +38,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -50,6 +52,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.InputStream;
 
 public class ControlPanelActivity extends HonarnamaSellActivity implements View.OnClickListener {
@@ -369,7 +372,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                             if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
                                 askToRate();
                             } else {
-                                finish();
+                                exitApp();
                             }
                         }
                     })
@@ -630,7 +633,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
 //        releaseUpdateCheckService();
     }
@@ -643,4 +645,36 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
             outState.putString("fragment_key", mFragment.getKey());
         }
     }
+
+    public void exitApp() {
+        removeTempFiles();
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            finishAndRemoveTask();
+            System.exit(0);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
+
+    private void removeTempFiles() {
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "Honarnama/honarnama_temporary_files");
+        if (storageDir.canWrite()) {
+//            storageDir.delete();
+
+            if (storageDir.isDirectory())
+                for (File child : storageDir.listFiles())
+                    FileUtil.deleteRecursive(child);
+
+            storageDir.delete();
+
+            if (BuildConfig.DEBUG) {
+                logD("remove temp files on exit");
+            }
+        }
+    }
+
+
 }

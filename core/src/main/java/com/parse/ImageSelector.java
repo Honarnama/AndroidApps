@@ -317,8 +317,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(new Date());
         String imageFileName = "Honarnama_" + timeStamp;
+        //TODO make a key for path
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Honarnama");
+                Environment.DIRECTORY_PICTURES), "Honarnama/honarnama_temporary_files");
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -391,21 +392,21 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return true;
     }
 
-//    @Override
-//    protected void onDetachedFromWindow() {
-//        super.onDetachedFromWindow();
-////TODO remove temp image file
-////        if (BuildConfig.DEBUG) {
-////            Log.d(DEBUG_TAG, "onDetachedFromWindow // mTempImageUriCrop: " + mTempImageUriCrop + ". DEBUG_CODE: STOPPED_ACTIVITY");
-////        }
-////
-////        if (mTempImageUriCrop != null) {
-////            File f = new File(mTempImageUriCrop.getPath());
-////            if (f.canWrite()) {
-////                f.delete();
-////            }
-////        }
-//    }
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+//        if (BuildConfig.DEBUG) {
+//            Log.d(DEBUG_TAG, "onDetachedFromWindow // mTempImageUriCrop: " + mTempImageUriCrop + ". DEBUG_CODE: STOPPED_ACTIVITY");
+//        }
+
+//        if (mTempImageUriCrop != null) {
+//            File f = new File(mTempImageUriCrop.getPath());
+//            if (f.canWrite()) {
+//                f.delete();
+//            }
+//        }
+
+    }
 
 
     public void onSaveInstanceState(Bundle outState) {
