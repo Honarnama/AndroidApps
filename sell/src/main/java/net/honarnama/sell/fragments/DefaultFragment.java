@@ -29,11 +29,6 @@ public class DefaultFragment extends HonarnamaBaseFragment {
     }
 
     @Override
-    public String getKey() {
-        return "DF";
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment

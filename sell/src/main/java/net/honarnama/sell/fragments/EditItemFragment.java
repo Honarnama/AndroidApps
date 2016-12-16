@@ -49,6 +49,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,11 +172,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         } else {
             return getStringInFragment(R.string.register_new_item);
         }
-    }
-
-    @Override
-    public String getKey() {
-        return "EIF";
     }
 
     @Override
@@ -390,7 +386,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         boolean noImage = true;
         for (ImageSelector imageSelector : mItemImages) {
-            if (isAdded() && imageSelector != null && (imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())) {
+            if (isAdded() && imageSelector != null &&
+                    (imageSelector.getFinalImageUri() != null) || (imageSelector.isFileSet() && !imageSelector.isDeleted())
+                    ) {
                 noImage = false;
                 break;
             }
@@ -454,7 +452,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         switch (requestCode) {
             case HonarnamaSellApp.INTENT_CHOOSE_CATEGORY_CODE:
-
                 if (resultCode == Activity.RESULT_OK) {
                     int selectedCatId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_ID, 0);
                     int selectedCatParentId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CATEGORY_PARENT_ID, 0);
@@ -494,7 +491,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
         }
 
-        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, true);
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, mDirty);
         outState.putLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID, mItemId);
         outState.putString(SAVE_INSTANCE_STATE_KEY_TITLE, getTextInFragment(mTitleEditText));
         outState.putString(SAVE_INSTANCE_STATE_KEY_DESCRIPTION, getTextInFragment(mDescriptionEditText));
@@ -650,7 +647,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 for (int i = 0; i < mItemImages.length; i++) {
                     if (!TextUtils.isEmpty(item.images[i])) {
 
-                        String itemImage = item.images[i];
+                        final String itemImage = item.images[i];
 
                         setVisibilityInFragment(mItemImageLoadingPannel[i], View.VISIBLE);
                         setVisibilityInFragment(mItemImages[i], View.GONE);
@@ -671,6 +668,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                         setVisibilityInFragment(mItemImages[index], View.VISIBLE);
                                         if (mItemImages[index] != null && isAdded()) {
                                             mItemImages[index].setFileSet(true);
+                                            mItemImages[index].setLoadingURL(itemImage);
                                         }
                                     }
 
@@ -681,6 +679,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                         setVisibilityInFragment(mItemImages[index], View.VISIBLE);
                                     }
                                 });
+//
+//                        if (BuildConfig.DEBUG) {
+////                            Log.d("STOPPED_ACTIVITY", "mItemImages[index].getDrawable(): " + mItemImages[index].getDrawable());
+//                        }
+
                     }
 
                 }

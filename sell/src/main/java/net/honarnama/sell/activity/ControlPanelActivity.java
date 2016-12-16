@@ -633,14 +633,10 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if (mFragment != null) {
-            outState.putString("fragment_key", mFragment.getKey());
-        }
     }
 
     public void exitApp() {
-        removeTempFiles();
+//        removeTempFiles();
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             finishAndRemoveTask();
             System.exit(0);

@@ -34,8 +34,6 @@ public abstract class HonarnamaBaseFragment extends Fragment {
 
     abstract public String getTitle(Context context);
 
-    abstract public String getKey();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
