@@ -183,15 +183,8 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        String editItemFragmentKey = mEditItemFragment.getKey();
-        String lastFragmentKey;
         if (savedInstanceState != null) {
-            lastFragmentKey = savedInstanceState.getString("fragment_key");
-            if (lastFragmentKey != null) {
-                if (lastFragmentKey.equals(editItemFragmentKey)) {
-                    mFragment = (HonarnamaBaseFragment) getSupportFragmentManager().findFragmentById(R.id.frame_container);
-                }
-            }
+            mFragment = (HonarnamaBaseFragment) getSupportFragmentManager().findFragmentById(R.id.frame_container);
         }
     }
 
