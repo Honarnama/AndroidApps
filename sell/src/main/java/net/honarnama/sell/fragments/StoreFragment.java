@@ -52,6 +52,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -77,6 +78,16 @@ import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
+
+    private static final String SAVE_INSTANCE_STATE_KEY_DIRTY = "dirty";
+    private static final String SAVE_INSTANCE_STATE_KEY_NAME = "name";
+    private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_ID = "province_id";
+    private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME = "province_name";
+    private static final String SAVE_INSTANCE_STATE_KEY_CITY_ID = "city_id";
+    private static final String SAVE_INSTANCE_STATE_KEY_CITY_NAME = "city_name";
+    private static final String SAVE_INSTANCE_STATE_KEY_DESC = "desc";
+    private static final String SAVE_INSTANCE_STATE_KEY_PHONE = "phone";
+    private static final String SAVE_INSTANCE_STATE_KEY_CELL = "cell";
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -125,11 +136,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     @Override
     public String getTitle(Context context) {
         return getStringInFragment(R.string.nav_title_store_info);
-    }
-
-    @Override
-    public String getKey() {
-        return "SF";
     }
 
     private void setDirty(boolean dirty) {
@@ -235,25 +241,18 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mLogoImageView.setOnImageSelectedListener(onImageSelectedListener);
             mLogoImageView.setActivity(activity);
         }
-        if (savedInstanceState != null) {
-            mLogoImageView.restore(savedInstanceState);
-        }
 
         if (activity != null) {
             mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
             mBannerImageView.setActivity(activity);
         }
-        if (savedInstanceState != null) {
-            mBannerImageView.restore(savedInstanceState);
-        }
+
         mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
         mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
 
         mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
 
         loadOfflineData();
-
-        new getStoreAsync().execute();
 
         mMetaUpdateListener = new MetaUpdateListener() {
             @Override
@@ -282,9 +281,36 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
         };
 
+        //TODO
         if (activity != null) {
             ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
         }
+
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "onCreateView of SF. savedInstanceState: " + savedInstanceState);
+        }
+
+        if (savedInstanceState != null) {
+
+            mLogoImageView.restore(savedInstanceState);
+            mBannerImageView.restore(savedInstanceState);
+            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
+            mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
+            mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
+            mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
+            mSelectedCityName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CITY_NAME);
+            setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
+            setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
+            setTextInFragment(mPhoneNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PHONE));
+            setTextInFragment(mCellNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CELL));
+
+            //TODO why the hell i used visibilites at all over the code
+            setVisibilityInFragment(mEmptyView, View.GONE);
+            setVisibilityInFragment(mMainContent, View.VISIBLE);
+        } else {
+            new getStoreAsync().execute();
+        }
+
         resetError();
         return rootView;
     }
@@ -581,7 +607,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 logD("Loading store logo ...");
 
                 setVisibilityInFragment(mLogoProgressBar, View.VISIBLE);
-                Picasso.with(activity).load(store.logo)
+                final String storeLogo = store.logo;
+                Picasso.with(activity).load(storeLogo)
                         .error(R.drawable.default_logo_hand)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -591,6 +618,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 setVisibilityInFragment(mLogoProgressBar, View.GONE);
                                 if (mLogoImageView != null && isAdded()) {
                                     mLogoImageView.setFileSet(true);
+                                    mLogoImageView.setLoadingURL(storeLogo);
                                 }
                             }
 
@@ -606,7 +634,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (loadImages && !TextUtils.isEmpty(store.banner) && activity != null && isAdded()) {
                 logD("Loading store banner...");
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
-                Picasso.with(activity).load(store.banner)
+                final String storeBanner = store.banner;
+                Picasso.with(activity).load(storeBanner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -616,6 +645,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 setVisibilityInFragment(mBannerProgressBar, View.GONE);
                                 if (isAdded() && mBannerImageView != null) {
                                     mBannerImageView.setFileSet(true);
+                                    mBannerImageView.setLoadingURL(storeBanner);
                                 }
                             }
 
@@ -650,6 +680,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         if (isAdded() && mLogoImageView != null) {
             mLogoImageView.onSaveInstanceState(outState);
         }
@@ -657,6 +688,20 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, mDirty);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_NAME, getTextInFragment(mNameEditText));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID, mSelectedProvinceId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME, mSelectedProvinceName);
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_CITY_ID, mSelectedCityId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_CITY_NAME, mSelectedCityName);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_DESC, getTextInFragment(mDescriptionEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_PHONE, getTextInFragment(mPhoneNumberEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_CELL, getTextInFragment(mCellNumberEditText));
+
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "onSaveInstanceState of SF. outState: " + outState);
+        }
+
     }
 
     @Override
@@ -1083,7 +1128,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             textView.setGravity(Gravity.CENTER);
             Spannable spannable = (Spannable) textView.getText();
             if (activity != null) {
-                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length()-1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length() - 1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
