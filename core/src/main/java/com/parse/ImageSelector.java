@@ -64,8 +64,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     private Uri mTempImageUriCrop;
     private Uri mFinalImageUri;
 
+    private String mLoadingURL;
+
     private boolean mChanged = false;
-    private boolean mLoaded = false;
 
     private static boolean announced = false;
 
@@ -80,15 +81,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     }
 
     private boolean mFileSet;
-
-
-    public boolean getLoaded() {
-        return mLoaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        mLoaded = loaded;
-    }
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -213,6 +205,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public void removeSelectedImage() {
         mFinalImageUri = null;
+        mLoadingURL = null;
         setFileSet(false);
         if (mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageRemoved();
@@ -246,6 +239,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
         if ((mOnImageSelectedListener == null) ||
                 (mOnImageSelectedListener.onImageSelected(selectedImage, cropped))) {
+
+            mLoadingURL = "";
             mFinalImageUri = selectedImage;
             mChanged = true;
             mDeleted = false;
@@ -256,6 +251,23 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             setImageURI(selectedImage);
         }
     }
+
+    public void setFinalImageUri(Uri finalImageUri) {
+        mFinalImageUri = finalImageUri;
+    }
+
+    public void setSelectedImageUri(Uri selectedImageUri) {
+        mSelectedImageUri = selectedImageUri;
+    }
+
+    public void setTempImageUriCrop(Uri tempImageUriCrop) {
+        mTempImageUriCrop = tempImageUriCrop;
+    }
+
+    public void setLoadingURL(String loadingURL) {
+        mLoadingURL = loadingURL;
+    }
+
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -425,9 +437,17 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             outState.putString(prefix + "_mFinalImageUri", mFinalImageUri.toString());
         }
 
+        if (mLoadingURL != null) {
+            outState.putString(prefix + "_mLoadingURL", mLoadingURL);
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "onSaveInstanceState of IS. mFinalImageUri: " + mFinalImageUri);
+        }
+
         outState.putBoolean(prefix + "_mChanged", mChanged);
         outState.putBoolean(prefix + "_mDeleted", mDeleted);
-
+        outState.putBoolean(prefix + "_mFileSet", mFileSet);
     }
 
     public void restore(Bundle savedInstanceState) {
@@ -438,6 +458,23 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
             mChanged = savedInstanceState.getBoolean(prefix + "_mChanged");
             mDeleted = savedInstanceState.getBoolean(prefix + "_mDeleted");
+            mFileSet = savedInstanceState.getBoolean(prefix + "_mFileSet");
+
+            String __mLoadingURL = savedInstanceState.getString(prefix + "_mLoadingURL");
+            if (__mLoadingURL != null && __mLoadingURL.trim().length() > 0) {
+                mLoadingURL = __mLoadingURL;
+                Picasso.with(mContext).load(mLoadingURL)
+                        .error(R.drawable.camera_insta)
+                        .into(this, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
+            }
 
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
@@ -459,6 +496,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 } else if (mSelectedImageUri != null) {
                     imageSelected(mSelectedImageUri, true);
                 }
+            }
+
+            if (BuildConfig.DEBUG) {
+                Log.d("STOPPED_ACTIVITY", "restore of IS. mFinalImageUri: " + mFinalImageUri);
             }
 
         }
@@ -497,12 +538,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         mDeleted = deleted;
     }
 
-    public void setSource(String imageUri, final ProgressBar progressbar) {
+    public void setSource(String imageUri, final ProgressBar progressbar, int drawable) {
         if (imageUri.trim().length() == 0) {
             return;
         }
+        //R.drawable.party_flags
         Picasso.with(mContext).load(imageUri.toString())
-                .error(R.drawable.party_flags)
+                .error(drawable)
                 .into(this, new Callback() {
                     @Override
                     public void onSuccess() {
