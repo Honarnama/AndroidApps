@@ -73,7 +73,7 @@ public class ImageAdapter extends BaseAdapter {
 //                mViewHolder.imageProgressBar.setVisibility(View.GONE);
 //            }
 //        });
-        imageView.setSource(mImages.get(position), mViewHolder.imageProgressBar);
+        imageView.setSource(mImages.get(position), mViewHolder.imageProgressBar, R.drawable.party_flags);
         imageView.setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         imageView.setAdjustViewBounds(true);
         return imageView;

@@ -397,7 +397,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             ImageSelector similarItemImage = (ImageSelector) similarItemLayout.findViewById(R.id.item_image);
             TextView similarPostPrice = (TextView) similarItemLayout.findViewById(R.id.similar_post_price);
 
-            similarItemImage.setSource(item.images[0], null);
+            similarItemImage.setSource(item.images[0], null, R.drawable.camera_insta);
             similarItemTitle.setText(TextUtil.convertEnNumberToFa(item.name));
 
             NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);

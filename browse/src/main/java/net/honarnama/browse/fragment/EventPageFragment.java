@@ -297,7 +297,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
         if (event.banner.trim().length() > 0) {
             setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
-            mBannerImageView.setSource(event.banner, mBannerProgressBar);
+            mBannerImageView.setSource(event.banner, mBannerProgressBar, R.drawable.party_flags);
         }
 
         setTextInFragment(mNameTextView, TextUtil.convertEnNumberToFa(event.name));
