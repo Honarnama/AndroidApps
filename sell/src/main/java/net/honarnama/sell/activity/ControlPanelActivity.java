@@ -153,11 +153,13 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
         processIntent(getIntent());
 
-        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-            HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
-            switchFragment(fragment);
-            return;
-        }
+        //TODO test to decide is it necessary to use nonet fragment
+
+//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
+//            HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
+//            switchFragment(fragment);
+//            return;
+//        }
 
         MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
             @Override
