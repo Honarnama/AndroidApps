@@ -81,6 +81,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_ID = "categoryId";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID = "categoryParentId";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME = "categoryName";
+    private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
 
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
@@ -144,6 +145,11 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         mCreateNew = createNew;
 
+
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "reset of EIF. mCreateNew: " + mCreateNew);
+        }
+
         if (mCreateNew) {
             setVisibilityInFragment(mMainContent, View.VISIBLE);
             setVisibilityInFragment(mEmptyView, View.GONE);
@@ -171,18 +177,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             return getStringInFragment(R.string.nav_title_edit_item);
         } else {
             return getStringInFragment(R.string.register_new_item);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isAdded()) {
-            mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
-            if (mCreateNew) {
-                setVisibilityInFragment(mMainContent, View.VISIBLE);
-                setVisibilityInFragment(mEmptyView, View.GONE);
-            }
         }
     }
 
@@ -313,6 +307,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
 
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "onCreateView of EIF. savedInstanceState: " + savedInstanceState);
+        }
+
         if (savedInstanceState != null) {
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
             mItemId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
@@ -325,6 +323,14 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             setTextInFragment(mPriceEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PRICE));
             mCategoryId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID);
             mCategoryParentId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID);
+
+            if (mItemId > 0 && !savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE)) {
+                if (BuildConfig.DEBUG) {
+                    Log.d("STOPPED_ACTIVITY", "calling getItemAsync. mItemId: " + mItemId + ". savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE): " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
+                }
+                new getItemAsync().execute();
+            }
+
         } else {
             if (mItemId >= 0) {
                 new getItemAsync().execute();
@@ -340,6 +346,23 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         resetErrors();
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (BuildConfig.DEBUG) {
+            Log.d("STOPPED_ACTIVITY", "onResume of EIF. mItemId: " + mItemId);
+        }
+
+        if (isAdded()) {
+            mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
+        }
+        if (mItemId <= 0) { //new item
+            setVisibilityInFragment(mMainContent, View.VISIBLE);
+            setVisibilityInFragment(mEmptyView, View.GONE);
+        }
     }
 
 
@@ -499,6 +522,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_ID, mCategoryId);
         outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID, mCategoryParentId);
         outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, getTextInFragment(mChooseCategoryButton));
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE, (mMainContent.getVisibility() == View.VISIBLE));
     }
 
     public class getItemAsync extends AsyncTask<Void, Void, GetItemReply> {
