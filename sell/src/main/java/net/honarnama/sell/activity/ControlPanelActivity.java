@@ -76,7 +76,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     private Toolbar mToolbar;
     private HonarnamaBaseFragment mFragment;
     private EditItemFragment mEditItemFragment;
-    private CPanelFragment mCPanelFragment;
     private ProgressDialog mWaitingProgressDialog;
 
     Tracker mTracker;
@@ -370,7 +369,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                 resetMenuIcons();
                 selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
             }
-        } else {
+        } else if (mFragment == CPanelFragment.getInstance()) {
             new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.DialogStyle))
                     .setTitle("تایید خروج")
                     .setMessage("می‌خوای از برنامه خارج بشی؟")
@@ -386,7 +385,10 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                     })
                     .setNegativeButton("نه می‌مونم", null).show();
 
+        } else {
+            switchFragment(CPanelFragment.getInstance());
         }
+
     }
 
     public void resetMenuIcons() {
