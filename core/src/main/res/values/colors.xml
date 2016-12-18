@@ -19,6 +19,11 @@
     <color name="default_hint_color_for_android">@color/gray</color>
     <color name="red">#ff0000</color>
 
+    <color name="deep_purple">#673AB7</color>
+    <color name="deep_indigo">#1A237E</color>
+    <color name="deep_blue">#0D47A1</color>
+    <color name="deep_lime">#827717</color>
+    <color name="deep_yellow">#FFD600</color>
 
     <color name="gray_whitish">#F5F5F5</color>
     <color name="gray_super_extra_light">#eeeeee</color>

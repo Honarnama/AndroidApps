@@ -54,6 +54,8 @@ import java.io.File;
 
 public class ControlPanelActivity extends HonarnamaSellActivity implements View.OnClickListener {
 
+    //TODO test backpress
+
     public static final int ITEM_IDENTIFIER_ACCOUNT = 0;
 
     public static final int ITEM_IDENTIFIER_STORE_INFO = 1;

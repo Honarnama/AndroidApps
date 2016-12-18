@@ -7,6 +7,7 @@ import com.google.android.gms.analytics.Tracker;
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ControlPanelActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ResourceBundle;
 
-public class CPanelFragment extends HonarnamaBaseFragment {
+
+public class CPanelFragment extends HonarnamaBaseFragment implements View.OnClickListener {
 
     public static CPanelFragment mCPanelFragment;
     private Tracker mTracker;
@@ -47,6 +50,12 @@ public class CPanelFragment extends HonarnamaBaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_cpanel, container, false);
+
+        rootView.findViewById(R.id.cpanel_manage_store).setOnClickListener(this);
+        rootView.findViewById(R.id.cpanel_items).setOnClickListener(this);
+        rootView.findViewById(R.id.cpanel_event).setOnClickListener(this);
+        rootView.findViewById(R.id.cpanel_new_item).setOnClickListener(this);
+
         return rootView;
     }
 
@@ -59,5 +68,36 @@ public class CPanelFragment extends HonarnamaBaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+        switch (v.getId()) {
+            case R.id.cpanel_manage_store:
+                if (activity != null) {
+                    activity.switchFragment(StoreFragment.getInstance());
+                }
+                break;
+
+            case R.id.cpanel_items:
+                if (activity != null) {
+                    activity.switchFragment(ItemsFragment.getInstance());
+                }
+                break;
+
+            case R.id.cpanel_event:
+                if (activity != null) {
+                    activity.switchFragment(EventManagerFragment.getInstance());
+                }
+                break;
+
+            case R.id.cpanel_new_item:
+                if (activity != null) {
+                    activity.switchFragment(EditItemFragment.getInstance());
+                }
+                break;
+
+        }
     }
 }
