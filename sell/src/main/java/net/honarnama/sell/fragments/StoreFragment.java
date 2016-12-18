@@ -136,7 +136,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     @Override
     public String getTitle(Context context) {
-        return getStringInFragment(R.string.nav_title_store_info);
+        return getStringInFragment(R.string.manage_store);
     }
 
     private void setDirty(boolean dirty) {

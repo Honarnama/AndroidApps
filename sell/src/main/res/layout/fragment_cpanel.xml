@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="fill_parent" android:layout_width="fill_parent"
             android:fadeScrollbars="true"
             android:background="@drawable/black_orib_back"
             android:id="@+id/cpanel_fragment"
+            android:layoutDirection="rtl"
+            android:paddingTop="?attr/actionBarSize"
+
 >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
@@ -13,18 +16,60 @@
                   android:layout_centerInParent="true"
     >
 
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="36dp"
+                        android:layout_marginLeft="36dp"
+        >
+            <TextView android:id="@+id/empty_items_text_view"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/tiny_text_view"
+                      android:layout_centerHorizontal="true"
+                      android:layout_centerVertical="true"
+                      android:background="@drawable/important_bar_background"
+                      android:paddingTop="2dp"
+                      android:paddingBottom="2dp"
+                      android:paddingLeft="10dp"
+                      android:paddingRight="40dp"
+                      android:text="برای دیدن تمامی قسمت‌های برنامه از دکمه سه خطی واقع در بالا (سمت راست اسم برنامه) ‌استفاده کنید."
+            />
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:id="@+id/no_item_warning_image"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:iiv_color="@color/orange"
+                    app:iiv_icon="gmd-info"
+                    android:layout_toRightOf="@id/empty_items_text_view"
+                    android:layout_marginLeft="-36dp"
+                    android:layout_centerVertical="true"
+            />
+        </RelativeLayout>
+
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
                       android:gravity="center"
+                      android:paddingTop="?attr/actionBarSize"
         >
 
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                           android:layout_weight="1"
                           android:orientation="vertical"
             >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:iiv_color="@color/deep_orange"
+                        android:layout_gravity="center"
+                        app:iiv_icon="gmd-store"
+                        android:paddingBottom="10dp"
+                />
+
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:text="@string/store"
+                          android:text="@string/manage_store"
                           android:layout_gravity="center"
                 />
 
@@ -35,8 +80,66 @@
                           android:layout_weight="1"
                           android:orientation="vertical"
             >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:iiv_color="@color/amber_dark"
+                        android:layout_gravity="center"
+                        app:iiv_icon="gmd-toc"
+                        android:paddingBottom="10dp"
+                />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="@string/items"
+                          android:layout_gravity="center"
+                />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:gravity="center"
+                      android:paddingTop="?attr/actionBarSize"
+        >
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:orientation="vertical"
+            >
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:iiv_color="@color/cyan"
+                        android:layout_gravity="center"
+                        app:iiv_icon="gmd-event"
+                        android:paddingBottom="10dp"
+                />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/art_event"
+                          android:layout_gravity="center"
+                />
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:orientation="vertical"
+            >
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:iiv_color="@color/extra_dark_green"
+                        android:layout_gravity="center"
+                        app:iiv_icon="gmd-edit"
+                        android:paddingBottom="10dp"
+                />
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/register_new_item"
                           android:layout_gravity="center"
                 />
 
