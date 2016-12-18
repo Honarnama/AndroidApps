@@ -326,7 +326,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             if (mItemId > 0 && !savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE)) {
                 if (BuildConfig.DEBUG) {
-                    Log.d("STOPPED_ACTIVITY", "calling getItemAsync. mItemId: " + mItemId + ". savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE): " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
+                    Log.d("STOPPED_ACTIVITY", "calling getItemAsync. mItemId: " + mItemId + ". SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE: " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
                 }
                 new getItemAsync().execute();
             }
