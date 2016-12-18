@@ -79,7 +79,8 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
-    //TODO fix the bug when no network is available and loads new store page upon stopped activity
+    //TODO debug city list onsavedinstance...
+    private static final String SAVE_INSTANCE_STATE_KEY_STORE_ID = "storeId";
     private static final String SAVE_INSTANCE_STATE_KEY_DIRTY = "dirty";
     private static final String SAVE_INSTANCE_STATE_KEY_NAME = "name";
     private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_ID = "province_id";
@@ -89,6 +90,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private static final String SAVE_INSTANCE_STATE_KEY_DESC = "desc";
     private static final String SAVE_INSTANCE_STATE_KEY_PHONE = "phone";
     private static final String SAVE_INSTANCE_STATE_KEY_CELL = "cell";
+    private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
+    private static final String SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS = "review_status";
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -126,6 +129,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     public boolean mIsNew = true;
     private long mStoreId = -1;
+    private int mReviewStatus = -1;
 
     public MetaUpdateListener mMetaUpdateListener;
 
@@ -292,22 +296,32 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }
 
         if (savedInstanceState != null) {
-
             mLogoImageView.restore(savedInstanceState);
             mBannerImageView.restore(savedInstanceState);
+            mStoreId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_STORE_ID);
+            mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
+            setReviewInfo(mReviewStatus);
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
             mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
             mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
             mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
             mSelectedCityName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CITY_NAME);
+            rePopulateCityList();
             setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
             setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
             setTextInFragment(mPhoneNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PHONE));
             setTextInFragment(mCellNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CELL));
 
-            //TODO why the hell i used visibilites at all over the code
-            setVisibilityInFragment(mEmptyView, View.GONE);
-            setVisibilityInFragment(mMainContent, View.VISIBLE);
+            if (!savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE)) {
+                new getStoreAsync().execute();
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.d("STOPPED_ACTIVITY", "calling getItemAsync. mStoreId: " + mStoreId + ". SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE: " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
+                }
+                setVisibilityInFragment(mEmptyView, View.GONE);
+                setVisibilityInFragment(mMainContent, View.VISIBLE);
+            }
+
         } else {
             new getStoreAsync().execute();
         }
@@ -322,6 +336,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (isAdded()) {
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
             mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
+            if (getActivity() != null) {
+                getActivity().setTitle(getStringInFragment(R.string.manage_store));
+            }
         }
     }
 
@@ -593,17 +610,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 setTextInFragment(mProvinceEditText, province.getName());
                 mSelectedProvinceId = province.getId();
             }
-
-            if (store.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
-                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
-                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
-            }
-
-            if (store.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
-                setVisibilityInFragment(mStoreNotVerifiedNotif, View.VISIBLE);
-                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
-            }
-
+            mReviewStatus = store.reviewStatus;
+            setReviewInfo(store.reviewStatus);
+            rePopulateCityList();
             if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
                 logD("Loading store logo ...");
 
@@ -668,6 +677,20 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         setDirty(false);
     }
 
+    private void setReviewInfo(int reviewStatus) {
+
+        if (reviewStatus == HonarnamaProto.NOT_REVIEWED) {
+            setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+            setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
+        }
+
+        if (reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
+            setVisibilityInFragment(mStoreNotVerifiedNotif, View.VISIBLE);
+            setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
+        }
+
+    }
+
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
@@ -689,6 +712,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
+
+        outState.putLong(SAVE_INSTANCE_STATE_KEY_STORE_ID, mStoreId);
         outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, mDirty);
         outState.putString(SAVE_INSTANCE_STATE_KEY_NAME, getTextInFragment(mNameEditText));
         outState.putInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID, mSelectedProvinceId);
@@ -698,6 +723,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         outState.putString(SAVE_INSTANCE_STATE_KEY_DESC, getTextInFragment(mDescriptionEditText));
         outState.putString(SAVE_INSTANCE_STATE_KEY_PHONE, getTextInFragment(mPhoneNumberEditText));
         outState.putString(SAVE_INSTANCE_STATE_KEY_CELL, getTextInFragment(mCellNumberEditText));
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE, (mMainContent.getVisibility() == View.VISIBLE));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS, mReviewStatus);
 
         if (BuildConfig.DEBUG) {
             Log.d("STOPPED_ACTIVITY", "onSaveInstanceState of SF. outState: " + outState);
@@ -947,6 +974,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.OK:
+                        setReviewInfo(HonarnamaProto.NOT_REVIEWED);
                         setStoreInfo(createOrUpdateStoreReply.uptodateStore, false);
 
                         if (mBannerImageView != null && mBannerImageView.isDeleted()) {
