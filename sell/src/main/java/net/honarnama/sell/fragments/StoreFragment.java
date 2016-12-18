@@ -79,6 +79,7 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
+    //TODO fix the bug when no network is available and loads new store page upon stopped activity
     private static final String SAVE_INSTANCE_STATE_KEY_DIRTY = "dirty";
     private static final String SAVE_INSTANCE_STATE_KEY_NAME = "name";
     private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_ID = "province_id";

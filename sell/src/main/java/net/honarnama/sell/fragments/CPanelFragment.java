@@ -1,7 +1,11 @@
 package net.honarnama.sell.fragments;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
+import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 
 import android.content.Context;
@@ -12,15 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class DefaultFragment extends HonarnamaBaseFragment {
+public class CPanelFragment extends HonarnamaBaseFragment {
 
-    public static DefaultFragment mDefaultFragment;
+    public static CPanelFragment mCPanelFragment;
+    private Tracker mTracker;
 
-    public synchronized static DefaultFragment getInstance() {
-        if (mDefaultFragment == null) {
-            mDefaultFragment = new DefaultFragment();
+    public synchronized static CPanelFragment getInstance() {
+        if (mCPanelFragment == null) {
+            mCPanelFragment = new CPanelFragment();
         }
-        return mDefaultFragment;
+        return mCPanelFragment;
     }
 
     @Override
@@ -29,10 +34,19 @@ public class DefaultFragment extends HonarnamaBaseFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("CPanelFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_default, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_cpanel, container, false);
         return rootView;
     }
 

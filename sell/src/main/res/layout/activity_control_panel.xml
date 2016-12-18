@@ -4,9 +4,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:gravity="right"
-                android:layoutDirection="rtl"
-        >
-
+                android:layoutDirection="rtl">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -24,33 +22,26 @@
     <android.support.v4.widget.DrawerLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_below="@id/toolbar"
             android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutDirection="rtl"
-            android:layout_below="@id/toolbar"
-            android:fadeScrollbars="false"
-            >
+            android:fadeScrollbars="false">
 
-        <!-- the layout which will contain (host) the drawerLayout -->
-        <FrameLayout
-                android:layout_below="@id/toolbar"
-                android:id="@+id/drawer_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <!-- the layout which will be the content of the activity (which will be hosted inside the drawer (NOT the list of the drawer)) -->
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
+        >
             <FrameLayout
                     android:id="@+id/frame_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <include
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/fragment_about"
-                        android:id="@+id/about_included_in_control_panel"
-                        />
-            </FrameLayout>
-        </FrameLayout>
+                    android:layout_height="match_parent"/>
+        </LinearLayout>
+
+
+        <!-- the layout which will be the content of the activity (which will be hosted inside the drawer (NOT the list of the drawer)) -->
 
         <android.support.design.widget.NavigationView
                 android:id="@+id/navView"
@@ -66,15 +57,14 @@
                 android:theme="@style/NavigationTheme"
                 app:menu="@menu/drawer_view"
                 app:headerLayout="@layout/nav_header"
-                >
-
+        >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_gravity="bottom"
                           android:orientation="vertical"
-                    >
+            >
 
                 <TextView
                         android:id="@+id/empty_spacer"
@@ -82,12 +72,12 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:clickable="false"
-                       />
+                />
 
                 <include layout="@layout/footer"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
-                        ></include>
+                ></include>
 
             </LinearLayout>
 

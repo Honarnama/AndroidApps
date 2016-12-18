@@ -139,5 +139,6 @@
     <string name="login_email_sent">لینک ورود به حساب به آدرس ایمیلتان ارسال شد.</string>
 
     <string name="login_hint"> "در صورتی که قبلا حساب کاربری ساخته‌اید، برای ورود به برنامه از لینکی که به آدرس ایمیلتان ارسال میشود، استفاده کنید."</string>
+    <string name="store">فروشگاه</string>
 
 </resources>
