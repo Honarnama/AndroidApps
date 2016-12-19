@@ -79,7 +79,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class StoreFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
 
-    //TODO debug city list onsavedinstance...
     private static final String SAVE_INSTANCE_STATE_KEY_STORE_ID = "storeId";
     private static final String SAVE_INSTANCE_STATE_KEY_DIRTY = "dirty";
     private static final String SAVE_INSTANCE_STATE_KEY_NAME = "name";
@@ -298,6 +297,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (savedInstanceState != null) {
             mLogoImageView.restore(savedInstanceState);
             mBannerImageView.restore(savedInstanceState);
+
             mStoreId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_STORE_ID);
             mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
             setReviewInfo(mReviewStatus);
