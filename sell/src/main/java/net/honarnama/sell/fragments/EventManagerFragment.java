@@ -55,6 +55,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,6 +87,26 @@ import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 public class EventManagerFragment extends HonarnamaBaseFragment implements View.OnClickListener, ObservableScrollView.OnScrollChangedListener {
+
+    private static final String SAVE_INSTANCE_STATE_KEY_EVENT_ID = "eventId";
+    private static final String SAVE_INSTANCE_STATE_KEY_DIRTY = "dirty";
+    private static final String SAVE_INSTANCE_STATE_KEY_NAME = "name";
+    private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY = "category";
+    private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_ID = "province_id";
+    private static final String SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME = "province_name";
+    private static final String SAVE_INSTANCE_STATE_KEY_CITY_ID = "city_id";
+    private static final String SAVE_INSTANCE_STATE_KEY_CITY_NAME = "city_name";
+    private static final String SAVE_INSTANCE_STATE_KEY_DESC = "desc";
+    private static final String SAVE_INSTANCE_STATE_KEY_ADDR = "address";
+    private static final String SAVE_INSTANCE_STATE_KEY_PHONE = "phone";
+    private static final String SAVE_INSTANCE_STATE_KEY_CELL = "cell";
+    private static final String SAVE_INSTANCE_STATE_KEY_ACTIVE = "active";
+
+    //TODO
+    private static final String SAVE_INSTANCE_STATE_KEY_START_AT = "start_at";
+    private static final String SAVE_INSTANCE_STATE_KEY_END_AT = "end_at";
+    private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
+    private static final String SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS = "review_status";
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -137,6 +158,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public boolean mIsNew = true;
 
     private long mEventId = -1;
+    private int mReviewStatus = -1;
 
     public MetaUpdateListener mMetaUpdateListener;
 
@@ -279,6 +301,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mRegisterEventButton = (Button) rootView.findViewById(R.id.register_event_button);
         mRegisterEventButton.setOnClickListener(this);
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
+        mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
+        mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
+                .coordinatorLayout);
 
         if (activity != null) {
             mBannerImageView.setActivity(activity);
@@ -286,15 +312,44 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         }
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
+
+            mEventId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_EVENT_ID);
+            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
+
+            setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
+            setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
+            setTextInFragment(mAddressEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_ADDR));
+            setTextInFragment(mPhoneNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PHONE));
+            setTextInFragment(mCellNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CELL));
+            setCheckedInFragment(mActiveBtn, savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
+            setCheckedInFragment(mPassiveBtn, !savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
+
+            mSelectedCatId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY);
+            mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
+            mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
+            mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
+            mSelectedCityName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CITY_NAME);
+
+            rePopulateCityList();
+
+            mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
+            setReviewInfo(mReviewStatus);
+
+            if (!savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE)) {
+                new getEventAsync().execute();
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.d("STOPPED_ACTIVITY", "calling getEventAsync. mEventId: " + mEventId + ". SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE: " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
+                }
+                setVisibilityInFragment(mEmptyView, View.GONE);
+                setVisibilityInFragment(mMainContent, View.VISIBLE);
+            }
+        } else {
+            new getEventAsync().execute();
         }
 
-        mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
-        mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
-        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
-                .coordinatorLayout);
 
         loadOfflineData();
-        new getEventAsync().execute();
 
         mMetaUpdateListener = new MetaUpdateListener() {
             @Override
@@ -326,6 +381,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
         }
 
+        //TODO test with savedInstancestate
         resetErrors();
 
         return rootView;
@@ -919,16 +975,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 setTextInFragment(mProvinceEditText, province.getName());
             }
 
-            if (event.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
-                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
-                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
-            }
-
-            if (event.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
-                setVisibilityInFragment(mEventNotVerifiedNotif, View.VISIBLE);
-                setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
-                setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
-            }
+            mReviewStatus = event.reviewStatus;
+            setReviewInfo(mReviewStatus);
 
             if (loadImages && !TextUtils.isEmpty(event.banner) && activity != null && isAdded()) {
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
@@ -964,6 +1012,19 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         setDirty(false);
     }
 
+    public void setReviewInfo(int reviewStatus) {
+        if (reviewStatus == HonarnamaProto.NOT_REVIEWED) {
+            setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+            setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.waiting_to_be_confirmed));
+        }
+
+        if (reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
+            setVisibilityInFragment(mEventNotVerifiedNotif, View.VISIBLE);
+            setVisibilityInFragment(mStatusBarTextView, View.VISIBLE);
+            setTextInFragment(mStatusBarTextView, getStringInFragment(R.string.please_apply_requested_modification));
+        }
+    }
+
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
         if (isAdded()) {
@@ -979,6 +1040,23 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
+
+        outState.putLong(SAVE_INSTANCE_STATE_KEY_EVENT_ID, mEventId);
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY, mDirty);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_NAME, getTextInFragment(mNameEditText));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID, mSelectedProvinceId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME, mSelectedProvinceName);
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_CITY_ID, mSelectedCityId);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_CITY_NAME, mSelectedCityName);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_DESC, getTextInFragment(mDescriptionEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_PHONE, getTextInFragment(mPhoneNumberEditText));
+        outState.putString(SAVE_INSTANCE_STATE_KEY_CELL, getTextInFragment(mCellNumberEditText));
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE, (mMainContent.getVisibility() == View.VISIBLE));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS, mReviewStatus);
+        outState.putString(SAVE_INSTANCE_STATE_KEY_ADDR, getTextInFragment(mAddressEditText));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY, mSelectedCatId);
+        outState.putBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE, mActiveBtn.isChecked());
+
     }
 
     @Override
@@ -1213,6 +1291,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.OK:
+                        setReviewInfo(HonarnamaProto.NOT_REVIEWED);
                         setEventInfo(createOrUpdateEventReply.uptodateEvent, false);
 
                         if (isAdded() && mBannerImageView != null && mBannerImageView.isDeleted()) {
