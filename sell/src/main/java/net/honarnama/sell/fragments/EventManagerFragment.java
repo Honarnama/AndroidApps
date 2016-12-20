@@ -101,12 +101,16 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private static final String SAVE_INSTANCE_STATE_KEY_PHONE = "phone";
     private static final String SAVE_INSTANCE_STATE_KEY_CELL = "cell";
     private static final String SAVE_INSTANCE_STATE_KEY_ACTIVE = "active";
-
-    //TODO
-    private static final String SAVE_INSTANCE_STATE_KEY_START_AT = "start_at";
-    private static final String SAVE_INSTANCE_STATE_KEY_END_AT = "end_at";
     private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
     private static final String SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS = "review_status";
+
+    private static final String SAVE_INSTANCE_STATE_KEY_START_YEAR = "start_year";
+    private static final String SAVE_INSTANCE_STATE_KEY_START_MONTH = "start_month";
+    private static final String SAVE_INSTANCE_STATE_KEY_START_DAY = "start_day";
+
+    private static final String SAVE_INSTANCE_STATE_KEY_END_YEAR = "end_year";
+    private static final String SAVE_INSTANCE_STATE_KEY_END_MONTH = "end_month";
+    private static final String SAVE_INSTANCE_STATE_KEY_END_DAY = "end_day";
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -323,6 +327,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             setTextInFragment(mCellNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CELL));
             setCheckedInFragment(mActiveBtn, savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
             setCheckedInFragment(mPassiveBtn, !savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
+
+            mStartYearSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_YEAR));
+            mStartMonthSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_MONTH));
+            mStartDaySpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_DAY));
+
+            mEndYearSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_END_YEAR));
+            mEndMonthSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_END_MONTH));
+            mEndDaySpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_END_DAY));
 
             mSelectedCatId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CATEGORY);
             mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
@@ -1056,6 +1068,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         outState.putString(SAVE_INSTANCE_STATE_KEY_ADDR, getTextInFragment(mAddressEditText));
         outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY, mSelectedCatId);
         outState.putBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE, mActiveBtn.isChecked());
+
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_START_YEAR, mStartYearSpinner.getSelectedItemPosition());
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_START_MONTH, mStartMonthSpinner.getSelectedItemPosition());
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_START_DAY, mStartDaySpinner.getSelectedItemPosition());
+
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_END_YEAR, mEndYearSpinner.getSelectedItemPosition());
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_END_MONTH, mEndMonthSpinner.getSelectedItemPosition());
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_END_DAY, mEndDaySpinner.getSelectedItemPosition());
 
     }
 
