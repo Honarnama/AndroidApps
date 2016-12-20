@@ -190,7 +190,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             genderCode = mGenderWoman.isChecked() ? Account.FEMALE : (mGenderMan.isChecked() ? Account.MALE : Account.UNSPECIFIED);
             name = getTextInFragment(mNameEditText);
 
-            createOrUpdateAccountRequest.account.id = HonarnamaUser.getId();
             createOrUpdateAccountRequest.account.name = name;
             createOrUpdateAccountRequest.account.gender = genderCode;
 
@@ -220,13 +219,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
             AuthServiceGrpc.AuthServiceBlockingStub stub;
             try {
                 stub = GRPCUtils.getInstance().getAuthServiceGrpc();
+                UpdateAccountReply updateAccountReply = stub.updateAccount(createOrUpdateAccountRequest);
+                return updateAccountReply;
             } catch (Exception e) {
                 logE("Error running createOrUpdateAccountRequest. createOrUpdateAccountRequest: " + createOrUpdateAccountRequest + ". Error:" + e, e);
                 return null;
             }
 
-            UpdateAccountReply updateAccountReply = stub.updateAccount(createOrUpdateAccountRequest);
-            return updateAccountReply;
         }
 
         @Override
