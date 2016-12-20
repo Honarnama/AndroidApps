@@ -242,7 +242,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                     case ReplyProperties.OK:
                         HonarnamaUser.setName(whoAmIReply.account.name);
                         HonarnamaUser.setGender(whoAmIReply.account.gender);
-                        HonarnamaUser.setId(whoAmIReply.account.id);
                         goToControlPanel();
                         break;
 

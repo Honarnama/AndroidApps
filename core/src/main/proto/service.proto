@@ -124,15 +124,14 @@ service AuthService {
 }
 
 message Account {
-    uint64 id = 1; // Will be ignored in create
-    string name = 2;
-    string email = 3;
+    string name = 1;
+    string email = 2;
     enum Gender {
         FEMALE = 0;
         MALE = 1;
         UNSPECIFIED = 2;
     }
-    Gender gender = 4;
+    Gender gender = 3;
 }
 
 message WhoAmIReply {
