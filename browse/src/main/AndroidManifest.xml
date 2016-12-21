@@ -24,6 +24,7 @@
                   android:screenOrientation="portrait"
                   android:uiOptions="splitActionBarWhenNarrow"
                   android:windowSoftInputMode="adjustPan"
+                  android:configChanges="orientation|keyboardHidden|screenSize"
         >
 
             <intent-filter>
@@ -99,6 +100,7 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 android:launchMode="standard"
+                android:configChanges="orientation|keyboardHidden|screenSize"
         >
         </activity>
 
@@ -107,6 +109,7 @@
                 android:label="@string/filter_geo"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
+                android:configChanges="orientation|keyboardHidden|screenSize"
         >
         </activity>
 

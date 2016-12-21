@@ -373,5 +373,6 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         });
 
     }
+
 }
 

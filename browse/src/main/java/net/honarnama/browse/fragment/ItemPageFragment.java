@@ -120,6 +120,8 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public RelativeLayout mOnErrorRetry;
 
+    public ConfirmationDialog mConfirmationDialog;
+
     @Override
     public String getTitle() {
         return "مشاهده محصول";
@@ -299,11 +301,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (v.getId() == R.id.remove_bookmark) {
-            final ConfirmationDialog confirmationDialog = new ConfirmationDialog(getActivity(),
+            mConfirmationDialog = new ConfirmationDialog(getActivity(),
                     getStringInFragment(R.string.remove_bookmark_dialog_title),
                     getStringInFragment(R.string.remove_bookmark_dialog_msg)
             );
-            confirmationDialog.showDialog(new View.OnClickListener() {
+            mConfirmationDialog.showDialog(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
@@ -315,7 +317,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
                         logE("Error removing bookmar. ex: ", ex);
                         displayShortToast("خطا در حذف نشان محصول.");
                     }
-                    confirmationDialog.dismiss();
+                    mConfirmationDialog.dismiss();
                 }
             });
         }
@@ -631,6 +633,17 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mConfirmationDialog != null && mConfirmationDialog.isShowing()) {
+            try {
+                mConfirmationDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
+        }
+    }
 }
 
 

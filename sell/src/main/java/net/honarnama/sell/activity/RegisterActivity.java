@@ -302,7 +302,11 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
     private void dismissProgressDialog() {
         if (!RegisterActivity.this.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
+                try {
+                    mProgressDialog.dismiss();
+                } catch (Exception ex) {
+
+                }
             }
         }
     }
@@ -315,5 +319,11 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
         if (!RegisterActivity.this.isFinishing() && !mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dismissProgressDialog();
     }
 }

@@ -266,7 +266,11 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     private void dismissProgressDialog() {
         if (!LoginActivity.this.isFinishing()) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
+                try {
+                    mProgressDialog.dismiss();
+                } catch (Exception ex) {
+
+                }
             }
         }
     }
@@ -422,5 +426,9 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
         }
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dismissProgressDialog();
+    }
 }

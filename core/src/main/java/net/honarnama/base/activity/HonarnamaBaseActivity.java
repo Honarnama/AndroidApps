@@ -29,6 +29,7 @@ import android.widget.Toast;
 public abstract class HonarnamaBaseActivity extends AppCompatActivity {
 
     private boolean announced = false;
+    public Dialog mAskToRateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +108,12 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             logD("HonarnamaBaseApp.PACKAGE_NAME: " + HonarnamaBaseApp.PACKAGE_NAME);
         }
-        final Dialog dialog = new Dialog(this, R.style.CustomDialogTheme);
-        dialog.setCancelable(false);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.ask_for_starts_dialog);
-        Button letsRateBtn = (Button) dialog.findViewById(R.id.lets_rate);
-        Button rateLaterBtn = (Button) dialog.findViewById(R.id.rate_later);
+        mAskToRateDialog = new Dialog(this, R.style.CustomDialogTheme);
+        mAskToRateDialog.setCancelable(false);
+        mAskToRateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mAskToRateDialog.setContentView(R.layout.ask_for_starts_dialog);
+        Button letsRateBtn = (Button) mAskToRateDialog.findViewById(R.id.lets_rate);
+        Button rateLaterBtn = (Button) mAskToRateDialog.findViewById(R.id.rate_later);
         letsRateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,18 +125,18 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                     editor.putBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, true);
                 }
                 editor.commit();
-                dialog.dismiss();
+                mAskToRateDialog.dismiss();
                 finish();
             }
         });
         rateLaterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                mAskToRateDialog.dismiss();
                 finish();
             }
         });
-        dialog.show();
+        mAskToRateDialog.show();
     }
 
     public void callBazaarRatingIntent() {
@@ -214,6 +215,18 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAskToRateDialog != null && mAskToRateDialog.isShowing()) {
+            try {
+                mAskToRateDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
         }
     }
 }

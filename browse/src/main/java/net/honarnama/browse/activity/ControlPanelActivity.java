@@ -129,6 +129,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     IconicsImageView mRefetchProvinces;
     IconicsImageView mRefetchCities;
 
+    public ConfirmationDialog mConfirmationDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
@@ -623,11 +625,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
 
-                final ConfirmationDialog confirmationDialog = new ConfirmationDialog(ControlPanelActivity.this,
+                mConfirmationDialog = new ConfirmationDialog(ControlPanelActivity.this,
                         getString(R.string.exit_app_title),
                         getString(R.string.exit_app_confirmation)
                 );
-                confirmationDialog.showDialog(new View.OnClickListener() {
+                mConfirmationDialog.showDialog(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_BROWSE_APP_RATED, false)) {
@@ -635,7 +637,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                         } else {
                             exitApp();
                         }
-                        confirmationDialog.dismiss();
+                        mConfirmationDialog.dismiss();
                     }
                 });
 
@@ -839,6 +841,22 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     protected void onStop() {
         super.onStop();
+        if (mSetDefaultLocationDialog != null && mSetDefaultLocationDialog.isShowing()) {
+            try {
+                mSetDefaultLocationDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
+        }
+
+        if (mConfirmationDialog != null && mConfirmationDialog.isShowing()) {
+            try {
+                mConfirmationDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
+        }
+
     }
 
     public void displaySetDefaultLocationDialog() {
@@ -1068,5 +1086,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
     }
+
 
 }
