@@ -172,7 +172,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     }
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         if (mItemId > 0) {
             return getStringInFragment(R.string.nav_title_edit_item);
         } else {
@@ -358,6 +358,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         if (isAdded()) {
             mPriceEditText.addTextChangedListener(new GravityTextWatcher(mPriceEditText));
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
         }
         if (mItemId <= 0) { //new item
             setVisibilityInFragment(mMainContent, View.VISIBLE);

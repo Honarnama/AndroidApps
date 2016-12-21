@@ -16,6 +16,7 @@ import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.UpdateAccountReply;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
+import net.honarnama.sell.activity.ControlPanelActivity;
 import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
@@ -53,7 +54,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     }
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.nav_title_seller_account);
     }
 
@@ -117,6 +118,13 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         mTracker.setScreenName("AccountFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         setUserInfo();
+
+        if (isAdded()) {
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
+        }
 
     }
 

@@ -29,8 +29,8 @@ public class AboutFragment extends HonarnamaBaseFragment {
     }
 
     @Override
-    public String getTitle(Context context) {
-        return context.getString(R.string.about_us);
+    public String getTitle() {
+        return getStringInFragment(R.string.about_us);
     }
 
     @Override
@@ -51,6 +51,13 @@ public class AboutFragment extends HonarnamaBaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAdded() && getActivity() != null) {
+            getActivity().setTitle(getTitle());
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {

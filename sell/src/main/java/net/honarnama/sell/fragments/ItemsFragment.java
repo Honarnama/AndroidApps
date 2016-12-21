@@ -50,7 +50,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     private CoordinatorLayout mCoordinatorLayout;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.nav_title_items);
     }
 
@@ -91,6 +91,18 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             listView.setOnItemClickListener(this);
         }
         return rootView;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAdded()) {
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
+        }
     }
 
     @Override
@@ -267,7 +279,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
             textView.setGravity(Gravity.CENTER);
             Spannable spannable = (Spannable) textView.getText();
             if (activity != null) {
-                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length()-1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                spannable.setSpan(new ImageSpan(activity, android.R.drawable.stat_notify_sync), textView.getText().length() - 1, textView.getText().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override

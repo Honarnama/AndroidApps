@@ -172,7 +172,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private boolean mActive = true;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.nav_title_event_manager);
     }
 
@@ -194,7 +194,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
 
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("EventManagerFragment");
@@ -484,6 +484,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (isAdded()) {
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
             mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
         }
     }
 

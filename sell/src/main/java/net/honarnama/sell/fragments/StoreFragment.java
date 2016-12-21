@@ -138,7 +138,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     TextWatcher mTextWatcherToMarkDirty;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.manage_store);
     }
 
@@ -160,7 +160,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("StoreFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -336,8 +336,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         if (isAdded()) {
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
             mCellNumberEditText.addTextChangedListener(new GravityTextWatcher(mCellNumberEditText));
-            if (getActivity() != null) {
-                getActivity().setTitle(getStringInFragment(R.string.manage_store));
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
             }
         }
     }
@@ -734,7 +735,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+//        inflater.inflate(R.menu.menu_main, menu);
     }
 
     public class getStoreAsync extends AsyncTask<Void, Void, GetStoreReply> {

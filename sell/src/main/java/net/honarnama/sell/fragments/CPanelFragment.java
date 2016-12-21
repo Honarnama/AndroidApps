@@ -32,8 +32,8 @@ public class CPanelFragment extends HonarnamaBaseFragment implements View.OnClic
     }
 
     @Override
-    public String getTitle(Context context) {
-        return context.getString(R.string.default_app_title);
+    public String getTitle() {
+        return getStringInFragment(R.string.toolbar_title);
     }
 
     @Override
@@ -59,6 +59,16 @@ public class CPanelFragment extends HonarnamaBaseFragment implements View.OnClic
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAdded()) {
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {

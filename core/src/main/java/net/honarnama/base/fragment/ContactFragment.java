@@ -49,7 +49,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
     }
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.contact_us);
     }
 
@@ -100,6 +100,13 @@ public class ContactFragment extends HonarnamaBaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAdded() && getActivity() != null) {
+            getActivity().setTitle(getTitle());
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -185,13 +192,12 @@ public class ContactFragment extends HonarnamaBaseFragment {
             CommunicationServiceGrpc.CommunicationServiceBlockingStub stub;
             try {
                 stub = GRPCUtils.getInstance().getCommunicationServiceGrpc();
+                CreateMessageReply createMessageReply = stub.createMessage(createMessageRequest);
+                return createMessageReply;
             } catch (Exception e) {
                 logE("Error running CreateMessageRequest. createMessageRequest: " + createMessageRequest + ". Error:" + e, e);
                 return null;
             }
-
-            CreateMessageReply createMessageReply = stub.createMessage(createMessageRequest);
-            return createMessageReply;
         }
 
         @Override

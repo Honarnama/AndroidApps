@@ -135,7 +135,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //        }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(getString(R.string.toolbar_title));
+//        mToolbar.setTitle(getString(R.string.toolbar_title));
         setSupportActionBar(mToolbar);
 
         final ActionBar actionBar = getSupportActionBar();
@@ -339,7 +339,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                 .setAction("SwitchFragment")
                 .build());
 
-        mToolbar.setTitle(fragment.getTitle(this));
+        mToolbar.setTitle(fragment.getTitle());
 
     }
 

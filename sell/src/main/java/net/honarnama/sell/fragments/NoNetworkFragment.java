@@ -40,8 +40,8 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
     }
 
     @Override
-    public String getTitle(Context context) {
-        return context.getString(R.string.default_app_title);
+    public String getTitle() {
+        return getStringInFragment(R.string.default_app_title);
     }
 
     @Override
@@ -55,6 +55,16 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isAdded()) {
+            ControlPanelActivity activity = (ControlPanelActivity) getActivity();
+            if (activity != null) {
+                activity.setTitle(getTitle());
+            }
+        }
+    }
 
     @Override
     public void onClick(View view) {

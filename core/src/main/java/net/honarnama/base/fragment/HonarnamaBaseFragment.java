@@ -32,7 +32,7 @@ public abstract class HonarnamaBaseFragment extends Fragment {
     public Context mContext;
     ProgressDialog mProgressDialog;
 
-    abstract public String getTitle(Context context);
+    abstract public String getTitle();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
