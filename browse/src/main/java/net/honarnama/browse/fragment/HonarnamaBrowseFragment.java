@@ -18,8 +18,6 @@ public abstract class HonarnamaBrowseFragment extends HonarnamaBaseFragment {
     //TODO change to 24
     public static final int PAGE_SIZE = 3;
 
-    abstract public String getTitle(Context context);
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

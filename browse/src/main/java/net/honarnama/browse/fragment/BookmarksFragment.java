@@ -74,7 +74,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     }
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.hornama);
     }
 

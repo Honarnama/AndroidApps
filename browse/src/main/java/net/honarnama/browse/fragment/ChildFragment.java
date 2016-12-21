@@ -66,7 +66,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
 
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return null;
     }
 
@@ -125,7 +125,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                             if (childFragmentManager.getBackStackEntryCount() > 0) {
                                 topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                                 TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
-                                toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
+                                toolbarTitle.setText(topFragment.getTitle());
                                 return true;
 
                             } else {
@@ -141,7 +141,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                     childFragmentManager.executePendingTransactions();
                     topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
                     TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
-                    toolbarTitle.setText(topFragment.getTitle(controlPanelActivity));
+                    toolbarTitle.setText(topFragment.getTitle());
                 }
 //                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
 //                toolbarTitle.setText(getString(R.string.hornama));

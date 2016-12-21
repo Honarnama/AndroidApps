@@ -86,7 +86,7 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
 
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getString(R.string.hornama);
     }
 

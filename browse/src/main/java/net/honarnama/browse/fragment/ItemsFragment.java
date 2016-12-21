@@ -203,7 +203,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.hornama);
     }
 

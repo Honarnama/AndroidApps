@@ -211,7 +211,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getStringInFragment(R.string.hornama);
     }
 

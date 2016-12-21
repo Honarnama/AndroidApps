@@ -121,7 +121,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mOnErrorRetry;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return "مشاهده محصول";
     }
 

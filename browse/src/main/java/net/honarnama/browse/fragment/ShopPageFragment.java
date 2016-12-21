@@ -90,7 +90,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mDeletedShopMsg;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getString(R.string.art_shop);
     }
 

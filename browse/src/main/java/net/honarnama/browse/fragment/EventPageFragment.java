@@ -86,7 +86,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public FloatingActionButton mFab;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getString(R.string.art_event);
     }
 

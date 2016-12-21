@@ -70,7 +70,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public boolean mOnScrollIsLoading = false;
 
     @Override
-    public String getTitle(Context context) {
+    public String getTitle() {
         return getString(R.string.hornama);
     }
 

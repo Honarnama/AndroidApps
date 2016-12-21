@@ -162,7 +162,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                 return;
                             }
                         }
-                        mTitle.setText(topFragment.getTitle(HonarnamaBrowseApp.getInstance()));
+                        mTitle.setText(topFragment.getTitle());
                     } catch (Exception ex) {
                         logE("Error onPageScroll. ", ex);
                     }
@@ -340,7 +340,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .icon(GoogleMaterial.Icon.gmd_email);
                     menuItem.setIcon(contactDrawable);
                     ContactFragment contactFragment = ContactFragment.getInstance();
-                    switchFragment(contactFragment, false, contactFragment.getTitle(ControlPanelActivity.this));
+                    switchFragment(contactFragment, false, contactFragment.getTitle());
                     mMainTabBar.deselectAllTabs();
                 } else {
                     menuItem.setChecked(false);
@@ -363,7 +363,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                     .icon(GoogleMaterial.Icon.gmd_info_outline);
                     menuItem.setIcon(aboutDrawable);
                     AboutFragment aboutFragment = AboutFragment.getInstance();
-                    switchFragment(aboutFragment, false, aboutFragment.getTitle(ControlPanelActivity.this));
+                    switchFragment(aboutFragment, false, aboutFragment.getTitle());
                     mMainTabBar.deselectAllTabs();
                 } else {
                     menuItem.setChecked(false);
@@ -765,7 +765,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void switchToNoNetFragment() {
         NoNetFragment noNetFragment = NoNetFragment.getInstance();
-        switchFragment(noNetFragment, false, noNetFragment.getTitle(ControlPanelActivity.this));
+        switchFragment(noNetFragment, false, noNetFragment.getTitle());
     }
 
     public void refreshNoNetFragment() {
@@ -815,7 +815,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             fragmentTransaction.detach(topFragment);
             fragmentTransaction.attach(topFragment);
             fragmentTransaction.commitAllowingStateLoss();
-            mTitle.setText(topFragment.getTitle(ControlPanelActivity.this));
+            mTitle.setText(topFragment.getTitle());
             try {
                 if (childFragmentManager != null) {
                     childFragmentManager.executePendingTransactions();

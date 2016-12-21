@@ -18,7 +18,6 @@ import android.widget.ImageView;
  */
 public class NoNetFragment extends HonarnamaBrowseFragment implements View.OnClickListener {
     public ImageView mRetryIcon;
-    public Context mContext;
     public static NoNetFragment mNoNetFragment;
 
     public synchronized static NoNetFragment getInstance() {
@@ -43,9 +42,8 @@ public class NoNetFragment extends HonarnamaBrowseFragment implements View.OnCli
     }
 
     @Override
-    public String getTitle(Context context) {
-        mContext = context;
-        return context.getString(R.string.hornama);
+    public String getTitle() {
+        return getStringInFragment(R.string.hornama);
     }
 
     @Override
