@@ -105,5 +105,28 @@
                     android:layout_marginBottom="10dp"
             />
         </RelativeLayout>
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentLeft="true"
+        >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    app:iiv_icon="gmd-clear"
+                    app:iiv_color="@color/gray_dark"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/delete_bookmark"
+                    android:clickable="true"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="left|center_vertical"
+                    android:visibility="gone"
+            />
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

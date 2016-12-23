@@ -32,7 +32,6 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.SQLException;
 import android.graphics.Rect;

@@ -1,9 +1,11 @@
 package net.honarnama.browse.adapter;
 
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.ArtCategory;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +38,17 @@ public class ItemsAdapter extends BaseAdapter {
     Context mContext;
     List<Item> mItems;
     private static LayoutInflater mInflater = null;
+    private boolean mIsForBookmarks = false;
+    private View.OnClickListener onDeleteBookmarkListener;
 
     public ItemsAdapter(Context context) {
         mContext = context;
         mItems = new ArrayList<Item>();
         mInflater = LayoutInflater.from(mContext);
+    }
+
+    public void setForBookmarks(boolean isForBookmarks) {
+        mIsForBookmarks = isForBookmarks;
     }
 
     @Override
@@ -60,6 +69,10 @@ public class ItemsAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
+
+        if (getItem(position) != null) {
+            return getItem(position).id;
+        }
         return position;
     }
 
@@ -84,12 +97,18 @@ public class ItemsAdapter extends BaseAdapter {
         mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.name));
         mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.description));
 
+        if (mIsForBookmarks) {
+            mViewHolder.deleteBookmark.setVisibility(View.VISIBLE);
+            mViewHolder.deleteBookmark.setTag(position);
+            mViewHolder.deleteBookmark.setOnClickListener(this.onDeleteBookmarkListener);
+        }
+
         ArtCategoryCriteria categoryCriteria = item.artCategoryCriteria;
         new ArtCategory().getCategoryNameById(categoryCriteria.level1Id).continueWith(new Continuation<String, Object>() {
             @Override
             public Object then(Task<String> task) throws Exception {
                 if (task.isFaulted()) {
-                    Log.e(DEBUG_TAG, "Error getiing art cat name.");
+                    Log.e(DEBUG_TAG, "Error getting art cat name.");
                 } else {
                     mViewHolder.itemCat.setText(task.getResult());
                 }
@@ -144,6 +163,10 @@ public class ItemsAdapter extends BaseAdapter {
         mItems.addAll(itemList);
     }
 
+    public void removeItem(int position) {
+        mItems.remove(position);
+    }
+
     private class MyViewHolder {
         TextView title;
         TextView desc;
@@ -151,6 +174,7 @@ public class ItemsAdapter extends BaseAdapter {
         ImageSelector icon;
         RelativeLayout itemRowContainer;
         RelativeLayout itemIconLoadingPanel;
+        IconicsImageView deleteBookmark;
 
 
         public MyViewHolder(View view) {
@@ -160,7 +184,12 @@ public class ItemsAdapter extends BaseAdapter {
             itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_outer_container);
             itemIconLoadingPanel = (RelativeLayout) view.findViewById(R.id.item_icon_loading_panel);
             itemCat = (TextView) view.findViewById(R.id.item_row_cat);
+            deleteBookmark = (IconicsImageView) view.findViewById(R.id.delete_bookmark);
         }
+    }
+
+    public void setOnDeleteBookmarkListener(final View.OnClickListener onClickListener) {
+        this.onDeleteBookmarkListener = onClickListener;
     }
 
 }

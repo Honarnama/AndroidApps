@@ -6,6 +6,7 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
+import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.model.Bookmark;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,13 +28,16 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 /**
  * Created by elnaz on 2/11/16.
  */
-public class BookmarksFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener {
+public class BookmarksFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static BookmarksFragment mBookmarksFragment;
     private ListView mListView;
 
     ItemsAdapter mItemsAdapter;
     public LinearLayout mLoadingCircle;
     public RelativeLayout mEmptyListContainer;
+    public net.honarnama.nano.Item mSelectedItem;
+
+    public ConfirmationDialog mConfirmationDialog;
 
     public synchronized static BookmarksFragment getInstance() {
 //        if (mBookmarksFragment == null) {
@@ -53,9 +58,11 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
         mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
-
+        mItemsAdapter.setForBookmarks(true);
+        mItemsAdapter.setOnDeleteBookmarkListener(this);
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
+
         new getBookmarks().execute();
 
         return rootView;
@@ -85,10 +92,10 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        net.honarnama.nano.Item selectedItem = mItemsAdapter.getItem(position);
+        mSelectedItem = mItemsAdapter.getItem(position);
         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        if (selectedItem != null) {
-            controlPanelActivity.displayItemPage(selectedItem.id, false);
+        if (mSelectedItem != null) {
+            controlPanelActivity.displayItemPage(mSelectedItem.id, false);
         }
     }
 
@@ -120,6 +127,45 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
             mItemsAdapter.setItems(bookmarkedItems);
             mItemsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.delete_bookmark) {
+            final int selectedPos = (int) v.getTag();
+            final Long itemId = mItemsAdapter.getItemId(selectedPos);
+
+            mConfirmationDialog = new ConfirmationDialog(getActivity(),
+                    getStringInFragment(R.string.remove_bookmark_dialog_title),
+                    getStringInFragment(R.string.remove_bookmark_dialog_msg)
+            );
+            mConfirmationDialog.showDialog(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Bookmark.removeBookmark(itemId);
+                        mItemsAdapter.removeItem(selectedPos);
+                        mItemsAdapter.notifyDataSetChanged();
+                    } catch (Exception ex) {
+                        logE("Error deleting bookmark. ex: ", ex);
+                        displayShortToast("خطا در حذف محصول نشان شده.");
+                    }
+                    mConfirmationDialog.dismiss();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mConfirmationDialog != null && mConfirmationDialog.isShowing()) {
+            try {
+                mConfirmationDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
         }
     }
 
