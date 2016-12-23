@@ -482,9 +482,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             fragmentTransaction.add(R.id.child_fragment_root, fragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commitAllowingStateLoss();
-            if (childFragmentManager != null) {
-                childFragmentManager.executePendingTransactions();
-            }
+
             if (!TextUtils.isEmpty(toolbarTitle)) {
                 mTitle.setText(toolbarTitle);
             }
@@ -794,9 +792,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                     childFragmentManager.popBackStack();
 //                    fragmentTransaction.remove(topFragment);
 //                    fragmentTransaction.commitAllowingStateLoss();
-                    if (childFragmentManager != null) {
-                        childFragmentManager.executePendingTransactions();
-                    }
+
                 } catch (Exception e) {
                     logE("Error refreshing NoNetFragment fragment while popping back stack. Error: " + e, e);
                 }
