@@ -125,7 +125,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         final View rootView = inflater.inflate(R.layout.fragment_event_page, container, false);
         mEventId = getArguments().getLong("eventId");
 
-
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.event_banner_frame_layout);
@@ -295,6 +294,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         setVisibilityInFragment(mOnErrorRetry, View.GONE);
         setVisibilityInFragment(mShare, View.VISIBLE);
 
+        logD("event.banner.trim(): " + event.banner.trim());
         if (event.banner.trim().length() > 0) {
             setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
             mBannerImageView.setSource(event.banner, mBannerProgressBar, R.drawable.party_flags);
@@ -325,7 +325,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
 
         setTextInFragment(mPlaceTextView, province + "، " + city);
 
-        setTextInFragment(mShopNameTextView, "محصولی از " + store.name);
+        setTextInFragment(mShopNameTextView, "رویدادی از " + store.name);
         mShopContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
