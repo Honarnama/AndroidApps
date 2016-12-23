@@ -329,6 +329,10 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         mFragment = fragment;
 
+        if (mFragment == CPanelFragment.getInstance()) {
+            resetMenuIcons();
+        }
+
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_container, fragment);

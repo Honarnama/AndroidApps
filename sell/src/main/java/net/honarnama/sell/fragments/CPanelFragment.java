@@ -86,24 +86,28 @@ public class CPanelFragment extends HonarnamaBaseFragment implements View.OnClic
         switch (v.getId()) {
             case R.id.cpanel_manage_store:
                 if (activity != null) {
+                    activity.resetMenuIcons();
                     activity.switchFragment(StoreFragment.getInstance());
                 }
                 break;
 
             case R.id.cpanel_items:
                 if (activity != null) {
+                    activity.resetMenuIcons();
                     activity.switchFragment(ItemsFragment.getInstance());
                 }
                 break;
 
             case R.id.cpanel_event:
                 if (activity != null) {
+                    activity.resetMenuIcons();
                     activity.switchFragment(EventManagerFragment.getInstance());
                 }
                 break;
 
             case R.id.cpanel_new_item:
                 if (activity != null) {
+                    activity.resetMenuIcons();
                     activity.switchFragment(EditItemFragment.getInstance());
                 }
                 break;

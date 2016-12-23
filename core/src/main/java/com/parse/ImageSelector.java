@@ -461,6 +461,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             mFileSet = savedInstanceState.getBoolean(prefix + "_mFileSet");
 
             String __mLoadingURL = savedInstanceState.getString(prefix + "_mLoadingURL");
+
+            Log.d(DEBUG_TAG, "restore of IS: __mLoadingURL: " + __mLoadingURL);
             if (__mLoadingURL != null && __mLoadingURL.trim().length() > 0) {
                 mLoadingURL = __mLoadingURL;
                 Picasso.with(mContext).load(mLoadingURL)

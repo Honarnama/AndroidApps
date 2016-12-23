@@ -207,7 +207,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (mValue != editable + "") {
+                if (!mValue.equals(editable + "")) {
                     mDirty = true;
                 }
             }
@@ -329,6 +329,12 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     Log.d("STOPPED_ACTIVITY", "calling getItemAsync. mItemId: " + mItemId + ". SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE: " + savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE));
                 }
                 new getItemAsync().execute();
+            }
+
+            if (isAdded() && mTitleEditText != null) {
+                mTitleEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mPriceEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             }
 
         } else {

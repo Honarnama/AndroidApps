@@ -185,7 +185,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (mValue != editable + "") {
+                if (!mValue.equals(editable + "")) {
                     mDirty = true;
                 }
             }
@@ -301,7 +301,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mStoreId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_STORE_ID);
             mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
             setReviewInfo(mReviewStatus);
-            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
             mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
             mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
             mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
@@ -320,6 +319,15 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
                 setVisibilityInFragment(mEmptyView, View.GONE);
                 setVisibilityInFragment(mMainContent, View.VISIBLE);
+            }
+
+            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
+
+            if (isAdded() && mNameEditText != null) {
+                mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             }
 
         } else {

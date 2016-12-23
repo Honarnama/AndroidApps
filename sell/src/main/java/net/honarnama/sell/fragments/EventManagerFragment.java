@@ -42,7 +42,6 @@ import net.honarnama.sell.utils.Uploader;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -74,6 +73,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -103,6 +103,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private static final String SAVE_INSTANCE_STATE_KEY_ACTIVE = "active";
     private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
     private static final String SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS = "review_status";
+
+    private static final String SAVE_INSTANCE_STATE_KEY_START_DATE = "start_date";
+    private static final String SAVE_INSTANCE_STATE_KEY_END_DATE = "end_date";
 
     private static final String SAVE_INSTANCE_STATE_KEY_START_YEAR = "start_year";
     private static final String SAVE_INSTANCE_STATE_KEY_START_MONTH = "start_month";
@@ -220,7 +223,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (mValue != editable + "") {
+                if (!mValue.equals(editable + "")) {
                     mDirty = true;
                 }
             }
@@ -307,19 +310,19 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         mBannerImageView = (ImageSelector) rootView.findViewById(R.id.event_banner_image_view);
         mMainContent = (RelativeLayout) rootView.findViewById(R.id.main_content);
         mEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
-        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id
-                .coordinatorLayout);
+        mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
+
+        loadOfflineData();
 
         if (activity != null) {
             mBannerImageView.setActivity(activity);
             mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
         }
         if (savedInstanceState != null) {
+
             mBannerImageView.restore(savedInstanceState);
 
             mEventId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_EVENT_ID);
-            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
-
             setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
             setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
             setTextInFragment(mAddressEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_ADDR));
@@ -327,6 +330,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             setTextInFragment(mCellNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CELL));
             setCheckedInFragment(mActiveBtn, savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
             setCheckedInFragment(mPassiveBtn, !savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE));
+
+            mActive = mActiveBtn.isChecked() ? true : false;
+
+            mStartDate = new Date(savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_START_DATE));
+            mEndDate = new Date(savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_END_DATE));
 
             mStartYearSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_YEAR));
             mStartMonthSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_MONTH));
@@ -356,12 +364,20 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 setVisibilityInFragment(mEmptyView, View.GONE);
                 setVisibilityInFragment(mMainContent, View.VISIBLE);
             }
+
+            mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
+
+            if (isAdded() && mNameEditText != null) {
+                mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+                mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            }
+
         } else {
             new getEventAsync().execute();
         }
-
-
-        loadOfflineData();
 
         mMetaUpdateListener = new MetaUpdateListener() {
             @Override
@@ -522,12 +538,14 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             case R.id.active_event:
                 if (mActive != true) {
                     setDirty(true);
+                    mActive = true;
                 }
                 break;
 
             case R.id.passive_event:
                 if (mActive != false) {
                     setDirty(true);
+                    mActive = false;
                 }
                 break;
         }
@@ -996,6 +1014,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             if (loadImages && !TextUtils.isEmpty(event.banner) && activity != null && isAdded()) {
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
+                final String eventBanner = event.banner;
                 Picasso.with(activity).load(event.banner)
                         .error(R.drawable.party_flags)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -1006,6 +1025,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 setVisibilityInFragment(mBannerProgressBar, View.GONE);
                                 if (isAdded() && mBannerImageView != null) {
                                     mBannerImageView.setFileSet(true);
+                                    mBannerImageView.setLoadingURL(eventBanner);
                                 }
                             }
 
@@ -1053,6 +1073,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         if (isAdded() && mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
@@ -1073,6 +1094,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY, mSelectedCatId);
         outState.putBoolean(SAVE_INSTANCE_STATE_KEY_ACTIVE, mActiveBtn.isChecked());
 
+
         outState.putInt(SAVE_INSTANCE_STATE_KEY_START_YEAR, mStartYearSpinner.getSelectedItemPosition());
         outState.putInt(SAVE_INSTANCE_STATE_KEY_START_MONTH, mStartMonthSpinner.getSelectedItemPosition());
         outState.putInt(SAVE_INSTANCE_STATE_KEY_START_DAY, mStartDaySpinner.getSelectedItemPosition());
@@ -1080,6 +1102,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         outState.putInt(SAVE_INSTANCE_STATE_KEY_END_YEAR, mEndYearSpinner.getSelectedItemPosition());
         outState.putInt(SAVE_INSTANCE_STATE_KEY_END_MONTH, mEndMonthSpinner.getSelectedItemPosition());
         outState.putInt(SAVE_INSTANCE_STATE_KEY_END_DAY, mEndDaySpinner.getSelectedItemPosition());
+
+        outState.putLong(SAVE_INSTANCE_STATE_KEY_START_DATE, mStartDate.getTime());
+        outState.putLong(SAVE_INSTANCE_STATE_KEY_END_DATE, mEndDate.getTime());
 
     }
 
