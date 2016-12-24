@@ -43,7 +43,6 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_alignParentTop="true"
-                            android:src="@drawable/party_flags"
                             app:riv_corner_radius="0dp"
                             app:riv_border_width="0dp"
                             app:riv_oval="false"
@@ -283,7 +282,7 @@
                                 android:layout_height="wrap_content"
                                 android:scaleType="fitCenter"
                                 android:background="@android:color/transparent"
-                                android:id="@+id/logo_progress_bar"
+                                android:id="@+id/store_logo_progress_bar"
                                 android:visibility="gone"
                         />
 

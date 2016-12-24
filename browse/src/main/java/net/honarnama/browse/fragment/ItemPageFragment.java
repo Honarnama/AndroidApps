@@ -6,8 +6,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.mikepenz.iconics.view.IconicsTextView;
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
@@ -102,6 +100,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mShopContainer;
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
+    public ProgressBar mShopLogoProgressBar;
 
     public Item mItem;
     LayoutParams mLayoutParams;
@@ -178,6 +177,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.item_shop_container);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
+        mShopLogoProgressBar = (ProgressBar) rootView.findViewById(R.id.store_logo_progress_bar);
 
         mSimilarTitleContainer = (RelativeLayout) rootView.findViewById(R.id.similar_title_container);
         mImageAdapter = new ImageAdapter(HonarnamaBrowseApp.getInstance());
@@ -348,7 +348,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            if (e1.getX() < e2.getX()) {
+            if ((e1 != null && e2 != null) && (e1.getX() < e2.getX())) {
                 mCurrPosition = getVisibleViews("left");
             } else {
                 mCurrPosition = getVisibleViews("right");
@@ -574,17 +574,14 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             }
         });
 
-        Picasso.with(mContext).load(R.drawable.default_logo_hand)
-                .error(R.drawable.camera_insta)
-                .into(mShopLogo, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                    }
 
-                    @Override
-                    public void onError() {
-                    }
-                });
+        if (store.logo.trim().length() > 0) {
+            setVisibilityInFragment(mShopLogoProgressBar, View.VISIBLE);
+            mShopLogo.setSource(store.logo, mShopLogoProgressBar, R.drawable.default_logo_hand);
+        } else {
+            mShopLogo.setImageDrawable(mContext.getResources().getDrawable(R.drawable.default_logo_hand));
+        }
+
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -58,7 +58,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 public class EventPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static EventPageFragment mEventPageFragment;
     private Tracker mTracker;
-    public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
     public TextView mDateTextView;
@@ -69,6 +68,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private ImageSelector mBannerImageView;
+    public ProgressBar mBannerProgressBar;
     private ProgressBar mEventInfoProgressBar;
 
     private RelativeLayout mShare;
@@ -77,6 +77,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public RelativeLayout mShopContainer;
     public TextView mShopNameTextView;
     public ImageSelector mShopLogo;
+    public ProgressBar mShopLogoProgressBar;
 
     public RelativeLayout mOnErrorRetry;
 
@@ -155,6 +156,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         mShopContainer = (RelativeLayout) rootView.findViewById(R.id.event_shop_container);
         mShopNameTextView = (TextView) rootView.findViewById(R.id.shop_name_text_view);
         mShopLogo = (ImageSelector) rootView.findViewById(R.id.store_logo_image_view);
+        mShopLogoProgressBar = (ProgressBar) rootView.findViewById(R.id.store_logo_progress_bar);
 
         new getEventAsync().execute();
         return rootView;
@@ -298,6 +300,8 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         if (event.banner.trim().length() > 0) {
             setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
             mBannerImageView.setSource(event.banner, mBannerProgressBar, R.drawable.party_flags);
+        } else {
+            mBannerImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.party_flags));
         }
 
         setTextInFragment(mNameTextView, TextUtil.convertEnNumberToFa(event.name));
@@ -334,17 +338,12 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
             }
         });
 
-        Picasso.with(mContext).load(R.drawable.default_logo_hand)
-                .error(R.drawable.camera_insta)
-                .into(mShopLogo, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                    }
-
-                    @Override
-                    public void onError() {
-                    }
-                });
+        if (store.logo.trim().length() > 0) {
+            setVisibilityInFragment(mShopLogoProgressBar, View.VISIBLE);
+            mShopLogo.setSource(store.logo, mShopLogoProgressBar, R.drawable.default_logo_hand);
+        } else {
+            mShopLogo.setImageDrawable(mContext.getResources().getDrawable(R.drawable.default_logo_hand));
+        }
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override

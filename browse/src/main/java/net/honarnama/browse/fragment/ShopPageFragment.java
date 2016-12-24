@@ -327,6 +327,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         if (shop.banner.trim().length() > 0) {
             setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
             mBannerImageView.setSource(shop.banner, mBannerProgressBar, R.drawable.party_flags);
+        } else {
+            mBannerImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.party_flags));
         }
 
         if (shopItems.length == 0) {
