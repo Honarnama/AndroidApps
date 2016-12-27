@@ -350,7 +350,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
             mSelectedCityName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CITY_NAME);
 
-            rePopulateCityList();
+            rePopulateCityList(false);
 
             mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
             setReviewInfo(mReviewStatus);
@@ -593,7 +593,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         mSelectedProvinceId = selectedProvince.getId();
                         mSelectedProvinceName = selectedProvince.getName();
                         setTextInFragment(mProvinceEditText, mSelectedProvinceName);
-                        rePopulateCityList();
+                        rePopulateCityList(true);
                     }
                     provinceDialog.dismiss();
                 }
@@ -604,7 +604,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         provinceDialog.show();
     }
 
-    private void rePopulateCityList() {
+    private void rePopulateCityList(final boolean setSelectedCityt) {
         City city = new City();
         city.getAllCitiesSorted(mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
@@ -620,11 +620,13 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                             }
                         }
 
-                        Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                        for (Integer key : tempSet) {
-                            mSelectedCityId = key;
-                            mSelectedCityName = mCityHashMap.get(key);
-                            setTextInFragment(mCityEditText, mSelectedCityName);
+                        if (setSelectedCityt) {
+                            Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                            for (Integer key : tempSet) {
+                                mSelectedCityId = key;
+                                mSelectedCityName = mCityHashMap.get(key);
+                                setTextInFragment(mCityEditText, mSelectedCityName);
+                            }
                         }
                     }
 
@@ -985,6 +987,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             mSelectedCatId = event.eventCategoryId;
             mSelectedProvinceId = event.locationCriteria.provinceId;
+            rePopulateCityList(false);
             mSelectedCityId = event.locationCriteria.cityId;
 
             Province province = Province.getProvinceById(mSelectedProvinceId);
@@ -1233,8 +1236,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             createOrUpdateEventRequest = new CreateOrUpdateEventRequest();
             createOrUpdateEventRequest.event = new net.honarnama.nano.Event();
-
-
+            if (BuildConfig.DEBUG) {
+                logD("CreateOrUpdateEventAsync:: mSelectedCityId: " + mSelectedCityId);
+            }
             createOrUpdateEventRequest.event.name = getTextInFragment(mNameEditText);
             createOrUpdateEventRequest.event.description = getTextInFragment(mDescriptionEditText);
             createOrUpdateEventRequest.event.address = getTextInFragment(mAddressEditText);
@@ -1354,6 +1358,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                     logD("Uploading event image failed. bannerImageFile was null.");
                                 }
                                 cToastMsg = getStringInFragment(R.string.error_uploading_event_banner);
+                                setDirty(true);
                                 dismissProgressDialog();
                                 return;
                             }
@@ -1368,6 +1373,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                         if (BuildConfig.DEBUG) {
                                             logD("Uploading event image failed.");
                                         }
+                                        setDirty(true);
                                         cToastMsg = getStringInFragment(R.string.error_uploading_event_banner) + getStringInFragment(R.string.check_net_connection);
                                     } else {
                                         if (isAdded() && mBannerImageView != null)

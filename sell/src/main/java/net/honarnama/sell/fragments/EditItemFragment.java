@@ -843,6 +843,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                             public Object then(Task<Void> task) throws Exception {
                                 if (task.isFaulted()) {
                                     cToastMsg = getStringInFragment(R.string.error_sending_images) + getStringInFragment(R.string.check_net_connection);
+                                    setDirty(true);
                                 } else {
                                     mDirty = false;
                                     cToastMsg = getStringInFragment(R.string.item_saved_successfully);

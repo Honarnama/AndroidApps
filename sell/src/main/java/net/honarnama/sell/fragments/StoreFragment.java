@@ -305,7 +305,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
             mSelectedCityId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_CITY_ID);
             mSelectedCityName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_CITY_NAME);
-            rePopulateCityList();
+            rePopulateCityList(false);
             setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
             setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
             setTextInFragment(mPhoneNumberEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PHONE));
@@ -422,7 +422,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         mSelectedProvinceId = selectedProvince.getId();
                         mSelectedProvinceName = selectedProvince.getName();
                         setTextInFragment(mProvinceEditText, mSelectedProvinceName);
-                        rePopulateCityList();
+                        rePopulateCityList(true);
                     }
                     provinceDialog.dismiss();
                 }
@@ -433,7 +433,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         provinceDialog.show();
     }
 
-    private void rePopulateCityList() {
+    private void rePopulateCityList(final boolean setSelectedCity) {
         City city = new City();
         city.getAllCitiesSorted(mSelectedProvinceId).continueWith(new Continuation<TreeMap<Number, HashMap<Integer, String>>, Object>() {
             @Override
@@ -448,10 +448,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 mCityHashMap.put(citySet.getKey(), citySet.getValue());
                             }
                         }
-                        Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
-                        for (int key : tempSet) {
-                            mSelectedCityId = key;
-                            setTextInFragment(mCityEditText, mCityHashMap.get(key));
+
+                        if (setSelectedCity) {
+                            Set<Integer> tempSet = mCityOrderedTreeMap.get(1).keySet();
+                            for (int key : tempSet) {
+                                mSelectedCityId = key;
+                                setTextInFragment(mCityEditText, mCityHashMap.get(key));
+                            }
                         }
                     }
                 }
@@ -610,6 +613,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             City city = City.getCityById(storeLocation.cityId);
             Province province = Province.getProvinceById(storeLocation.provinceId);
 
+
             if (city != null) {
                 setTextInFragment(mCityEditText, city.getName());
                 mSelectedCityId = city.getId();
@@ -618,10 +622,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             if (province != null) {
                 setTextInFragment(mProvinceEditText, province.getName());
                 mSelectedProvinceId = province.getId();
+                rePopulateCityList(false);
             }
+
             mReviewStatus = store.reviewStatus;
+
             setReviewInfo(store.reviewStatus);
-            rePopulateCityList();
+
             if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
                 logD("Loading store logo ...");
 
@@ -892,6 +899,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             createOrUpdateStoreRequest.store.locationCriteria = new LocationCriteria();
             createOrUpdateStoreRequest.store.locationCriteria.provinceId = mSelectedProvinceId;
             createOrUpdateStoreRequest.store.locationCriteria.cityId = mSelectedCityId;
+
+            if (BuildConfig.DEBUG) {
+                logD("CreateOrUpdateStoreAsync:: mSelectedCityId: " + mSelectedCityId);
+            }
         }
 
         @Override
@@ -1016,6 +1027,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                     public Object then(Task<Void> task) throws Exception {
 
                                         if (task.isFaulted()) {
+                                            setDirty(true);
                                             cToastMsg = getStringInFragment(R.string.error_sending_images) + getStringInFragment(R.string.check_net_connection);
                                         } else {
                                             if (mBannerImageView != null) {
@@ -1038,6 +1050,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                     public Object then(Task<Void> task) throws Exception {
 
                                         if (task.isFaulted()) {
+                                            setDirty(true);
                                             cToastMsg = getStringInFragment(R.string.error_sending_images) + getStringInFragment(R.string.check_net_connection);
                                         } else {
                                             if (mBannerImageView != null) {
@@ -1058,6 +1071,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 public Object then(Task<Void> task) throws Exception {
 
                                     if (task.isFaulted()) {
+                                        setDirty(true);
                                         cToastMsg = getStringInFragment(R.string.error_sending_images) + getStringInFragment(R.string.check_net_connection);
                                     } else {
                                         if (mLogoImageView != null) {
