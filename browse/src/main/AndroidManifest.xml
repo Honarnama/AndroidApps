@@ -36,7 +36,7 @@
 
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                         android:host="*honarnama.net"
                         android:pathPrefix="/shop/"
@@ -56,7 +56,7 @@
 
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                         android:host="*honarnama.net"
                         android:pathPrefix="/item/"
@@ -75,7 +75,7 @@
 
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <!---->
                 <data
                         android:host="*honarnama.net"
@@ -110,6 +110,7 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.Holo.Dialog.NoActionBar"
                 android:configChanges="orientation|keyboardHidden|screenSize"
+                android:noHistory="true"
         >
         </activity>
 

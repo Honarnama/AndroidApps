@@ -52,6 +52,8 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
     public TreeMap<Number, Province> mProvincesObjectsTreeMap = new TreeMap<Number, Province>();
     public HashMap<Integer, String> mProvincesHashMap = new HashMap<>();
 
+    private boolean mIsAllIranChecked = true;
+
     private EditText mCityEditEext;
     public TreeMap<Number, HashMap<Integer, String>> mCityOrderedTreeMap = new TreeMap<>();
     public HashMap<Integer, String> mCityHashMap = new HashMap<>();
@@ -64,6 +66,7 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        logD("onCreate of LFDA");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_filter_dialog);
 
@@ -117,16 +120,17 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         }
 
         if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN)) {
-            mAllIranCheckBox.setChecked(intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true));
+            mIsAllIranChecked = intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
         }
 
         if (mSelectedCityId < 0) {
             mSelectedCityId = City.ALL_CITY_ID;
         }
 
-        findViewById(R.id.apply_filter).setOnClickListener(this);
-
+        mAllIranCheckBox.setChecked(mIsAllIranChecked);
         fetchProvincesAndCities();
+
+        findViewById(R.id.apply_filter).setOnClickListener(this);
 
         findViewById(R.id.close_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,6 +304,7 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
+        logD("mSelectedCityId: " + mSelectedCityId + ". LFDA");
         setResult(RESULT_OK, data);
         finish();
     }
@@ -373,6 +378,12 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         });
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
 
 }
 

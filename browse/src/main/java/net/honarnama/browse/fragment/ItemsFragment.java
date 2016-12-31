@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +96,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public boolean mHasMoreItems = true;
 
     public boolean mOnScrollIsLoading = false;
-
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -347,7 +347,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mUserScrolled = false;
     }
 
-
     public void getItems(boolean onScroll) {
         if (!onScroll) {
             onPreNewQuery();
@@ -528,5 +527,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             logD("onDetach of itemsFragment");
         }
     }
+
 }
 
