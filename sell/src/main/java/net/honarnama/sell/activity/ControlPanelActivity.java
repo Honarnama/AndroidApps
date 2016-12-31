@@ -369,6 +369,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                     }
                 });
             } else {
+                mEditItemFragment.reset(true);
                 switchFragment(ItemsFragment.getInstance());
                 resetMenuIcons();
                 selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
@@ -540,6 +541,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                                 .icon(GoogleMaterial.Icon.gmd_edit);
                 menuItem.setIcon(newItemDrawable);
                 fragment = EditItemFragment.getInstance();
+                mEditItemFragment.reset(true);
                 break;
 
             case R.id.item_art_event:
