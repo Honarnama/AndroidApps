@@ -332,8 +332,16 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             mActive = mActiveBtn.isChecked() ? true : false;
 
-            mStartDate = new Date(savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_START_DATE));
-            mEndDate = new Date(savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_END_DATE));
+            Long savedStartDate = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_START_DATE);
+            Long savedEndDate = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_END_DATE);
+
+            if (savedStartDate != null && savedStartDate > 0) {
+                mStartDate = new Date(savedStartDate);
+            }
+
+            if (savedEndDate != null && savedEndDate > 0) {
+                mEndDate = new Date(savedEndDate);
+            }
 
             mStartYearSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_YEAR));
             mStartMonthSpinner.setSelection(savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_START_MONTH));
@@ -1105,9 +1113,12 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         outState.putInt(SAVE_INSTANCE_STATE_KEY_END_MONTH, mEndMonthSpinner.getSelectedItemPosition());
         outState.putInt(SAVE_INSTANCE_STATE_KEY_END_DAY, mEndDaySpinner.getSelectedItemPosition());
 
-        outState.putLong(SAVE_INSTANCE_STATE_KEY_START_DATE, mStartDate.getTime());
-        outState.putLong(SAVE_INSTANCE_STATE_KEY_END_DATE, mEndDate.getTime());
-
+        if (mStartDate != null) {
+            outState.putLong(SAVE_INSTANCE_STATE_KEY_START_DATE, mStartDate.getTime());
+        }
+        if (mEndDate != null) {
+            outState.putLong(SAVE_INSTANCE_STATE_KEY_END_DATE, mEndDate.getTime());
+        }
     }
 
     @Override
