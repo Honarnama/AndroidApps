@@ -208,11 +208,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             public void onItemSelected(AdapterView adapterView, View view, int pos, long l) {
                 if (mDotsText != null) {
                     for (int i = 0; i < mDotsCount; i++) {
-                        if (mDotsText[i] != null) {
+                        if (mDotsText.length > i && mDotsText[i] != null) {
                             mDotsText[i].setTextSize(8);
                         }
                     }
-                    if (mDotsText[pos] != null) {
+                    if (mDotsText.length > pos && mDotsText[pos] != null) {
                         mDotsText[pos].setTextSize(12);
                     }
                 }

@@ -56,9 +56,14 @@ public class ImageAdapter extends BaseAdapter {
         final MyViewHolder mViewHolder;
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.gallery_row, parent, false);
-            mViewHolder = new MyViewHolder(convertView);
-            convertView.setTag(mViewHolder);
+            try {
+                convertView = mInflater.inflate(R.layout.gallery_row, parent, false);
+                mViewHolder = new MyViewHolder(convertView);
+                convertView.setTag(mViewHolder);
+            } catch (Exception ex) {
+                return null;
+            }
+
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
