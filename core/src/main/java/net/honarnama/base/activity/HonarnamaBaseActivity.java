@@ -204,7 +204,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
      *
      * If the app does not has permission then the user will be prompted to grant permissions
      */
-    public static void verifyStoragePermissions(Activity activity) {
+    public static boolean checkAndAskStoragePermission(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -215,7 +215,9 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+            return false;
         }
+        return true;
     }
 
     @Override

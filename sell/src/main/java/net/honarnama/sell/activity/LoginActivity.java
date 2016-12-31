@@ -167,6 +167,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                             logD("display email verification notif.");
                         }
                         displayCustomSnackbar(getString(R.string.verification_email_sent), false);
+                        clearErrors();
                     }
                 }
             } else {

@@ -36,7 +36,6 @@ import net.honarnama.sell.model.HonarnamaUser;
 import net.honarnama.sell.utils.Uploader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -246,6 +245,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                     @Override
                     public void onImageSelectionFailed() {
+                        logD("onImageSelectionFailed");
                     }
                 };
 
@@ -346,7 +346,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         rootView.findViewById(R.id.saveItemButton).setOnClickListener(this);
 
         if (activity != null) {
-            ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
+            ((ControlPanelActivity) activity).checkAndAskStoragePermission(activity);
         }
 
         resetErrors();

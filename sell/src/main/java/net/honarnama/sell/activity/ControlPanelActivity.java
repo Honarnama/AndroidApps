@@ -182,7 +182,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
         metaUpdater.execute();
 
-        verifyStoragePermissions(this);
+        checkAndAskStoragePermission(this);
     }
 
     @Override

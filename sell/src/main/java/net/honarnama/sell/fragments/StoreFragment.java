@@ -39,7 +39,6 @@ import net.honarnama.sell.utils.Uploader;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -287,7 +286,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
         //TODO
         if (activity != null) {
-            ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
+            ((ControlPanelActivity) activity).checkAndAskStoragePermission(activity);
         }
 
         if (BuildConfig.DEBUG) {

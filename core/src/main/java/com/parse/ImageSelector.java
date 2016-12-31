@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.base.activity.HonarnamaBaseActivity;
 import net.honarnama.base.utils.FileUtil;
 
 import android.app.Activity;
@@ -142,6 +143,13 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+
+        if (mActivity != null) {
+            if (!((HonarnamaBaseActivity) mActivity).checkAndAskStoragePermission(mActivity)) {
+                Toast.makeText(mActivity, "دسترسی لازم به هنرنما را نداده‌اید.", Toast.LENGTH_LONG).show();
+            }
+        }
+
         selectPhoto();
     }
 
@@ -224,7 +232,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     " , cropped= " + cropped);
         }
 
-        if (selectedImage == null) {
+        if (selectedImage == null && mOnImageSelectedListener != null) {
             mOnImageSelectedListener.onImageSelectionFailed();
             return;
         }
@@ -234,6 +242,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             Log.e(DEBUG_TAG, "File not readable. exists=" + selectedImageFile.exists());
             if (mOnImageSelectedListener != null) {
                 mOnImageSelectedListener.onImageSelectionFailed();
+                return;
             }
         }
 
@@ -291,7 +300,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 Log.d("", "selectedImageURI = " + selectedImageURI + ".");
                 if (selectedImageURI != null && "content".equals(selectedImageURI.getScheme())) {
                     filePath = FileUtil.getRealPathFromURI(HonarnamaBaseApp.getInstance(), selectedImageURI);
-
                     mSelectedImageUri = Uri.fromFile(new File(filePath));
                 } else {
                     mSelectedImageUri = selectedImageURI;
@@ -299,6 +307,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
                 if (!(mCropNeeded && crop())) {
                     imageSelected(mSelectedImageUri, false);
+                    Log.d("", "!(mCropNeeded && crop())");
                 } // else: crop will handle
             } else {
                 if (BuildConfig.DEBUG) {

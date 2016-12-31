@@ -73,7 +73,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -406,7 +405,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         };
 
         if (activity != null) {
-            ((ControlPanelActivity) activity).verifyStoragePermissions(activity);
+            ((ControlPanelActivity) activity).checkAndAskStoragePermission(activity);
         }
 
         //TODO test with savedInstancestate
