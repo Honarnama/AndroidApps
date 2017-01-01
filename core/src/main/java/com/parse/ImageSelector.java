@@ -9,27 +9,35 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
 import net.honarnama.base.activity.HonarnamaBaseActivity;
+import net.honarnama.base.dialog.OptionDialog;
 import net.honarnama.base.utils.FileUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,6 +45,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -285,16 +294,19 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         }
 
         if (requestCode == mIntentCodeCapture) {
+            String path = mSelectedImageUri.getPath();
+            Log.d(DEBUG_TAG, "onActivityResult of IS. path: " + path);
+
             if (resultCode == Activity.RESULT_OK) {
-                if (!(mCropNeeded && crop())) {
+                if (!(mCropNeeded && checkAndCrop(true))) {
                     imageSelected(mSelectedImageUri, false);
-                } // else: crop will handle
+                } // else: checkAndCrop will handle
             } else {
                 mOnImageSelectedListener.onImageSelectionFailed();
             }
         } else if (requestCode == mIntentCodeSelect) {
 
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK && intent != null) {
                 Uri selectedImageURI = intent.getData();
                 String filePath = null;
                 Log.d("", "selectedImageURI = " + selectedImageURI + ".");
@@ -305,10 +317,10 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     mSelectedImageUri = selectedImageURI;
                 }
 
-                if (!(mCropNeeded && crop())) {
+                if (!(mCropNeeded && checkAndCrop(false))) {
                     imageSelected(mSelectedImageUri, false);
-                    Log.d("", "!(mCropNeeded && crop())");
-                } // else: crop will handle
+                    Log.d("", "!(mCropNeeded && checkAndCrop())");
+                } // else: checkAndCrop will handle
             } else {
                 if (BuildConfig.DEBUG) {
                     Log.i(DEBUG_TAG, "onActivityResult::mIntentCodeSelect resultCode= " + resultCode);
@@ -367,13 +379,14 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         return Uri.fromFile(image);
     }
 
-    public boolean crop() {
+    public boolean checkAndCrop(boolean delayed) {
         Intent cropIntent = new Intent("com.android.camera.action.CROP");
         cropIntent.setType("image/*");
 
         List<ResolveInfo> resolveInfos = mContext.getApplicationContext().getPackageManager().queryIntentActivities(cropIntent, 0);
 
         if (resolveInfos.size() == 0) {
+            Toast.makeText(mActivity, "برنامه مناسبی برای برش عکس پیدا نشد!", Toast.LENGTH_LONG).show();
             return false;
         }
 
@@ -383,34 +396,98 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             return false;
         }
 
-        cropIntent.setData(mSelectedImageUri);
-
-        if (mOutputX >= 0) {
-            cropIntent.putExtra("outputX", mOutputX);
-        }
-        if (mOutputX >= 0) {
-            cropIntent.putExtra("outputY", mOutputY);
-        }
-        if (mOutputX >= 0) {
-            cropIntent.putExtra("aspectX", mAspectX);
-        }
-        if (mOutputX >= 0) {
-            cropIntent.putExtra("aspectY", mAspectY);
+        if (delayed) {
+            callCropDelayed(mSelectedImageUri, mTempImageUriCrop);
+        } else {
+            crop(mSelectedImageUri, mTempImageUriCrop);
         }
 
-        cropIntent.putExtra("scale", true);
-        cropIntent.putExtra("return-data", false);
-        cropIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTempImageUriCrop);
-
-        Intent intent = new Intent(cropIntent);
-        ResolveInfo res = resolveInfos.get(0);
-        intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-
-        if (mActivity != null) {
-            mActivity.startActivityForResult(intent, mIntentCodeCrop);
-        }
         return true;
+
+//        cropIntent.setData(mSelectedImageUri);
+//
+//        if (mOutputX >= 0) {
+//            cropIntent.putExtra("outputX", mOutputX);
+//        }
+//        if (mOutputX >= 0) {
+//            cropIntent.putExtra("outputY", mOutputY);
+//        }
+//        if (mOutputX >= 0) {
+//            cropIntent.putExtra("aspectX", mAspectX);
+//        }
+//        if (mOutputX >= 0) {
+//            cropIntent.putExtra("aspectY", mAspectY);
+//        }
+//
+//        cropIntent.putExtra("scale", true);
+//        cropIntent.putExtra("return-data", false);
+//        cropIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+//        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTempImageUriCrop);
+//
+//        Intent intent = new Intent(cropIntent);
+//        ResolveInfo res = resolveInfos.get(0);
+//        intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+//
+//        if (mActivity != null) {
+//            Log.d(DEBUG_TAG, "Calling checkAndCrop intent in IS. ");
+//            Log.d(DEBUG_TAG, "mSelectedImageUri:  " + mSelectedImageUri + ". in IS");
+//            Log.d(DEBUG_TAG, "mTempImageUriCrop:  " + mTempImageUriCrop + ". in IS");
+//            mActivity.startActivityForResult(intent, mIntentCodeCrop);
+//        }
+//        return true;
+    }
+
+    public void crop(Uri data, Uri output) {
+
+        final ArrayList<CropOption> cropOptions = new ArrayList<CropOption>();
+
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setType("image/*");
+
+        List<ResolveInfo> list = mActivity.getApplicationContext().getPackageManager().queryIntentActivities(intent, 0);
+
+        int size = list.size();
+
+        intent.setData(data);
+        intent.putExtra("outputX", mOutputX);
+        intent.putExtra("outputY", mOutputY);
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("scale", true);
+        intent.putExtra("return-data", false);
+        intent.putExtra("output", output);
+
+        if (size == 1) {
+            Intent i = new Intent(intent);
+            ResolveInfo res = list.get(0);
+
+            i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            mActivity.startActivityForResult(i, mIntentCodeCrop);
+
+        } else {
+            for (ResolveInfo res : list) {
+                final CropOption co = new CropOption();
+
+                co.title = mActivity.getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
+                co.icon = mActivity.getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
+                co.appIntent = new Intent(intent);
+
+                co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
+                cropOptions.add(co);
+            }
+
+            CropOptionAdapter adapter = new CropOptionAdapter(mActivity.getApplicationContext(), cropOptions);
+            final OptionDialog optionDialog = new OptionDialog(mActivity, adapter, R.string.no_crop_app_found);
+            optionDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    mActivity.startActivityForResult(cropOptions.get(i).appIntent, mIntentCodeCrop);
+                    optionDialog.dismiss();
+                }
+            });
+            optionDialog.show();
+        }
     }
 
     @Override
@@ -573,4 +650,55 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 });
     }
 
+
+    class CropOption {
+        public CharSequence title;
+        public Drawable icon;
+        public Intent appIntent;
+    }
+
+    public class CropOptionAdapter extends ArrayAdapter<CropOption> {
+
+        private ArrayList<CropOption> mOptions;
+        private LayoutInflater mInflater;
+
+        private CropOptionAdapter(Context context, ArrayList<CropOption> options) {
+            super(context, R.layout.view_crop_selector, options);
+            mOptions = options;
+            mInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup group) {
+            if (convertView == null)
+                convertView = mInflater.inflate(R.layout.view_crop_selector, null);
+
+            CropOption item = mOptions.get(position);
+            if (item != null) {
+                ((ImageView) convertView.findViewById(R.id.iv_icon)).setImageDrawable(item.icon);
+                ((TextView) convertView.findViewById(R.id.tv_name)).setText(item.title);
+
+                return convertView;
+            }
+
+            return null;
+        }
+    }
+
+    private void callCropDelayed(final Uri data, final Uri croppedFile) {
+
+        final ProgressDialog progressDialog = new ProgressDialog(mActivity);
+        progressDialog.setMessage("در حال بارگیری تصویر");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        new Handler().postDelayed(new Runnable() { //wait a sec for fucking gallery/camera to save the image completely.
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                crop(data, croppedFile);
+            }
+        }, 5000);
+
+    }
 }

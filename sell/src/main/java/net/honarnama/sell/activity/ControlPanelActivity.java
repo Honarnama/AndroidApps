@@ -90,6 +90,8 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     protected void onResume() {
         super.onResume();
 
+        logD("onResume of CPA.");
+
         if (mFragment == null) {
             switchFragment(CPanelFragment.getInstance());
         }

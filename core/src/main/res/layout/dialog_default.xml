@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:gravity="right"
+              android:orientation="vertical"
+              android:paddingBottom="10dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:paddingTop="10dp">
+
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="right"
+            android:textColor="@color/text_color"
+            android:textSize="16dp"/>
+
+    <FrameLayout
+            android:id="@+id/dialog_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp" />
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <Button
+                android:id="@+id/button_positive"
+                style="@style/button_wrap_content_width"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:visibility="gone" />
+
+        <Button
+                android:id="@+id/button_neutral"
+                style="@style/button_wrap_content_width"
+                android:layout_width="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_toRightOf="@id/button_positive"
+                android:visibility="gone" />
+
+        <Button
+                android:id="@+id/button_negative"
+                style="@style/button_wrap_content_width"
+                android:layout_width="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_toRightOf="@id/button_neutral"
+                android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

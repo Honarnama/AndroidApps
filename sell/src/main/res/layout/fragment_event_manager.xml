@@ -53,7 +53,7 @@
                                 app:outputX="640"
                                 app:outputY="640"
                                 app:riv_border_color="@color/gray_super_extra_light"
-                                android:scaleType="centerCrop"
+                                android:scaleType="centerInside"
                                 android:adjustViewBounds="true"
                                 app:removable="true"
                                 app:imageSelectorIndex="1"

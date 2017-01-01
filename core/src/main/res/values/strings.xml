@@ -15,8 +15,6 @@
     <string name="not_verified">شما هنوز حساب کاربری خود را فعال نکرده‌اید. در صورتی که ایمیلی
         دریافت نکردید، پوشه‌ی spam یا هرزنامه را نیز بررسی کنید.
     </string>
-    <string name="resend_telegram">ارسال کد از طریق تلگرام</string>
-    <string name="login_using_telegram">ورود از طریق تلگرام</string>
 
     <string name="action_settings">تنظیمات</string>
     <string name="title_activity_register">ثبت‌نام</string>
@@ -36,7 +34,6 @@
     <string name="send_register_activation_link_to_email">
         آدرس ایمیل
     </string>
-    <string name="send_register_activation_link_to_telegram">حساب تلگرام</string>
     <string name="select_national_card_image_dialog_title">انتخاب تصویر</string>
     <string name="family_name">نام خانوادگی</string>
 
@@ -150,9 +147,7 @@
         لینک فعال‌سازی و ورود به حساب به آدرس ایمیلتان ارسال شد. در صورت عدم فعال‌سازی
         حساب در طول ۲۴ ساعت آتی، حساب شما به صورت خودکار حذف خواهد شد.
     </string>
-    <string name="telegram_activation_timeout_message">در صورتی که حساب خود
-        را در طول ۲۴ ساعت آتی فعال نکنید، حساب شما به صورت خودکار خذف خواهد شد.
-    </string>
+
     <string name="alter_info">تغییر اطلاعات</string>
     <string name="message_altering_profile_Failed">خطایی در زمان تغییر اطلاعات رخ داد.</string>
 
@@ -262,4 +257,5 @@
     <string name="apply">اعمال</string>
     <string name="all_over_iran">سراسر ایران</string>
     <string name="items">محصولات</string>
+    <string name="no_crop_app_found">انتخاب برنامه برش عکس</string>
 </resources>

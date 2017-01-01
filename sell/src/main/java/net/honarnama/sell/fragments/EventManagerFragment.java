@@ -1084,7 +1084,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (isAdded() && mBannerImageView != null) {
+        if (mBannerImageView != null) {
             mBannerImageView.onSaveInstanceState(outState);
         }
 
