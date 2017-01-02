@@ -36,16 +36,6 @@
                       android:text="برای دیدن تمامی قسمت‌های برنامه از دکمه سه خطی واقع در بالا (سمت راست اسم برنامه) ‌استفاده کنید."
             />
 
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:id="@+id/no_item_warning_image"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    app:iiv_color="@color/orange"
-                    app:iiv_icon="gmd-info"
-                    android:layout_toRightOf="@id/empty_items_text_view"
-                    android:layout_marginLeft="-36dp"
-                    android:layout_centerVertical="true"
-            />
         </RelativeLayout>
 
         <LinearLayout android:layout_width="match_parent"
