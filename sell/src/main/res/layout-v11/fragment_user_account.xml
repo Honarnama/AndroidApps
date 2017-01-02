@@ -4,7 +4,7 @@
             android:layout_width="fill_parent"
             android:fadeScrollbars="false"
             android:background="@color/gray_extra_light"
-        >
+>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -16,14 +16,14 @@
                     android:gravity="right"
                     android:layoutDirection="rtl"
                     android:background="@color/gray_extra_light"
-            >
+    >
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/important_bar_background"
                         android:layout_marginTop="10dp"
                         android:id="@+id/account_fragment_important_bar"
-                >
+        >
             <TextView
                     android:id="@+id/account_fragment_subtitle"
                     style="@style/tiny_text_view"
@@ -35,7 +35,7 @@
                     android:paddingRight="24dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
-                    />
+            />
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_centerVertical="true"
                     android:layout_width="24dp"
@@ -55,17 +55,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="right"
                 android:layout_marginTop="10dp"
-                >
-
-            <TextView
-                    android:id="@+id/account_name_star_marker"
-                    android:text="*"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_gravity="center|top"
-                    android:textStyle="bold"
-                    />
+        >
 
             <EditText
                     android:id="@+id/account_name_edit_text"
@@ -80,9 +70,20 @@
                     android:gravity="right"
                     android:textColorHint="@color/default_hint_color_for_android"
                     android:layout_weight="2"
-                    >
+            >
                 <requestFocus/>
             </EditText>
+
+            <TextView
+                    android:id="@+id/account_name_star_marker"
+                    android:text="*"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center|top"
+                    android:textStyle="bold"
+            />
+
         </LinearLayout>
 
         <TextView
@@ -96,7 +97,7 @@
                 android:layout_below="@id/account_name_layout"
                 android:layout_alignParentRight="true"
                 style="@style/tiny_text_view"
-                />
+        />
 
         <RadioGroup android:id="@+id/account_gender_radio_group"
                     android:layout_width="fill_parent"
@@ -104,7 +105,7 @@
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal"
                     android:layout_below="@id/account_name_alert"
-                >
+        >
 
             <ToggleButton android:id="@+id/account_gender_woman"
                           android:layout_height="wrap_content"
@@ -114,9 +115,9 @@
                           android:textOn="@string/woman"
                           android:textOff="@string/woman"
                           style="@style/core_wrap_button"
-                          android:background="@drawable/toggle_button_right"
+                          android:background="@drawable/toggle_button_left"
                           android:textColor="@color/toggle_button_states_text_colors"
-                    />
+            />
             <ToggleButton android:id="@+id/account_gender_man"
                           android:layout_height="wrap_content"
                           android:layout_width="0dp"
@@ -127,7 +128,7 @@
                           style="@style/core_wrap_button"
                           android:background="@drawable/toggle_button_middle"
                           android:textColor="@color/toggle_button_states_text_colors"
-                    />
+            />
 
             <ToggleButton android:id="@+id/account_gender_not_said"
                           android:layout_height="wrap_content"
@@ -138,10 +139,10 @@
                           android:textOff="@string/wont_specify"
                           android:layout_margin="0dp"
                           style="@style/core_wrap_button"
-                          android:background="@drawable/toggle_button_left"
+                          android:background="@drawable/toggle_button_right"
                           android:textColor="@color/toggle_button_states_text_colors"
                           android:padding="0dp"
-                    />
+            />
 
         </RadioGroup>
 
@@ -155,7 +156,7 @@
                 style="@style/sell_full_width_button"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                />
+        />
     </RelativeLayout>
 
 </ScrollView>
