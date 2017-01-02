@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.NavigationView;
@@ -140,15 +141,30 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //        mToolbar.setTitle(getString(R.string.toolbar_title));
         setSupportActionBar(mToolbar);
 
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
-                    .icon(GoogleMaterial.Icon.gmd_menu)
-                    .color(Color.WHITE)
-                    .sizeDp(20));
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            final ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
+                        .icon(GoogleMaterial.Icon.gmd_menu)
+                        .color(Color.WHITE)
+                        .sizeDp(20));
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            findViewById(R.id.toolbar_hamburger_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+                        mDrawer.closeDrawer(Gravity.RIGHT);
+                    } else {
+                        mDrawer.openDrawer(Gravity.RIGHT);
+                        WindowUtil.hideKeyboard(ControlPanelActivity.this);
+                    }
+                }
+            });
         }
+
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.navView);
 
