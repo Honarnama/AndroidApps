@@ -29,25 +29,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="edit_text_default" parent="Widget.AppCompat.EditText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">45dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColorHint">@color/default_hint_color_for_android</item>
-        <item name="android:gravity">right|center</item>
-        <item name="android:ellipsize">start</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/default_edit_text_text_color</item>
-        <item name="colorControlNormal">#c5c5c5</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:textDirection" tools:targetApi="jelly_bean_mr1">rtl</item>
-    </style>
-
-    <style name="bordered_edit_text" parent="edit_text_default">
-        <item name="android:background">@drawable/round_corner_white_back</item>
-    </style>
-
-
     <style name="bordered_multiline_edit_text" parent="bordered_edit_text">
         <item name="android:background">@drawable/round_corner_white_back</item>
         <item name="android:gravity">right|top</item>
