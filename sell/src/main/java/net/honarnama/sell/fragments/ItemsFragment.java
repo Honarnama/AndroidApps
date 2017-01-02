@@ -21,6 +21,7 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -64,7 +65,10 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setHasOptionsMenu(true);
+        }
 
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ItemsFragment");

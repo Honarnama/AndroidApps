@@ -80,12 +80,13 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     private ProgressDialog mWaitingProgressDialog;
 
     Tracker mTracker;
-    TextView mAboutTextView;
 
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
     public RelativeLayout mNavFooter;
     private ItemsFragment mItemsFragment;
+
+    public TextView mCustomToolbarTitle;
 
     @Override
     protected void onResume() {
@@ -163,6 +164,8 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                     }
                 }
             });
+
+            mCustomToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         }
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -361,8 +364,11 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                 .setAction("SwitchFragment")
                 .build());
 
-        mToolbar.setTitle(fragment.getTitle());
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mToolbar.setTitle(fragment.getTitle());
+        } else {
+            mCustomToolbarTitle.setText(fragment.getTitle());
+        }
     }
 
     public void switchFragmentToEditItem(long itemId) {

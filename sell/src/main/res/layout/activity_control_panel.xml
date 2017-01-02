@@ -47,6 +47,8 @@
                 android:theme="@style/NavigationTheme"
                 app:menu="@menu/drawer_view"
                 app:headerLayout="@layout/nav_header"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl"
         >
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
