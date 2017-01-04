@@ -35,37 +35,6 @@
                         android:id="@+id/edit_item_images_title_text_view"
                 />
 
-                <RelativeLayout android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/important_bar_background"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="10dp"
-                >
-
-                    <TextView
-                            android:id="@+id/itemImageHint"
-                            style="@style/tiny_text_view"
-                            android:text="@string/edit_item_photos_description"
-                            android:textColor="@color/orange"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp"
-                            android:paddingLeft="4dp"
-                            android:paddingRight="24dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="5dp"
-                    />
-                    <com.mikepenz.iconics.view.IconicsImageView
-                            android:id="@+id/no_store_warning_image"
-                            android:layout_centerVertical="true"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            app:iiv_color="@color/orange"
-                            app:iiv_icon="gmd-info"
-                            android:layout_alignParentRight="true"/>
-
-
-                </RelativeLayout>
-
                 <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -245,40 +214,30 @@
                 />
 
 
-                <LinearLayout android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="horizontal" android:layout_marginTop="10dp"
-                              android:layout_marginRight="16dp" android:layout_marginLeft="16dp">
+                <RelativeLayout android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp">
 
                     <EditText android:id="@+id/editItemPrice"
-                              android:layout_width="0dp"
-                              android:hint="@string/item_price"
-                              android:layout_weight="2"
+                              android:hint="@string/item_price_hint"
                               style="@style/bordered_edit_text"
                               android:inputType="number"
                               android:textDirection="ltr"
+                              android:layout_alignParentRight="true"
                     />
 
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              style="@style/default_text_view"
-                              android:text="@string/toman"
-                              android:layout_gravity="left|center"
-                              android:gravity="left|center"
-                              android:layout_marginRight="5dp"
-                    />
-
-                </LinearLayout>
+                </RelativeLayout>
 
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/edit_item_category_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_gravity="center"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/edit_item_category_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="center"
                 >
                     <TextView style="@style/default_text_view"
                               android:text="@string/ad_category"
@@ -290,6 +249,7 @@
                               android:clickable="true"
                               android:textStyle="bold"
                               android:layout_gravity="center"
+                              android:layout_alignParentRight="true"
                     />
                     <Button android:layout_width="wrap_content" android:layout_height="40dp"
                             android:text="@string/select"
@@ -300,8 +260,9 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:padding="10dp"
+                            android:layout_toLeftOf="@+id/edit_item_category_text_view"
                     />
-                </LinearLayout>
+                </RelativeLayout>
 
 
                 <LinearLayout android:layout_width="fill_parent"
