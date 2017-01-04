@@ -43,7 +43,7 @@
     <string name="remove_photo">حذف تصویر</string>
 
     <string name="error_email_not_set">
-" آدرس ایمیل وارد نشده است. "
+        " آدرس ایمیل وارد نشده است. "
     </string>
     <string name="error_email_address_is_not_valid">" آدرس ایمیل معتبر نیست. "</string>
     <string name="error_mobile_number_field_can_not_be_empty">" فیلد شماره تلفن همراه نمی‌تواند خالی
@@ -188,6 +188,7 @@
     <string name="man">مرد</string>
     <string name="woman">زن</string>
     <string name="item_price">قیمت محصول</string>
+    <string name="item_price_hint">قیمت محصول به تومان</string>
     <string name="error_stablishing_connection">خطا در برقراری ارتباط</string>
     <string name="retry">تلاش مجدد</string>
     <string name="province">استان</string>
@@ -243,7 +244,8 @@
     <string name="select_event_cat">انتخاب دسته‌بندی رویداد</string>
     <string name="category_label">دسته‌بندی:</string>
     <string name="error_connecting_server_retry">خطا در برقراری ارتباط. تلاش مجدد.</string>
-    <string name="error_connecting_server_try_again">خطا در برقراری ارتباط. لطفا دوباره تلاش کنید.</string>
+    <string name="error_connecting_server_try_again">خطا در برقراری ارتباط. لطفا دوباره تلاش کنید.
+    </string>
     <string name="server_error_try_again">خطای سرور. لطفا دوباره تلاش کنید.</string>
     <string name="no_event_found">رویدادی یافت نشد.</string>
     <string name="bazaar_is_not_installed">متاسفانه برنامه بازار بر روی گوشی شما نصب نیست.</string>

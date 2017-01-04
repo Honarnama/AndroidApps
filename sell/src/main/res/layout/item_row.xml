@@ -2,122 +2,109 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/round_corner_white_back"
                 android:id="@+id/item_row_container"
-        >
-    <RelativeLayout android:layout_width="wrap_content"
+>
+    <RelativeLayout android:id="@+id/item_image_in_list_container"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/item_image_in_list_container"
-            >
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="5dp"
+    >
         <RelativeLayout
                 style="@style/GenericProgressBackground"
                 android:id="@+id/item_icon_loading_panel"
                 android:visibility="gone"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_margin="5dp"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/bordered_box"
-                >
+        >
             <ProgressBar
                     style="@style/GenericProgressIndicator"
                     android:layout_centerInParent="true"
-                    />
+            />
         </RelativeLayout>
 
         <com.parse.ImageSelector
                 android:id="@+id/item_image_in_list"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_alignParentRight="true"
-                android:layout_margin="5dp"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
                 android:src="@drawable/camera_insta"
                 app:riv_border_width="1dp"
                 app:riv_border_color="@color/gray_light"
-                />
+        />
     </RelativeLayout>
-
 
     <TextView
             android:id="@+id/item_title_in_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_alignTop="@android:id/icon"
+            android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/item_image_in_list_container"
             style="@style/default_text_view"
             android:textStyle="bold"
-            />
+    />
 
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toLeftOf="@id/item_image_in_list_container"
-                    android:gravity="center_vertical"
-                    android:id="@+id/item_edit_container"
-                    android:clickable="true"
-                    android:layout_margin="5dp"
-            >
-
-        <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/item_edit_image_view"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="20dp"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                app:iiv_color="@android:color/holo_blue_dark"
-                app:iiv_icon="gmd-edit"
-                />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/default_text_view"
-                android:text="@string/edit_ad"
-                android:textSize="12dp"
-                android:textColor="@android:color/holo_blue_dark"
-                android:layout_toLeftOf="@id/item_edit_image_view"
-                android:layout_centerVertical="true"
-                android:singleLine="true"
-                android:layout_marginRight="2dp"
-                />
-    </RelativeLayout>
-
-    <RelativeLayout android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:gravity="center_vertical"
                     android:id="@+id/item_delete_container"
                     android:clickable="true"
-                    android:layout_toLeftOf="@id/item_edit_container"
-                    android:layout_marginRight="20dp"
-            >
+                    android:layout_toLeftOf="@id/item_image_in_list_container"
+                    android:layout_alignParentBottom="true"
+                    android:padding="5dp"
+    >
         <com.mikepenz.iconics.view.IconicsImageView
                 android:id="@+id/item_delete_image_view"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                app:iiv_color="@android:color/holo_red_dark"
+                app:iiv_color="@color/super_extra_dark_red"
                 app:iiv_icon="gmd-close"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="20dp"
-                />
+        />
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/default_text_view"
                 android:text="@string/delete_ad"
-                android:textSize="12dp"
-                android:textColor="#c0392b"
+                android:textSize="12sp"
+                android:textColor="@color/super_extra_dark_red"
                 android:layout_toLeftOf="@id/item_delete_image_view"
-                android:layout_centerVertical="true"
                 android:singleLine="true"
                 android:layout_marginRight="2dp"
-                />
+        />
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_edit_container"
+                    android:clickable="true"
+                    android:layout_alignParentBottom="true"
+                    android:padding="5dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_alignParentLeft="true"
+    >
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:id="@+id/item_edit_image_view"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:iiv_color="@color/amber_dark"
+                app:iiv_icon="gmd-edit"
+                android:layout_alignParentRight="true"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/default_text_view"
+                android:text="@string/edit_ad"
+                android:textSize="12sp"
+                android:textColor="@color/amber_dark"
+                android:layout_toLeftOf="@id/item_edit_image_view"
+                android:layout_marginRight="2dp"
+        />
     </RelativeLayout>
 
     <TextView
@@ -138,6 +125,6 @@
             android:paddingLeft="10dp"
             android:layout_marginLeft="2dp"
             android:visibility="gone"
-            />
+    />
 
 </RelativeLayout>

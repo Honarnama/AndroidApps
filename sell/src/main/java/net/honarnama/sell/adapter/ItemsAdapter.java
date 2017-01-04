@@ -27,6 +27,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -151,15 +152,19 @@ public class ItemsAdapter extends BaseAdapter {
             }
         });
 
-        mViewHolder.editContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-                    ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
-                    controlPanelActivity.switchFragmentToEditItem(mItems.get(position).id);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mViewHolder.editContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+                        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) mContext;
+                        controlPanelActivity.switchFragmentToEditItem(mItems.get(position).id);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            mViewHolder.editContainer.setVisibility(View.GONE);
+        }
         return convertView;
 
     }
