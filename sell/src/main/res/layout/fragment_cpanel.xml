@@ -4,7 +4,7 @@
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:fadeScrollbars="true"
-            android:background="@drawable/black_orib_back"
+            android:background="@drawable/orib_line_back"
             android:id="@+id/cpanel_fragment"
             android:layoutDirection="rtl"
             android:paddingTop="?attr/actionBarSize"
@@ -17,10 +17,8 @@
                   android:layout_centerInParent="true"
     >
 
-        <RelativeLayout android:layout_width="wrap_content"
+        <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
         >
             <TextView android:id="@+id/empty_items_text_view"
                       android:layout_width="wrap_content"
@@ -28,11 +26,11 @@
                       style="@style/tiny_text_view"
                       android:layout_centerHorizontal="true"
                       android:layout_centerVertical="true"
-                      android:background="@drawable/important_bar_background"
-                      android:paddingTop="2dp"
-                      android:paddingBottom="2dp"
-                      android:paddingLeft="10dp"
-                      android:paddingRight="40dp"
+                      android:background="@color/white"
+                      android:paddingTop="5dp"
+                      android:paddingBottom="5dp"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp"
                       android:text="برای دیدن تمامی قسمت‌های برنامه از دکمه سه خطی واقع در بالا (سمت راست اسم برنامه) ‌استفاده کنید."
             />
 
