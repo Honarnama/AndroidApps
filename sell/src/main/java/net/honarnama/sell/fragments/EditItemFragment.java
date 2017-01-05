@@ -144,7 +144,6 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
         mCreateNew = createNew;
 
-
         if (BuildConfig.DEBUG) {
             Log.d("STOPPED_ACTIVITY", "reset of EIF. mCreateNew: " + mCreateNew);
         }

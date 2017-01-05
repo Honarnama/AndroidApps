@@ -5,7 +5,7 @@
         android:layout_width="fill_parent"
         android:fadeScrollbars="false"
         android:layoutDirection="rtl"
-        >
+>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +13,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:layoutDirection="rtl"
-            >
+    >
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -23,7 +23,8 @@
                 android:padding="0dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
-                >
+                android:layout_marginTop="-24dp"
+        >
             <TextView
                     style="@style/section_title"
                     android:text="هنرنما رو دوست داشتی؟"
@@ -32,7 +33,7 @@
                     android:id="@+id/liked_title"
                     android:layout_marginTop="40dp"
                     android:layout_width="match_parent"
-                    />
+            />
 
             <TextView
                     android:layout_marginTop="10dp"
@@ -44,7 +45,7 @@
                     android:text="میتونی با دادن ۵ ستاره ازش حمایت کنی"
                     android:layout_below="@id/liked_title"
                     android:textColor="@color/gray"
-                    />
+            />
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
@@ -54,7 +55,7 @@
                           android:layout_marginTop="10dp"
                           android:layout_below="@id/support_us_text"
                           android:padding="2dp"
-                    >
+            >
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -62,7 +63,7 @@
                         app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
-                        />
+                />
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -70,7 +71,7 @@
                         app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
-                        />
+                />
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -78,7 +79,7 @@
                         app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
-                        />
+                />
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -86,7 +87,7 @@
                         app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
-                        />
+                />
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -94,20 +95,18 @@
                         app:iiv_color="@color/amber_primary"
                         android:layout_centerInParent="true"
                         android:padding="2dp"
-                        />
+                />
             </LinearLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_below="@id/stars_container"
-                          android:id="@+id/filter_buttons_container"
-                          android:gravity="center"
-                          android:orientation="horizontal"
-                    >
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/stars_container"
+                            android:id="@+id/filter_buttons_container"
+                            android:gravity="center"
+            >
                 <Button
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="120dp"
                         android:text="بزن بریم"
                         android:layout_centerVertical="true"
                         android:id="@+id/lets_rate"
@@ -121,10 +120,10 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="20dp"
-                        />
+                        android:layout_alignParentRight="true"
+                />
                 <Button
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="120dp"
                         android:text="فعلا نه"
                         android:layout_centerVertical="true"
                         android:id="@+id/rate_later"
@@ -138,8 +137,9 @@
                         android:layout_marginRight="0dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="20dp"
-                        />
-            </LinearLayout>
+                        android:layout_toLeftOf="@+id/lets_rate"
+                />
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -149,10 +149,9 @@
                         android:gravity="center"
                         android:layout_centerHorizontal="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="-24dp"
                         android:clickable="true"
                         android:id="@+id/fav_icon_container"
-                >
+        >
 
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="48dp"
@@ -160,14 +159,14 @@
                     app:iiv_icon="gmd-lens"
                     app:iiv_color="@color/amber_primary_dark"
                     android:layout_centerInParent="true"
-                    />
+            />
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     app:iiv_icon="gmd-favorite"
                     app:iiv_color="@color/white"
                     android:layout_centerInParent="true"
-                    />
+            />
 
         </RelativeLayout>
 
