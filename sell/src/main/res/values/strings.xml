@@ -140,5 +140,7 @@
 
     <string name="login_hint"> "در صورتی که قبلا حساب کاربری ساخته‌اید، برای ورود به برنامه از لینکی که به آدرس ایمیلتان ارسال میشود، استفاده کنید."</string>
     <string name="store">فروشگاه</string>
+    <string name="item_price_label">قیمت (به تومان):</string>
+    <string name="event_cat_label">دسته‌بندی رویداد:</string>
 
 </resources>

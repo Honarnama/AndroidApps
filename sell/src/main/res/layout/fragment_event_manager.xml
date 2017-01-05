@@ -53,7 +53,7 @@
                                 app:outputX="640"
                                 app:outputY="640"
                                 app:riv_border_color="@color/gray_super_extra_light"
-                                android:scaleType="centerInside"
+                                android:scaleType="centerCrop"
                                 android:adjustViewBounds="true"
                                 app:removable="true"
                                 app:imageSelectorIndex="1"
@@ -158,17 +158,17 @@
                         style="@style/bordered_edit_text"
                 />
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/event_cat_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_below="@id/event_name_edit_text"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/event_cat_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/event_name_edit_text"
+                                android:layout_alignParentRight="true"
                 >
                     <TextView style="@style/default_text_view"
-                              android:text="@string/category_label"
+                              android:text="@string/event_cat_label"
                               android:layout_centerVertical="true"
                               android:id="@+id/event_cat_label"
                               android:editable="false"
@@ -176,8 +176,8 @@
                               android:focusable="false"
                               android:clickable="true"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
                               android:layout_gravity="center_vertical"
+                              android:layout_alignParentRight="true"
                     />
 
                     <Button android:layout_width="wrap_content" android:layout_height="40dp"
@@ -188,17 +188,18 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:padding="10dp"
+                            android:layout_toLeftOf="@+id/event_cat_label"
+                            android:layout_marginRight="5dp"
                     />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/provinces_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_below="@id/event_cat_container"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/provinces_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/event_cat_container"
                 >
                     <TextView style="@style/default_text_view"
                               android:text="@string/provine_label"
@@ -209,24 +210,26 @@
                               android:focusable="false"
                               android:clickable="true"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
+                              android:layout_alignParentRight="true"
+                              android:layout_width="60dp"
                     />
                     <EditText
                             android:hint="@string/province"
                             android:id="@+id/event_province_edit_text"
                             android:text="@string/select"
                             style="@style/bordered_edit_text"
+                            android:layout_toLeftOf="@+id/provinces_text_view"
+                            android:layout_marginRight="5dp"
                     />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/city_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_below="@id/provinces_container"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/city_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/provinces_container"
                 >
                     <TextView style="@style/default_text_view"
                               android:text="@string/city_label"
@@ -237,15 +240,17 @@
                               android:focusable="false"
                               android:clickable="true"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
+                              android:layout_alignParentRight="true"
+                              android:layout_width="60dp"
                     />
                     <EditText
                             android:hint="@string/city"
                             android:id="@+id/event_city_edit_text"
                             android:text="@string/select"
                             style="@style/bordered_edit_text"
+                            android:layout_toLeftOf="@+id/city_text_view"
                     />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <EditText
                         android:layout_below="@id/city_container"
@@ -257,14 +262,13 @@
                         style="@style/bordered_edit_text"
                 />
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/start_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_below="@id/event_address_edit_text"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/start_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/event_address_edit_text"
                 >
                     <TextView style="@style/default_text_view"
                               android:text="شروع:"
@@ -275,13 +279,15 @@
                               android:focusable="false"
                               android:clickable="true"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
+                              android:layout_width="60dp"
+                              android:layout_alignParentRight="true"
                     />
                     <Spinner android:layout_width="48dp"
                              android:layout_height="wrap_content"
                              android:padding="0dp"
                              android:id="@+id/start_day"
                              style="@style/bordered_edit_text"
+                             android:layout_toLeftOf="@+id/start_label_text_view"
                     >
                     </Spinner>
 
@@ -291,6 +297,7 @@
                              style="@style/bordered_edit_text"
                              android:padding="0dp"
                              android:layout_marginRight="5dp"
+                             android:layout_toLeftOf="@+id/start_day"
                     >
                     </Spinner>
 
@@ -300,20 +307,20 @@
                              style="@style/bordered_edit_text"
                              android:padding="0dp"
                              android:layout_marginRight="5dp"
+                             android:layout_toLeftOf="@+id/start_month"
                     >
                     </Spinner>
 
-                </LinearLayout>
+                </RelativeLayout>
 
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:id="@+id/end_container"
-                              android:orientation="horizontal"
-                              android:layout_marginRight="16dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginTop="10dp"
-                              android:layout_below="@id/start_container"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/end_container"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/start_container"
                 >
                     <TextView style="@style/default_text_view"
                               android:text="پایان:"
@@ -323,14 +330,16 @@
                               android:focusable="false"
                               android:clickable="true"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
+                              android:layout_width="60dp"
                               android:id="@+id/end_label_text_view"
+                              android:layout_alignParentRight="true"
                     />
                     <Spinner android:layout_width="48dp"
                              android:layout_height="wrap_content"
                              android:id="@+id/end_day"
                              style="@style/bordered_edit_text"
                              android:padding="0dp"
+                             android:layout_toLeftOf="@+id/end_label_text_view"
                     >
                     </Spinner>
 
@@ -340,6 +349,7 @@
                              style="@style/bordered_edit_text"
                              android:padding="0dp"
                              android:layout_marginRight="5dp"
+                             android:layout_toLeftOf="@+id/end_day"
                     >
                     </Spinner>
 
@@ -349,9 +359,10 @@
                              style="@style/bordered_edit_text"
                              android:padding="0dp"
                              android:layout_marginRight="5dp"
+                             android:layout_toLeftOf="@+id/end_month"
                     >
                     </Spinner>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <EditText
                         android:layout_below="@id/end_container"
@@ -382,7 +393,8 @@
                               android:focusable="false"
                               android:clickable="false"
                               android:textStyle="bold"
-                              android:layout_width="90dp"
+                              android:layout_width="60dp"
+                              android:layout_alignParentRight="true"
                     />
 
                     <RadioGroup android:layout_width="wrap_content"
@@ -404,6 +416,7 @@
                                 android:button="@null"
                                 android:drawableRight="@drawable/radio_button_image"
                                 android:checked="true"
+                                android:layout_margin="5dp"
                                 android:textColor="@color/gray_super_extra_dark"/>
                         <RadioButton
                                 android:id="@+id/passive_event"
@@ -413,6 +426,7 @@
                                 android:layout_marginRight="10dp"
                                 android:textSize="16sp"
                                 android:button="@null"
+                                android:layout_margin="5dp"
                                 android:drawableRight="@drawable/radio_button_image"
                                 android:textColor="@color/gray_super_extra_dark"
                                 android:checked="false"
@@ -438,10 +452,18 @@
                         android:inputType="phone"
                         android:textDirection="ltr"
                 />
+                <TextView android:text="@string/phone_hint"
+                          style="@style/tiny_text_view"
+                          android:layout_marginRight="16dp"
+                          android:gravity="right"
+                          android:layout_below="@+id/event_phone_number"
+                          android:id="@+id/phone_hint"
+                          android:layout_alignParentRight="true"
+                />
 
                 <EditText
                         android:hint="@string/mobile_number_hint"
-                        android:layout_below="@id/event_phone_number"
+                        android:layout_below="@id/phone_hint"
                         android:layout_marginTop="10dp"
                         android:id="@+id/event_cell_number"
                         android:layout_marginRight="16dp"
@@ -451,11 +473,19 @@
                         android:textDirection="ltr"
                 />
 
+                <TextView android:text="@string/mobile_number_hint"
+                          style="@style/tiny_text_view"
+                          android:layout_marginRight="16dp"
+                          android:gravity="right"
+                          android:layout_below="@+id/event_cell_number"
+                          android:id="@+id/cell_hint"
+                          android:layout_alignParentRight="true"
+                />
 
                 <Button
                         android:id="@+id/register_event_button"
                         android:text="@string/apply_changes"
-                        android:layout_below="@id/event_cell_number"
+                        android:layout_below="@id/cell_hint"
                         style="@style/sell_full_width_button"
                 />
             </RelativeLayout>

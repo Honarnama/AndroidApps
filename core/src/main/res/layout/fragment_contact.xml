@@ -54,7 +54,17 @@
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
                 android:layout_below="@id/contact_body"
+                android:inputType="phone"
                 />
+
+        <TextView android:text="@string/contact_no"
+                  style="@style/tiny_text_view"
+                  android:layout_marginRight="16dp"
+                  android:gravity="right"
+                  android:layout_below="@+id/contact_phone"
+                  android:id="@+id/contact_no_hint"
+                  android:layout_alignParentRight="true"
+        />
 
         <EditText
                 android:hint="@string/email_address_hint"
@@ -63,14 +73,23 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 style="@style/bordered_edit_text"
-                android:layout_below="@id/contact_phone"
+                android:layout_below="@id/contact_no_hint"
                 />
+
+        <TextView android:text="@string/email_address_hint"
+                  style="@style/tiny_text_view"
+                  android:layout_marginRight="16dp"
+                  android:gravity="right"
+                  android:layout_below="@+id/contact_email"
+                  android:id="@+id/email_address_hint"
+                  android:layout_alignParentRight="true"
+        />
 
         <CheckBox android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:id="@+id/send_device_info_check_box"
                   android:text="@string/send_device_info"
                   android:gravity="right|center_vertical"
-                  android:layout_below="@id/contact_email"
+                  android:layout_below="@id/email_address_hint"
                   android:layout_marginTop="10dp"
                   android:layout_marginRight="10dp"
                   android:layout_marginLeft="16dp"
