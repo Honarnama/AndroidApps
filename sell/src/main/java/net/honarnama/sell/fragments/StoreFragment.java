@@ -169,6 +169,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        logD("onCreateView of SF");
+
         final Activity activity = getActivity();
         mTextWatcherToMarkDirty = new TextWatcher() {
             String mValue;
@@ -289,9 +291,12 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             ((ControlPanelActivity) activity).checkAndAskStoragePermission(activity);
         }
 
+
         if (BuildConfig.DEBUG) {
             Log.d("STOPPED_ACTIVITY", "onCreateView of SF. savedInstanceState: " + savedInstanceState);
         }
+
+        reset();
 
         if (savedInstanceState != null) {
             mLogoImageView.restore(savedInstanceState);
@@ -322,12 +327,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
 
-            if (isAdded() && mNameEditText != null) {
-                mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            }
+           addListenersToMakeDirty();
 
         } else {
             new getStoreAsync().execute();
@@ -339,6 +339,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     @Override
     public void onResume() {
+        logD("onResume of SF");
         super.onResume();
         if (isAdded()) {
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
@@ -603,9 +604,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             Activity activity = getActivity();
             mIsNew = false;
             mStoreId = store.id;
+            String phone = store.publicPhoneNumber;
             setTextInFragment(mNameEditText, store.name);
             setTextInFragment(mDescriptionEditText, store.description);
-            setTextInFragment(mPhoneNumberEditText, store.publicPhoneNumber);
+            setTextInFragment(mPhoneNumberEditText, (TextUtils.isEmpty(phone)) ? "" : phone);
             setTextInFragment(mCellNumberEditText, store.publicCellNumber);
 
             LocationCriteria storeLocation = store.locationCriteria;
@@ -683,13 +685,17 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
         }
 
+        addListenersToMakeDirty();
+        setDirty(false);
+    }
+
+    public void addListenersToMakeDirty() {
         if (isAdded() && mNameEditText != null) {
             mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
             mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
         }
-        setDirty(false);
     }
 
     private void setReviewInfo(int reviewStatus) {
@@ -1204,4 +1210,35 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         }
     }
 
+    public void reset() {
+
+        logD("reset of SF");
+        setTextInFragment(mNameEditText, "");
+        setTextInFragment(mDescriptionEditText, "");
+        setTextInFragment(mPhoneNumberEditText, "");
+        setTextInFragment(mCellNumberEditText, "");
+
+        if (mBannerImageView != null && isAdded()) {
+            mBannerImageView.removeSelectedImage();
+            mBannerImageView.setChanged(false);
+            mBannerImageView.setDeleted(false);
+        }
+
+        if (mLogoImageView != null && isAdded()) {
+            mLogoImageView.removeSelectedImage();
+            mLogoImageView.setChanged(false);
+            mLogoImageView.setDeleted(false);
+        }
+
+        resetError();
+
+        mIsNew = true;
+        mStoreId = -1;
+
+        mReviewStatus = -1;
+
+        setDirty(false);
+        addListenersToMakeDirty();
+        dismissSnackbar();
+    }
 }
