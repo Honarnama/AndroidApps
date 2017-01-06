@@ -43,24 +43,24 @@
                     android:layout_alignParentTop="true"
             />
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/all_iran_container"
-                          android:orientation="horizontal"
-                          android:layout_marginTop="10dp"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_below="@id/geo_limit_title"
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/all_iran_container"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_below="@id/geo_limit_title"
             >
 
                 <CheckBox
-                        android:layout_below="@+id/city_container"
                         android:id="@+id/all_iran_checkbox"
                         android:layout_marginLeft="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                />
 
                 <TextView style="@style/default_text_view"
                           android:text="@string/all_over_iran"
@@ -69,19 +69,19 @@
                           android:cursorVisible="false"
                           android:focusable="false"
                           android:clickable="true"
+                          android:layout_toLeftOf="@+id/all_iran_checkbox"
                 />
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/provinces_container"
-                          android:orientation="horizontal"
-                          android:layout_marginTop="10dp"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_below="@id/all_iran_container"
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/provinces_container"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_below="@id/all_iran_container"
             >
                 <TextView style="@style/default_text_view"
                           android:text="@string/provine_label"
@@ -92,14 +92,16 @@
                           android:focusable="false"
                           android:clickable="true"
                           android:textStyle="bold"
-                          android:layout_width="40dp"
+                          android:layout_width="50dp"
                           android:layout_gravity="center_vertical"
                           android:gravity="center_vertical"
+                          android:layout_alignParentRight="true"
                 />
                 <RelativeLayout android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:layout_gravity="center_vertical"
+                                android:layout_toLeftOf="@+id/provinces_text_view"
                 >
                     <EditText
                             android:hint="@string/getting_information"
@@ -120,17 +122,16 @@
                             android:clickable="true"
                     />
                 </RelativeLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/city_container"
-                          android:orientation="horizontal"
-                          android:layout_marginTop="10dp"
-                          android:layout_marginRight="16dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_below="@id/provinces_container"
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/city_container"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_below="@id/provinces_container"
             >
                 <TextView style="@style/default_text_view"
                           android:text="@string/city_label"
@@ -141,14 +142,16 @@
                           android:focusable="false"
                           android:clickable="true"
                           android:textStyle="bold"
-                          android:layout_width="40dp"
+                          android:layout_width="50dp"
                           android:layout_gravity="center_vertical"
                           android:gravity="center_vertical"
+                          android:layout_alignParentRight="true"
                 />
                 <RelativeLayout android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:layout_gravity="center_vertical"
+                                android:layout_toLeftOf="@+id/city_text_view"
                 >
                     <EditText
                             android:hint="@string/getting_information"
@@ -169,21 +172,19 @@
                             android:clickable="true"
                     />
                 </RelativeLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:layout_centerHorizontal="true"
-                          android:layout_below="@id/city_container"
-                          android:id="@+id/filter_buttons_container"
-                          android:gravity="center_horizontal"
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/city_container"
+                            android:id="@+id/filter_buttons_container"
+                            android:gravity="center_horizontal"
             >
 
                 <Button
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="120dp"
                         android:layout_centerVertical="true"
                         android:text="@string/apply"
                         android:id="@+id/apply_filter"
@@ -197,10 +198,10 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="20dp"
+                        android:layout_alignParentRight="true"
                 />
                 <Button
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="120dp"
                         android:text="@string/bikhial"
                         android:layout_centerVertical="true"
                         android:id="@+id/bikhial_btn"
@@ -214,8 +215,9 @@
                         android:layout_marginRight="0dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="20dp"
+                        android:layout_toLeftOf="@+id/apply_filter"
                 />
-            </LinearLayout>
+            </RelativeLayout>
 
         </RelativeLayout>
 

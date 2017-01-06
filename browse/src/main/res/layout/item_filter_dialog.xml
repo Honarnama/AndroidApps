@@ -29,6 +29,7 @@
                     android:id="@+id/item_filter_title"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="10dp"
+                    android:layout_centerHorizontal="true"
             />
 
             <EditText
@@ -54,10 +55,9 @@
                     android:textColor="@color/gray_light"
             />
 
-            <LinearLayout android:layout_width="match_parent"
+            <RelativeLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:id="@+id/price_min_container"
-                          android:orientation="horizontal"
                           android:layout_marginTop="10dp"
                           android:layout_marginRight="16dp"
                           android:layout_marginLeft="16dp"
@@ -73,6 +73,8 @@
                           android:clickable="true"
                           android:textStyle="bold"
                           android:layout_width="40dp"
+                          android:layout_alignParentRight="true"
+                          android:id="@+id/from_label"
                 />
 
                 <net.honarnama.browse.widget.HorizontalNumberPicker
@@ -80,16 +82,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/from_label"
                 >
 
                 </net.honarnama.browse.widget.HorizontalNumberPicker>
-            </LinearLayout>
+            </RelativeLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
+            <RelativeLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:id="@+id/price_max_container"
-                          android:orientation="horizontal"
                           android:layout_marginTop="10dp"
                           android:layout_marginRight="16dp"
                           android:layout_marginLeft="16dp"
@@ -105,6 +107,8 @@
                           android:clickable="true"
                           android:textStyle="bold"
                           android:layout_width="40dp"
+                          android:id="@+id/to_label"
+                          android:layout_alignParentRight="true"
                 />
 
                 <net.honarnama.browse.widget.HorizontalNumberPicker
@@ -112,10 +116,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/to_label"
                 >
 
                 </net.honarnama.browse.widget.HorizontalNumberPicker>
-            </LinearLayout>
+            </RelativeLayout>
 
             <View style="@style/HorizontalSeparatorLine"
                   android:layout_below="@id/price_max_container"
@@ -131,26 +136,25 @@
                             android:layout_below="@id/separator_line"
                             android:layout_margin="5dp"
                             android:id="@+id/filter_buttons_container"
-                            android:gravity="center"
+                            android:layout_centerInParent="true"
             >
                 <TextView style="@style/default_text_view"
                           android:text="حذف فیلتر"
-                          android:layout_centerVertical="true"
                           android:id="@+id/remove_filter"
                           android:editable="false"
                           android:cursorVisible="false"
                           android:focusable="false"
                           android:clickable="true"
                           android:textColor="@color/amber_primary"
-                          android:gravity="center_vertical"
                           android:layout_height="45dp"
                           android:paddingRight="20dp"
                           android:paddingLeft="20dp"
+                          android:layout_centerHorizontal="true"
+                          android:gravity="center_vertical"
 
                 />
                 <TextView style="@style/default_text_view"
                           android:text="اعمال"
-                          android:layout_centerVertical="true"
                           android:id="@+id/apply_filter"
                           android:editable="false"
                           android:cursorVisible="false"
@@ -158,11 +162,12 @@
                           android:clickable="true"
                           android:textStyle="bold"
                           android:textColor="@color/amber_primary"
-                          android:gravity="center_vertical"
                           android:layout_height="45dp"
                           android:layout_toLeftOf="@id/remove_filter"
                           android:paddingRight="20dp"
                           android:paddingLeft="20dp"
+                          android:layout_centerHorizontal="true"
+                          android:gravity="center_vertical"
                 />
             </RelativeLayout>
 

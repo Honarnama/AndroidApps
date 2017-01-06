@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:gravity="top"
                 android:layoutDirection="rtl"
                 android:background="@color/gray_super_extra_light"
                 android:clickable="true"
-        >
+>
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content" android:orientation="horizontal"
-                  android:id="@+id/no_network_fragment_title_container"
-                  android:gravity="center"
-                  android:layout_marginTop="50dp"
-            >
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/no_network_fragment_title_container"
+                    android:gravity="center|center_vertical"
+                    android:layout_marginTop="50dp"
+    >
 
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:id="@+id/no_network_fragment_error_icon"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 app:iiv_icon="gmd-warning"
                 app:iiv_color="@color/super_extra_dark_red"
-                />
+                android:layout_alignParentRight="true"
+        />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/default_text_view"
@@ -31,8 +33,8 @@
                   android:id="@+id/no_network_fragment_title"
                   android:layout_toLeftOf="@id/no_network_fragment_error_icon"
                   android:textStyle="bold"
-                />
-    </LinearLayout>
+        />
+    </RelativeLayout>
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
               style="@style/default_text_view"
@@ -41,7 +43,7 @@
               android:gravity="center"
               android:layout_marginTop="10dp"
               android:id="@+id/no_network_fragment_sub_title"
-            />
+    />
 
     <com.mikepenz.iconics.view.IconicsImageView
             android:layout_centerHorizontal="true"
@@ -59,6 +61,6 @@
               android:id="@+id/no_network_fragment_retry"
               android:layout_below="@id/no_network_fragment_retry_icon"
               android:layout_centerHorizontal="true"
-            />
+    />
 
 </RelativeLayout>

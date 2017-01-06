@@ -70,7 +70,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public Button mCategoryFilterButton;
 
     public RelativeLayout mEmptyListContainer;
-    public LinearLayout mFilterContainer;
+    public RelativeLayout mFilterContainer;
     private int mSelectedProvinceId = -1;
     private int mSelectedCityId = -1;
     private String mSelectedProvinceName;
@@ -125,7 +125,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 
-        mFilterContainer = (LinearLayout) rootView.findViewById(R.id.filter_container);
+        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
         mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
         mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);

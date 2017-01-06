@@ -17,14 +17,13 @@
                     android:elevation="4dp"
                     android:id="@+id/filter_layer"
     >
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="?attr/actionBarSize"
-                      android:layout_alignParentRight="true"
-                      android:layout_marginRight="16dp"
-                      android:layout_marginLeft="10dp"
-                      android:orientation="horizontal"
-                      android:gravity="center_vertical"
-                      android:id="@+id/filter_location"
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:id="@+id/filter_location"
 
         >
             <com.mikepenz.iconics.view.IconicsImageView
@@ -33,6 +32,7 @@
                     app:iiv_color="@color/dark_cyan"
                     app:iiv_icon="gmd-place"
                     android:id="@+id/place_icon"
+                    android:layout_alignParentRight="true"
             />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -40,20 +40,31 @@
                       android:id="@+id/location_criteria_text_view"
                       android:text="@string/all_over_iran"
                       android:textColor="@color/dark_cyan"
+                      android:layout_toLeftOf="@+id/place_icon"
             />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="?attr/actionBarSize"
-                      android:layout_alignParentLeft="true"
-                      android:layout_marginLeft="16dp"
-                      android:layout_marginRight="10dp"
-                      android:orientation="horizontal"
-                      android:gravity="center_vertical"
-                      android:id="@+id/filter_container"
+        <RelativeLayout android:layout_width="200dp"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center_vertical|left"
+                        android:id="@+id/filter_container"
 
         >
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="?attr/actionBarSize"
+                      android:id="@+id/filter_text_view"
+                      android:text="@string/filter"
+                      android:textColor="@color/gray_dark"
+                      android:textSize="16sp"
+                      android:layout_centerVertical="true"
+                      android:gravity="center_vertical"
+                      android:layout_alignParentLeft="true"
+            />
+
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
@@ -61,19 +72,11 @@
                     app:iiv_icon="cmd-filter"
                     android:id="@+id/filter_icon"
                     android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/filter_text_view"
             />
 
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="?attr/actionBarSize"
-                      android:id="@+id/filter_text_view"
-                      android:text="@string/filter"
-                      android:textColor="@color/gray_dark"
-                      android:textSize="16sp"
-                      android:layout_toLeftOf="@id/filter_icon"
-                      android:layout_centerVertical="true"
-                      android:gravity="center_vertical"
-            />
-        </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
 
     <ListView android:id="@+id/items_listView"
