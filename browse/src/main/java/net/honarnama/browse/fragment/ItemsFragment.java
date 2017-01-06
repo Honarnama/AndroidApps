@@ -124,8 +124,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
-        mItemsAdapter = new ItemsAdapter(getContext());
-        mListView.setAdapter(mItemsAdapter);
 
         mFilterContainer = (LinearLayout) rootView.findViewById(R.id.filter_container);
         mFilterContainer.setOnClickListener(this);
@@ -143,6 +141,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mCategoryFilterButton.setOnClickListener(this);
 
         mListView.addHeaderView(header);
+
+        mItemsAdapter = new ItemsAdapter(getContext());
+        mListView.setAdapter(mItemsAdapter);
 
         getItems(false);
         mListView.setOnItemClickListener(this);

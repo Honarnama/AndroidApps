@@ -114,8 +114,6 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         final View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         mListView = (ListView) rootView.findViewById(R.id.events_listView);
 
-        mEventsAdapter = new EventsAdapter(getContext());
-        mListView.setAdapter(mEventsAdapter);
 
         View header = inflater.inflate(R.layout.item_list_header, null);
         mCategoryFilterButton = (Button) header.findViewById(R.id.category_filter_btn);
@@ -125,6 +123,9 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
         mCategoryFilterButton.setOnClickListener(this);
 
         mListView.addHeaderView(header);
+        mEventsAdapter = new EventsAdapter(getContext());
+        mListView.setAdapter(mEventsAdapter);
+
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.no_events_warning_container);
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
