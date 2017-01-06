@@ -86,7 +86,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private long mShopId;
     private long mEventId;
     private long mItemId;
-    public TextView mTitle;
 
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
@@ -131,6 +130,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public ConfirmationDialog mConfirmationDialog;
 
+    public TextView mCustomToolbarTitle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
@@ -164,7 +165,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                                 return;
                             }
                         }
-                        mTitle.setText(topFragment.getTitle());
+                        setTitle(topFragment.getTitle());
                     } catch (Exception ex) {
                         logE("Error onPageScroll. ", ex);
                     }
@@ -188,23 +189,33 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         setDefaultTab();
         setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//        getSupportActionBar().setHomeButtonEnabled(false);
-//        getSupportActionBar().setLogo(new IconicsDrawable(ControlPanelActivity.this)
-//                .icon(GoogleMaterial.Icon.gmd_menu)
-//                .color(Color.WHITE)
-//                .sizeDp(20));
 
-        mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
-                    .icon(GoogleMaterial.Icon.gmd_menu)
-                    .color(Color.WHITE)
-                    .sizeDp(20));
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            final ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setHomeAsUpIndicator(new IconicsDrawable(ControlPanelActivity.this)
+                        .icon(GoogleMaterial.Icon.gmd_menu)
+                        .color(Color.WHITE)
+                        .sizeDp(20));
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            findViewById(R.id.toolbar_hamburger_icon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+                        mDrawer.closeDrawer(Gravity.RIGHT);
+                    } else {
+                        mDrawer.openDrawer(Gravity.RIGHT);
+                        WindowUtil.hideKeyboard(ControlPanelActivity.this);
+                    }
+                }
+            });
+
+            mCustomToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         }
+
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.navView);
@@ -429,7 +440,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         if (topFragment != null && isNavMenuFragment(topFragment)) {
             removeTopFragmentFromStack(topFragment);
-            mTitle.setText(getString(R.string.hornama));
+            setTitle(getString(R.string.hornama));
         }
 
     }
@@ -484,7 +495,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             fragmentTransaction.commitAllowingStateLoss();
 
             if (!TextUtils.isEmpty(toolbarTitle)) {
-                mTitle.setText(toolbarTitle);
+                setTitle(toolbarTitle);
             }
             if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                 if (!(fragment instanceof NoNetFragment)) {
@@ -813,7 +824,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             fragmentTransaction.detach(topFragment);
             fragmentTransaction.attach(topFragment);
             fragmentTransaction.commitAllowingStateLoss();
-            mTitle.setText(topFragment.getTitle());
+            setTitle(topFragment.getTitle());
             try {
                 if (childFragmentManager != null) {
                     childFragmentManager.executePendingTransactions();
@@ -822,11 +833,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 logE("Error executing executePendingTransactions. ", ex);
             }
         }
-    }
-
-
-    public void setTitle(String title) {
-        mTitle.setText(title);
     }
 
     @Override
@@ -1081,6 +1087,14 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
+    }
+
+    public void setTitle(String title) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mToolbar.setTitle(title);
+        } else {
+            mCustomToolbarTitle.setText(title);
+        }
     }
 
 
