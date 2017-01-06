@@ -698,7 +698,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 progressDialog.dismiss();
                 crop(data, croppedFile);
             }
-        }, 5000);
+        }, 1000);
 
     }
 }
