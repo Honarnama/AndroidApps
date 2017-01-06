@@ -333,7 +333,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             new getStoreAsync().execute();
         }
 
-        resetError();
+        resetErrors();
         return rootView;
     }
 
@@ -503,7 +503,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         cityDialog.show();
     }
 
-    public void resetError() {
+    public void resetErrors() {
         setErrorInFragment(mNameEditText, "");
         setErrorInFragment(mProvinceEditText, "");
         setErrorInFragment(mCityEditText, "");
@@ -521,7 +521,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             return false;
         }
 
-        resetError();
+        resetErrors();
 
         if (getTextInFragment(mNameEditText).length() == 0) {
             requestFocusInFragment(mNameEditText);
@@ -1230,7 +1230,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             mLogoImageView.setDeleted(false);
         }
 
-        resetError();
+        resetErrors();
 
         mIsNew = true;
         mStoreId = -1;
