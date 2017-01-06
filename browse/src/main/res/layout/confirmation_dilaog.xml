@@ -12,19 +12,19 @@
             android:padding="10dp"
     >
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:id="@+id/confirm_title_container"
-                      android:layout_marginTop="10dp"
-                      android:gravity="center"
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/confirm_title_container"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
         >
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     app:iiv_color="@color/amber_primary_dark"
                     app:iiv_icon="gmd-warning"
-                    android:layout_toRightOf="@+id/confirm_title"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/title_icon"
             />
 
             <TextView
@@ -32,9 +32,10 @@
                     android:text="@string/remove_bookmark_dialog_title"
                     android:textColor="@color/gray_extra_dark"
                     android:id="@+id/confirm_title"
+                    android:layout_toLeftOf="@+id/title_icon"
             />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
                 style="@style/tiny_text_view"
@@ -49,18 +50,17 @@
                 android:layout_centerHorizontal="true"
         />
 
-        <LinearLayout android:layout_width="match_parent"
+        <RelativeLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:layout_below="@id/contact_warning"
-                      android:orientation="horizontal"
                       android:layout_centerHorizontal="true"
                       android:layout_marginBottom="10dp"
                       android:layout_marginTop="10dp"
+                        android:gravity="center_horizontal"
         >
             <Button
-                    android:layout_width="0dp"
+                    android:layout_width="120dp"
                     android:layout_height="45dp"
-                    android:layout_weight="1"
                     android:text="بله"
                     android:id="@+id/yes"
                     android:layout_marginLeft="5dp"
@@ -69,11 +69,11 @@
                     android:textStyle="bold"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
+                    android:layout_alignParentRight="true"
             />
             <Button
-                    android:layout_width="0dp"
+                    android:layout_width="120dp"
                     android:layout_height="45dp"
-                    android:layout_weight="1"
                     android:text="بی‌خیال"
                     android:id="@+id/close_button"
                     android:layout_marginRight="5dp"
@@ -82,8 +82,9 @@
                     android:textStyle="bold"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
+                    android:layout_toLeftOf="@+id/yes"
             />
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </RelativeLayout>

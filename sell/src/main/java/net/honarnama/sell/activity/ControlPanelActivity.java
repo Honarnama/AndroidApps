@@ -399,6 +399,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
                 selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ITEMS));
             }
         } else if (mFragment == CPanelFragment.getInstance()) {
+
             new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.AlertDialogCustom))
                     .setTitle("تایید خروج")
                     .setMessage("می‌خوای از برنامه خارج بشی؟")
