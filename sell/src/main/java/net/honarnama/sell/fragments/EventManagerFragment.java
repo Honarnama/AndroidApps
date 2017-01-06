@@ -317,10 +317,11 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mBannerImageView.setActivity(activity);
             mBannerImageView.setOnImageSelectedListener(onImageSelectedListener);
         }
+
+        reset();
+
         if (savedInstanceState != null) {
-
             mBannerImageView.restore(savedInstanceState);
-
             mEventId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_EVENT_ID);
             setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
             setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
@@ -374,13 +375,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
 
-            if (isAdded() && mNameEditText != null) {
-                mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-                mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            }
+           addListenersToMakeDirty();
 
         } else {
             new getEventAsync().execute();
@@ -1048,13 +1043,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
         }
 
-        if (isAdded() && mNameEditText != null) {
-            mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-            mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
-        }
+       addListenersToMakeDirty();
         setDirty(false);
     }
 
@@ -1466,6 +1455,43 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     public void dismissSnackbar() {
         if (isAdded() && mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
+        }
+    }
+
+    public void reset() {
+
+        logD("reset of SF");
+        setTextInFragment(mNameEditText, "");
+        setTextInFragment(mAddressEditText, "");
+        setTextInFragment(mDescriptionEditText, "");
+        setTextInFragment(mPhoneNumberEditText, "");
+        setTextInFragment(mCellNumberEditText, "");
+
+        if (mBannerImageView != null && isAdded()) {
+            mBannerImageView.removeSelectedImage();
+            mBannerImageView.setChanged(false);
+            mBannerImageView.setDeleted(false);
+        }
+
+        resetErrors();
+
+        mIsNew = true;
+        mEventId = -1;
+
+        mReviewStatus = -1;
+
+        setDirty(false);
+        addListenersToMakeDirty();
+        dismissSnackbar();
+    }
+
+    public void addListenersToMakeDirty() {
+        if (isAdded() && mNameEditText != null) {
+            mNameEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mAddressEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mDescriptionEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mPhoneNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
+            mCellNumberEditText.addTextChangedListener(mTextWatcherToMarkDirty);
         }
     }
 
