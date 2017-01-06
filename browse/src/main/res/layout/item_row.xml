@@ -2,131 +2,131 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/item_row_outer_container"
+                android:background="@drawable/round_corner_white_back"
                 android:descendantFocusability="blocksDescendants"
 >
 
-    <RelativeLayout android:layout_width="match_parent"
+    <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/round_corner_white_back"
+                    android:id="@+id/item_row_image_container"
+                    android:layout_alignParentRight="true"
+                    android:padding="5dp"
+    >
+        <RelativeLayout
+                style="@style/GenericProgressBackground"
+                android:id="@+id/item_icon_loading_panel"
+                android:visibility="gone"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/bordered_box"
+        >
+            <ProgressBar
+                    style="@style/GenericProgressIndicator"
+                    android:layout_centerInParent="true"
+            />
+        </RelativeLayout>
+
+        <com.parse.ImageSelector
+                android:id="@+id/item_image_in_list"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                app:riv_border_width="1dp"
+                app:riv_border_color="@color/gray_light"
+                android:src="@drawable/camera_insta"
+        />
+    </RelativeLayout>
+
+
+    <TextView
+            android:id="@+id/item_row_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@id/item_row_image_container"
+            style="@style/default_text_view"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_alignParentTop="true"
+    />
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              style="@style/default_text_view"
+              android:id="@+id/item_row_desc"
+              android:layout_below="@id/item_row_title"
+              android:layout_marginTop="0dp"
+              android:layout_marginRight="5dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginBottom="5dp"
+              android:layout_toLeftOf="@id/item_row_image_container"
+              android:maxLines="2"
+              android:ellipsize="end"
+              android:textSize="14sp"
+    />
+
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/item_row_image_container"
+                    android:layout_alignParentBottom="true"
+                    android:padding="5dp"
     >
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/item_row_image_container"
-        >
-            <RelativeLayout
-                    style="@style/GenericProgressBackground"
-                    android:id="@+id/item_icon_loading_panel"
-                    android:visibility="gone"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_margin="5dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/bordered_box"
-            >
-                <ProgressBar
-                        style="@style/GenericProgressIndicator"
-                        android:layout_centerInParent="true"
-                />
-            </RelativeLayout>
-
-            <com.parse.ImageSelector
-                    android:id="@+id/item_image_in_list"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="5dp"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    app:riv_border_width="1dp"
-                    app:riv_border_color="@color/gray_light"
-                    android:src="@drawable/camera_insta"
-            />
-        </RelativeLayout>
-
-
         <TextView
-                android:id="@+id/item_row_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_alignTop="@android:id/icon"
-                android:layout_toLeftOf="@id/item_row_image_container"
-                style="@style/default_text_view"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="end"
+                android:id="@+id/item_row_cat"
+                style="@style/tiny_text_view"
+                android:layout_centerVertical="true"
+                android:background="@drawable/text_bar_back"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="30dp"
+                android:gravity="center_vertical"
+                android:layout_toLeftOf="@+id/item_cat_icon"
+                android:layout_marginRight="-24dp"
         />
 
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                  style="@style/default_text_view"
-                  android:id="@+id/item_row_desc"
-                  android:layout_below="@id/item_row_title"
-                  android:layout_marginTop="0dp"
-                  android:layout_marginRight="5dp"
-                  android:layout_marginLeft="10dp"
-                  android:layout_marginBottom="5dp"
-                  android:layout_toLeftOf="@id/item_row_image_container"
-                  android:maxLines="2"
-                  android:ellipsize="end"
-                  android:textSize="14sp"
+        <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hierarchy"
+                android:id="@+id/item_cat_icon"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentRight="true"
         />
 
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/item_row_image_container"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginRight="5dp"
-        >
+    </RelativeLayout>
 
-            <TextView
-                    android:layout_width="wrap_content"
+    <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/item_row_cat"
-                    style="@style/tiny_text_view"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/text_bar_back"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="30dp"
-                    android:gravity="right|center_vertical"
-            />
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/hierarchy"
-                    android:id="@+id/item_cat_icon"
-                    android:gravity="right|center_vertical"
-                    android:layout_centerVertical="true"
-                    android:layout_marginBottom="10dp"
-            />
-        </RelativeLayout>
-
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_alignParentLeft="true"
-        >
-
-            <com.mikepenz.iconics.view.IconicsImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="10dp"
                     android:layout_alignParentLeft="true"
-                    app:iiv_icon="gmd-clear"
-                    app:iiv_color="@color/gray_dark"
-                    android:layout_centerVertical="true"
-                    android:id="@+id/delete_bookmark"
-                    android:clickable="true"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="left|center_vertical"
-                    android:visibility="gone"
-            />
+    >
 
-        </RelativeLayout>
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentLeft="true"
+                app:iiv_icon="gmd-clear"
+                app:iiv_color="@color/gray_dark"
+                android:layout_centerVertical="true"
+                android:id="@+id/delete_bookmark"
+                android:clickable="true"
+                android:layout_marginBottom="10dp"
+                android:gravity="left|center_vertical"
+                android:visibility="gone"
+        />
+
     </RelativeLayout>
 </RelativeLayout>
