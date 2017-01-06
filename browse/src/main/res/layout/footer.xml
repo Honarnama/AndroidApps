@@ -4,19 +4,22 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/deep_orange_light"
                 android:id="@+id/footer_container"
-        >
+>
 
     <TextView android:layout_width="match_parent"
               android:layout_height="?attr/actionBarSize"
               android:text="@string/site_url"
               android:gravity="center"
-              android:layout_centerInParent="true"
               style="@style/default_text_view"
               android:textColor="@color/white"
               android:padding="16dp"
               android:id="@+id/footer_text_view"
               android:textStyle="italic"
+              android:singleLine="true"
+              android:textSize="12sp"
+              android:layout_centerVertical="true"
+              android:layout_centerHorizontal="true"
 
-            />
+    />
 
 </RelativeLayout>
