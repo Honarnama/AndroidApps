@@ -146,24 +146,24 @@ public class ImageGallery extends RelativeLayout {
             }
         }
 
-        // Auto start of viewpager
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                if (CURRENT_IMAGE_PAGE == NUM_IMAGE_PAGES) {
-                    CURRENT_IMAGE_PAGE = 0;
-                }
-                setCurrentItem(CURRENT_IMAGE_PAGE++);
-            }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 5000, 5000);
-    }
+//        // Auto start of viewpager
+//        final Handler handler = new Handler();
+//        final Runnable Update = new Runnable() {
+//            public void run() {
+//                if (CURRENT_IMAGE_PAGE == NUM_IMAGE_PAGES) {
+//                    CURRENT_IMAGE_PAGE = 0;
+//                }
+//                setCurrentItem(CURRENT_IMAGE_PAGE++);
+//            }
+//        };
+//        Timer swipeTimer = new Timer();
+//        swipeTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                handler.post(Update);
+//            }
+//        }, 5000, 5000);
 
+    }
 
 }

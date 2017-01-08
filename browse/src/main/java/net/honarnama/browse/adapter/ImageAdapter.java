@@ -2,11 +2,15 @@ package net.honarnama.browse.adapter;
 
 import com.parse.ImageSelector;
 
+import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.BuildConfig;
+import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +72,9 @@ public class ImageAdapter extends PagerAdapter {
         ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.VISIBLE);
 
+        if (BuildConfig.DEBUG) {
+            Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "instantiateItem: image address: " + mImages.get(position));
+        }
         imageView.setSource(mImages.get(position), progressBar, R.drawable.party_flags);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
