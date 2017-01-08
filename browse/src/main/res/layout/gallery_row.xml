@@ -6,11 +6,8 @@
     <com.parse.ImageSelector
             android:id="@+id/gallery_item_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
     />
 
 

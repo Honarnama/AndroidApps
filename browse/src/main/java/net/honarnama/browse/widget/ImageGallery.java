@@ -7,7 +7,6 @@ import net.honarnama.browse.R;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -17,9 +16,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by elnaz on 1/8/17.
@@ -35,8 +31,8 @@ public class ImageGallery extends RelativeLayout {
     static TextView mCirclesArray[];
     private RelativeLayout mCirclesLayout;
 
-    private static int CURRENT_IMAGE_PAGE = 0;
-    private static int NUM_IMAGE_PAGES = 0;
+//    private static int CURRENT_IMAGE_PAGE = 0;
+//    private static int NUM_IMAGE_PAGES = 0;
 
     public ImageGallery(Context context) {
         super(context);
@@ -79,27 +75,28 @@ public class ImageGallery extends RelativeLayout {
         mPager.setCurrentItem(pos, true);
     }
 
-    public void setSwipeHandler(int numOfImages) {
+    public void setSwipeHandler(final int numOfImages) {
 
         RelativeLayout.LayoutParams layoutParams;
 
-        NUM_IMAGE_PAGES = numOfImages;
+//        NUM_IMAGE_PAGES = numOfImages;
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                CURRENT_IMAGE_PAGE = position;
+//                CURRENT_IMAGE_PAGE = position;
 
                 if (mCirclesArray != null) {
-                    for (int i = 0; i < NUM_IMAGE_PAGES; i++) {
-                        if (mCirclesArray.length > i && mCirclesArray[i] != null) {
-//                            mCirclesArray[i].setTextSize(8);
-                            mCirclesArray[i].setText("{gmd-panorama-fish-eye}");
-                        }
-                    }
-                    if (mCirclesArray.length > position && mCirclesArray[position] != null) {
+                    for (int i = 0; i < numOfImages; i++) {
+                        if (mCirclesArray.length > position && mCirclesArray[position] != null && i == position) {
 //                        mCirclesArray[position].setTextSize(12);
-                        mCirclesArray[position].setText("{gmd-brightness-1}");
+//                            mCirclesArray[position].setText("{gmd-brightness-1}");
+                            mCirclesArray[position].setTextColor(getResources().getColor(R.color.amber_primary_dark));
+                        } else if (mCirclesArray.length > i && mCirclesArray[i] != null) {
+//                            mCirclesArray[i].setTextSize(8);
+//                            mCirclesArray[i].setText("{gmd-panorama-fish-eye}");
+                            mCirclesArray[i].setTextColor(getResources().getColor(R.color.gray));
+                        }
                     }
                 }
             }
@@ -115,29 +112,30 @@ public class ImageGallery extends RelativeLayout {
             }
         });
 
-        if (NUM_IMAGE_PAGES > 1) {
-            mCirclesArray = new IconicsTextView[NUM_IMAGE_PAGES];
-            for (int i = 0; i < NUM_IMAGE_PAGES; i++) {
+        if (numOfImages > 1) {
+            mCirclesArray = new IconicsTextView[numOfImages];
+            for (int i = 0; i < numOfImages; i++) {
                 layoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 mCirclesArray[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
 
                 int circleId = i + 1;
                 mCirclesArray[i].setId(circleId);
                 mCirclesArray[i].setTypeface(null, Typeface.BOLD);
-                mCirclesArray[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
+                mCirclesArray[i].setText("{gmd-brightness-1}");
 
                 if (i == 0) {
-                    mCirclesArray[i].setText("{gmd-brightness-1}");
                     mCirclesArray[i].setTextSize(10);
                     mCirclesArray[i].setPadding(0, 10, 5, 0);
                     layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                     layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                    mCirclesArray[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
                 } else {
-                    mCirclesArray[i].setText("{gmd-panorama-fish-eye}");
+//                    mCirclesArray[i].setText("{gmd-panorama-fish-eye}");
                     mCirclesArray[i].setTextSize(10);
                     mCirclesArray[i].setPadding(5, 10, 5, 0);
                     layoutParams.addRule(RelativeLayout.RIGHT_OF, i);
                     layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                    mCirclesArray[i].setTextColor(getResources().getColor(R.color.gray));
                 }
 
                 if (mCirclesLayout != null) {

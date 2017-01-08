@@ -40,23 +40,12 @@ public class ImageAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-    }
-
-    @Override
     public int getCount() {
         if (mImages != null) {
             return mImages.size();
         }
         return 0;
     }
-
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view.equals(object);
-    }
-
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
@@ -76,24 +65,23 @@ public class ImageAdapter extends PagerAdapter {
             Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "instantiateItem: image address: " + mImages.get(position));
         }
         imageView.setSource(mImages.get(position), progressBar, R.drawable.party_flags);
-        imageView.setAdjustViewBounds(true);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        imageView.setAdjustViewBounds(true);
+//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//        imageView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         view.addView(imageLayout, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams.MATCH_PARENT);
 
         return imageLayout;
     }
 
-
     @Override
-    public void restoreState(Parcelable state, ClassLoader loader) {
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
     }
 
     @Override
-    public Parcelable saveState() {
-        return null;
+    public boolean isViewFromObject(View view, Object object) {
+        return view == object;
     }
-
 }

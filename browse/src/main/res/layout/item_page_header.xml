@@ -12,8 +12,8 @@
                     android:id="@+id/item_banner_container"
     >
 
-        <FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                     android:id="@+id/banner_frame"
+        <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:id="@+id/banner_frame"
         >
             <View android:id="@+id/fade_bg"
                   android:layout_width="match_parent"
@@ -23,16 +23,16 @@
                   android:layout_alignParentTop="true"
             />
 
-            <com.parse.ImageSelector
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/item_default_image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    android:visibility="visible"
-                    android:src="@drawable/party_flags"
-            />
+            <!--<com.parse.ImageSelector-->
+                    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                    <!--android:id="@+id/item_default_image_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:scaleType="centerCrop"-->
+                    <!--android:adjustViewBounds="true"-->
+                    <!--android:visibility="visible"-->
+                    <!--android:src="@drawable/party_flags"-->
+            <!--/>-->
 
             <net.honarnama.browse.widget.ImageGallery
                     android:id="@+id/images"
@@ -40,9 +40,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_alignParentTop="true"
                     android:visibility="visible"/>
-        </FrameLayout>
+        </RelativeLayout>
 
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

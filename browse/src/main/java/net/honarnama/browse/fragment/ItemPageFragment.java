@@ -105,7 +105,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     int mWidth;
     int mCurrPosition, mPrevPosition;
 
-    public ImageSelector mDefaultImageView;
+//    public ImageSelector mDefaultImageView;
 
     public LinearLayout mInfoProgreeBarContainer;
 
@@ -151,7 +151,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
         mBannerFrameLayout = rootView.findViewById(R.id.banner_frame);
-        mDefaultImageView = (ImageSelector) rootView.findViewById(R.id.item_default_image_view);
+//        mDefaultImageView = (ImageSelector) rootView.findViewById(R.id.item_default_image_view);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
         mPriceTextView = (TextView) rootView.findViewById(R.id.price);
@@ -424,7 +424,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         protected void onPreExecute() {
             super.onPreExecute();
             setVisibilityInFragment(mSimilarItemsContainer, View.GONE);
-            setVisibilityInFragment(mDefaultImageView, View.VISIBLE);
+//            setVisibilityInFragment(mDefaultImageView, View.VISIBLE);
             setVisibilityInFragment(mInfoProgreeBarContainer, View.VISIBLE);
             setVisibilityInFragment(mOnErrorRetry, View.GONE);
             setVisibilityInFragment(mDeletedItemMsg, View.GONE);
@@ -512,7 +512,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     private void loadItemInfo(net.honarnama.nano.Item item, final net.honarnama.nano.Store store, net.honarnama.nano.Item[] similarItems) {
 
         setVisibilityInFragment(mFab, View.VISIBLE);
-        setVisibilityInFragment(mDefaultImageView, View.GONE);
+//        setVisibilityInFragment(mDefaultImageView, View.GONE);
         setVisibilityInFragment(mInfoContainer, View.VISIBLE);
         setVisibilityInFragment(mOnErrorRetry, View.GONE);
         setVisibilityInFragment(mShare, View.VISIBLE);
