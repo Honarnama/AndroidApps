@@ -5,12 +5,14 @@ import com.parse.ImageSelector;
 import net.honarnama.browse.R;
 
 import android.content.Context;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Created by elnaz on 2/26/16.
  */
-public class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends PagerAdapter {
 
     private Context mContext;
     List<String> mImages = new ArrayList<>();
@@ -34,6 +36,11 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
+    }
+
+    @Override
     public int getCount() {
         if (mImages != null) {
             return mImages.size();
@@ -42,56 +49,44 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public boolean isViewFromObject(View view, Object object) {
+        return view.equals(object);
+    }
+
+
+    @Override
+    public Object instantiateItem(ViewGroup view, int position) {
+//
+        View imageLayout = mInflater.inflate(R.layout.gallery_row, view, false);
+
+        if (imageLayout == null) {
+            return null;
+        }
+        ImageSelector imageView = (ImageSelector) imageLayout
+                .findViewById(R.id.gallery_item_image);
+
+        ProgressBar progressBar = (ProgressBar) imageLayout.findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.VISIBLE);
+
+        imageView.setSource(mImages.get(position), progressBar, R.drawable.party_flags);
+        imageView.setAdjustViewBounds(true);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        view.addView(imageLayout, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        return imageLayout;
+    }
+
+
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {
+    }
+
+    @Override
+    public Parcelable saveState() {
         return null;
     }
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final MyViewHolder mViewHolder;
-
-        if (convertView == null) {
-            try {
-                convertView = mInflater.inflate(R.layout.gallery_row, parent, false);
-                mViewHolder = new MyViewHolder(convertView);
-                convertView.setTag(mViewHolder);
-            } catch (Exception ex) {
-                return null;
-            }
-
-        } else {
-            mViewHolder = (MyViewHolder) convertView.getTag();
-        }
-
-        ImageSelector imageView = mViewHolder.imageSelector;
-
-        mViewHolder.imageProgressBar.setVisibility(View.VISIBLE);
-        //TODO
-//        imageView.loadInBackground(mImages.get(position), new GetDataCallback() {
-//            @Override
-//            public void done(byte[] data, ParseException e) {
-//                mViewHolder.imageProgressBar.setVisibility(View.GONE);
-//            }
-//        });
-        imageView.setSource(mImages.get(position), mViewHolder.imageProgressBar, R.drawable.party_flags);
-        imageView.setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        imageView.setAdjustViewBounds(true);
-        return imageView;
-    }
-
-    private class MyViewHolder {
-        ImageSelector imageSelector;
-        ProgressBar imageProgressBar;
-
-        public MyViewHolder(View view) {
-            imageSelector = (ImageSelector) view.findViewById(R.id.gallery_item_image);
-            imageProgressBar = (ProgressBar) view.findViewById(R.id.gallery_item_image_progress_bar);
-        }
-
-    }
 }

@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray_super_extra_light"
-        >
+>
     <net.honarnama.base.utils.ObservableScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,14 +14,16 @@
             android:layoutDirection="rtl"
             android:id="@+id/fragment_scroll_view"
             android:background="@color/gray_super_extra_light"
-            >
+            android:verticalScrollbarPosition="left"
+            android:overScrollMode="never"
+    >
 
 
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingBottom="56dp"
                         android:background="@color/gray_super_extra_light"
-                >
+        >
 
             <include layout="@layout/item_page_header"
                      android:id="@+id/header_layout"></include>
@@ -32,7 +34,7 @@
                             android:id="@+id/on_error_retry_container"
                             android:layout_marginTop="20dp"
                             android:visibility="gone"
-                    >
+            >
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_centerHorizontal="true"
                         android:id="@+id/on_error_retry_icon"
@@ -40,7 +42,7 @@
                         android:layout_height="56dp"
                         app:iiv_icon="gmd-sync"
                         app:iiv_color="@color/gray_dark"
-                        />
+                />
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           style="@style/tiny_text_view"
@@ -48,7 +50,7 @@
                           android:id="@+id/on_error_retry_text_view"
                           android:layout_below="@id/on_error_retry_icon"
                           android:layout_centerHorizontal="true"
-                        />
+                />
             </RelativeLayout>
 
             <RelativeLayout android:layout_width="wrap_content"
@@ -59,7 +61,7 @@
                             android:layout_below="@id/header_layout"
                             android:layout_marginTop="20dp"
                             android:gravity="center"
-                    >
+            >
 
                 <TextView android:id="@+id/empty_items_text_view"
                           android:layout_width="wrap_content"
@@ -73,7 +75,7 @@
                           android:paddingLeft="10dp"
                           android:paddingRight="30dp"
                           android:text="@string/error_item_no_longer_exists"
-                        />
+                />
 
                 <com.mikepenz.iconics.view.IconicsImageView
                         android:id="@+id/no_item_warning_image"
@@ -84,7 +86,7 @@
                         android:layout_toRightOf="@id/empty_items_text_view"
                         android:layout_marginLeft="-24dp"
                         android:layout_centerVertical="true"
-                        />
+                />
             </RelativeLayout>
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -94,7 +96,7 @@
                             android:background="@color/gray_super_extra_light"
                             android:layoutDirection="rtl"
                             android:layout_below="@id/header_layout"
-                    >
+            >
                 <LinearLayout
                         android:id="@+id/item_info_progress_bar_container"
                         android:layout_width="fill_parent"
@@ -103,7 +105,7 @@
                         android:orientation="vertical"
                         android:visibility="gone"
                         android:layout_margin="5dp"
-                        >
+                >
                     <ProgressBar
                             style="?android:attr/progressBarStyle"
                             android:layout_width="wrap_content"
@@ -118,7 +120,7 @@
                             android:id="@+id/similar_items_container"
                             android:layout_below="@id/header_layout"
                             android:visibility="gone"
-                    >
+            >
 
 
                 <RelativeLayout android:layout_width="match_parent"
@@ -126,13 +128,13 @@
                                 android:id="@+id/similar_title_container"
                                 android:layout_marginBottom="10dp"
                                 android:layout_marginTop="10dp"
-                        >
+                >
 
                     <TextView
                             style="@style/section_title"
                             android:layout_centerHorizontal="true"
                             android:text="محصولات مشابه"
-                            />
+                    />
                     <LinearLayout
                             android:id="@+id/prev"
                             android:layout_width="wrap_content"
@@ -143,7 +145,7 @@
                             android:paddingRight="5dip"
                             android:descendantFocusability="blocksDescendants"
                             android:visibility="gone"
-                            >
+                    >
                         <com.mikepenz.iconics.view.IconicsImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
@@ -160,7 +162,7 @@
                             android:paddingRight="16dip"
                             android:descendantFocusability="blocksDescendants"
                             android:visibility="gone"
-                            >
+                    >
                         <com.mikepenz.iconics.view.IconicsImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
@@ -179,7 +181,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_below="@id/similar_title_container"
                         android:layoutDirection="rtl"
-                        >
+                >
                     <LinearLayout
                             android:id="@+id/innerLayout"
                             android:layout_width="wrap_content"
@@ -200,5 +202,5 @@
             android:src="@android:drawable/stat_sys_phone_call"
             app:fabSize="normal"
             android:visibility="gone"
-            />
+    />
 </android.support.design.widget.CoordinatorLayout>

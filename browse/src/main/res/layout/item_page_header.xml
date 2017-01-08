@@ -1,154 +1,134 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:padding="0dp"
-                android:layout_gravity="right"
-                android:gravity="right"
                 android:layoutDirection="rtl"
                 android:id="@+id/header_container"
                 android:background="@color/gray_super_extra_light"
-        >
-    <RelativeLayout android:layout_width="wrap_content"
+>
+    <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/item_banner_container"
-            >
+    >
 
-        <FrameLayout
-                android:id="@+id/item_banner_frame_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                     android:id="@+id/banner_frame"
+        >
+            <View android:id="@+id/fade_bg"
+                  android:layout_width="match_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  android:background="@drawable/fade_back"
+                  android:visibility="visible"
+                  android:layout_alignParentTop="true"
+            />
 
             <com.parse.ImageSelector
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/item_default_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentTop="true"
-                    app:riv_corner_radius="0dp"
-                    app:riv_border_width="0dp"
-                    app:riv_oval="false"
-                    app:outputX="640"
-                    app:outputY="640"
-                    app:riv_border_color="@color/gray_super_extra_light"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     android:visibility="visible"
-                    />
+                    android:src="@drawable/party_flags"
+            />
 
-            <!-- This is the Gallery -->
-            <Gallery xmlns:android="http://schemas.android.com/apk/res/android"
-                     android:id="@+id/gallery"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:adjustViewBounds="true"
-                    />
-
-            <View android:id="@+id/fade_bg"
-                  android:layout_width="fill_parent"
-                  android:layout_height="?attr/actionBarSize"
-                  android:background="@drawable/fade_back"
-                  android:visibility="visible"
-                  android:layout_alignParentTop="true"
-                    />
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/item_share_container"
-                            android:visibility="gone"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginRight="16dp"
-                    >
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        app:iiv_color="@color/white"
-                        app:iiv_icon="gmd-share"
-                        android:id="@+id/share_item_icon"
-                        android:clickable="true"
-                        />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:text="@string/share_us"
-                          android:textSize="14sp"
-                          android:textColor="@color/white"
-                          android:paddingRight="5dp"
-                          android:layout_toLeftOf="@id/share_item_icon"
-                          android:id="@+id/share_item_text"
-                          android:clickable="true"
-                        />
-            </RelativeLayout>
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/item_bookmark_container"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentLeft="true"
-                    >
-
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        app:iiv_color="@color/white"
-                        app:iiv_icon="gmd-lens"
-                        android:layout_centerInParent="true"
-                        android:layout_alignParentLeft="true"
-                        android:visibility="gone"
-                        android:id="@+id/bookmark_back"
-                        />
-
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:iiv_color="@color/gray"
-                        app:iiv_icon="gmd-stars"
-                        android:id="@+id/bookmark"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true"
-                        android:layout_alignParentLeft="true"
-                        android:clickable="true"
-                        />
-
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:iiv_color="@color/super_extra_dark_red"
-                        app:iiv_icon="gmd-stars"
-                        android:id="@+id/remove_bookmark"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true"
-                        android:layout_alignParentLeft="true"
-                        android:clickable="true"
-                        />
-
-            </RelativeLayout>
-
+            <net.honarnama.browse.widget.ImageGallery
+                    android:id="@+id/images"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:visibility="visible"/>
         </FrameLayout>
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/item_share_container"
+                        android:visibility="gone"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/red"
+                        android:layout_alignParentRight="true"
+
+        >
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-share"
+                    android:id="@+id/share_item_icon"
+                    android:clickable="true"
+            />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/share_us"
+                      android:textSize="14sp"
+                      android:textColor="@color/white"
+                      android:paddingRight="5dp"
+                      android:layout_toLeftOf="@id/share_item_icon"
+                      android:id="@+id/share_item_text"
+                      android:clickable="true"
+            />
+        </RelativeLayout>
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/item_bookmark_container"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:background="@color/happy_blue"
+        >
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-lens"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentLeft="true"
+                    android:visibility="gone"
+                    android:id="@+id/bookmark_back"
+            />
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_color="@color/gray"
+                    app:iiv_icon="gmd-stars"
+                    android:id="@+id/bookmark"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="true"
+            />
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_color="@color/super_extra_dark_red"
+                    app:iiv_icon="gmd-stars"
+                    android:id="@+id/remove_bookmark"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="true"
+            />
+
+        </RelativeLayout>
+
     </RelativeLayout>
-
-    <LinearLayout android:id="@+id/image_dots_container"
-                  android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:gravity="center"
-                  android:background="#00000000"
-                  android:layout_below="@id/item_banner_container"
-            >
-
-    </LinearLayout>
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/image_dots_container"
+                    android:layout_below="@id/item_banner_container"
                     android:id="@+id/item_info_container"
                     android:visibility="gone"
-            >
+    >
         <TextView
                 android:layout_margin="10dp"
                 android:id="@+id/item_name_text_view"
@@ -156,7 +136,7 @@
                 android:layout_centerHorizontal="true"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
-                />
+        />
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -166,7 +146,7 @@
                       android:id="@+id/place_container"
                       android:layout_marginRight="5dp"
                       android:layout_marginTop="10dp"
-                >
+        >
 
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="28dp"
@@ -175,14 +155,14 @@
                     app:iiv_icon="gmd-place"
                     android:paddingBottom="5dp"
                     android:id="@+id/item_place_icon"
-                    />
+            />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       style="@style/tiny_text_view"
                       android:id="@+id/item_place_text_view"
                       android:textSize="14sp"
                       android:textColor="@color/extra_dark_green"
                       android:layout_gravity="right|bottom"
-                    />
+            />
         </LinearLayout>
 
         <LinearLayout android:layout_width="match_parent"
@@ -194,7 +174,7 @@
                       android:layout_marginTop="10dp"
                       android:layout_below="@id/place_container"
                       style="@style/bordered_edit_text"
-                >
+        >
             <TextView style="@style/default_text_view"
                       android:text="@string/price_label"
                       android:layout_centerVertical="true"
@@ -203,17 +183,17 @@
                       android:focusable="false"
                       android:textStyle="bold"
                       android:lineSpacingExtra="5dp"
-                    />
+            />
             <TextView
                     style="@style/default_text_view"
                     android:layout_marginRight="10dp"
                     android:id="@+id/price"
                     android:lineSpacingExtra="5dp"
-                    />
+            />
             <TextView
                     style="@style/default_text_view"
                     android:text="@string/toman"
-                    />
+            />
         </LinearLayout>
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -227,7 +207,7 @@
                   android:background="@drawable/round_corner_white_back"
                   android:padding="10dp"
                   android:lineSpacingExtra="5dp"
-                />
+        />
 
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -238,7 +218,7 @@
                         android:id="@+id/item_shop_container"
                         android:gravity="right|center_vertical"
                         android:layout_below="@id/item_desc_text_view"
-                >
+        >
 
             <RelativeLayout android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -248,7 +228,7 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="60dp"
                             android:layout_marginRight="10dp"
-                    >
+            >
 
                 <TextView android:id="@+id/shop_name_text_view"
                           android:layout_width="match_parent"
@@ -259,7 +239,7 @@
                           android:ellipsize="end"
                           android:textStyle="bold"
                           android:textSize="14sp"
-                        />
+                />
 
                 <TextView android:id="@+id/view_shop_all_items"
                           android:layout_width="match_parent"
@@ -270,14 +250,14 @@
                           android:text="@string/view_shop_and_items"
                           android:singleLine="true"
                           android:ellipsize="end"
-                        />
+                />
             </RelativeLayout>
 
             <RelativeLayout android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/shop_logo_container"
                             android:layout_alignParentRight="true"
-                    >
+            >
 
                 <com.parse.ImageSelector
                         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -293,7 +273,7 @@
                         android:scaleX="1"
                         android:scaleY="1"
                         android:layout_centerVertical="true"
-                        />
+                />
 
                 <ProgressBar
                         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -304,7 +284,7 @@
                         android:background="@android:color/transparent"
                         android:id="@+id/store_logo_progress_bar"
                         android:visibility="gone"
-                        />
+                />
 
             </RelativeLayout>
         </RelativeLayout>

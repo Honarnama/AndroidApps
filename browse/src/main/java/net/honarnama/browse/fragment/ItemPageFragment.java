@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.mikepenz.iconics.view.IconicsImageView;
-import com.mikepenz.iconics.view.IconicsTextView;
 import com.parse.ImageSelector;
 
 import net.honarnama.GRPCUtils;
@@ -22,6 +21,7 @@ import net.honarnama.browse.adapter.ImageAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Bookmark;
+import net.honarnama.browse.widget.ImageGallery;
 import net.honarnama.nano.BrowseItemReply;
 import net.honarnama.nano.BrowseItemRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
@@ -33,7 +33,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.SQLException;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -45,7 +44,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Gallery;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -66,14 +64,12 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 public class ItemPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static ShopPageFragment mShopPageFragment;
     private Tracker mTracker;
-    public ProgressBar mBannerProgressBar;
 
     public TextView mNameTextView;
     public TextView mPriceTextView;
     public TextView mDescTextView;
     public TextView mPlaceTextView;
 
-    private LinearLayout mDotsLayout;
     public LinearLayout mInnerLayout;
     public RelativeLayout mSimilarTitleContainer;
 
@@ -83,10 +79,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mInfoContainer;
     public RelativeLayout mSimilarItemsContainer;
 
-
-    static TextView mDotsText[];
-    private int mDotsCount;
-
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
     private RelativeLayout mShare;
@@ -95,6 +87,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public long mItemId;
 
+    private ImageGallery mImageGallery;
     ImageAdapter mImageAdapter;
 
     public RelativeLayout mShopContainer;
@@ -119,6 +112,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mOnErrorRetry;
 
     public ConfirmationDialog mConfirmationDialog;
+
 
     @Override
     public String getTitle() {
@@ -156,7 +150,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
         mScrollView.setOnScrollChangedListener(this);
-        mBannerFrameLayout = rootView.findViewById(R.id.item_banner_frame_layout);
+        mBannerFrameLayout = rootView.findViewById(R.id.banner_frame);
         mDefaultImageView = (ImageSelector) rootView.findViewById(R.id.item_default_image_view);
 
         mNameTextView = (TextView) rootView.findViewById(R.id.item_name_text_view);
@@ -181,7 +175,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mSimilarTitleContainer = (RelativeLayout) rootView.findViewById(R.id.similar_title_container);
         mImageAdapter = new ImageAdapter(HonarnamaBrowseApp.getInstance());
-        mDotsLayout = (LinearLayout) rootView.findViewById(R.id.image_dots_container);
         mInnerLayout = (LinearLayout) rootView.findViewById(R.id.innerLayout);
 
         mInfoProgreeBarContainer = (LinearLayout) rootView.findViewById(R.id.item_info_progress_bar_container);
@@ -195,82 +188,66 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mInfoContainer = (RelativeLayout) rootView.findViewById(R.id.item_info_container);
         mSimilarItemsContainer = (RelativeLayout) rootView.findViewById(R.id.similar_items_container);
 
+
+        mImageGallery = (ImageGallery) rootView.findViewById(R.id.images);
+        mImageGallery.setAdapter(mImageAdapter);
+
+
         new getItemAsync().execute();
-
-        //here we create the gallery and set our adapter created before
-        Gallery gallery = (Gallery) rootView.findViewById(R.id.gallery);
-        gallery.setAdapter(mImageAdapter);
-
-        //when we scroll the images we have to set the dot that corresponds to the image to White and the others
-        //will be Gray
-        gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView adapterView, View view, int pos, long l) {
-                if (mDotsText != null) {
-                    for (int i = 0; i < mDotsCount; i++) {
-                        if (mDotsText.length > i && mDotsText[i] != null) {
-                            mDotsText[i].setTextSize(8);
-                        }
-                    }
-                    if (mDotsText.length > pos && mDotsText[pos] != null) {
-                        mDotsText[pos].setTextSize(12);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView adapterView) {
-
-            }
-        });
 
         mPrev = (LinearLayout) rootView.findViewById(R.id.prev);
         mNext = (LinearLayout) rootView.findViewById(R.id.next);
 
         mNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        mHorizontalScrollView.smoothScrollTo(
-                                (int) mHorizontalScrollView.getScrollX()
-                                        + mSimilarItemViewWidth,
-                                (int) mHorizontalScrollView.getScrollY());
-                    }
-                }, 100L);
-            }
-        });
+                                     @Override
+                                     public void onClick(View v) {
+                                         new Handler().postDelayed(new Runnable() {
+                                             public void run() {
+                                                 mHorizontalScrollView.smoothScrollTo(
+                                                         (int) mHorizontalScrollView.getScrollX()
+                                                                 + mSimilarItemViewWidth,
+                                                         (int) mHorizontalScrollView.getScrollY());
+                                             }
+                                         }, 100L);
+                                     }
+                                 }
+
+        );
         mPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        mHorizontalScrollView.smoothScrollTo(
-                                (int) mHorizontalScrollView.getScrollX()
-                                        - mSimilarItemViewWidth,
-                                (int) mHorizontalScrollView.getScrollY());
-                    }
-                }, 100L);
-            }
-        });
+                                     @Override
+                                     public void onClick(View v) {
+                                         new Handler().postDelayed(new Runnable() {
+                                             public void run() {
+                                                 mHorizontalScrollView.smoothScrollTo(
+                                                         (int) mHorizontalScrollView.getScrollX()
+                                                                 - mSimilarItemViewWidth,
+                                                         (int) mHorizontalScrollView.getScrollY());
+                                             }
+                                         }, 100L);
+                                     }
+                                 }
+
+        );
 
         mHorizontalScrollView = (HorizontalScrollView) rootView.findViewById(R.id.similar_items_hsv);
-        mGestureDetector = new GestureDetector(new MyGestureDetector());
-
+        mGestureDetector = new GestureDetector(new MyGestureDetector()
+        );
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         mWidth = display.getWidth(); // deprecated
         mSimilarItemViewWidth = mWidth / 3;
 
         mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mGestureDetector.onTouchEvent(event)) {
-                    return true;
-                }
-                return false;
-            }
-        });
+                                                     @Override
+                                                     public boolean onTouch(View v, MotionEvent event) {
+                                                         if (mGestureDetector.onTouchEvent(event)) {
+                                                             return true;
+                                                         }
+                                                         return false;
+                                                     }
+                                                 }
+
+        );
 
         return rootView;
     }
@@ -603,23 +580,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         mImageAdapter.setImages(nonNullImages);
         mImageAdapter.notifyDataSetChanged();
 
-        mDotsCount = mImageAdapter.getCount();
-        if (mDotsCount > 1) {
-            mDotsText = new IconicsTextView[mDotsCount];
-            for (int i = 0; i < mDotsCount; i++) {
-                mDotsText[i] = new IconicsTextView(HonarnamaBrowseApp.getInstance());
-                mDotsText[i].setText("{gmd-brightness-1}");
-                mDotsText[i].setTextSize(8);
-                if (i == 0) {
-                    mDotsText[i].setPadding(0, 10, 0, 0);
-                } else {
-                    mDotsText[i].setPadding(0, 10, 10, 0);
-                }
-                mDotsText[i].setTypeface(null, Typeface.BOLD);
-                mDotsText[i].setTextColor(getResources().getColor(R.color.amber_primary_dark));
-                mDotsLayout.addView(mDotsText[i]);
-            }
-        }
+        mImageGallery.setSwipeHandler(mImageAdapter.getCount());
 
         if (similarItems.length == 0) {
             setVisibilityInFragment(mSimilarItemsContainer, View.GONE);

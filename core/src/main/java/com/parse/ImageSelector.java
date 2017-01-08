@@ -701,4 +701,15 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         }, 1000);
 
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Drawable d = getDrawable();
+        if (d != null) {
+            int w = MeasureSpec.getSize(widthMeasureSpec);
+            int h = w * d.getIntrinsicHeight() / d.getIntrinsicWidth();
+            setMeasuredDimension(w, h);
+        }
+        else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
 }

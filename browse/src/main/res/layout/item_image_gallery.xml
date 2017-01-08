@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+                android:id="@+id/image_pager"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+        <RelativeLayout android:id="@+id/image_dots_container"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:gravity="center"
+                      android:background="#00000000"
+        >
+        </RelativeLayout>
+
+        <!--<net.honarnama.browse.CirclePageIndicator-->
+        <!--android:id="@+id/indicator"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="10dip"-->
+        <!--app:pageColor="@android:color/white"-->
+        <!--app:fillColor="@color/red_high"-->
+        <!--app:strokeColor="@color/red_high"-->
+        <!--android:background="@android:color/white"/>-->
+    </LinearLayout>
+
+</RelativeLayout>
