@@ -4,7 +4,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:layoutDirection="rtl"
-        >
+>
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -13,23 +13,24 @@
             android:layout_below="@+id/close_button_container"
             android:layout_margin="10dp"
             android:padding="10dp"
-            >
+    >
         <TextView
                 style="@style/section_title"
                 android:text="@string/contact_info"
                 android:textColor="@color/dark_cyan"
                 android:id="@+id/contact_title"
                 android:layout_marginTop="10dp"
-                />
+                android:layout_alignParentRight="true"
+        />
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@+id/contact_title"
-                      android:layout_marginTop="16dp"
-                      android:id="@+id/phone_container"
-                >
-
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/contact_title"
+                        android:layout_marginTop="16dp"
+                        android:id="@+id/phone_container"
+                        android:layout_alignParentRight="true"
+        >
 
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="20dp"
@@ -37,13 +38,17 @@
                     app:iiv_icon="gmd-phone"
                     app:iiv_color="@color/amber_primary_dark"
                     android:layout_centerInParent="true"
-                    />
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/phone_icon"
+            />
 
             <TextView
                     style="@style/default_text_view"
                     android:text="تماس با: "
                     android:paddingRight="10dp"
-                    />
+                    android:layout_toLeftOf="@+id/phone_icon"
+                    android:id="@+id/phone_label"
+            />
 
             <TextView
                     style="@style/default_text_view"
@@ -52,18 +57,18 @@
                     android:clickable="true"
                     android:id="@+id/phone_text_view"
                     android:textColor="@color/gray"
-                    />
+                    android:layout_toLeftOf="@+id/phone_label"
+            />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@+id/phone_container"
-                      android:layout_marginTop="16dp"
-                      android:id="@+id/cell_container"
-                >
-
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/phone_container"
+                        android:layout_marginTop="16dp"
+                        android:id="@+id/cell_container"
+        >
 
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="20dp"
@@ -71,13 +76,17 @@
                     app:iiv_icon="gmd-phone-android"
                     app:iiv_color="@color/amber_primary_dark"
                     android:layout_centerInParent="true"
-                    />
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/cell_icon"
+            />
 
             <TextView
                     style="@style/default_text_view"
                     android:text="تماس با: "
                     android:paddingRight="10dp"
-                    />
+                    android:layout_toLeftOf="@+id/cell_icon"
+                    android:id="@+id/cell_label"
+            />
 
             <TextView
                     style="@style/default_text_view"
@@ -86,9 +95,10 @@
                     android:clickable="true"
                     android:id="@+id/cell_text_view"
                     android:textColor="@color/gray"
-                    />
+                    android:layout_toLeftOf="@+id/cell_label"
+            />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
                 style="@style/tiny_text_view"
@@ -97,7 +107,7 @@
                 android:lineSpacingExtra="10dp"
                 android:id="@+id/contact_warning"
                 android:layout_marginBottom="10dp"
-                />
+        />
 
     </RelativeLayout>
 
@@ -109,7 +119,7 @@
                     android:layout_marginBottom="-25dp"
                     android:clickable="true"
                     android:id="@+id/close_button_container"
-            >
+    >
 
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_width="30dp"
@@ -118,7 +128,7 @@
                 app:iiv_color="@color/super_extra_dark_red"
                 android:layout_centerInParent="true"
                 android:id="@+id/close_button"
-                />
+        />
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
@@ -126,7 +136,7 @@
                 app:iiv_color="@color/white"
                 android:layout_centerInParent="true"
                 android:id="@id/close_button"
-                />
+        />
 
     </RelativeLayout>
 

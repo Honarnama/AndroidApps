@@ -197,7 +197,7 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="bottom|left"
             android:layout_margin="16dp"
             android:src="@android:drawable/stat_sys_phone_call"
             app:fabSize="normal"

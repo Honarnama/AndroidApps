@@ -15,23 +15,15 @@
         <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
                         android:id="@+id/banner_frame"
         >
-            <View android:id="@+id/fade_bg"
-                  android:layout_width="match_parent"
-                  android:layout_height="?attr/actionBarSize"
-                  android:background="@drawable/fade_back"
-                  android:visibility="visible"
-                  android:layout_alignParentTop="true"
-            />
-
             <!--<com.parse.ImageSelector-->
-                    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-                    <!--android:id="@+id/item_default_image_view"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:scaleType="centerCrop"-->
-                    <!--android:adjustViewBounds="true"-->
-                    <!--android:visibility="visible"-->
-                    <!--android:src="@drawable/party_flags"-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/item_default_image_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:visibility="visible"-->
+            <!--android:src="@drawable/party_flags"-->
             <!--/>-->
 
             <net.honarnama.browse.widget.ImageGallery
@@ -43,6 +35,13 @@
                     android:visibility="visible"/>
         </RelativeLayout>
 
+        <View android:id="@+id/fade_bg"
+              android:layout_width="match_parent"
+              android:layout_height="?attr/actionBarSize"
+              android:background="@drawable/fade_back"
+              android:visibility="visible"
+              android:layout_alignParentTop="true"
+        />
         <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/item_share_container"
@@ -50,7 +49,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
-                        android:background="@color/red"
                         android:layout_alignParentRight="true"
 
         >
@@ -61,6 +59,7 @@
                     app:iiv_icon="gmd-share"
                     android:id="@+id/share_item_icon"
                     android:clickable="true"
+                    android:layout_alignParentRight="true"
             />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="@string/share_us"
@@ -73,14 +72,13 @@
             />
         </RelativeLayout>
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+        <RelativeLayout android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:id="@+id/item_bookmark_container"
                         android:layout_marginTop="16dp"
                         android:layout_marginLeft="16dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
-                        android:background="@color/happy_blue"
         >
 
             <com.mikepenz.iconics.view.IconicsImageView
@@ -137,14 +135,13 @@
                 android:paddingLeft="5dp"
         />
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:layout_below="@id/item_name_text_view"
-                      android:gravity="right"
-                      android:id="@+id/place_container"
-                      android:layout_marginRight="5dp"
-                      android:layout_marginTop="10dp"
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/item_name_text_view"
+                        android:gravity="right"
+                        android:id="@+id/place_container"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
         >
 
             <com.mikepenz.iconics.view.IconicsImageView
@@ -154,6 +151,7 @@
                     app:iiv_icon="gmd-place"
                     android:paddingBottom="5dp"
                     android:id="@+id/item_place_icon"
+                    android:layout_alignParentRight="true"
             />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       style="@style/tiny_text_view"
@@ -161,39 +159,45 @@
                       android:textSize="14sp"
                       android:textColor="@color/extra_dark_green"
                       android:layout_gravity="right|bottom"
+                      android:layout_toLeftOf="@+id/item_place_icon"
+                      android:layout_alignParentBottom="true"
             />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/price_container"
-                      android:orientation="horizontal"
-                      android:layout_marginRight="5dp"
-                      android:layout_marginLeft="5dp"
-                      android:layout_marginTop="10dp"
-                      android:layout_below="@id/place_container"
-                      style="@style/bordered_edit_text"
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/price_container"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/place_container"
+                        style="@style/bordered_edit_text"
         >
             <TextView style="@style/default_text_view"
                       android:text="@string/price_label"
+                      android:id="@+id/price_label"
                       android:layout_centerVertical="true"
                       android:editable="false"
                       android:cursorVisible="false"
                       android:focusable="false"
                       android:textStyle="bold"
                       android:lineSpacingExtra="5dp"
+                      android:layout_alignParentRight="true"
             />
             <TextView
                     style="@style/default_text_view"
                     android:layout_marginRight="10dp"
                     android:id="@+id/price"
                     android:lineSpacingExtra="5dp"
+                    android:layout_toLeftOf="@+id/price_label"
             />
             <TextView
                     style="@style/default_text_view"
                     android:text="@string/toman"
+                    android:layout_toLeftOf="@+id/price"
+                    android:paddingRight="5dp"
             />
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                   style="@style/default_text_view"
@@ -220,13 +224,12 @@
         >
 
             <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="60dp"
                             android:background="@drawable/important_bar_background"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
                             android:paddingLeft="10dp"
                             android:paddingRight="60dp"
                             android:layout_marginRight="10dp"
+                            android:gravity="center_vertical"
             >
 
                 <TextView android:id="@+id/shop_name_text_view"
