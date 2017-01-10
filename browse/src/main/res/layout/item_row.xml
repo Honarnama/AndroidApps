@@ -113,6 +113,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="10dp"
                     android:layout_alignParentLeft="true"
+                    android:padding="5dp"
     >
 
         <com.mikepenz.iconics.view.IconicsImageView
@@ -120,13 +121,13 @@
                 android:layout_height="20dp"
                 android:layout_alignParentLeft="true"
                 app:iiv_icon="gmd-clear"
-                app:iiv_color="@color/gray_dark"
+                app:iiv_color="@color/super_extra_dark_red"
                 android:layout_centerVertical="true"
                 android:id="@+id/delete_bookmark"
                 android:clickable="true"
-                android:layout_marginBottom="10dp"
                 android:gravity="left|center_vertical"
                 android:visibility="gone"
+                android:layout_marginBottom="10dp"
         />
 
     </RelativeLayout>

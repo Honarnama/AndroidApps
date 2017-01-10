@@ -170,8 +170,8 @@
                       android:id="@+id/shop_place_text_view"
                       android:textSize="14sp"
                       android:textColor="@color/extra_dark_green"
-                      android:layout_gravity="right|bottom"
                       android:layout_toLeftOf="@+id/shop_place_icon"
+                      android:layout_gravity="right|bottom"
             />
         </RelativeLayout>
 
