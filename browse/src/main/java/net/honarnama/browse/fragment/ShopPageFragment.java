@@ -11,6 +11,7 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.WindowUtil;
+import net.honarnama.base.widget.NestedListView;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
@@ -39,6 +40,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,7 +72,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopName;
     public TextView mShopDesc;
     public TextView mShopPlace;
-    public ListView mListView;
+    public NestedListView mListView;
 
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
@@ -123,7 +125,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final View rootView = inflater.inflate(R.layout.fragment_shop_page, container, false);
         mShopId = getArguments().getLong("shopId");
 
-        mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
+        mListView = (NestedListView) rootView.findViewById(R.id.shop_items_listView);
 
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 
@@ -160,6 +162,28 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
+
+//        mListView.setOnTouchListener(new ListView.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                int action = event.getAction();
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        // Disallow ScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(true);
+//                        break;
+//
+//                    case MotionEvent.ACTION_UP:
+//                        // Allow ScrollView to intercept touch events.
+//                        v.getParent().requestDisallowInterceptTouchEvent(false);
+//                        break;
+//                }
+//
+//                // Handle ListView touch events.
+//                v.onTouchEvent(event);
+//                return true;
+//            }
+//        });
 
         new getStoreAsync().execute();
 
@@ -341,7 +365,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             }
             mItemsAdapter.setItems(itemsList);
             mItemsAdapter.notifyDataSetChanged();
-            WindowUtil.setListViewHeightBasedOnChildren(mListView);
+//            WindowUtil.setListViewHeightBasedOnChildren(mListView);
         }
     }
+
 }

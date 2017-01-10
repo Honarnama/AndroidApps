@@ -66,6 +66,8 @@ public class ShopsAdapter extends BaseAdapter {
 
         if (convertView == null || !(convertView.getTag() instanceof ViewHolderWithImage)) {
             convertView = View.inflate(mContext, R.layout.shop_row, null);
+//            convertView = mInflater.inflate(R.layout.shop_row, parent, false);
+
             mViewHolderWithImage = new ViewHolderWithImage(convertView);
             convertView.setTag(mViewHolderWithImage);
         } else {

@@ -7,12 +7,11 @@
                 android:gravity="right"
                 android:layoutDirection="rtl"
                 android:id="@+id/header_container"
-        >
+>
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/store_banner_container"
-            >
-
+    >
         <FrameLayout
                 android:id="@+id/store_banner_frame_layout"
                 android:layout_width="match_parent"
@@ -34,7 +33,7 @@
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     android:visibility="visible"
-                    />
+            />
             <ProgressBar
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     style="@style/GenericProgressIndicator"
@@ -46,45 +45,47 @@
                     android:layout_gravity="center"
                     android:id="@+id/banner_progress_bar"
                     android:visibility="gone"
-                    />
+            />
 
-            <View android:id="@+id/fade_bg"
-                  android:layout_width="fill_parent"
-                  android:layout_height="?attr/actionBarSize"
-                  android:background="@drawable/fade_back"
-                  android:visibility="visible"
-                  android:layout_alignParentTop="true"
-                    />
-
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/shop_share_container"
-                            android:visibility="gone"
-                            android:clickable="true"
-                    >
-                <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        app:iiv_color="@color/white"
-                        app:iiv_icon="gmd-share"
-                        android:layout_gravity="top|right"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:id="@+id/share_shop"
-
-                        />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:text="@string/share_us"
-                          android:textSize="14sp"
-                          android:textColor="@color/white"
-                          android:paddingRight="5dp"
-                          android:layout_toLeftOf="@id/share_shop"
-                          android:layout_marginTop="16dp"
-                        />
-            </RelativeLayout>
 
         </FrameLayout>
+
+        <View android:id="@+id/fade_bg"
+              android:layout_width="fill_parent"
+              android:layout_height="?attr/actionBarSize"
+              android:background="@drawable/fade_back"
+              android:visibility="visible"
+              android:layout_alignParentTop="true"
+        />
+
+        <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:id="@+id/shop_share_container"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+        >
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:iiv_color="@color/white"
+                    app:iiv_icon="gmd-share"
+                    android:id="@+id/share_shop"
+                    android:layout_alignParentRight="true"
+
+            />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/share_us"
+                      android:textSize="14sp"
+                      android:textColor="@color/white"
+                      android:paddingRight="5dp"
+                      android:layout_toLeftOf="@id/share_shop"
+            />
+        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -93,7 +94,8 @@
                     android:id="@+id/store_logo_container"
                     android:layout_below="@id/store_banner_container"
                     android:layout_marginTop="-50dp"
-            >
+                    android:layout_centerHorizontal="true"
+    >
 
         <com.parse.ImageSelector
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -114,7 +116,7 @@
                 android:layout_alignParentTop="true"
                 app:removable="true"
                 app:imageSelectorIndex="2"
-                />
+        />
 
         <ProgressBar
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -127,7 +129,7 @@
                 android:background="@android:color/transparent"
                 android:id="@+id/logo_progress_bar"
                 android:visibility="gone"
-                />
+        />
     </RelativeLayout>
 
     <RelativeLayout android:layout_width="match_parent"
@@ -135,7 +137,7 @@
                     android:layout_below="@id/store_logo_container"
                     android:id="@+id/store_info_container"
                     android:visibility="gone"
-            >
+    >
         <TextView
                 android:layout_marginTop="10dp"
                 android:id="@+id/store_name_text_view"
@@ -143,17 +145,16 @@
                 android:layout_centerHorizontal="true"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
-                />
+        />
 
-        <LinearLayout android:layout_width="match_parent"
+        <RelativeLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:orientation="horizontal"
                       android:layout_below="@id/store_name_text_view"
                       android:gravity="right"
                       android:id="@+id/place_container"
                       android:layout_marginRight="5dp"
                       android:layout_marginTop="5dp"
-                >
+        >
 
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="28dp"
@@ -162,15 +163,17 @@
                     app:iiv_icon="gmd-place"
                     android:paddingBottom="5dp"
                     android:id="@+id/shop_place_icon"
-                    />
+                    android:layout_alignParentRight="true"
+            />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       style="@style/tiny_text_view"
                       android:id="@+id/shop_place_text_view"
                       android:textSize="14sp"
                       android:textColor="@color/extra_dark_green"
                       android:layout_gravity="right|bottom"
-                    />
-        </LinearLayout>
+                      android:layout_toLeftOf="@+id/shop_place_icon"
+            />
+        </RelativeLayout>
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                   style="@style/default_text_view"
@@ -184,16 +187,15 @@
                   android:padding="10dp"
                   android:lineSpacingExtra="5dp"
                   android:layout_marginBottom="16dp"
-                />
+        />
 
         <TextView
                 android:layout_below="@id/store_desc_text_view"
                 style="@style/section_title"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/shop_items"
-                />
+        />
     </RelativeLayout>
 
 
@@ -202,7 +204,7 @@
                     android:layout_below="@id/store_logo_container"
                     android:id="@+id/on_error_retry_container"
                     android:visibility="gone"
-            >
+    >
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
@@ -211,7 +213,7 @@
                 android:layout_height="56dp"
                 app:iiv_icon="gmd-sync"
                 app:iiv_color="@color/gray_dark"
-                />
+        />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   style="@style/tiny_text_view"
@@ -219,7 +221,7 @@
                   android:id="@+id/on_error_retry_text_view"
                   android:layout_below="@id/on_error_retry_icon"
                   android:layout_centerHorizontal="true"
-                />
+        />
     </RelativeLayout>
 
 </RelativeLayout>
