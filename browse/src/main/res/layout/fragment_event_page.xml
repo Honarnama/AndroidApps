@@ -66,44 +66,47 @@
                             android:id="@+id/banner_progress_bar"
                             android:visibility="gone"
                     />
-                    <View android:id="@+id/fade_bg"
-                          android:layout_width="fill_parent"
-                          android:layout_height="?attr/actionBarSize"
-                          android:background="@drawable/fade_back"
-                          android:visibility="visible"
-                          android:layout_alignParentTop="true"
-                    />
-
-                    <RelativeLayout android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:id="@+id/event_share_container"
-                                    android:visibility="gone"
-                                    android:clickable="true"
-                    >
-                        <com.mikepenz.iconics.view.IconicsImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                app:iiv_color="@color/white"
-                                app:iiv_icon="gmd-share"
-                                android:layout_gravity="top|right"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginRight="16dp"
-                                android:id="@+id/share_event"
-
-                        />
-                        <TextView android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/share_us"
-                                  android:textSize="14sp"
-                                  android:textColor="@color/white"
-                                  android:paddingRight="5dp"
-                                  android:layout_toLeftOf="@id/share_event"
-                                  android:layout_marginTop="16dp"
-                        />
-                    </RelativeLayout>
 
                 </FrameLayout>
+
+                <View android:id="@+id/fade_bg"
+                      android:layout_width="fill_parent"
+                      android:layout_height="?attr/actionBarSize"
+                      android:background="@drawable/fade_back"
+                      android:visibility="visible"
+                      android:layout_alignParentTop="true"
+                />
+
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/event_share_container"
+                                android:visibility="gone"
+                                android:clickable="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentLeft="true"
+                >
+                    <com.mikepenz.iconics.view.IconicsImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:iiv_color="@color/white"
+                            app:iiv_icon="gmd-share"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="16dp"
+                            android:id="@+id/share_event"
+                            android:layout_alignParentRight="true"
+
+                    />
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/share_us"
+                              android:textSize="14sp"
+                              android:textColor="@color/white"
+                              android:paddingRight="5dp"
+                              android:layout_toLeftOf="@id/share_event"
+                              android:layout_marginTop="16dp"
+                    />
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -134,13 +137,12 @@
                         android:paddingLeft="5dp"
                 />
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="horizontal"
-                              android:layout_below="@id/event_name_text_view"
-                              android:gravity="right"
-                              android:id="@+id/place_container"
-                              android:layout_marginRight="5dp"
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/event_name_text_view"
+                                android:gravity="right"
+                                android:id="@+id/place_container"
+                                android:layout_marginRight="5dp"
                 >
 
                     <com.mikepenz.iconics.view.IconicsImageView
@@ -150,6 +152,7 @@
                             app:iiv_icon="gmd-place"
                             android:paddingBottom="5dp"
                             android:id="@+id/event_place_icon"
+                            android:layout_alignParentRight="true"
                     />
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
@@ -157,9 +160,10 @@
                               android:id="@+id/event_place_text_view"
                               android:textSize="14sp"
                               android:textColor="@color/extra_dark_green"
+                              android:layout_toLeftOf="@+id/event_place_icon"
                               android:layout_gravity="right|bottom"
                     />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                           style="@style/default_text_view"
@@ -221,10 +225,9 @@
                 >
 
                     <RelativeLayout android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="60dp"
                                     android:background="@drawable/important_bar_background"
-                                    android:paddingTop="10dp"
-                                    android:paddingBottom="10dp"
+                                    android:gravity="center_vertical"
                                     android:paddingLeft="10dp"
                                     android:paddingRight="60dp"
                                     android:layout_marginRight="10dp"
@@ -361,7 +364,7 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="bottom|left"
             android:layout_margin="16dp"
             android:src="@android:drawable/stat_sys_phone_call"
             app:fabSize="normal"

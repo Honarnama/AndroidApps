@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/round_corner_white_back"
                 android:id="@+id/event_row_container"
                 android:descendantFocusability="blocksDescendants"
@@ -10,6 +10,8 @@
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/event_image_in_list_container"
+                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
             >
         <RelativeLayout
                 style="@style/GenericProgressBackground"
@@ -17,8 +19,6 @@
                 android:visibility="gone"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_margin="5dp"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/bordered_box"
                 >
             <ProgressBar
@@ -31,28 +31,25 @@
                 android:id="@+id/event_image_in_list"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_alignParentRight="true"
-                android:layout_margin="5dp"
                 android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
                 android:src="@drawable/default_logo_hand"
                 app:riv_border_width="1dp"
                 app:riv_border_color="@color/gray_light"
                 />
     </RelativeLayout>
 
-
     <TextView
             android:id="@+id/event_title_in_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_alignTop="@android:id/icon"
             android:layout_toLeftOf="@id/event_image_in_list_container"
             style="@style/default_text_view"
             android:textStyle="bold"
             android:singleLine="true"
             android:ellipsize="end"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
             />
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -85,7 +82,6 @@
               android:id="@+id/event_place_text_view"
               android:layout_alignParentBottom="true"
               android:paddingBottom="5dp"
-              android:layout_below="@id/event_desc_in_list"
               android:layout_toLeftOf="@id/event_place_icon_list"
             />
 
