@@ -140,8 +140,7 @@ public class ChildFragment extends HonarnamaBrowseFragment {
                     childFragmentManager.popBackStackImmediate();
                     childFragmentManager.executePendingTransactions();
                     topFragment = (HonarnamaBaseFragment) childFragmentManager.findFragmentById(R.id.child_fragment_root);
-                    TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
-                    toolbarTitle.setText(topFragment.getTitle());
+                    controlPanelActivity.setTitle(topFragment.getTitle());
                 }
 //                TextView toolbarTitle = (TextView) controlPanelActivity.findViewById(R.id.toolbar_title);
 //                toolbarTitle.setText(getString(R.string.hornama));
