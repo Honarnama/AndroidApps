@@ -48,7 +48,7 @@ public class HonarnamaBrowseActivity extends HonarnamaBaseActivity {
             @Override
             public void onMetaUpdateDone(int replyCode) {
                 if (net.honarnama.base.BuildConfig.DEBUG) {
-                    logD("Meta Update replyCode: " + replyCode);
+                    logD("Browse Meta Update replyCode: " + replyCode);
                 }
                 switch (replyCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:

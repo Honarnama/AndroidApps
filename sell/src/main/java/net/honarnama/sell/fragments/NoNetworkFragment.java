@@ -73,6 +73,10 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
 
             case R.id.no_network_fragment_retry_icon:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+
+                    ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                    controlPanelActivity.checkAndUpdateMeta();
+
                     Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
                     getActivity().finish();
                     startActivity(intent);

@@ -1191,6 +1191,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 @Override
                 public void onClick(View v) {
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+
+                        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                        controlPanelActivity.checkAndUpdateMeta();
+
                         new getStoreAsync().execute();
                         dismissSnackbar();
                     }

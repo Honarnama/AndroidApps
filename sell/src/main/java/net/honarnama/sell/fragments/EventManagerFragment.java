@@ -571,6 +571,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                         return;
                     }
+
                     provinceDialog.dismiss();
                     displayProgressDialog(null);
                     new MetaUpdater(mMetaUpdateListener, 0).execute();
@@ -1440,6 +1441,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                 @Override
                 public void onClick(View v) {
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+
+                        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
+                        controlPanelActivity.checkAndUpdateMeta();
+
                         new getEventAsync().execute();
                         dismissSnackbar();
                     }

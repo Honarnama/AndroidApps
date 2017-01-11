@@ -471,6 +471,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
+        checkAndUpdateMeta();
         try {
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
@@ -815,6 +816,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void refreshTopFragment() {
+        checkAndUpdateMeta();
+
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
         FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();

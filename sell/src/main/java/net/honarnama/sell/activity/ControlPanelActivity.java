@@ -186,22 +186,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //            return;
 //        }
 
-        MetaUpdateListener metaUpdateListener = new MetaUpdateListener() {
-            @Override
-            public void onMetaUpdateDone(int replyCode) {
-                if (BuildConfig.DEBUG) {
-                    logD("Meta Update replyCode: " + replyCode);
-                }
-                switch (replyCode) {
-                    case ReplyProperties.UPGRADE_REQUIRED:
-                        displayUpgradeRequiredDialog();
-                        break;
-                }
-            }
-        };
-        long metaVersion = getSharedPreferences(HonarnamaBaseApp.PREF_NAME_SELL_APP, Context.MODE_PRIVATE).getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
-        MetaUpdater metaUpdater = new MetaUpdater(metaUpdateListener, metaVersion);
-        metaUpdater.execute();
+        checkAndUpdateMeta();
 
         checkAndAskStoragePermission(this);
     }
@@ -347,7 +332,9 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //            }
 //        }
 
+        checkAndUpdateMeta();
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
+
         mFragment = fragment;
 
         if (mFragment == CPanelFragment.getInstance()) {
