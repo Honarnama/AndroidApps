@@ -64,7 +64,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     provided 'javax.annotation:jsr250-api:1.0'
-    compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'io.grpc:grpc-okhttp:1.0.3'
     compile 'io.grpc:grpc-protobuf-nano:1.0.0'
     compile 'io.grpc:grpc-stub:1.0.3'

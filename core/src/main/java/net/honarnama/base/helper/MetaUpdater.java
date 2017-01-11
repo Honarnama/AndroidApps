@@ -20,6 +20,7 @@ import android.util.Log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -169,6 +170,8 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
         }
         try {
             MetaServiceGrpc.MetaServiceBlockingStub stub = GRPCUtils.getInstance().getMetaServiceGrpc();
+//            stub = stub.withDeadlineAfter(15, TimeUnit.SECONDS);
+
             if (BuildConfig.DEBUG) {
                 Log.d("GRPC-HN", "updateMetaData :: stub= " + stub);
             }

@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import io.grpc.CallOptions;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -107,28 +108,29 @@ public class GRPCUtils {
 
     public MetaServiceGrpc.MetaServiceBlockingStub getMetaServiceGrpc() {
         // TODO: cache
-        return MetaServiceGrpc.newBlockingStub(mChannel);
+        return MetaServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(15, TimeUnit.SECONDS);
     }
 
     public AuthServiceGrpc.AuthServiceBlockingStub getAuthServiceGrpc() {
         // TODO: cache
-        return AuthServiceGrpc.newBlockingStub(mChannel);
+        return AuthServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(15, TimeUnit.SECONDS);
     }
 
     public SellServiceGrpc.SellServiceBlockingStub getSellServiceGrpc() {
         // TODO: cache
-        return SellServiceGrpc.newBlockingStub(mChannel);
+        return SellServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(30, TimeUnit.SECONDS);
     }
 
     public CommunicationServiceGrpc.CommunicationServiceBlockingStub getCommunicationServiceGrpc() {
         // TODO: cache
-        return CommunicationServiceGrpc.newBlockingStub(mChannel);
+        return CommunicationServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(10, TimeUnit.SECONDS);
     }
 
     public BrowseServiceGrpc.BrowseServiceBlockingStub getBrowseServiceGrpc() {
         // TODO: cache
-        return BrowseServiceGrpc.newBlockingStub(mChannel);
+        return BrowseServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(15, TimeUnit.SECONDS).withInterceptors();
     }
+
 
 
     public void processReplyProperties() {

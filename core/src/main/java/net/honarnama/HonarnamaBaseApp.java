@@ -66,6 +66,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final String PREF_KEY_LOGIN_TOKEN = "login_token";
 
     public static String PREF_KEY_META_VERSION = "meta_version";
+    public static String PREF_KEY_META_CHECKED_TIME = "meta_checked_time";
 
     public static String PREF_NAME_SELL_APP = "honarnama_sell";
     public static String PREF_NAME_BROWSE_APP = "honarnama_browse";
