@@ -186,7 +186,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //            return;
 //        }
 
-        checkAndUpdateMeta();
+        checkAndUpdateMeta(false);
 
         checkAndAskStoragePermission(this);
     }
@@ -332,7 +332,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 //            }
 //        }
 
-        checkAndUpdateMeta();
+        checkAndUpdateMeta(false);
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
 
         mFragment = fragment;
@@ -700,5 +700,11 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         }
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        runScheduledMetaUpdate();
+    }
 
 }

@@ -103,6 +103,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             logD("Art Categories Hierarchy: " + mCategoriesHierarchyHashMap);
         }
 
+        checkAndUpdateMeta(false);
         setNodeCategories();
         populateList();
     }
@@ -143,8 +144,8 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
         }
 
         if (BuildConfig.DEBUG) {
-            logD("Selected Cat ids: "+ mCurrentArtCategoriesObjectIds);
-            logD("Selected Cat names: "+ mCurrentArtCategoriesName);
+            logD("Selected Cat ids: " + mCurrentArtCategoriesObjectIds);
+            logD("Selected Cat names: " + mCurrentArtCategoriesName);
         }
 
         mCategoriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

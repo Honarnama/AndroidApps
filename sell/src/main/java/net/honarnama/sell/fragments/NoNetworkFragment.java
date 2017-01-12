@@ -75,7 +75,7 @@ public class NoNetworkFragment extends HonarnamaBaseFragment implements View.OnC
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
 
                     ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                    controlPanelActivity.checkAndUpdateMeta();
+                    controlPanelActivity.checkAndUpdateMeta(false);
 
                     Intent intent = new Intent(getActivity(), ControlPanelActivity.class);
                     getActivity().finish();

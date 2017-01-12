@@ -5,11 +5,15 @@ import com.crashlytics.android.Crashlytics;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.base.helper.MetaUpdater;
+import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.base.utils.CommonUtil;
+import net.honarnama.nano.ReplyProperties;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,6 +27,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Date;
+
 /**
  * Created by reza on 7/23/15.
  */
@@ -31,6 +37,8 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     private boolean announced = false;
     public Dialog mAskToRateDialog;
 
+    MetaUpdateListener mMetaUpdateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +46,31 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
             Log.d(HonarnamaBaseApp.PRODUCTION_TAG, "Activity created,\tadb catlog tag:   'Honarnama/" + getLocalClassName() + ":V'");
             announced = true;
         }
+
+        mMetaUpdateListener = new MetaUpdateListener() {
+            @Override
+            public void onMetaUpdateDone(int replyCode) {
+
+                //getting the current time in milliseconds, and creating a Date object from it:
+                Date date = new Date(System.currentTimeMillis()); //or simply new Date();
+
+                //converting it back to a milliseconds representation:
+                long millis = date.getTime();
+
+                SharedPreferences.Editor editor = HonarnamaBaseApp.getAppSharedPref().edit();
+                editor.putLong(HonarnamaBaseApp.PREF_KEY_META_CHECKED_TIME, millis);
+                editor.commit();
+
+                if (net.honarnama.base.BuildConfig.DEBUG) {
+                    logD("Meta Update replyCode: " + replyCode);
+                }
+                switch (replyCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        displayUpgradeRequiredDialog();
+                        break;
+                }
+            }
+        };
     }
 
     String getDebugTag() {
@@ -218,6 +251,27 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void checkAndUpdateMeta(boolean forceUpdate) {
+        long metaVersion = HonarnamaBaseApp.getAppSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
+
+        if (forceUpdate || metaVersion == 0) {
+            MetaUpdater metaUpdater = new MetaUpdater(mMetaUpdateListener, metaVersion);
+            metaUpdater.execute();
+        }
+    }
+
+    public void runScheduledMetaUpdate() {
+        if (BuildConfig.DEBUG) {
+            logD("runScheduledMetaUpdate in background (onPause)");
+        }
+        long lastMetaCheckTime = HonarnamaBaseApp.getAppSharedPref()
+                .getLong(HonarnamaBaseApp.PREF_KEY_META_CHECKED_TIME, 0);
+
+        if (System.currentTimeMillis() > lastMetaCheckTime + 24 * 60 * 60 * 1000) {
+            checkAndUpdateMeta(true);
+        }
     }
 
     @Override

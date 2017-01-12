@@ -1443,7 +1443,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
 
                         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                        controlPanelActivity.checkAndUpdateMeta();
+                        controlPanelActivity.checkAndUpdateMeta(false);
 
                         new getEventAsync().execute();
                         dismissSnackbar();
