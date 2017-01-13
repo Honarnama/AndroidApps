@@ -118,7 +118,7 @@ public class GRPCUtils {
 
     public SellServiceGrpc.SellServiceBlockingStub getSellServiceGrpc() {
         // TODO: cache
-        return SellServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(30, TimeUnit.SECONDS);
+        return SellServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(20, TimeUnit.SECONDS);
     }
 
     public CommunicationServiceGrpc.CommunicationServiceBlockingStub getCommunicationServiceGrpc() {
