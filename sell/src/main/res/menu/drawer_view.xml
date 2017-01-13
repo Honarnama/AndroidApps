@@ -46,7 +46,7 @@
 
         <item
                 android:id="@+id/item_rules"
-                android:title="@string/rules"
+                android:title="@string/terms"
                 android:checkable="false"
                 />
 

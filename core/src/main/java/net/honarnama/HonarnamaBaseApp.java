@@ -28,6 +28,7 @@ public abstract class HonarnamaBaseApp extends Application {
 
     public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final String WEB_ADDRESS = "https://www.honarnama.net";
+    public static final String TERMS_ADDRESS = "https://www.honarnama.net/terms";
     public static final String PRODUCTION_TAG = "Honarnama";
     public static final int INTENT_IMAGE_SELECTOR_CODE_RANGE_START = 1000;
 

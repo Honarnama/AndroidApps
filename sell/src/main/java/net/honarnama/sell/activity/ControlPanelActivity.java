@@ -552,7 +552,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
             case R.id.item_rules:
                 Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(HonarnamaBaseApp.WEB_ADDRESS));
+                i.setData(Uri.parse(HonarnamaBaseApp.TERMS_ADDRESS));
                 startActivity(i);
                 break;
 
