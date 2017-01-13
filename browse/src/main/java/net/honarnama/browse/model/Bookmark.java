@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -81,7 +82,16 @@ public class Bookmark extends HonarnamaBaseModel {
         values.put(COL_BOOKMARK_ITEM_DESC, item.description);
         values.put(COL_BOOKMARK_ITEM_CAT_L1, item.artCategoryCriteria.level1Id);
         values.put(COL_BOOKMARK_ITEM_CAT_L2, item.artCategoryCriteria.level2Id);
-        values.put(COL_BOOKMARK_ITEM_IMG, item.images[0]);
+
+        String itemImage = "";
+        for (int i = 0; i < item.images.length; i++) {
+            if (!TextUtils.isEmpty(item.images[i])) {
+                itemImage = item.images[i];
+                break;
+            }
+        }
+        
+        values.put(COL_BOOKMARK_ITEM_IMG, itemImage);
         values.put(COL_BOOKMARK_CREATE_DATE, System.currentTimeMillis());
         db.insertOrThrow(TABLE_BOOKMARKS, null, values);
     }

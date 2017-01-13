@@ -105,7 +105,7 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         String itemImage = "";
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < item.images.length; i++) {
             if (!TextUtils.isEmpty(item.images[i])) {
                 itemImage = item.images[i];
                 break;
