@@ -15,6 +15,7 @@ import net.honarnama.nano.Item;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,11 +118,18 @@ public class ItemsAdapter extends BaseAdapter {
         });
 
 
-        String image = item.images[0];
+        String itemImage = "";
+        for (int i = 0; i < 4; i++) {
+            if (!TextUtils.isEmpty(item.images[i])) {
+                itemImage = item.images[i];
+                break;
+            }
+        }
+
         mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
 
-        if (image.trim().length() > 0) {
-            Uri imageUri = Uri.parse(image);
+        if (itemImage.trim().length() > 0) {
+            Uri imageUri = Uri.parse(itemImage);
             Picasso.with(mContext).load(imageUri.toString())
                     .error(R.drawable.camera_insta)
                     .into(mViewHolder.icon, new Callback() {
