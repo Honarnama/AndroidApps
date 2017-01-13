@@ -107,6 +107,11 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
         });
 
         setErrorInFragment(mNameEditText, "");
+
+        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("AccountFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         return rootView;
     }
 
@@ -114,9 +119,6 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
     public void onResume() {
         super.onResume();
 
-        mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
-        mTracker.setScreenName("AccountFragment");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         setUserInfo();
 
         if (isAdded()) {

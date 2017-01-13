@@ -90,7 +90,7 @@ public class Bookmark extends HonarnamaBaseModel {
                 break;
             }
         }
-        
+
         values.put(COL_BOOKMARK_ITEM_IMG, itemImage);
         values.put(COL_BOOKMARK_CREATE_DATE, System.currentTimeMillis());
         db.insertOrThrow(TABLE_BOOKMARKS, null, values);

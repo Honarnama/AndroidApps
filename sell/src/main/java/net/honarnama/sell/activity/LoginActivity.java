@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
-//TODO resend login link
 public class LoginActivity extends HonarnamaSellActivity implements View.OnClickListener {
     private Button mRegisterAsSellerBtn;
     private Button mLoginButton;

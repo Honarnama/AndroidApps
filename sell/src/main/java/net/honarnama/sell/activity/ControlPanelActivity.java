@@ -12,12 +12,9 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.base.fragment.AboutFragment;
 import net.honarnama.base.fragment.ContactFragment;
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
-import net.honarnama.base.helper.MetaUpdater;
-import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.base.utils.CommonUtil;
 import net.honarnama.base.utils.FileUtil;
 import net.honarnama.base.utils.WindowUtil;
-import net.honarnama.nano.ReplyProperties;
 import net.honarnama.sell.HonarnamaSellApp;
 import net.honarnama.sell.R;
 import net.honarnama.sell.fragments.CPanelFragment;
@@ -30,7 +27,6 @@ import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -54,8 +50,6 @@ import android.widget.TextView;
 import java.io.File;
 
 public class ControlPanelActivity extends HonarnamaSellActivity implements View.OnClickListener {
-
-    //TODO test backpress
 
     public static final int ITEM_IDENTIFIER_ACCOUNT = 0;
 
@@ -126,18 +120,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         mWaitingProgressDialog = new ProgressDialog(ControlPanelActivity.this);
         setContentView(R.layout.activity_control_panel);
 
-        //TODO
-//        mAboutTextView = (TextView) findViewById(R.id.about_us_text_view);
-//        try {
-//            Resources res = getResources();
-//            InputStream in_s = res.openRawResource(R.raw.about_us);
-//            byte[] b = new byte[in_s.available()];
-//            in_s.read(b);
-//            mAboutTextView.setText(new String(b));
-//        } catch (Exception e) {
-//            logE("Error setting about us text in main page: " + e, e);
-//        }
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        mToolbar.setTitle(getString(R.string.toolbar_title));
         setSupportActionBar(mToolbar);
@@ -177,14 +159,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
         mNavFooter.setOnClickListener(this);
 
         processIntent(getIntent());
-
-        //TODO test to decide is it necessary to use nonet fragment
-
-//        if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
-//            HonarnamaBaseFragment fragment = NoNetworkFragment.getInstance();
-//            switchFragment(fragment);
-//            return;
-//        }
 
         checkAndUpdateMeta(false);
 
@@ -321,16 +295,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     }
 
     public void switchFragment(final HonarnamaBaseFragment fragment) {
-
-        //TODO
-//        View includedAbout = findViewById(R.id.about_included_in_control_panel);
-//        if (includedAbout != null) {
-//            if (includedAbout.getVisibility() == View.VISIBLE) {
-//                includedAbout.setVisibility(View.VISIBLE);
-//            } else {
-//                includedAbout.setVisibility(View.GONE);
-//            }
-//        }
 
         checkAndUpdateMeta(false);
         WindowUtil.hideKeyboard(ControlPanelActivity.this);

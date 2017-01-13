@@ -169,8 +169,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        logD("onCreateView of SF");
-
         final Activity activity = getActivity();
         mTextWatcherToMarkDirty = new TextWatcher() {
             String mValue;
@@ -286,11 +284,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
         };
 
-        //TODO
         if (activity != null) {
             ((ControlPanelActivity) activity).checkAndAskStoragePermission(activity);
         }
-
 
         if (BuildConfig.DEBUG) {
             Log.d("STOPPED_ACTIVITY", "onCreateView of SF. savedInstanceState: " + savedInstanceState);
@@ -327,7 +323,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
 
-           addListenersToMakeDirty();
+            addListenersToMakeDirty();
 
         } else {
             new getStoreAsync().execute();

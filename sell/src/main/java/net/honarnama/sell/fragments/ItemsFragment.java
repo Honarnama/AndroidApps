@@ -20,7 +20,6 @@ import net.honarnama.sell.adapter.ItemsAdapter;
 import net.honarnama.sell.model.HonarnamaUser;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
