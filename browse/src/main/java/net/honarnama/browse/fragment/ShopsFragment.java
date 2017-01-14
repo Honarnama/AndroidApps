@@ -168,16 +168,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-//
-//        if (context instanceof FragmentActivity) {
-//            mFragmentActivity = (FragmentActivity) context;
-//        }
-    }
-
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
 
@@ -271,7 +261,6 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
             if (onScroll) {
                 setVisibilityInFragment(mLoadMoreProgressContainer, View.VISIBLE);
             }
-
         }
 
         @Override

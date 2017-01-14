@@ -76,6 +76,7 @@ public abstract class HonarnamaBaseApp extends Application {
     public static String SELL_PACKAGE_NAME = "net.honarnama.sell";
     public static String BROWSE_PACKAGE_NAME = "net.honarnama.browse";
 
+    public static final String TEMP_FOLDER = "Honarnama/honarnama_temporary_files";
 
     private static HonarnamaBaseApp singleton;
     private static SharedPreferences mCommonSharedPref;

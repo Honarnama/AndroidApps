@@ -1,14 +1,15 @@
 package net.honarnama.browse.fragment;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.base.utils.NetworkManager;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,12 +20,21 @@ import android.widget.ImageView;
 public class NoNetFragment extends HonarnamaBrowseFragment implements View.OnClickListener {
     public ImageView mRetryIcon;
     public static NoNetFragment mNoNetFragment;
+    private Tracker mTracker;
 
     public synchronized static NoNetFragment getInstance() {
 //        if (mNoNetFragment == null) {
         mNoNetFragment = new NoNetFragment();
 //        }
         return mNoNetFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("NoNetFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

@@ -10,21 +10,15 @@ import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
-import net.honarnama.base.utils.WindowUtil;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
+import net.honarnama.base.utils.TextUtil;
 import net.honarnama.base.widget.NestedListView;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ContactDialog;
-import net.honarnama.browse.model.Item;
-import net.honarnama.browse.model.Shop;
-import net.honarnama.base.model.Store;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.ObservableScrollView;
-import net.honarnama.base.utils.TextUtil;
-import net.honarnama.nano.BrowseItemReply;
-import net.honarnama.nano.BrowseItemRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoreReply;
 import net.honarnama.nano.BrowseStoreRequest;
@@ -32,29 +26,21 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import bolts.Continuation;
-import bolts.Task;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
@@ -62,7 +48,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
  */
 public class ShopPageFragment extends HonarnamaBrowseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, ObservableScrollView.OnScrollChangedListener {
     public static ShopPageFragment mShopPageFragment;
-    private Tracker mTracker;
     private ItemsAdapter mItemsAdapter;
     private ImageSelector mLogoImageView;
     private ImageSelector mBannerImageView;
@@ -90,6 +75,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mInfoContainer;
 
     public RelativeLayout mDeletedShopMsg;
+
+    private Tracker mTracker;
 
     @Override
     public String getTitle() {
@@ -162,28 +149,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mListView.setAdapter(mItemsAdapter);
         mListView.setOnItemClickListener(this);
-
-//        mListView.setOnTouchListener(new ListView.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                int action = event.getAction();
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        // Disallow ScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(true);
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        // Allow ScrollView to intercept touch events.
-//                        v.getParent().requestDisallowInterceptTouchEvent(false);
-//                        break;
-//                }
-//
-//                // Handle ListView touch events.
-//                v.onTouchEvent(event);
-//                return true;
-//            }
-//        });
 
         new getStoreAsync().execute();
 

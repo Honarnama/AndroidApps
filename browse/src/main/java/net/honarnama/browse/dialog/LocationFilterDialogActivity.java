@@ -5,6 +5,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
@@ -66,7 +67,6 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        logD("onCreate of LFDA");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_filter_dialog);
 
@@ -304,7 +304,6 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, mSelectedCityId);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_NAME, mSelectedCityName);
         data.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mAllIranCheckBox.isChecked());
-        logD("mSelectedCityId: " + mSelectedCityId + ". LFDA");
         setResult(RESULT_OK, data);
         finish();
     }

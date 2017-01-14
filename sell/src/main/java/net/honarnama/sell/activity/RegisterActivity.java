@@ -174,13 +174,6 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
-        switch (requestCode) {
-            default:
-                if (BuildConfig.DEBUG) {
-                    logD("Unexpected requestCode= " + requestCode);
-                }
-        }
     }
 
     @Override

@@ -105,8 +105,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
     int mWidth;
     int mCurrPosition, mPrevPosition;
 
-//    public ImageSelector mDefaultImageView;
-
     public LinearLayout mInfoProgreeBarContainer;
 
     public RelativeLayout mOnErrorRetry;
@@ -124,7 +122,6 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         Bundle args = new Bundle();
         args.putLong("itemId", itemId);
         itemPageFragment.setArguments(args);
-//        shopPageFragment.setOwner(owner);
         return itemPageFragment;
     }
 

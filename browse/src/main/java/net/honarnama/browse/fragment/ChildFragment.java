@@ -1,11 +1,10 @@
 package net.honarnama.browse.fragment;
 
-import net.honarnama.browse.R;
-import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
 import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.browse.R;
+import net.honarnama.browse.activity.ControlPanelActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -244,7 +244,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
 
                     @Override
                     public void onImageSelectionFailed() {
-                        logD("onImageSelectionFailed");
+                        if (BuildConfig.DEBUG) {
+                            logD("onImageSelectionFailed");
+                        }
                     }
                 };
 
@@ -554,7 +556,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             getOrDeleteItemRequest.id = mItemId;
             getOrDeleteItemRequest.requestProperties = rp;
             GetItemReply getItemReply;
-            logD("getOrDeleteItemRequest is: " + getOrDeleteItemRequest);
+
+            if (BuildConfig.DEBUG) {
+                logD("getOrDeleteItemRequest is: " + getOrDeleteItemRequest);
+            }
 
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -794,7 +799,9 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
 
             cCreateOrUpdateItemRequest.requestProperties = rp;
-            logD("cCreateOrUpdateItemRequest is: " + cCreateOrUpdateItemRequest);
+            if (BuildConfig.DEBUG) {
+                logD("CreateOrUpdateItemRequest is: " + cCreateOrUpdateItemRequest);
+            }
             CreateOrUpdateItemReply createOrUpdateItemReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -813,7 +820,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         @Override
         protected void onPostExecute(final CreateOrUpdateItemReply createOrUpdateItemReply) {
             super.onPostExecute(createOrUpdateItemReply);
-            logD("createOrUpdateItemReply is: " + createOrUpdateItemReply);
+
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateItemReply is: " + createOrUpdateItemReply);
+            }
 
             Activity activity = getActivity();
             if (createOrUpdateItemReply != null) {

@@ -60,7 +60,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                 editor.putLong(HonarnamaBaseApp.PREF_KEY_META_CHECKED_TIME, millis);
                 editor.commit();
 
-                if (net.honarnama.base.BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     logD("Meta Update replyCode: " + replyCode);
                 }
                 switch (replyCode) {

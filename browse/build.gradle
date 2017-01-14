@@ -9,8 +9,8 @@ android {
         applicationId "net.honarnama.browse"
         minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 900
-        versionName "0.9"
+        versionCode 10000
+        versionName "1.0.0"
     }
 
     productFlavors {
@@ -24,6 +24,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // minifyEnabled true
+            // shrinkResources true
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled true
             shrinkResources true

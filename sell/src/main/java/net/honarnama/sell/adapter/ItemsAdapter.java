@@ -105,12 +105,15 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         String itemImage = "";
-        for (int i = 0; i < item.images.length; i++) {
-            if (!TextUtils.isEmpty(item.images[i])) {
-                itemImage = item.images[i];
-                break;
+        if (item.images != null) {
+            for (int i = 0; i < item.images.length; i++) {
+                if (!TextUtils.isEmpty(item.images[i])) {
+                    itemImage = item.images[i];
+                    break;
+                }
             }
         }
+
         if (!TextUtils.isEmpty(itemImage)) {
             mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
             mViewHolder.icon.setVisibility(View.GONE);

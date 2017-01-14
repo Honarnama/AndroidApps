@@ -49,9 +49,6 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG) {
-            logD("LoginActivity created.");
-        }
 
         mTracker = HonarnamaSellApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("LoginActivity");
@@ -149,22 +146,14 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (BuildConfig.DEBUG) {
-            logD("onActivityResult//resultCode: " + resultCode);
+            logD("onActivityResult of LA // resultCode: " + resultCode);
+            logD("onActivityResult of LA // requestCode: " + requestCode);
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            if (BuildConfig.DEBUG) {
-                logD("onActivityResult::RESULT_OK");
-            }
             if (requestCode == HonarnamaBaseApp.INTENT_REGISTER_CODE) {
-                if (BuildConfig.DEBUG) {
-                    logD("requestCode: " + HonarnamaBaseApp.INTENT_REGISTER_CODE);
-                }
                 if (intent.hasExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL)) {
                     if (intent.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_DISPLAY_REGISTER_SNACK_FOR_EMAIL, false)) {
-                        if (BuildConfig.DEBUG) {
-                            logD("display email verification notif.");
-                        }
                         displayCustomSnackbar(getString(R.string.verification_email_sent), false);
                         clearErrors();
                     }

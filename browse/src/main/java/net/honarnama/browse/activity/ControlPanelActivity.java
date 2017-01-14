@@ -1,5 +1,8 @@
 package net.honarnama.browse.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
@@ -75,9 +78,6 @@ import static net.honarnama.browse.widget.MainTabBar.TAB_SHOPS;
 
 public class ControlPanelActivity extends HonarnamaBrowseActivity implements MainTabBar.OnTabItemClickListener, View.OnClickListener {
 
-    //TODO add crashlytics
-    //TODO add Analytics
-
     MainFragmentAdapter mMainFragmentAdapter;
     LockableViewPager mViewPager;
     private Toolbar mToolbar;
@@ -86,6 +86,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     private long mShopId;
     private long mEventId;
     private long mItemId;
+
+    Tracker mTracker;
 
     private DrawerLayout mDrawer;
     public NavigationView mNavigationView;
@@ -136,6 +138,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onCreate(Bundle savedInstanceState) {
 //        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("BROWSE_CPA");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         setContentView(R.layout.activity_main);
 
         mContactFragment = ContactFragment.getInstance();
@@ -216,7 +223,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             mCustomToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         }
 
-
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.navView);
         resetNavMenuIcons();
@@ -239,9 +245,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
 
     public void changeUserLocationTitle() {
-        if (BuildConfig.DEBUG) {
-            logD("changeUserLocationTitle");
-        }
+
         if (!TextUtils.isEmpty(mDefaultProvinceName) && !TextUtils.isEmpty(mDefaultCityName)) {
             Menu menu = mNavigationView.getMenu();
             menu.getItem(ITEM_IDENTIFIER_LOCATION).setTitle(mDefaultProvinceName + "، " + mDefaultCityName);
@@ -326,22 +330,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case R.id.item_location:
                 displaySetDefaultLocationDialog();
                 break;
-//            case R.id.item_bookmarks:
-//                if (NetworkManager.getInstance().isNetworkEnabled(true)) {
-//                    refreshNoNetFragment();
-//                    menuItem.setChecked(true);
-//                    IconicsDrawable bookmarksDrawable =
-//                            new IconicsDrawable(ControlPanelActivity.this)
-//                                    .color(getResources().getColor(R.color.dark_cyan))
-//                                    .icon(GoogleMaterial.Icon.gmd_stars);
-//                    menuItem.setIcon(bookmarksDrawable);
-//                    BookmarksFragment bookmarksFragment = BookmarksFragment.getInstance();
-//                    switchFragment(bookmarksFragment, false, bookmarksFragment.getTitle(ControlPanelActivity.this));
-//                    mMainTabBar.deselectAllTabs();
-//                } else {
-//                    menuItem.setChecked(false);
-//                }
-//                break;
 
             case R.id.item_contact_us:
                 if (NetworkManager.getInstance().isNetworkEnabled(true)) {
@@ -524,8 +512,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void displayItemPage(long itemId, boolean isExternal) {
         setItemId(itemId);
         switchFragment(ItemPageFragment.getInstance(itemId), isExternal, "مشاهده محصول");
-        //TODO SET ITEM CATEGORY AS TITLE
-//        mTitle.setText();
     }
 
     public void setShopId(long shopId) {
@@ -545,10 +531,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onTabSelect(Object tabTag, boolean userTriggered) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
         int tag = (Integer) tabTag;
-//        if (mActiveTab == Integer.valueOf(TAB_SEARCH) && tag != Integer.valueOf(TAB_SEARCH)) {
-//            SearchFragment searchFragment = (SearchFragment) mMainFragmentAdapter.getDefaultFragmentForTab(TAB_SEARCH);
-//            searchFragment.resetFields();
-//        }
+
         resetNavMenuIcons();
         mActiveTab = tag;
 
@@ -611,14 +594,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-//        menu.findItem(R.id.search).setIcon(new IconicsDrawable(ControlPanelActivity.this)
-//                .icon(GoogleMaterial.Icon.gmd_search)
-//                .color(Color.WHITE)
-//                .sizeDp(20)).setTitleCondensed(getString(R.string.search));
         return true;
-
     }
-
 
     @Override
     public void onBackPressed() {
@@ -658,7 +635,9 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onNewIntent(Intent intent) {
         // onResume gets called after this to handle the intent
-        logD("onNewIntent :: data= " + intent.getData());
+        if (BuildConfig.DEBUG) {
+            logD("onNewIntent :: data= " + intent.getData());
+        }
         setIntent(intent);
         handleExternalIntent(intent);
     }
@@ -672,19 +651,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
         if (data != null) {
             if (intent.getAction().equals(Intent.ACTION_VIEW)) {
 
-                if (BuildConfig.DEBUG) {
-                    logD("intent action is  ACTION_VIEW");
-                }
-                List<String> segments = data.getPathSegments();
-
                 String host = data.getHost();
                 String path = data.getPath();
-
-                if (BuildConfig.DEBUG) {
-                    logD("pathsegments: " + segments);
-                    logD("host: " + host);
-                    logD("path: " + path);
-                }
 
                 if (host.equals("shop") && !TextUtils.isEmpty(path)) {
                     long shopId = Long.valueOf(path.replace("/", ""));
@@ -920,9 +888,6 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             }
         });
 
-        // TODO:
-        // GRPCUtils.getInstance().MakeSureMetaExists()
-
         mSetDefaultLocationDialog.show();
     }
 
@@ -1076,11 +1041,8 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                             mCityHashMap.put(citySet.getKey(), citySet.getValue());
                         }
                     }
-
                     mDefaultCityEditText.setText(mCityHashMap.get(mDefaultCityId));
-
                 }
-
                 return null;
             }
         });

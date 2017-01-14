@@ -335,7 +335,6 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     @Override
     public void onResume() {
-        logD("onResume of SF");
         super.onResume();
         if (isAdded()) {
             mPhoneNumberEditText.addTextChangedListener(new GravityTextWatcher(mPhoneNumberEditText));
@@ -596,7 +595,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             return;
         }
         if (store != null) {
-            logD("store info: " + store);
+            if (BuildConfig.DEBUG) {
+                logD("store info: " + store);
+            }
             Activity activity = getActivity();
             mIsNew = false;
             mStoreId = store.id;
@@ -627,8 +628,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             setReviewInfo(store.reviewStatus);
 
             if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
-                logD("Loading store logo ...");
-
+                if (BuildConfig.DEBUG) {
+                    logD("Loading store logo ...");
+                }
                 setVisibilityInFragment(mLogoProgressBar, View.VISIBLE);
                 final String storeLogo = store.logo;
                 Picasso.with(activity).load(storeLogo)
@@ -655,7 +657,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             if (loadImages && !TextUtils.isEmpty(store.banner) && activity != null && isAdded()) {
-                logD("Loading store banner...");
+                if (BuildConfig.DEBUG) {
+                    logD("Loading store banner...");
+                }
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 final String storeBanner = store.banner;
                 Picasso.with(activity).load(storeBanner)
@@ -813,7 +817,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 mIsNew = true;
                                 setVisibilityInFragment(mEmptyView, View.GONE);
                                 setVisibilityInFragment(mMainContent, View.VISIBLE);
-                                logD("Store not found.");
+                                if (BuildConfig.DEBUG) {
+                                    logD("Store not found.");
+                                }
                                 break;
 
                             case GetStoreReply.NO_CLIENT_ERROR:
@@ -1211,8 +1217,9 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     }
 
     public void reset() {
-
-        logD("reset of SF");
+        if (BuildConfig.DEBUG) {
+            logD("reset of SF");
+        }
         setTextInFragment(mNameEditText, "");
         setTextInFragment(mDescriptionEditText, "");
         setTextInFragment(mPhoneNumberEditText, "");

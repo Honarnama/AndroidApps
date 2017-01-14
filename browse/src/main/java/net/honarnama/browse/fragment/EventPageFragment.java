@@ -4,8 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
@@ -13,17 +11,15 @@ import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.JalaliCalendar;
+import net.honarnama.base.utils.NetworkManager;
+import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.nano.BrowseEventReply;
 import net.honarnama.nano.BrowseEventRequest;
-import net.honarnama.nano.BrowseItemReply;
-import net.honarnama.nano.BrowseItemRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.Event;
 import net.honarnama.nano.ReplyProperties;
@@ -31,15 +27,11 @@ import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.Store;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -124,6 +116,7 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_event_page, container, false);
+
         mEventId = getArguments().getLong("eventId");
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.fragment_scroll_view);
@@ -296,7 +289,6 @@ public class EventPageFragment extends HonarnamaBrowseFragment implements View.O
         setVisibilityInFragment(mOnErrorRetry, View.GONE);
         setVisibilityInFragment(mShare, View.VISIBLE);
 
-        logD("event.banner.trim(): " + event.banner.trim());
         if (event.banner.trim().length() > 0) {
             setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
             mBannerImageView.setSource(event.banner, mBannerProgressBar, R.drawable.party_flags);

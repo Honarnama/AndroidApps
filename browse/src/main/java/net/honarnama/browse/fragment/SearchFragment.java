@@ -1,5 +1,8 @@
 package net.honarnama.browse.fragment;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.GRPCUtils;
@@ -30,7 +33,6 @@ import net.honarnama.nano.RequestProperties;
 import net.honarnama.nano.Store;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -87,6 +89,18 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     private int mSelectedProvinceId = -1;
     private String mSelectedProvinceName;
     private int mSelectedCityId = -1;
+
+    Tracker mTracker;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("SearchFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
     public synchronized static SearchFragment getInstance() {
         if (mSearchFragment == null) {
@@ -312,9 +326,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     }
 
     public void resetFields() {
-        //TODO
 //        if (mSearchEditText != null) {
-        logD("reset search fields.");
 //            mSearchEditText.setText("");
         setCheckedInFragment(mItemsToggleButton, true);
         setCheckedInFragment(mShopsToggleButton, false);
@@ -348,6 +360,11 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("searchItems")
+                    .build());
         }
 
         @Override
@@ -455,6 +472,12 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("searchShops")
+                    .build());
+
         }
 
         @Override
@@ -563,6 +586,11 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Action")
+                    .setAction("searchEvents")
+                    .build());
         }
 
         @Override
@@ -713,8 +741,6 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        logD("onCreateOptionsMenu of searchfragment.");
 
         menu.clear();
         inflater.inflate(R.menu.menu_search_fragment, menu);

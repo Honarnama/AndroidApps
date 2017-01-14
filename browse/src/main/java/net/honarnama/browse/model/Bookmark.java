@@ -84,10 +84,12 @@ public class Bookmark extends HonarnamaBaseModel {
         values.put(COL_BOOKMARK_ITEM_CAT_L2, item.artCategoryCriteria.level2Id);
 
         String itemImage = "";
-        for (int i = 0; i < item.images.length; i++) {
-            if (!TextUtils.isEmpty(item.images[i])) {
-                itemImage = item.images[i];
-                break;
+        if (item.images != null) {
+            for (int i = 0; i < item.images.length; i++) {
+                if (!TextUtils.isEmpty(item.images[i])) {
+                    itemImage = item.images[i];
+                    break;
+                }
             }
         }
 

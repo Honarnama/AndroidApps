@@ -1,6 +1,9 @@
 package net.honarnama.browse.fragment;
 
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import net.honarnama.base.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
@@ -9,7 +12,6 @@ import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.model.Bookmark;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,8 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
     public ConfirmationDialog mConfirmationDialog;
 
+    Tracker mTracker;
+
     public synchronized static BookmarksFragment getInstance() {
 //        if (mBookmarksFragment == null) {
         mBookmarksFragment = new BookmarksFragment();
@@ -47,10 +50,19 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
+        mTracker.setScreenName("BookmarksFragment");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
+
         mListView = (ListView) rootView.findViewById(R.id.items_listView);
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
         mListView.setEmptyView(mEmptyListContainer);

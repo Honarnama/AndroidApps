@@ -230,8 +230,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (mDefaultDrawable != null) {
             setImageDrawable(mDefaultDrawable);
         }
-        //TODO test below commenting
-//        mChanged = true;
         mDeleted = true;
     }
 
@@ -350,9 +348,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(new Date());
         String imageFileName = "Honarnama_" + timeStamp;
-        //TODO make a key for path
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Honarnama/honarnama_temporary_files");
+                Environment.DIRECTORY_PICTURES), HonarnamaBaseApp.TEMP_FOLDER);
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -709,7 +706,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             int w = MeasureSpec.getSize(widthMeasureSpec);
             int h = w * d.getIntrinsicHeight() / d.getIntrinsicWidth();
             setMeasuredDimension(w, h);
-        }
-        else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

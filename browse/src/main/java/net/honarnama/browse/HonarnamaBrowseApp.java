@@ -3,10 +3,14 @@ package net.honarnama.browse;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.honarnama.HonarnamaBaseApp;
 
 import android.app.Application;
 import android.util.Log;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by elnaz on 12/18/15.
@@ -24,6 +28,8 @@ public class HonarnamaBrowseApp extends HonarnamaBaseApp {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Fabric.with(this, new Crashlytics());
 
         if (BuildConfig.DEBUG) {
             Log.i(PRODUCTION_TAG, "HonarnamaBrowseApp.onCreate()");

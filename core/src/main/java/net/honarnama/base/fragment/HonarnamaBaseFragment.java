@@ -130,7 +130,7 @@ public abstract class HonarnamaBaseFragment extends Fragment {
                 Toast.makeText(getFragmentContext(), message, Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-            logD("Exception displaying dialog. e: " + e);
+            logD("Exception displaying toast. e: " + e);
         }
     }
 
@@ -141,7 +141,7 @@ public abstract class HonarnamaBaseFragment extends Fragment {
                 Toast.makeText(getFragmentContext(), message, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            logD("Exception displaying dialog. e: " + e);
+            logD("Exception displaying short toast. e: " + e);
         }
     }
 

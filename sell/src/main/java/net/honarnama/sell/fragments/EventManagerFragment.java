@@ -375,7 +375,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
 
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
 
-           addListenersToMakeDirty();
+            addListenersToMakeDirty();
 
         } else {
             new getEventAsync().execute();
@@ -935,7 +935,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             return;
         }
         if (event != null) {
-            logD("event info: " + event);
+            if (BuildConfig.DEBUG) {
+                logD("event info: " + event);
+            }
             Activity activity = getActivity();
             mEventId = event.id;
             mIsNew = false;
@@ -1044,7 +1046,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             }
         }
 
-       addListenersToMakeDirty();
+        addListenersToMakeDirty();
         setDirty(false);
     }
 
@@ -1134,7 +1136,10 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             simpleRequest = new SimpleRequest();
             simpleRequest.requestProperties = rp;
 
-            logD("simpleRequest for getting myEvent is: " + simpleRequest);
+            if (BuildConfig.DEBUG) {
+                logD("simpleRequest for getting myEvent is: " + simpleRequest);
+            }
+
             GetEventReply getEventReply;
             try {
                 SellServiceGrpc.SellServiceBlockingStub stub = GRPCUtils.getInstance().getSellServiceGrpc();
@@ -1183,7 +1188,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 setVisibilityInFragment(mEmptyView, View.GONE);
                                 setVisibilityInFragment(mMainContent, View.VISIBLE);
                                 mIsNew = true;
-                                logD("Event not found.");
+                                if (BuildConfig.DEBUG) {
+                                    logD("Event not found.");
+                                }
                                 break;
                         }
                         break;
@@ -1296,8 +1303,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             super.onPostExecute(createOrUpdateEventReply);
 
             Activity activity = getActivity();
-
-            logD("createOrUpdateEventReply is: " + createOrUpdateEventReply);
+            if (BuildConfig.DEBUG) {
+                logD("createOrUpdateEventReply is: " + createOrUpdateEventReply);
+            }
             if (createOrUpdateEventReply != null) {
                 switch (createOrUpdateEventReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
@@ -1464,8 +1472,9 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     }
 
     public void reset() {
-
-        logD("reset of SF");
+        if (BuildConfig.DEBUG) {
+            logD("reset of SF");
+        }
         setTextInFragment(mNameEditText, "");
         setTextInFragment(mAddressEditText, "");
         setTextInFragment(mDescriptionEditText, "");

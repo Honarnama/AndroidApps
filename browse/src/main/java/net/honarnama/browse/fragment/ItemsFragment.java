@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,6 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
  * Created by elnaz on 2/11/16.
  */
 
-// TODO test paging
 public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public static ItemsFragment mItemsFragment;
     private ListView mListView;
@@ -107,10 +105,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (BuildConfig.DEBUG) {
-            logD("onCreate of itemsFragment");
-        }
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ItemsFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -183,10 +177,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mLoadMoreProgressContainer = (RelativeLayout) rootView.findViewById(R.id.loadMoreProgressContainer);
 
         mLocationCriteriaTextView = (TextView) rootView.findViewById(R.id.location_criteria_text_view);
-
-        if (BuildConfig.DEBUG) {
-            logD("onCreateView of itemsFragment");
-        }
         return rootView;
     }
 
@@ -195,11 +185,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         super.onResume();
         changeFilterTitle();
         changeLocationFilterTitle();
-
-
-        if (BuildConfig.DEBUG) {
-            logD("onResume of itemsFragment");
-        }
     }
 
 
@@ -510,22 +495,6 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
             }
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (BuildConfig.DEBUG) {
-            logD("onAttach of itemsFragment");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (BuildConfig.DEBUG) {
-            logD("onDetach of itemsFragment");
         }
     }
 
