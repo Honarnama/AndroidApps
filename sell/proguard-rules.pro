@@ -37,3 +37,8 @@
 # Need to create channel through service provider.
 -keepnames class io.grpc.ManagedChannelProvider
 -keep class io.grpc.okhttp.OkHttpChannelProvider
+
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-keep class io.grpc.internal.DnsNameResolverProvider
+-keep class io.grpc.okhttp.OkHttpChannelProvider
