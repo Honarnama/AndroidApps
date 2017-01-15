@@ -614,6 +614,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_item_info));
                         displayRetrySnackbar();
                         displayShortToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error upon getItemAsync. request: " + getOrDeleteItemRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -893,6 +894,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon cCreateOrUpdateItemRequest. request: " + cCreateOrUpdateItemRequest);
                         cToastMsg = getStringInFragment(R.string.server_error_try_again);
                         dismissProgressDialog();
                         break;

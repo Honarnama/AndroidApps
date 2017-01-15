@@ -1196,6 +1196,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon getEventAsync. simpleRequest: " + simpleRequest);
                         setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_event_info));
                         displayRetrySnackbar();
                         displayShortToast(getStringInFragment(R.string.server_error_try_again));
@@ -1341,6 +1342,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon createOrUpdateEventRequest. request: " + createOrUpdateEventRequest);
                         cToastMsg = getStringInFragment(R.string.server_error_try_again);
                         dismissProgressDialog();
                         break;

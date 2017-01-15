@@ -215,7 +215,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
 
                     case ReplyProperties.SERVER_ERROR:
                         displayCustomSnackbar(getString(R.string.server_error_try_again), true);
-                        logE("Got SERVER_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". simpleRequest was: " + simpleRequest);
+                        logE("Got SERVER_ERROR for whoAmIReply. whoAmIReply: " + whoAmIReply + ". request: " + simpleRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:
@@ -395,6 +395,7 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
 
                     case ReplyProperties.SERVER_ERROR:
                         Toast.makeText(LoginActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
+                        logE("Server error running send login request. request: " + sendLoginEmailRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

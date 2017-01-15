@@ -273,6 +273,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
 
                     case ReplyProperties.SERVER_ERROR:
                         Toast.makeText(RegisterActivity.this, getString(R.string.server_error_try_again), Toast.LENGTH_SHORT).show();
+                        logE("Server error running createOrUpdateAccountRequest. request: " + createOrUpdateAccountRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

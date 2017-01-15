@@ -190,6 +190,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon getItemsAsync. request: " + simpleRequest);
                         if (isAdded()) {
                             mAdapter.setItems(null);
                             TextView emptyListTextView = (TextView) mEmptyListView;

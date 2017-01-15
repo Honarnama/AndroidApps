@@ -216,11 +216,9 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
 
         @Override
         protected UpdateAccountReply doInBackground(Void... voids) {
-
             if (genderCode == -1) {
                 return null;
             }
-
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             createOrUpdateAccountRequest.requestProperties = rp;
             if (BuildConfig.DEBUG) {
@@ -267,6 +265,7 @@ public class UserAccountFragment extends HonarnamaBaseFragment implements View.O
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon UpdateAccountAsync. request: " + createOrUpdateAccountRequest);
                         cToastMsg = getStringInFragment(R.string.server_error_try_again);
                         break;
 

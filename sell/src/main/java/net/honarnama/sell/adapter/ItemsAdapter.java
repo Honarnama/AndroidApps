@@ -229,12 +229,12 @@ public class ItemsAdapter extends BaseAdapter {
                 return deleteItemReply;
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
-                    Log.e(DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e, e);
+                    Log.e(DEBUG_TAG, "Error running deleteItemAsync. request: " + getOrDeleteItemRequest + ". Error: " + e, e);
                 } else {
                     StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
                     String stackTrace = sw.toString();
-                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running getOrDeleteItemRequest. getOrDeleteItemRequest was: " + getOrDeleteItemRequest + ". Error: " + e + ". stackTrace: " + stackTrace);
+                    Crashlytics.log(Log.ERROR, DEBUG_TAG, "Error running deleteItemAsync. request: " + getOrDeleteItemRequest + ". Error: " + e + ". stackTrace: " + stackTrace);
                 }
             }
             return null;
@@ -271,6 +271,11 @@ public class ItemsAdapter extends BaseAdapter {
                     case ReplyProperties.SERVER_ERROR:
                         dismissProgressDialog();
                         mItemsFragment.displayShortToast(mContext.getString(R.string.server_error_try_again));
+                        if (BuildConfig.DEBUG) {
+                            Log.e(DEBUG_TAG, "Server error occured trying to delete item. request: " + getOrDeleteItemRequest);
+                        } else {
+                            Crashlytics.logException(new Throwable("Server error occured trying to delete item. request: " + getOrDeleteItemRequest));
+                        }
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

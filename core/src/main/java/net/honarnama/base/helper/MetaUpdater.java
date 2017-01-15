@@ -192,12 +192,13 @@ public class MetaUpdater extends AsyncTask<Void, Void, MetaReply> {
 //        }
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.e("GRPC-HN", "Error getting meta. Error: " + e, e);
+                Log.e("GRPC-HN", "Error getting meta. req: " + req + ". Error: " + e, e);
             } else {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
                 String stackTrace = sw.toString();
                 Crashlytics.log(Log.ERROR, "GRPC-HN", "Error getting meta. Error: " + e + ". stackTrace: " + stackTrace);
+                Crashlytics.log(Log.ERROR, "GRPC-HN", "Error getting meta. Req: " + req);
                 Crashlytics.logException(e);
             }
             return null;

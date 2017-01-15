@@ -230,6 +230,7 @@ public class ContactFragment extends HonarnamaBaseFragment {
 
                     case ReplyProperties.SERVER_ERROR:
                         cToastMsg = getStringInFragment(R.string.server_error_try_again);
+                        logE("Server error upon CreateMessageRequest. request: " + createMessageRequest);
                         break;
 
                     case ReplyProperties.NOT_AUTHORIZED:

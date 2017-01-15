@@ -830,6 +830,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon getStoreAsync. request: " + simpleRequest);
                         setTextInFragment(mEmptyView, getStringInFragment(R.string.error_getting_store_info));
                         displayRetrySnackbar();
                         displayShortToast(getStringInFragment(R.string.server_error_try_again));
@@ -990,6 +991,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                         break;
 
                     case ReplyProperties.SERVER_ERROR:
+                        logE("Server error upon createOrUpdateStoreRequest. request: " + createOrUpdateStoreRequest);
                         cToastMsg = getStringInFragment(R.string.server_error_try_again);
                         dismissProgressDialog();
                         break;
