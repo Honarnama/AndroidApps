@@ -13,16 +13,6 @@ android {
         versionName "1.0.0"
     }
 
-    productFlavors {
-        prod {
-            applicationId "net.honarnama.browse"
-        }
-
-        stg1 {
-            applicationId "net.honarnama.browse.stg1"
-        }
-    }
-
     buildTypes {
         debug {
             // minifyEnabled true
@@ -39,8 +29,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    prodCompile project(path: ':core', configuration: 'prodDebug')
-    stg1Compile project(path: ':core', configuration: 'stg1Debug')
+    releaseCompile project(path: ':core', configuration: 'release')
+    debugCompile project(path: ':core', configuration: 'debug')
     compile 'com.android.support:design:23.2.1'
     compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
 }

@@ -35,16 +35,15 @@ android {
     buildToolsVersion '23.0.2'
     publishNonDefault true
 
-    productFlavors {
-        prod {
+    buildTypes {
+        debug {
             buildConfigField 'String', 'HOST', '"honarnama.net"'
             buildConfigField 'int', 'SECURE_PORT', "8000"
             buildConfigField 'int', 'INSECURE_PORT', "8001"
         }
-
-        stg1 {
-            buildConfigField 'String', 'HOST', '"staging1.honarnama.net"'
-            buildConfigField 'int', 'SECURE_PORT', "0"
+        release {
+            buildConfigField 'String', 'HOST', '"honarnama.net"'
+            buildConfigField 'int', 'SECURE_PORT', "8000"
             buildConfigField 'int', 'INSECURE_PORT', "8001"
         }
     }

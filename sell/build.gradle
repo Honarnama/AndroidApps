@@ -13,16 +13,6 @@ android {
         versionName "1.1.0"
     }
 
-    productFlavors {
-        prod {
-            applicationId "net.honarnama.sell"
-        }
-
-        stg1 {
-            applicationId "net.honarnama.sell.stg1"
-        }
-    }
-
     buildTypes {
         debug {
             // minifyEnabled true
@@ -38,8 +28,8 @@ android {
 }
 
 dependencies {
-    prodCompile project(path: ':core', configuration: 'prodDebug')
-    stg1Compile project(path: ':core', configuration: 'stg1Debug')
+    releaseCompile project(path: ':core', configuration: 'release')
+    debugCompile project(path: ':core', configuration: 'debug')
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.makeramen:roundedimageview:2.1.2'
