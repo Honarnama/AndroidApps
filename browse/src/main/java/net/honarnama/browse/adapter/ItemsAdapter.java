@@ -5,7 +5,6 @@ import com.parse.ImageSelector;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.ArtCategory;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
@@ -23,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +108,7 @@ public class ItemsAdapter extends BaseAdapter {
             public Object then(Task<String> task) throws Exception {
                 if (task.isFaulted()) {
                     Log.e(DEBUG_TAG, "Error getting art cat name.");
+                    mViewHolder.itemCat.setText(mContext.getString(R.string.not_found));
                 } else {
                     mViewHolder.itemCat.setText(task.getResult());
                 }

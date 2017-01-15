@@ -167,6 +167,7 @@
     <string name="getting_information">در حال گرفتن اطلاعات...</string>
     <string name="error_finding_category_name">خطا در دریافت اطلاعات دسته‌بندی.</string>
     <string name="error_getting_items_list">خطا در گرفتن فهرست محصولات.</string>
+    <string name="not_found">یافت نشد.</string>
     <string name="item_not_found">"محصولی یافت نشد."</string>
     <string name="store_not_found">فروشگاهی یافت نشد.</string>
     <string name="event_not_found">رویدادی یافت نشد.</string>
