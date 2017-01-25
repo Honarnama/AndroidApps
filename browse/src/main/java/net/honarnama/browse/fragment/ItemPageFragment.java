@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -371,8 +372,20 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
             TextView similarItemTitle = (TextView) similarItemLayout.findViewById(R.id.item_title);
             ImageSelector similarItemImage = (ImageSelector) similarItemLayout.findViewById(R.id.item_image);
             TextView similarPostPrice = (TextView) similarItemLayout.findViewById(R.id.similar_post_price);
+            ProgressBar progressBar = (ProgressBar) similarItemLayout.findViewById(R.id.image_progress_bar);
+            progressBar.setVisibility(View.VISIBLE);
 
-            similarItemImage.setSource(item.images[0], null, R.drawable.camera_insta);
+
+            String itemImage = "";
+            if (item.images != null) {
+                for (int j = 0; j < item.images.length; j++) {
+                    if (!TextUtils.isEmpty(item.images[j])) {
+                        itemImage = item.images[j];
+                        break;
+                    }
+                }
+            }
+            similarItemImage.setSource(itemImage, progressBar, R.drawable.camera_insta);
             similarItemTitle.setText(TextUtil.convertEnNumberToFa(item.name));
 
             NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);

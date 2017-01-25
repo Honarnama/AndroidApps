@@ -3,34 +3,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-        >
+>
 
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:drawable/dialog_holo_light_frame"
-            >
+    >
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/item_image_container"
-                >
-            <RelativeLayout
-                    style="@style/GenericProgressBackground"
-                    android:id="@+id/item_icon_loading_panel"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/bordered_box"
-                    android:adjustViewBounds="true"
-                    >
-                <ProgressBar
-                        style="@style/GenericProgressIndicator"
-                        android:layout_centerInParent="true"
-                        />
-            </RelativeLayout>
-
+        >
             <com.parse.ImageSelector
                     android:id="@+id/item_image"
                     android:layout_width="match_parent"
@@ -41,7 +24,21 @@
                     app:riv_border_color="@color/gray_light"
                     android:src="@drawable/camera_insta"
                     android:adjustViewBounds="true"
-                    />
+            />
+
+            <ProgressBar
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    style="@style/GenericProgressIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center"
+                    android:id="@+id/image_progress_bar"
+                    android:visibility="gone"
+            />
+
             <TextView
                     android:id="@+id/similar_post_price"
                     style="@style/tiny_text_view"
@@ -55,7 +52,7 @@
                     android:singleLine="true"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_horizontal"
-                    />
+            />
         </RelativeLayout>
         <TextView
                 android:id="@+id/item_title"
@@ -72,7 +69,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:layout_centerHorizontal="true"
-                />
+        />
     </RelativeLayout>
 
 </RelativeLayout>
