@@ -783,6 +783,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             cCreateOrUpdateItemRequest.item.artCategoryCriteria = new ArtCategoryCriteria();
             if (mCategoryParentId == 0) {
                 cCreateOrUpdateItemRequest.item.artCategoryCriteria.level1Id = mCategoryId;
+                cCreateOrUpdateItemRequest.item.artCategoryCriteria.level2Id = mCategoryId;
             } else {
                 cCreateOrUpdateItemRequest.item.artCategoryCriteria.level1Id = mCategoryParentId;
                 cCreateOrUpdateItemRequest.item.artCategoryCriteria.level2Id = mCategoryId;
