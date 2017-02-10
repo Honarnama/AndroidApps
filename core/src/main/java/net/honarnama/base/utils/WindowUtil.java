@@ -2,6 +2,7 @@ package net.honarnama.base.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -33,23 +34,34 @@ public class WindowUtil {
      * *** when placed inside a ScrollView
      ****/
     public static void setListViewHeightBasedOnChildren(ListView listView) {
+
+        Log.e("TODO", "setListViewHeightBasedOnChildren: ");
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
 
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
+
+        Log.e("TODO", "listAdapter.getCount(): " + listAdapter.getCount());
+
         for (int i = 0; i < listAdapter.getCount(); i++) {
+
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+                view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            view.measure(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.UNSPECIFIED);
             totalHeight += view.getMeasuredHeight();
+
+            Log.e("TODO", "i: " + i + ". totalHeight: " + totalHeight);
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        params.height = totalHeight;
         listView.setLayoutParams(params);
     }
+
+
 }

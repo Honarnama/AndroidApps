@@ -223,7 +223,7 @@ public class RegisterActivity extends HonarnamaSellActivity implements View.OnCl
             createOrUpdateAccountRequest.requestProperties = rp;
 
             if (BuildConfig.DEBUG) {
-                logD("sendLoginEmailRequest: " + createOrUpdateAccountRequest);
+                logD("createOrUpdateAccountRequest: " + createOrUpdateAccountRequest);
             }
 
             AuthServiceGrpc.AuthServiceBlockingStub stub;

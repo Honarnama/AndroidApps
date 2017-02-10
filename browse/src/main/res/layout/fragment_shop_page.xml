@@ -16,6 +16,7 @@
             android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true"
     >
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -90,7 +91,7 @@
                             android:layout_gravity="center_vertical|center_horizontal"/>
                 </LinearLayout>
 
-                <net.honarnama.base.widget.NestedListView
+                <ListView
                         android:id="@+id/shop_items_listView"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
@@ -98,8 +99,8 @@
                         android:divider="@android:color/transparent"
                         android:dividerHeight="5dp"
                         android:background="@color/gray_super_extra_light"
+                        android:nestedScrollingEnabled="true"
                 />
-
 
                 <RelativeLayout android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

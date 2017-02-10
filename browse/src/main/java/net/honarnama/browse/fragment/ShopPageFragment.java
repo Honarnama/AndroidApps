@@ -13,6 +13,7 @@ import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.base.utils.TextUtil;
+import net.honarnama.base.utils.WindowUtil;
 import net.honarnama.base.widget.NestedListView;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
@@ -22,6 +23,7 @@ import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoreReply;
 import net.honarnama.nano.BrowseStoreRequest;
+import net.honarnama.nano.Item;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
@@ -35,6 +37,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,7 +61,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public TextView mShopName;
     public TextView mShopDesc;
     public TextView mShopPlace;
-    public NestedListView mListView;
+    public ListView mListView;
 
     private ObservableScrollView mScrollView;
     private View mBannerFrameLayout;
@@ -77,6 +81,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
     public RelativeLayout mDeletedShopMsg;
 
     private Tracker mTracker;
+
+    public net.honarnama.nano.Item[] mShopItems;
 
     @Override
     public String getTitle() {
@@ -112,7 +118,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         final View rootView = inflater.inflate(R.layout.fragment_shop_page, container, false);
         mShopId = getArguments().getLong("shopId");
 
-        mListView = (NestedListView) rootView.findViewById(R.id.shop_items_listView);
+        mListView = (ListView) rootView.findViewById(R.id.shop_items_listView);
 
         mEmptyListContainer = (RelativeLayout) rootView.findViewById(R.id.empty_list_container);
 
@@ -148,6 +154,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
         setVisibilityInFragment(mOnErrorRetry, View.GONE);
 
         mListView.setAdapter(mItemsAdapter);
+
         mListView.setOnItemClickListener(this);
 
         new getStoreAsync().execute();
@@ -269,8 +276,8 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Store store = browseStoreReply.store;
-                            net.honarnama.nano.Item[] shopItems = browseStoreReply.items;
-                            loadStoreInfo(store, shopItems);
+                            mShopItems = browseStoreReply.items;
+                            loadStoreInfo(store);
                         }
                         break;
                 }
@@ -283,7 +290,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     }
 
-    private void loadStoreInfo(final net.honarnama.nano.Store shop, net.honarnama.nano.Item[] shopItems) {
+    private void loadStoreInfo(final net.honarnama.nano.Store shop) {
 
         setVisibilityInFragment(mFab, View.VISIBLE);
         setVisibilityInFragment(mInfoContainer, View.VISIBLE);
@@ -320,17 +327,53 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             mBannerImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.party_flags));
         }
 
-        if (shopItems.length == 0) {
+        new loadShopItems().execute();
+
+    }
+
+    public class loadShopItems extends AsyncTask<Void, Void, ArrayList<Item>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
             mListView.setEmptyView(mEmptyListContainer);
             setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-        } else {
-            ArrayList itemsList = new ArrayList();
-            for (net.honarnama.nano.Item item : shopItems) {
-                itemsList.add(0, item);
+            TextView mEmptyListText = (TextView) mEmptyListContainer.findViewById(R.id.empty_items_text_view);
+
+            if (mShopItems.length == 0) {
+                mEmptyListText.setText(getStringInFragment(R.string.shop_has_no_item));
+            } else {
+                mEmptyListText.setText(getStringInFragment(R.string.getting_information));
             }
-            mItemsAdapter.setItems(itemsList);
-            mItemsAdapter.notifyDataSetChanged();
-//            WindowUtil.setListViewHeightBasedOnChildren(mListView);
+        }
+
+        @Override
+        protected ArrayList<Item> doInBackground(Void... params) {
+            if (mShopItems.length > 0) {
+                setVisibilityInFragment(mEmptyListContainer, View.GONE);
+
+                ArrayList itemsList = new ArrayList();
+                for (net.honarnama.nano.Item item : mShopItems) {
+                    itemsList.add(0, item);
+                }
+
+                return itemsList;
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Item> itemsList) {
+            super.onPostExecute(itemsList);
+
+            if (itemsList != null) {
+                mItemsAdapter.setItems(itemsList);
+                mItemsAdapter.notifyDataSetChanged();
+            }
+
+            WindowUtil.setListViewHeightBasedOnChildren(mListView);
         }
     }
 

@@ -121,7 +121,9 @@ public class ShopsAdapter extends BaseAdapter {
     }
 
     public void addShops(List<Store> shopList) {
-        mShops.addAll(shopList);
+        if (mShops != null) {
+            mShops.addAll(shopList);
+        }
     }
 
     private class ViewHolderWithImage {
