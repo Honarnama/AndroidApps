@@ -34,7 +34,6 @@ public class WindowUtil {
      * *** when placed inside a ScrollView
      ****/
     public static void setListViewHeightBasedOnChildren(ListView listView) {
-
         Log.e("TODO", "setListViewHeightBasedOnChildren: ");
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
@@ -58,8 +57,8 @@ public class WindowUtil {
             Log.e("TODO", "i: " + i + ". totalHeight: " + totalHeight);
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        params.height = totalHeight;
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+//        params.height = totalHeight;
         listView.setLayoutParams(params);
     }
 

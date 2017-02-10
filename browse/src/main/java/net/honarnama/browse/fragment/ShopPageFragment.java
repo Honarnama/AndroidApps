@@ -81,8 +81,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
     private Tracker mTracker;
 
-    public net.honarnama.nano.Item[] mShopItems;
-
     @Override
     public String getTitle() {
         return getString(R.string.art_shop);
@@ -275,7 +273,6 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                         setVisibilityInFragment(mOnErrorRetry, View.GONE);
                         if (isAdded()) {
                             net.honarnama.nano.Store store = browseStoreReply.store;
-                            mShopItems = browseStoreReply.items;
                             loadStoreInfo(store);
                         }
                         break;
@@ -355,6 +352,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
             browseItemsRequest = new BrowseItemsRequest();
             browseItemsRequest.requestProperties = rp;
+            browseItemsRequest.storeId = mShopId;
 
             BrowseItemsReply getItemsReply;
             if (BuildConfig.DEBUG) {
@@ -408,7 +406,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
                             ArrayList itemsList = new ArrayList();
 
                             if (items.length > 0) {
-                                for (net.honarnama.nano.Item item : mShopItems) {
+                                for (net.honarnama.nano.Item item : items) {
                                     itemsList.add(0, item);
                                 }
 
