@@ -14,16 +14,16 @@ import net.honarnama.base.utils.NetworkManager;
 import net.honarnama.base.utils.ObservableScrollView;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.base.utils.WindowUtil;
-import net.honarnama.base.widget.NestedListView;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
 import net.honarnama.browse.dialog.ContactDialog;
+import net.honarnama.nano.BrowseItemsReply;
+import net.honarnama.nano.BrowseItemsRequest;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoreReply;
 import net.honarnama.nano.BrowseStoreRequest;
-import net.honarnama.nano.Item;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -327,53 +326,108 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
             mBannerImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.party_flags));
         }
 
-        new loadShopItems().execute();
+        new getShopItemsAsync().execute();
 
     }
 
-    public class loadShopItems extends AsyncTask<Void, Void, ArrayList<Item>> {
+    public class getShopItemsAsync extends AsyncTask<Void, Void, BrowseItemsReply> {
+        BrowseItemsRequest browseItemsRequest;
+
+        TextView mEmptyListText;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            mListView.setEmptyView(mEmptyListContainer);
             setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
-            TextView mEmptyListText = (TextView) mEmptyListContainer.findViewById(R.id.empty_items_text_view);
-
-            if (mShopItems.length == 0) {
-                mEmptyListText.setText(getStringInFragment(R.string.shop_has_no_item));
-            } else {
-                mEmptyListText.setText(getStringInFragment(R.string.getting_information));
-            }
+            mListView.setEmptyView(mEmptyListContainer);
+            mEmptyListText = (TextView) mEmptyListContainer.findViewById(R.id.empty_items_text_view);
+            mEmptyListText.setText(getStringInFragment(R.string.getting_information));
         }
 
         @Override
-        protected ArrayList<Item> doInBackground(Void... params) {
-            if (mShopItems.length > 0) {
-                setVisibilityInFragment(mEmptyListContainer, View.GONE);
+        protected BrowseItemsReply doInBackground(Void... voids) {
 
-                ArrayList itemsList = new ArrayList();
-                for (net.honarnama.nano.Item item : mShopItems) {
-                    itemsList.add(0, item);
-                }
-
-                return itemsList;
+            if (!NetworkManager.getInstance().isNetworkEnabled(false)) {
+                return null;
             }
 
+            RequestProperties rp = GRPCUtils.newRPWithDeviceInfo();
+            browseItemsRequest = new BrowseItemsRequest();
+            browseItemsRequest.requestProperties = rp;
+
+            BrowseItemsReply getItemsReply;
+            if (BuildConfig.DEBUG) {
+                logD("Request for getting shop items is: " + browseItemsRequest);
+            }
+            try {
+                BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
+                getItemsReply = stub.getItems(browseItemsRequest);
+                return getItemsReply;
+            } catch (Exception e) {
+                logE("Error getting shop items. request: " + browseItemsRequest + ". Error: " + e, e);
+            }
             return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Item> itemsList) {
-            super.onPostExecute(itemsList);
+        protected void onPostExecute(BrowseItemsReply browseItemsReply) {
+            super.onPostExecute(browseItemsReply);
 
-            if (itemsList != null) {
-                mItemsAdapter.setItems(itemsList);
-                mItemsAdapter.notifyDataSetChanged();
+            if (BuildConfig.DEBUG) {
+                logD("getting shop items reply: " + browseItemsReply);
             }
 
-            WindowUtil.setListViewHeightBasedOnChildren(mListView);
+            Activity activity = getActivity();
+
+            if (browseItemsReply != null) {
+                switch (browseItemsReply.replyProperties.statusCode) {
+                    case ReplyProperties.UPGRADE_REQUIRED:
+                        if (activity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                            controlPanelActivity.displayUpgradeRequiredDialog();
+                        } else {
+                            displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
+                        }
+                        break;
+                    case ReplyProperties.CLIENT_ERROR:
+                        // TODO
+                        break;
+                    case ReplyProperties.SERVER_ERROR:
+                        displayLongToast(getStringInFragment(R.string.server_error_try_again));
+                        logE("Server error getting shop items. request: " + browseItemsRequest);
+                        break;
+
+                    case ReplyProperties.NOT_AUTHORIZED:
+                        break;
+
+                    case ReplyProperties.OK:
+                        if (isAdded()) {
+                            net.honarnama.nano.Item[] items = browseItemsReply.items;
+
+                            ArrayList itemsList = new ArrayList();
+
+                            if (items.length > 0) {
+                                for (net.honarnama.nano.Item item : mShopItems) {
+                                    itemsList.add(0, item);
+                                }
+
+                                setVisibilityInFragment(mEmptyListContainer, View.GONE);
+                            } else {
+                                mEmptyListText.setText(getStringInFragment(R.string.shop_has_no_item));
+                            }
+
+                            mItemsAdapter.setItems(itemsList);
+                            mItemsAdapter.notifyDataSetChanged();
+
+                            WindowUtil.setListViewHeightBasedOnChildren(mListView);
+                        }
+                        break;
+                }
+
+            } else {
+                displayShortToast(getStringInFragment(R.string.check_net_connection));
+            }
         }
     }
 

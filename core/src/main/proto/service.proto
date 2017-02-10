@@ -438,8 +438,7 @@ message BrowseItemsRequest {
     uint32 maxPrice = 5; // 1000 toman, ceil round
     string searchTerm = 6;
     int64 nextPageId = 7;
-    uint64 id = 8;
-    uint64 storeId = 9;
+    uint64 storeId = 8;
 }
 
 message BrowseItemsReply {
