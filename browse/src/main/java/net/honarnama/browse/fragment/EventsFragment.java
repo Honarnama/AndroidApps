@@ -434,10 +434,11 @@ public class EventsFragment extends HonarnamaBrowseFragment implements AdapterVi
                                 mEventsAdapter.setEvents(eventsList);
                             }
 
-                            if (mEventsAdapter.getCount() == 0) {
+                            mEventsAdapter.notifyDataSetChanged();
+
+                            if (eventsList.size() == 0) {
                                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
-                            mEventsAdapter.notifyDataSetChanged();
 
                         }
                         break;

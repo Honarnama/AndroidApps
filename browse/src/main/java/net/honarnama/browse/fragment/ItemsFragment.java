@@ -480,10 +480,11 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                                 mItemsAdapter.setItems(itemsList);
                             }
 
-                            if (mItemsAdapter.getCount() == 0) {
+                            mItemsAdapter.notifyDataSetChanged();
+
+                            if (itemsList.size() == 0) {
                                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
-                            mItemsAdapter.notifyDataSetChanged();
 
                         }
                         break;

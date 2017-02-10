@@ -360,10 +360,11 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                                 mShopsAdapter.setShops(shopsList);
                             }
 
-                            if (mShopsAdapter.getCount() == 0) {
+                            mShopsAdapter.notifyDataSetChanged();
+
+                            if (shopsList.size() == 0) {
                                 setVisibilityInFragment(mEmptyListContainer, View.VISIBLE);
                             }
-                            mShopsAdapter.notifyDataSetChanged();
 
                         }
                         break;
