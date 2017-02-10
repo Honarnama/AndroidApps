@@ -80,7 +80,7 @@ public class ItemsAdapter extends BaseAdapter {
         final MyViewHolder mViewHolder;
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.item_row, parent, false);
+            convertView = mInflater.inflate(R.layout.item_row, null);
             mViewHolder = new MyViewHolder(convertView);
             convertView.setTag(mViewHolder);
         } else {
