@@ -1,8 +1,10 @@
 package net.honarnama.browse.adapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.model.City;
@@ -12,6 +14,7 @@ import net.honarnama.browse.R;
 import net.honarnama.nano.Event;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,30 +87,64 @@ public class EventsAdapter extends BaseAdapter {
                 Log.d(DEBUG_TAG, "event image: " + image);
             }
             Uri imageUri = Uri.parse(image);
-            Picasso.with(mContext).load(imageUri.toString())
+//            Picasso.with(mContext).load(imageUri.toString())
+//                    .error(R.drawable.party_flags)
+//                    .into(mViewHolderWithImage.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
+
+            Glide.with(mContext).load(imageUri.toString())
+                    .centerCrop()
+//                    .crossFade()
                     .error(R.drawable.party_flags)
-                    .into(mViewHolderWithImage.icon, new Callback() {
+                    .into(new GlideDrawableImageViewTarget(mViewHolderWithImage.icon) {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
                             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
                             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
                         }
                     });
         } else {
-            Picasso.with(mContext).load(R.drawable.party_flags)
+//            Picasso.with(mContext).load(R.drawable.party_flags)
+//                    .error(R.drawable.party_flags)
+//                    .into(mViewHolderWithImage.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
+            Glide.with(mContext).load(R.drawable.party_flags)
+                    .centerCrop()
                     .error(R.drawable.party_flags)
-                    .into(mViewHolderWithImage.icon, new Callback() {
+                    .into(new GlideDrawableImageViewTarget(mViewHolderWithImage.icon) {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
                             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
                             mViewHolderWithImage.imageLoadingPanel.setVisibility(View.GONE);
                         }
                     });

@@ -3,6 +3,7 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.bumptech.glide.Glide;
 import com.parse.ImageSelector;
 
 import net.honarnama.GRPCUtils;
@@ -147,7 +148,7 @@ public class ShopPageFragment extends HonarnamaBrowseFragment implements View.On
 
         mFab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
-        mItemsAdapter = new ItemsAdapter(getActivity());
+        mItemsAdapter = new ItemsAdapter(getActivity(), this);
         setVisibilityInFragment(mOnErrorRetry, View.GONE);
 
         mListView.setAdapter(mItemsAdapter);

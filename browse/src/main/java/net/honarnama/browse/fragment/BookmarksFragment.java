@@ -69,7 +69,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
 
         mLoadingCircle = (LinearLayout) rootView.findViewById(R.id.loading_circle_container);
 
-        mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
+        mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance(), this);
         mItemsAdapter.setForBookmarks(true);
         mItemsAdapter.setOnDeleteBookmarkListener(this);
         mListView.setAdapter(mItemsAdapter);

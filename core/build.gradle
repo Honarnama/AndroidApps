@@ -52,7 +52,7 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.parse.bolts:bolts-android:1.4.0'
-    compile 'com.makeramen:roundedimageview:2.1.2'
+    compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.mikepenz:iconics-core:2.5.5@aar'
     compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
     compile 'com.android.support:design:23.2.1'
@@ -60,12 +60,12 @@ dependencies {
         transitive = true;
     }
     compile 'com.google.android.gms:play-services-analytics:8.3.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
 
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'io.grpc:grpc-okhttp:1.0.3'
     compile 'io.grpc:grpc-protobuf-nano:1.0.0'
     compile 'io.grpc:grpc-stub:1.0.3'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

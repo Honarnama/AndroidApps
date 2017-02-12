@@ -47,7 +47,7 @@
                         android:id="@+id/item_share_container"
                         android:visibility="gone"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="16dp"
                         android:layout_alignParentRight="true"
 
@@ -63,7 +63,7 @@
             />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="@string/share_us"
-                      android:textSize="14sp"
+                      android:textSize="16sp"
                       android:textColor="@color/white"
                       android:paddingRight="5dp"
                       android:layout_toLeftOf="@id/share_item_icon"
@@ -75,7 +75,7 @@
         <RelativeLayout android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:id="@+id/item_bookmark_container"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="16dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"

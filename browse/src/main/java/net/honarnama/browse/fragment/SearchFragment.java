@@ -158,7 +158,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
 
 //        mSearchButton.setOnClickListener(this);
 
-        mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance());
+        mItemsAdapter = new ItemsAdapter(HonarnamaBrowseApp.getInstance(), this);
         mShopsAdapter = new ShopsAdapter(HonarnamaBrowseApp.getInstance());
         mEventsAdapter = new EventsAdapter(HonarnamaBrowseApp.getInstance());
 

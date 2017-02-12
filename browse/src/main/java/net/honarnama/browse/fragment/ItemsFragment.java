@@ -136,7 +136,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
 
         mListView.addHeaderView(header);
 
-        mItemsAdapter = new ItemsAdapter(getContext());
+        mItemsAdapter = new ItemsAdapter(getContext(), this);
         mListView.setAdapter(mItemsAdapter);
 
         getItems(false);

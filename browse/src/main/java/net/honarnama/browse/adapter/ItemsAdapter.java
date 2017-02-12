@@ -1,18 +1,23 @@
 package net.honarnama.browse.adapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.base.model.ArtCategory;
 import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
+import net.honarnama.browse.fragment.HonarnamaBrowseFragment;
 import net.honarnama.nano.ArtCategoryCriteria;
 import net.honarnama.nano.Item;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,15 +40,17 @@ import bolts.Task;
 public class ItemsAdapter extends BaseAdapter {
     public final static String DEBUG_TAG = HonarnamaBrowseApp.PRODUCTION_TAG + "/ItemsAdapter";
     Context mContext;
+    HonarnamaBrowseFragment mFragment;
     List<Item> mItems;
     private static LayoutInflater mInflater = null;
     private boolean mIsForBookmarks = false;
     private View.OnClickListener onDeleteBookmarkListener;
 
-    public ItemsAdapter(Context context) {
+    public ItemsAdapter(Context context, HonarnamaBrowseFragment fragment) {
         mContext = context;
         mItems = new ArrayList<Item>();
         mInflater = LayoutInflater.from(mContext);
+        mFragment = fragment;
     }
 
     public void setForBookmarks(boolean isForBookmarks) {
@@ -128,33 +135,55 @@ public class ItemsAdapter extends BaseAdapter {
         }
 
         mViewHolder.itemIconLoadingPanel.setVisibility(View.VISIBLE);
-
         if (itemImage.trim().length() > 0) {
             Uri imageUri = Uri.parse(itemImage);
-            Picasso.with(mContext).load(imageUri.toString())
+//            Picasso.with(mContext).load(imageUri.toString())
+//                    .error(R.drawable.camera_insta)
+//                    .resize(120,120)
+//                    .into(mViewHolder.icon, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
+//                        }
+//                    });
+
+            Glide.with(mFragment).load(imageUri.toString())
+                    .centerCrop()
+//                    .crossFade()
                     .error(R.drawable.camera_insta)
-                    .into(mViewHolder.icon, new Callback() {
+                    .into(new GlideDrawableImageViewTarget(mViewHolder.icon) {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
                             mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
                             mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
                     });
+
         } else {
-            Picasso.with(mContext).load(R.drawable.camera_insta)
+            Glide.with(mFragment).load(R.drawable.camera_insta)
+                    .centerCrop()
                     .error(R.drawable.camera_insta)
-                    .into(mViewHolder.icon, new Callback() {
+                    .into(new GlideDrawableImageViewTarget(mViewHolder.icon) {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
                             mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
                             mViewHolder.itemIconLoadingPanel.setVisibility(View.GONE);
                         }
                     });

@@ -1,5 +1,8 @@
 package net.honarnama.sell.utils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.crashlytics.android.Crashlytics;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.MediaType;
@@ -7,7 +10,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -17,7 +19,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -83,7 +84,11 @@ public class Uploader {
                 }
 
                 if (response.isSuccessful()) {
-                    Picasso.with(HonarnamaBaseApp.getInstance()).invalidate(mFile);
+//                    Picasso.with(HonarnamaBaseApp.getInstance()).invalidate(mFile);
+                    Glide.with(HonarnamaBaseApp.getInstance()).load(mFile)
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true);
                     mTcs.trySetResult(null);
                 } else {
                     if (BuildConfig.DEBUG) {

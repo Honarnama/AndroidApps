@@ -3,11 +3,13 @@ package net.honarnama.sell.fragments;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
@@ -38,6 +40,7 @@ import net.honarnama.sell.utils.Uploader;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -696,13 +699,15 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         if (!isAdded()) {
                             break;
                         }
-                        Picasso.with(activity).load(itemImage)
+                        Glide.with(activity).load(itemImage)
                                 .error(R.drawable.camera_insta)
-                                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                                .networkPolicy(NetworkPolicy.NO_CACHE)
-                                .into(mItemImages[i], new Callback() {
+                                .skipMemoryCache(true)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                .into(new GlideDrawableImageViewTarget(mItemImages[i]) {
                                     @Override
-                                    public void onSuccess() {
+                                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                                        super.onResourceReady(resource, animation);
                                         setVisibilityInFragment(mItemImageLoadingPannel[index], View.GONE);
                                         setVisibilityInFragment(mItemImages[index], View.VISIBLE);
                                         if (mItemImages[index] != null && isAdded()) {
@@ -712,7 +717,8 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                     }
 
                                     @Override
-                                    public void onError() {
+                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                        super.onLoadFailed(e, errorDrawable);
                                         setVisibilityInFragment(mItemImageLoadingPannel[index], View.GONE);
                                         displayShortToast(getStringInFragment(R.string.error_displaying_image) + getStringInFragment(R.string.check_net_connection));
                                         setVisibilityInFragment(mItemImages[index], View.VISIBLE);

@@ -42,3 +42,12 @@
 -keep interface com.squareup.okhttp.** { *; }
 -keep class io.grpc.internal.DnsNameResolverProvider
 -keep class io.grpc.okhttp.OkHttpChannelProvider
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+# for DexGuard only
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

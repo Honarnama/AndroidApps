@@ -1,11 +1,13 @@
 package net.honarnama.sell.adapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.crashlytics.android.Crashlytics;
 import com.parse.ImageSelector;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
@@ -27,6 +29,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -117,23 +120,27 @@ public class ItemsAdapter extends BaseAdapter {
         if (!TextUtils.isEmpty(itemImage)) {
             mViewHolder.itemIcomLoadingPanel.setVisibility(View.VISIBLE);
             mViewHolder.icon.setVisibility(View.GONE);
-            Picasso.with(mContext).load(itemImage)
+            Glide.with(mContext).load(itemImage)
                     .error(R.drawable.camera_insta)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .into(mViewHolder.icon, new Callback() {
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    .into(new GlideDrawableImageViewTarget(mViewHolder.icon) {
                         @Override
-                        public void onSuccess() {
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
                             mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
                             mViewHolder.icon.setVisibility(View.VISIBLE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
                             mViewHolder.itemIcomLoadingPanel.setVisibility(View.GONE);
                             mViewHolder.icon.setVisibility(View.VISIBLE);
                         }
                     });
+
         }
         mViewHolder.deleteContainer.setOnClickListener(new View.OnClickListener() {
             @Override

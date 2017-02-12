@@ -1,9 +1,15 @@
 package com.parse;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.crashlytics.android.Crashlytics;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -21,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 
 public class ImageSelector extends RoundedImageView implements View.OnClickListener {
@@ -264,7 +272,11 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
             if (BuildConfig.DEBUG) {
                 Log.d(DEBUG_TAG, "Image is set (through imageSelected)");
             }
+
             setImageURI(selectedImage);
+//
+//            Glide.with(mContext).load(selectedImage).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).
+//                    centerCrop().into(this);
         }
     }
 
@@ -545,22 +557,6 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
             String __mLoadingURL = savedInstanceState.getString(prefix + "_mLoadingURL");
 
-            Log.d(DEBUG_TAG, "restore of IS: __mLoadingURL: " + __mLoadingURL);
-            if (__mLoadingURL != null && __mLoadingURL.trim().length() > 0) {
-                mLoadingURL = __mLoadingURL;
-                Picasso.with(mContext).load(mLoadingURL)
-                        .error(R.drawable.camera_insta)
-                        .into(this, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                            }
-
-                            @Override
-                            public void onError() {
-                            }
-                        });
-            }
-
             String _mTempImageUriCapture = savedInstanceState.getString(prefix + "_mTempImageUriCapture");
             if (_mTempImageUriCapture != null) {
                 mSelectedImageUri = Uri.parse(_mTempImageUriCapture);
@@ -581,6 +577,36 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                 } else if (mSelectedImageUri != null) {
                     imageSelected(mSelectedImageUri, true);
                 }
+            } else if (__mLoadingURL != null && __mLoadingURL.trim().length() > 0) {
+
+                Log.d(DEBUG_TAG, "restore of IS: __mLoadingURL: " + __mLoadingURL);
+
+                mLoadingURL = __mLoadingURL;
+//
+//
+//                Glide.with(mContext).load(mLoadingURL)
+//                        .asBitmap()
+//                        .centerCrop()
+////                    .crossFade().
+//                        .skipMemoryCache(true)
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+////                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+////                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+//                        .error(R.drawable.camera_insta);
+
+                Glide.with(mContext)
+                        .load(mLoadingURL)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(new BitmapImageViewTarget(this) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                // Do bitmap magic here
+                                super.setResource(resource);
+                            }
+                        });
+
             }
 
             if (BuildConfig.DEBUG) {
@@ -627,24 +653,50 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
         if (imageUri.trim().length() == 0) {
             return;
         }
-        //R.drawable.party_flags
-        Picasso.with(mContext).load(imageUri.toString())
+//        //R.drawable.party_flags
+//        Picasso.with(mContext).load(imageUri.toString())
+//                .error(drawable)
+//                .into(this, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        if (progressbar != null) {
+//                            progressbar.setVisibility(View.GONE);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        if (progressbar != null) {
+//                            progressbar.setVisibility(View.GONE);
+//                        }
+//                    }
+//                });
+
+        Glide.with(mContext).load(imageUri.toString())
+//                .centerCrop()
+//                    .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                 .error(drawable)
-                .into(this, new Callback() {
+                .into(new GlideDrawableImageViewTarget(this) {
                     @Override
-                    public void onSuccess() {
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                        super.onResourceReady(resource, animation);
                         if (progressbar != null) {
                             progressbar.setVisibility(View.GONE);
                         }
                     }
 
                     @Override
-                    public void onError() {
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
                         if (progressbar != null) {
                             progressbar.setVisibility(View.GONE);
                         }
                     }
                 });
+
     }
 
 
@@ -680,6 +732,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
             return null;
         }
+
     }
 
     private void callCropDelayed(final Uri data, final Uri croppedFile) {
