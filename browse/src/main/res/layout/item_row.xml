@@ -37,6 +37,20 @@
                 app:riv_border_color="@color/gray_light"
                 android:src="@drawable/camera_insta"
         />
+
+        <TextView
+                android:id="@+id/price"
+                style="@style/tiny_text_view"
+                android:background="@drawable/price_gradient_back"
+                android:textColor="@color/white"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/item_image_in_list"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:gravity="center_horizontal"
+        />
     </RelativeLayout>
 
 

@@ -28,8 +28,10 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -102,6 +104,12 @@ public class ItemsAdapter extends BaseAdapter {
         // Setting all values in listview
         mViewHolder.title.setText(TextUtil.convertEnNumberToFa(item.name));
         mViewHolder.desc.setText(TextUtil.convertEnNumberToFa(item.description));
+
+        NumberFormat formatter = TextUtil.getPriceNumberFormmat(Locale.ENGLISH);
+        String formattedPrice = formatter.format(item.price);
+        String price = TextUtil.convertEnNumberToFa(formattedPrice);
+
+        mViewHolder.price.setText(price + " " + mContext.getString(R.string.toman));
 
         if (mIsForBookmarks) {
             mViewHolder.deleteBookmark.setVisibility(View.VISIBLE);
@@ -209,6 +217,7 @@ public class ItemsAdapter extends BaseAdapter {
         TextView title;
         TextView desc;
         TextView itemCat;
+        TextView price;
         ImageSelector icon;
         RelativeLayout itemRowContainer;
         RelativeLayout itemIconLoadingPanel;
@@ -218,6 +227,7 @@ public class ItemsAdapter extends BaseAdapter {
         public MyViewHolder(View view) {
             title = (TextView) view.findViewById(R.id.item_row_title);
             desc = (TextView) view.findViewById(R.id.item_row_desc);
+            price = (TextView) view.findViewById(R.id.price);
             icon = (ImageSelector) view.findViewById(R.id.item_image_in_list);
             itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_outer_container);
             itemIconLoadingPanel = (RelativeLayout) view.findViewById(R.id.item_icon_loading_panel);
