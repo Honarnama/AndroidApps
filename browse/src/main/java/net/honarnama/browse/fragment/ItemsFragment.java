@@ -28,7 +28,6 @@ import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -94,6 +93,7 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     public boolean mHasMoreItems = true;
 
     public boolean mOnScrollIsLoading = false;
+    ControlPanelActivity mActivity;
 
     public synchronized static ItemsFragment getInstance() {
         if (mItemsFragment == null) {
@@ -108,6 +108,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mTracker = HonarnamaBrowseApp.getInstance().getDefaultTracker();
         mTracker.setScreenName("ItemsFragment");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+        mActivity = (ControlPanelActivity) getActivity();
     }
 
     @Override
@@ -201,9 +203,8 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         net.honarnama.nano.Item selectedItem = mItemsAdapter.getItem(position - 1);
-        ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-        if (selectedItem != null) {
-            controlPanelActivity.displayItemPage(selectedItem.id, false);
+        if (selectedItem != null && mActivity != null) {
+            mActivity.displayItemPage(selectedItem.id, false);
         }
     }
 
@@ -230,10 +231,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
         }
 
         if (v.getId() == R.id.on_error_retry_container) {
-            if (NetworkManager.getInstance().isNetworkEnabled(true)) {
+            if (NetworkManager.getInstance().isNetworkEnabled(true) && mActivity != null) {
                 setVisibilityInFragment(mLoadingCircle, View.VISIBLE);
-                ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                controlPanelActivity.refreshTopFragment();
+                mActivity.refreshTopFragment();
             }
         }
 
@@ -431,13 +431,12 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
             setVisibilityInFragment(mLoadingCircle, View.GONE);
             setVisibilityInFragment(mLoadMoreProgressContainer, View.GONE);
             mOnScrollIsLoading = false;
-            Activity activity = getActivity();
 
             if (browseItemsReply != null) {
                 switch (browseItemsReply.replyProperties.statusCode) {
                     case ReplyProperties.UPGRADE_REQUIRED:
-                        if (activity != null) {
-                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) activity);
+                        if (mActivity != null) {
+                            ControlPanelActivity controlPanelActivity = ((ControlPanelActivity) mActivity);
                             controlPanelActivity.displayUpgradeRequiredDialog();
                         } else {
                             displayLongToast(getStringInFragment(R.string.upgrade_to_new_version));
@@ -489,6 +488,9 @@ public class ItemsFragment extends HonarnamaBrowseFragment implements AdapterVie
                         }
                         break;
                 }
+
+                long serverMetaVersion = browseItemsReply.replyProperties.latestMetaETag;
+                mActivity.checkAndUpdateMeta(false, serverMetaVersion);
 
             } else {
                 displayShortToast(getStringInFragment(R.string.check_net_connection));

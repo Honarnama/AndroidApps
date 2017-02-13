@@ -148,7 +148,7 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
             }
         });
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class LocationFilterDialogActivity extends HonarnamaBrowseActivity implem
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     break;
                 }
-                checkAndUpdateMeta(true);
+                checkAndUpdateMeta(true, 0);
                 mRefetchProvinces.setVisibility(View.GONE);
                 mRefetchCities.setVisibility(View.GONE);
                 fetchProvincesAndCities();

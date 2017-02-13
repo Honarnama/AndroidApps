@@ -161,7 +161,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
         processIntent(getIntent());
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
 
         checkAndAskStoragePermission(this);
     }
@@ -297,7 +297,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
     public void switchFragment(final HonarnamaBaseFragment fragment) {
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
 
         mFragment = fragment;
@@ -672,7 +672,6 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     @Override
     public void onPause() {
         super.onPause();
-        runScheduledMetaUpdate();
     }
 
 }

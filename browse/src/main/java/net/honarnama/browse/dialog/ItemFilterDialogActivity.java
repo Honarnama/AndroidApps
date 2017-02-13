@@ -122,7 +122,7 @@ public class ItemFilterDialogActivity extends HonarnamaBrowseActivity implements
             }
         });
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
     }
 
     @Override

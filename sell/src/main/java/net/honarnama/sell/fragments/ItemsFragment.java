@@ -291,7 +291,7 @@ public class ItemsFragment extends HonarnamaBaseFragment implements AdapterView.
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
 
                         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                        controlPanelActivity.checkAndUpdateMeta(false);
+                        controlPanelActivity.checkAndUpdateMeta(false, 0);
 
                         new getItemsAsync().execute();
                         if (mSnackbar != null && mSnackbar.isShown()) {

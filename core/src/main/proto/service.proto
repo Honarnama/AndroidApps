@@ -25,6 +25,7 @@ message RequestProperties {
     string clientId = 3;
     int32 clientVersion = 4;
     AndroidClientInfo androidClientInfo = 5;
+    uint64 metaETag = 6;
 }
 
 message ReplyProperties {
@@ -42,6 +43,7 @@ message ReplyProperties {
     string serverVersion = 4;
     string errorMessage = 5;
     string newUserAuthToken = 6;
+    uint64 latestMetaETag = 7;
 }
 
 message SimpleRequest {

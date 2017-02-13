@@ -78,6 +78,7 @@ public class GRPCUtils {
     public static RequestProperties newRPWithDeviceInfo() {
         RequestProperties rp = new RequestProperties();
         rp.androidClientInfo = new AndroidClientInfo();
+        rp.metaETag = HonarnamaBaseApp.getCurrentMetaVersion();
 
         Application app = HonarnamaBaseApp.getInstance();
         String packageName = app.getPackageName();
@@ -130,7 +131,6 @@ public class GRPCUtils {
         // TODO: cache
         return BrowseServiceGrpc.newBlockingStub(mChannel).withDeadlineAfter(15, TimeUnit.SECONDS).withInterceptors();
     }
-
 
 
     public void processReplyProperties() {

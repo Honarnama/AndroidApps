@@ -970,7 +970,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                     if (NetworkManager.getInstance().isNetworkEnabled(true)) {
 
                         ControlPanelActivity controlPanelActivity = (ControlPanelActivity) getActivity();
-                        controlPanelActivity.checkAndUpdateMeta(false);
+                        controlPanelActivity.checkAndUpdateMeta(false, 0);
 
                         new getItemAsync().execute();
                         dismissSnackbar();

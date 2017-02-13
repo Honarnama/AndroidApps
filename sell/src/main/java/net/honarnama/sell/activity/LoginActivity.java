@@ -240,6 +240,9 @@ public class LoginActivity extends HonarnamaSellActivity implements View.OnClick
                         break;
                 }
 
+                long serverMetaVersion = whoAmIReply.replyProperties.latestMetaETag;
+                checkAndUpdateMeta(false, serverMetaVersion);
+
             } else {
                 displayCustomSnackbar(getString(R.string.error_connecting_server_try_again), true);
             }

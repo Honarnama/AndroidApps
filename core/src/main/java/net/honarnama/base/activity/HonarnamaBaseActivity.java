@@ -252,26 +252,25 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         return true;
     }
 
-    public void checkAndUpdateMeta(boolean forceUpdate) {
-        long metaVersion = HonarnamaBaseApp.getAppSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
-
-        if (forceUpdate || metaVersion == 0) {
+    public void checkAndUpdateMeta(boolean forceUpdate, long serverMetaVersion) {
+        long metaVersion = HonarnamaBaseApp.getCurrentMetaVersion();
+        if (forceUpdate || metaVersion == 0 || metaVersion < serverMetaVersion) {
             MetaUpdater metaUpdater = new MetaUpdater(mMetaUpdateListener, metaVersion);
             metaUpdater.execute();
         }
     }
 
-    public void runScheduledMetaUpdate() {
-        if (BuildConfig.DEBUG) {
-            logD("runScheduledMetaUpdate in background (onPause)");
-        }
-        long lastMetaCheckTime = HonarnamaBaseApp.getAppSharedPref()
-                .getLong(HonarnamaBaseApp.PREF_KEY_META_CHECKED_TIME, 0);
-
-        if (System.currentTimeMillis() > lastMetaCheckTime + 24 * 60 * 60 * 1000) {
-            checkAndUpdateMeta(true);
-        }
-    }
+//    public void runScheduledMetaUpdate() {
+//        if (BuildConfig.DEBUG) {
+//            logD("runScheduledMetaUpdate in background (onPause)");
+//        }
+//        long lastMetaCheckTime = HonarnamaBaseApp.getAppSharedPref()
+//                .getLong(HonarnamaBaseApp.PREF_KEY_META_CHECKED_TIME, 0);
+//
+//        if (System.currentTimeMillis() > lastMetaCheckTime + 24 * 60 * 60 * 1000) {
+//            checkAndUpdateMeta(true);
+//        }
+//    }
 
     @Override
     protected void onStop() {

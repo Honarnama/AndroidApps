@@ -238,7 +238,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
         handleExternalIntent(getIntent());
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
 
     }
 
@@ -458,7 +458,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
 
     public void switchFragment(Fragment fragment, boolean isExternal, String toolbarTitle) {
         WindowUtil.hideKeyboard(ControlPanelActivity.this);
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
         try {
             FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                     .getChildFragmentManager();
@@ -735,7 +735,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 if (!NetworkManager.getInstance().isNetworkEnabled(true)) {
                     break;
                 }
-                checkAndUpdateMeta(true);
+                checkAndUpdateMeta(true, 0);
                 mRefetchProvinces.setVisibility(View.GONE);
                 mRefetchCities.setVisibility(View.GONE);
                 fetchProvincesAndCities();
@@ -785,7 +785,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     }
 
     public void refreshTopFragment() {
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
 
         FragmentManager childFragmentManager = mMainFragmentAdapter.getItem(mActiveTab)
                 .getChildFragmentManager();
@@ -1066,6 +1066,5 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     @Override
     public void onPause() {
         super.onPause();
-        runScheduledMetaUpdate();
     }
 }

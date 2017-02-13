@@ -103,7 +103,7 @@ public class ChooseArtCategoryActivity extends HonarnamaBaseActivity {
             logD("Art Categories Hierarchy: " + mCategoriesHierarchyHashMap);
         }
 
-        checkAndUpdateMeta(false);
+        checkAndUpdateMeta(false, 0);
         setNodeCategories();
         populateList();
     }

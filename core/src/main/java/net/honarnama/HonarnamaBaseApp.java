@@ -171,4 +171,8 @@ public abstract class HonarnamaBaseApp extends Application {
         }
         super.onTerminate();
     }
+
+    public static long getCurrentMetaVersion() {
+        return getAppSharedPref().getLong(HonarnamaBaseApp.PREF_KEY_META_VERSION, 0);
+    }
 }
