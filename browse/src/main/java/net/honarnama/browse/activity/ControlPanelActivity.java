@@ -10,6 +10,7 @@ import com.mikepenz.iconics.view.IconicsImageView;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.adapter.CityAdapter;
 import net.honarnama.base.adapter.ProvincesAdapter;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.base.fragment.AboutFragment;
 import net.honarnama.base.fragment.ContactFragment;
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
@@ -22,7 +23,6 @@ import net.honarnama.browse.BuildConfig;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.adapter.MainFragmentAdapter;
-import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.fragment.ChildFragment;
 import net.honarnama.browse.fragment.EventPageFragment;
 import net.honarnama.browse.fragment.ItemPageFragment;
@@ -63,7 +63,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -130,7 +129,7 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     IconicsImageView mRefetchProvinces;
     IconicsImageView mRefetchCities;
 
-    public ConfirmationDialog mConfirmationDialog;
+    public CustomAlertDialog mConfirmationDialog;
 
     public TextView mCustomToolbarTitle;
 
@@ -612,9 +611,11 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
                 mMainTabBar.setSelectedTab(TAB_ITEMS);
             } else {
 
-                mConfirmationDialog = new ConfirmationDialog(ControlPanelActivity.this,
+                mConfirmationDialog = new CustomAlertDialog(ControlPanelActivity.this,
                         getString(R.string.exit_app_title),
-                        getString(R.string.exit_app_confirmation)
+                        getString(R.string.exit_app_confirmation),
+                        getString(R.string.yes),
+                        getString(R.string.will_stay)
                 );
                 mConfirmationDialog.showDialog(new View.OnClickListener() {
                     @Override

@@ -9,6 +9,7 @@ import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.base.fragment.AboutFragment;
 import net.honarnama.base.fragment.ContactFragment;
 import net.honarnama.base.fragment.HonarnamaBaseFragment;
@@ -72,6 +73,8 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
     private HonarnamaBaseFragment mFragment;
     private EditItemFragment mEditItemFragment;
     private ProgressDialog mWaitingProgressDialog;
+
+    public CustomAlertDialog mConfirmationDialog;
 
     Tracker mTracker;
 
@@ -349,20 +352,23 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
             }
         } else if (mFragment == CPanelFragment.getInstance()) {
 
-            new AlertDialog.Builder(new ContextThemeWrapper(ControlPanelActivity.this, R.style.AlertDialogCustom))
-                    .setTitle("تایید خروج")
-                    .setMessage("می‌خوای از برنامه خارج بشی؟")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("بله", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
-                                askToRate();
-                            } else {
-                                exitApp();
-                            }
-                        }
-                    })
-                    .setNegativeButton("نه می‌مونم", null).show();
+            mConfirmationDialog = new CustomAlertDialog(ControlPanelActivity.this,
+                    getString(R.string.exit_app_title),
+                    getString(R.string.exit_app_confirmation),
+                    getString(R.string.yes),
+                    getString(R.string.will_stay)
+            );
+            mConfirmationDialog.showDialog(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!HonarnamaBaseApp.getAppSharedPref().getBoolean(HonarnamaBaseApp.PREF_KEY_SELL_APP_RATED, false)) {
+                        askToRate();
+                    } else {
+                        exitApp();
+                    }
+                    mConfirmationDialog.dismiss();
+                }
+            });
 
         } else {
             switchFragment(CPanelFragment.getInstance());

@@ -262,4 +262,11 @@
     <string name="all_over_iran">سراسر ایران</string>
     <string name="items">محصولات</string>
     <string name="no_crop_app_found">انتخاب برنامه برش عکس</string>
+    <string name="yes">بله</string>
+    <string name="will_stay">نه می‌مونم</string>
+    <string name="bikhial">بی‌خیال</string>
+
+    <string name="exit_app">خروج از برنامه</string>
+    <string name="exit_app_title">تایید خروج از برنامه</string>
+    <string name="exit_app_confirmation">میخوای از برنامه خارج بشی؟</string>
 </resources>

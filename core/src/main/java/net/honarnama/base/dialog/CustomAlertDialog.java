@@ -15,14 +15,14 @@ import android.widget.TextView;
 /**
  * Created by elnaz on 3/2/16.
  */
-public class AlertDialog extends Dialog {
+public class CustomAlertDialog extends Dialog {
 
     TextView mTitleTV;
     TextView mMsgTV;
     Button mYesBtn;
     Button mNoBtn;
 
-    public AlertDialog(Context context, String title, String msg, String yesBtnText, String noBtnText) {
+    public CustomAlertDialog(Context context, String title, String msg, String yesBtnText, String noBtnText) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(true);

@@ -9,6 +9,7 @@ import com.parse.ImageSelector;
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.base.model.City;
 import net.honarnama.base.model.Province;
 import net.honarnama.base.utils.NetworkManager;
@@ -18,7 +19,6 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ImageAdapter;
-import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.dialog.ContactDialog;
 import net.honarnama.browse.model.Bookmark;
 import net.honarnama.browse.widget.ImageGallery;
@@ -110,7 +110,7 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
 
     public RelativeLayout mOnErrorRetry;
 
-    public ConfirmationDialog mConfirmationDialog;
+    public CustomAlertDialog mConfirmationDialog;
 
 
     @Override
@@ -275,9 +275,11 @@ public class ItemPageFragment extends HonarnamaBrowseFragment implements View.On
         }
 
         if (v.getId() == R.id.remove_bookmark) {
-            mConfirmationDialog = new ConfirmationDialog(getActivity(),
+            mConfirmationDialog = new CustomAlertDialog(getActivity(),
                     getStringInFragment(R.string.remove_bookmark_dialog_title),
-                    getStringInFragment(R.string.remove_bookmark_dialog_msg)
+                    getStringInFragment(R.string.remove_bookmark_dialog_msg),
+                    getStringInFragment(R.string.yes),
+                    getStringInFragment(R.string.bikhial)
             );
             mConfirmationDialog.showDialog(new View.OnClickListener() {
                 @Override

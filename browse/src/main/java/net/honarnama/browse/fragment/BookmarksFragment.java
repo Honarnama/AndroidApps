@@ -5,11 +5,11 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import net.honarnama.base.BuildConfig;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ItemsAdapter;
-import net.honarnama.browse.dialog.ConfirmationDialog;
 import net.honarnama.browse.model.Bookmark;
 
 import android.content.Intent;
@@ -38,7 +38,7 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
     public RelativeLayout mEmptyListContainer;
     public net.honarnama.nano.Item mSelectedItem;
 
-    public ConfirmationDialog mConfirmationDialog;
+    public CustomAlertDialog mConfirmationDialog;
 
     Tracker mTracker;
 
@@ -148,9 +148,11 @@ public class BookmarksFragment extends HonarnamaBrowseFragment implements Adapte
             final int selectedPos = (int) v.getTag();
             final Long itemId = mItemsAdapter.getItemId(selectedPos);
 
-            mConfirmationDialog = new ConfirmationDialog(getActivity(),
+            mConfirmationDialog = new CustomAlertDialog(getActivity(),
                     getStringInFragment(R.string.remove_bookmark_dialog_title),
-                    getStringInFragment(R.string.remove_bookmark_dialog_msg)
+                    getStringInFragment(R.string.remove_bookmark_dialog_msg),
+                    getStringInFragment(R.string.yes),
+                    getStringInFragment(R.string.bikhial)
             );
             mConfirmationDialog.showDialog(new View.OnClickListener() {
                 @Override

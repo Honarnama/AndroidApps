@@ -7,13 +7,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 
 import net.honarnama.base.activity.HonarnamaBaseActivity;
-import net.honarnama.base.dialog.AlertDialog;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.sell.R;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -73,7 +72,7 @@ public class HonarnamaSellActivity extends HonarnamaBaseActivity {
 
 
     private void displayGetGPlayDialog() {
-        final AlertDialog alertDialog = new AlertDialog(this,
+        final CustomAlertDialog alertDialog = new CustomAlertDialog(this,
                 getString(R.string.gplay_not_found),
                 getString(R.string.install_gplay_for_proper_functioning),
                 getString(R.string.get_gplay),
