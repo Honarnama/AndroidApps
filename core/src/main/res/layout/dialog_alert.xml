@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layoutDirection="rtl"
+>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner_white_back"
+            android:padding="10dp"
+    >
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/confirm_title_container"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+        >
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:iiv_color="@color/amber_primary_dark"
+                    app:iiv_icon="gmd-warning"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/title_icon"
+            />
+
+            <TextView
+                    style="@style/section_title"
+                    android:text=""
+                    android:textColor="@color/gray_extra_dark"
+                    android:id="@+id/confirm_title"
+                    android:layout_toLeftOf="@+id/title_icon"
+            />
+
+        </RelativeLayout>
+
+        <TextView
+                style="@style/tiny_text_view"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/confirm_title_container"
+                android:lineSpacingExtra="10dp"
+                android:id="@+id/contact_warning"
+                android:layout_marginBottom="10dp"
+                android:text=""
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+        />
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/contact_warning"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_horizontal"
+        >
+            <Button
+                    android:layout_width="120dp"
+                    android:layout_height="45dp"
+                    android:text="بله"
+                    android:id="@+id/yes_btn"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/round_corner_cyan_back"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_alignParentRight="true"
+            />
+            <Button
+                    android:layout_width="120dp"
+                    android:layout_height="45dp"
+                    android:text="بی‌خیال"
+                    android:id="@+id/no_button"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/round_corner_red_back"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_toLeftOf="@+id/yes_btn"
+            />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

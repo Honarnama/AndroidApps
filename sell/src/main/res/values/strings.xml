@@ -21,7 +21,7 @@
 
     <string name="nav_title_seller_account">حساب کاربری</string>
     <string name="manage_store">
-مدیریت فروشگاه
+        مدیریت فروشگاه
     </string>
     <string name="store_info">مشخصات فروشگاه</string>
     <string name="nav_title_event_manager">مدیریت رویداد</string>
@@ -108,7 +108,7 @@
     </string>
 
     <string name="error_displaying_event_banner">
-خطا در نمایش بنر رویداد.
+        خطا در نمایش بنر رویداد.
     </string>
 
     <string name="error_updating_event_info">
@@ -138,9 +138,17 @@
     </string>
     <string name="login_email_sent">لینک ورود به حساب به آدرس ایمیلتان ارسال شد.</string>
 
-    <string name="login_hint"> "در صورتی که قبلا حساب کاربری ساخته‌اید، برای ورود به برنامه از لینکی که به آدرس ایمیلتان ارسال میشود، استفاده کنید."</string>
+    <string name="login_hint">"در صورتی که قبلا حساب کاربری ساخته‌اید، برای ورود به برنامه از لینکی
+        که به آدرس ایمیلتان ارسال میشود، استفاده کنید."
+    </string>
     <string name="store">فروشگاه</string>
     <string name="item_price_label">قیمت (به تومان):</string>
     <string name="event_cat_label">دسته‌بندی رویداد:</string>
+    <string name="gplay_not_found">Google Play Services</string>
+    <string name="install_gplay_for_proper_functioning">
+        برای اجرای درست هنرنما، برنامه گوگل پلی سرویس باید بر روی گوشی شما نصب باشد.
+    </string>
+    <string name="get_gplay">دریافت برنامه</string>
+    <string name="bikhial">بی‌خیال</string>
 
 </resources>
