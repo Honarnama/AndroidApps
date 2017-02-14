@@ -99,12 +99,12 @@ public class ItemsAdapter extends BaseAdapter {
 
         if (item.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
-        }
-
-        if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
+        } else if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
             mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
             mViewHolder.waitingToBeConfirmedTextView.setText(mContext.getString(R.string.changes_needed));
+        } else {
+            mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.GONE);
         }
 
         String itemImage = "";
