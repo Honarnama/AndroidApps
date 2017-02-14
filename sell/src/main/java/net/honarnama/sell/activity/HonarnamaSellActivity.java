@@ -25,11 +25,11 @@ public class HonarnamaSellActivity extends HonarnamaBaseActivity {
         super.onCreate(savedInstanceState);
 //        checkGooglePlayServicesUpdate();
 
-        if (isGooglePlayAvailable()) {
-            if (checkGooglePlayServicesUpdate()) {
-                updateAndroidSecurityProvider();
-            }
-        }
+//        if (isGooglePlayAvailable()) {
+//            if (checkGooglePlayServicesUpdate()) {
+//                updateAndroidSecurityProvider();
+//            }
+//        }
     }
 
     public boolean isGooglePlayAvailable() {
