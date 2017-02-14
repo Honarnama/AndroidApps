@@ -1,43 +1,24 @@
 package net.honarnama.browse.dialog;
 
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsImageView;
 
 import net.honarnama.HonarnamaBaseApp;
+import net.honarnama.base.utils.TextUtil;
 import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.HonarnamaBrowseActivity;
 import net.honarnama.browse.widget.HorizontalNumberPicker;
-import net.honarnama.base.adapter.CityAdapter;
-import net.honarnama.base.adapter.ProvincesAdapter;
-import net.honarnama.base.model.City;
-import net.honarnama.base.model.Province;
-import net.honarnama.base.utils.NetworkManager;
-import net.honarnama.base.utils.TextUtil;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by elnaz on 3/2/16.

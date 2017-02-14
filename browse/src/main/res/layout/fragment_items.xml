@@ -75,7 +75,6 @@
                     android:layout_toRightOf="@+id/filter_text_view"
             />
 
-
         </RelativeLayout>
     </RelativeLayout>
 

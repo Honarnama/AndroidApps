@@ -209,7 +209,7 @@ public class SearchFragment extends HonarnamaBrowseFragment implements View.OnCl
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case HonarnamaBaseApp.INTENT_FILTER_SHOP_CODE:
+            case HonarnamaBaseApp.INTENT_FILTER_SHOPS_CODE:
                 if (resultCode == getActivity().RESULT_OK) {
                     mSelectedProvinceId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_ID, Province.ALL_PROVINCE_ID);
                     mSelectedProvinceName = data.getStringExtra(HonarnamaBaseApp.EXTRA_KEY_PROVINCE_NAME);

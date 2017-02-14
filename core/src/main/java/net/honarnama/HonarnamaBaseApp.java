@@ -37,8 +37,8 @@ public abstract class HonarnamaBaseApp extends Application {
     public static final int INTENT_CHOOSE_CATEGORY_CODE = 3000;
 
     public static final int INTENT_FILTER_ITEMS_CODE = 4000;
-    public static final int INTENT_FILTER_EVENT_CODE = 4001;
-    public static final int INTENT_FILTER_SHOP_CODE = 4002;
+    public static final int INTENT_FILTER_EVENTS_CODE = 4001;
+    public static final int INTENT_FILTER_SHOPS_CODE = 4002;
 
     public static final int INTENT_FILTER_ITEMS_LOCATION = 5001;
     public static final int INTENT_FILTER_SHOPS_LOCATION = 5002;

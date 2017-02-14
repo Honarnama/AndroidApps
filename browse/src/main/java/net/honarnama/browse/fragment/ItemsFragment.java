@@ -27,7 +27,6 @@ import net.honarnama.nano.LocationCriteria;
 import net.honarnama.nano.ReplyProperties;
 import net.honarnama.nano.RequestProperties;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;

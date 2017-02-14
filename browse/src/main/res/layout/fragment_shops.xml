@@ -17,12 +17,12 @@
                     android:id="@+id/filter_layer"
     >
         <RelativeLayout android:layout_width="wrap_content"
-                      android:layout_height="?attr/actionBarSize"
-                      android:layout_alignParentRight="true"
-                      android:layout_marginRight="16dp"
-                      android:layout_marginLeft="10dp"
-                      android:gravity="center_vertical"
-                      android:id="@+id/filter_location"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:id="@+id/filter_location"
 
         >
             <com.mikepenz.iconics.view.IconicsImageView
@@ -43,6 +43,39 @@
             />
 
         </RelativeLayout>
+
+        <RelativeLayout android:layout_width="200dp"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center_vertical|left"
+                        android:id="@+id/filter_container"
+
+        >
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="?attr/actionBarSize"
+                      android:id="@+id/filter_text_view"
+                      android:text="@string/filter"
+                      android:textColor="@color/gray_dark"
+                      android:textSize="16sp"
+                      android:layout_centerVertical="true"
+                      android:gravity="center_vertical"
+                      android:layout_alignParentLeft="true"
+            />
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    app:iiv_color="@color/gray_dark"
+                    app:iiv_icon="cmd-filter"
+                    android:id="@+id/filter_icon"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/filter_text_view"
+            />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
 

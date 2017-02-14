@@ -3,6 +3,8 @@ package net.honarnama.browse.fragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import com.mikepenz.iconics.view.IconicsImageView;
+
 import net.honarnama.GRPCUtils;
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
@@ -13,7 +15,9 @@ import net.honarnama.browse.HonarnamaBrowseApp;
 import net.honarnama.browse.R;
 import net.honarnama.browse.activity.ControlPanelActivity;
 import net.honarnama.browse.adapter.ShopsAdapter;
+import net.honarnama.browse.dialog.ItemFilterDialogActivity;
 import net.honarnama.browse.dialog.LocationFilterDialogActivity;
+import net.honarnama.browse.dialog.ShopFilterDialogActivity;
 import net.honarnama.nano.BrowseServiceGrpc;
 import net.honarnama.nano.BrowseStoresReply;
 import net.honarnama.nano.BrowseStoresRequest;
@@ -56,6 +60,11 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     private String mSelectedProvinceName;
     private int mSelectedCityId = -1;
     private boolean mIsAllIranChecked = true;
+    private boolean mIsFilterApplied = false;
+    private TextView mFilterTextView;
+    public RelativeLayout mFilterContainer;
+    private IconicsImageView mFilterIcon;
+    public String mSearchTerm = "";
 
     private ListView mListView;
 
@@ -102,6 +111,10 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
         mShopsAdapter = new ShopsAdapter(getContext());
         mListView.setAdapter(mShopsAdapter);
 
+        mFilterContainer = (RelativeLayout) rootView.findViewById(R.id.filter_container);
+        mFilterContainer.setOnClickListener(this);
+        mFilterTextView = (TextView) rootView.findViewById(R.id.filter_text_view);
+        mFilterIcon = (IconicsImageView) rootView.findViewById(R.id.filter_icon);
 
         mOnErrorRetry = (RelativeLayout) rootView.findViewById(R.id.on_error_retry_container);
         mOnErrorRetry.setOnClickListener(this);
@@ -186,6 +199,12 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 intent.putExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, mIsAllIranChecked);
                 getParentFragment().startActivityForResult(intent, HonarnamaBrowseApp.INTENT_FILTER_SHOPS_LOCATION);
                 break;
+
+            case R.id.filter_container:
+                Intent filterIntent = new Intent(getActivity(), ShopFilterDialogActivity.class);
+                filterIntent.putExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM, mSearchTerm);
+                getParentFragment().startActivityForResult(filterIntent, HonarnamaBrowseApp.INTENT_FILTER_SHOPS_CODE);
+                break;
         }
     }
 
@@ -221,6 +240,18 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     mSelectedCityId = data.getIntExtra(HonarnamaBaseApp.EXTRA_KEY_CITY_ID, City.ALL_CITY_ID);
                     mIsAllIranChecked = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_ALL_IRAN, true);
                     changeLocationFilterTitle();
+                    getShops(false);
+                }
+                break;
+
+            case HonarnamaBaseApp.INTENT_FILTER_SHOPS_CODE:
+                if (BuildConfig.DEBUG) {
+                    logD("onActivityResult for shopFilterDialog");
+                }
+                if (resultCode == getActivity().RESULT_OK) {
+                    mIsFilterApplied = data.getBooleanExtra(HonarnamaBaseApp.EXTRA_KEY_FILTER_APPLIED, false);
+                    mSearchTerm = data.getStringExtra(HonarnamaBrowseApp.EXTRA_KEY_SEARCH_TERM);
+                    changeFilterTitle();
                     getShops(false);
                 }
                 break;
@@ -285,11 +316,14 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                 }
             }
             browseStoresRequest.locationCriteria = locationCriteria;
+            browseStoresRequest.searchTerm = mSearchTerm;
+
             browseStoresRequest.nextPageId = mNextPageId;
 
             if (BuildConfig.DEBUG) {
                 logD("Request for getting shops is: " + browseStoresRequest);
             }
+
             try {
                 BrowseServiceGrpc.BrowseServiceBlockingStub stub = GRPCUtils.getInstance().getBrowseServiceGrpc();
                 return stub.getStores(browseStoresRequest);
@@ -376,6 +410,18 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
                     setVisibilityInFragment(mOnErrorRetry, View.VISIBLE);
                 }
             }
+        }
+    }
+
+    private void changeFilterTitle() {
+        if (mIsFilterApplied) {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.dark_cyan));
+            setTextInFragment(mFilterTextView, getStringInFragment(R.string.filtered));
+            mFilterIcon.setColor(getResources().getColor(R.color.dark_cyan));
+        } else {
+            mFilterTextView.setTextColor(getResources().getColor(R.color.text_color));
+            setTextInFragment(mFilterTextView, getStringInFragment(R.string.filter));
+            mFilterIcon.setColor(getResources().getColor(R.color.text_color));
         }
     }
 
