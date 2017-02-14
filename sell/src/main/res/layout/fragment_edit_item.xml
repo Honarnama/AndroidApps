@@ -35,6 +35,21 @@
                         android:id="@+id/edit_item_images_title_text_view"
                 />
 
+                <TextView android:id="@+id/empty_items_text_view"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:background="@color/white"
+                          style="@style/tiny_text_view"
+                          android:layout_centerHorizontal="true"
+                          android:layout_centerVertical="true"
+                          android:layout_marginTop="5dp"
+                          android:paddingTop="5dp"
+                          android:paddingBottom="5dp"
+                          android:paddingLeft="16dp"
+                          android:paddingRight="16dp"
+                          android:text="درج امضای لاتین یا شبکه‌های اجتماعی مجاز نیست. در صورت تمایل از امضای فارسی استفاده کنید."
+                />
+
                 <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
