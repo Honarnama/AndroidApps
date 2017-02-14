@@ -33,6 +33,7 @@ import net.honarnama.browse.widget.MainTabBar;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -386,13 +387,10 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
             case R.id.item_switch_app:
                 try {
                     if (CommonUtil.isPackageInstalled(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
-                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.sell");
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(HonarnamaBaseApp.SELL_PACKAGE_NAME);
                         startActivity(launchIntent);
                     } else {
-                        Intent sellAppIntent = new Intent(Intent.ACTION_VIEW);
-                        sellAppIntent.setData(Uri.parse("bazaar://details?id=" + "net.honarnama.sell"));
-                        sellAppIntent.setPackage("com.farsitel.bazaar");
-                        startActivity(sellAppIntent);
+                        callBazaarViewAppPageIntent(HonarnamaBaseApp.SELL_PACKAGE_NAME);
                     }
                 } catch (Exception e) {
                     logE("Error switching from browse app to sell. Error: " + e, e);
@@ -1067,4 +1065,5 @@ public class ControlPanelActivity extends HonarnamaBrowseActivity implements Mai
     public void onPause() {
         super.onPause();
     }
+
 }

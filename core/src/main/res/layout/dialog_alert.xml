@@ -17,6 +17,7 @@
                         android:id="@+id/confirm_title_container"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
+                        android:layout_centerHorizontal="true"
         >
             <com.mikepenz.iconics.view.IconicsImageView
                     android:layout_width="36dp"
@@ -33,6 +34,8 @@
                     android:textColor="@color/gray_extra_dark"
                     android:id="@+id/confirm_title"
                     android:layout_toLeftOf="@+id/title_icon"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
             />
 
         </RelativeLayout>

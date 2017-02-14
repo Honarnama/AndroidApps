@@ -576,11 +576,11 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
 
             case R.id.item_switch_app:
                 try {
-                    if (CommonUtil.isPackageInstalled("net.honarnama.browse")) {
-                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("net.honarnama.browse");
+                    if (CommonUtil.isPackageInstalled(HonarnamaBaseApp.BROWSE_PACKAGE_NAME)) {
+                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(HonarnamaBaseApp.BROWSE_PACKAGE_NAME);
                         startActivity(launchIntent);
                     } else {
-                        callBazaarViewAppPageIntent();
+                        callBazaarViewAppPageIntent(HonarnamaBaseApp.BROWSE_PACKAGE_NAME);
                     }
                 } catch (Exception e) {
                     logE("Error switching from sell app to browse. Error: " + e, e);

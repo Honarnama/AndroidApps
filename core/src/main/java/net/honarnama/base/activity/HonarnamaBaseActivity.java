@@ -1,10 +1,12 @@
 package net.honarnama.base.activity;
 
 import com.crashlytics.android.Crashlytics;
+import com.farsitel.bazaar.IUpdateCheckService;
 
 import net.honarnama.HonarnamaBaseApp;
 import net.honarnama.base.BuildConfig;
 import net.honarnama.base.R;
+import net.honarnama.base.dialog.CustomAlertDialog;
 import net.honarnama.base.helper.MetaUpdater;
 import net.honarnama.base.interfaces.MetaUpdateListener;
 import net.honarnama.base.utils.CommonUtil;
@@ -13,11 +15,15 @@ import net.honarnama.nano.ReplyProperties;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,6 +43,9 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
     public Dialog mAskToRateDialog;
 
     MetaUpdateListener mMetaUpdateListener;
+    UpdateServiceConnection mUpdateConn;
+
+    CustomAlertDialog mUpdateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +79,14 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
                 }
             }
         };
+
+        long lastVCodeCheckTime = HonarnamaBaseApp.getAppSharedPref()
+                .getLong(HonarnamaBaseApp.PREF_KEY_VCODE_CHECKED_TIME, 0);
+
+        if (System.currentTimeMillis() > lastVCodeCheckTime + 6 * 60 * 60 * 1000) {
+            initUpdateService();
+        }
+
     }
 
     String getDebugTag() {
@@ -186,14 +203,10 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         }
     }
 
-    public void callBazaarViewAppPageIntent() {
+    public void callBazaarViewAppPageIntent(String packageName) {
         if (CommonUtil.isPackageInstalled("com.farsitel.bazaar")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (HonarnamaBaseApp.PACKAGE_NAME.equals(HonarnamaBaseApp.SELL_PACKAGE_NAME)) {
-                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.SELL_PACKAGE_NAME));
-            } else {
-                intent.setData(Uri.parse("bazaar://details?id=" + HonarnamaBaseApp.BROWSE_PACKAGE_NAME));
-            }
+            intent.setData(Uri.parse("bazaar://details?id=" + packageName));
             intent.setPackage("com.farsitel.bazaar");
             startActivity(intent);
         } else {
@@ -211,7 +224,7 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
         letsRateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callBazaarViewAppPageIntent();
+                callBazaarViewAppPageIntent(HonarnamaBaseApp.PACKAGE_NAME);
                 dialog.dismiss();
             }
         });
@@ -282,5 +295,82 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public class UpdateServiceConnection implements ServiceConnection {
+        IUpdateCheckService service;
+
+        public void onServiceConnected(ComponentName name, IBinder boundService) {
+            service = IUpdateCheckService.Stub
+                    .asInterface((IBinder) boundService);
+            try {
+                long vCode = service.getVersionCode(HonarnamaBaseApp.PACKAGE_NAME);
+                if (BuildConfig.DEBUG) {
+                    logD("bazaar vCode: " + vCode);
+                }
+
+                Date date = new Date(System.currentTimeMillis()); //or simply new Date();
+                long millis = date.getTime();
+
+                SharedPreferences.Editor editor = HonarnamaBaseApp.getAppSharedPref().edit();
+                editor.putLong(HonarnamaBaseApp.PREF_KEY_VCODE_CHECKED_TIME, millis);
+                editor.commit();
+
+                if (vCode > 0) {
+                    mUpdateDialog = new CustomAlertDialog(HonarnamaBaseActivity.this,
+                            getString(R.string.update_app),
+                            getString(R.string.want_to_update_app),
+                            getString(R.string.yes),
+                            getString(R.string.notnow)
+                    );
+
+                    mUpdateDialog.showDialog(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            callBazaarViewAppPageIntent(HonarnamaBaseApp.PACKAGE_NAME);
+                            mUpdateDialog.dismiss();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                logE("Exception getting version code of " + HonarnamaBaseApp.PACKAGE_NAME + " from bazaar.", e);
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            service = null;
+            if (BuildConfig.DEBUG) {
+                logD("onServiceDisconnected(): Disconnected");
+            }
+        }
+    }
+
+    private void initUpdateService() {
+        if (BuildConfig.DEBUG) {
+            logD("initService()");
+        }
+        mUpdateConn = new UpdateServiceConnection();
+        Intent i = new Intent(
+                "com.farsitel.bazaar.service.UpdateCheckService.BIND");
+        i.setPackage("com.farsitel.bazaar");
+        boolean ret = bindService(i, mUpdateConn, Context.BIND_AUTO_CREATE);
+        if (BuildConfig.DEBUG) {
+            logD("initService() bound value: " + ret);
+        }
+    }
+
+    /** This is our function to un-binds this activity from our service. */
+    private void releaseUpdateService() {
+        unbindService(mUpdateConn);
+        mUpdateConn = null;
+        if (BuildConfig.DEBUG) {
+            logD("releaseService(): unbound.");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releaseUpdateService();
     }
 }

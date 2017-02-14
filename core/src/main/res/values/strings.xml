@@ -269,4 +269,8 @@
     <string name="exit_app">خروج از برنامه</string>
     <string name="exit_app_title">تایید خروج از برنامه</string>
     <string name="exit_app_confirmation">میخوای از برنامه خارج بشی؟</string>
+    <string name="update_app">به‌روزرسانی برنامه</string>
+    <string name="want_to_update_app">نسخه جدیدی از برنامه موجود است. آیا مایل به دریافت آن هستید؟
+    </string>
+    <string name="notnow">فعلا نه</string>
 </resources>

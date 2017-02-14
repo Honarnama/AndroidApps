@@ -68,7 +68,7 @@ public abstract class HonarnamaBaseApp extends Application {
 
     public static String PREF_KEY_META_VERSION = "meta_version";
     public static String PREF_KEY_META_CHECKED_TIME = "meta_checked_time";
-
+    public static String PREF_KEY_VCODE_CHECKED_TIME = "vcode_checked_time";
     public static String PREF_NAME_SELL_APP = "honarnama_sell";
     public static String PREF_NAME_BROWSE_APP = "honarnama_browse";
     public static String PREF_NAME_COMMON = "honarnama_apps";
