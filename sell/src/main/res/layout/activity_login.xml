@@ -102,6 +102,8 @@
                     android:layout_below="@id/login_form_layout"
                     android:layout_alignParentRight="true"
                     style="@style/tiny_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="30dp"
                     android:layout_marginLeft="30dp"
                     android:layout_marginBottom="10dp"
