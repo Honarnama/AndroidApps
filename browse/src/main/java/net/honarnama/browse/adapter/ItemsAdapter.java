@@ -109,14 +109,16 @@ public class ItemsAdapter extends BaseAdapter {
         String formattedPrice = formatter.format(item.price);
         String price = TextUtil.convertEnNumberToFa(formattedPrice);
 
-        mViewHolder.price.setText(price + " " + mContext.getString(R.string.toman));
 
         if (mIsForBookmarks) {
             mViewHolder.deleteBookmark.setVisibility(View.VISIBLE);
             mViewHolder.deleteBookmark.setTag(position);
             mViewHolder.deleteBookmark.setOnClickListener(this.onDeleteBookmarkListener);
+            mViewHolder.price.setVisibility(View.GONE);
+        } else {
+            mViewHolder.price.setVisibility(View.VISIBLE);
+            mViewHolder.price.setText(price + " " + mContext.getString(R.string.toman));
         }
-
         ArtCategoryCriteria categoryCriteria = item.artCategoryCriteria;
         new ArtCategory().getCategoryNameById(categoryCriteria.level1Id).continueWith(new Continuation<String, Object>() {
             @Override
