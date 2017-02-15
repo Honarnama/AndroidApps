@@ -99,6 +99,7 @@ public class ItemsAdapter extends BaseAdapter {
 
         if (item.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
+            mViewHolder.waitingToBeConfirmedTextView.setText(mContext.getString(R.string.waiting_to_be_confirmed));
         } else if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
             mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);

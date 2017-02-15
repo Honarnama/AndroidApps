@@ -125,7 +125,7 @@
     <string name="error_event_cat_is_not_selected">دسته‌بندی رویداد مشخص نشده است.</string>
     <string name="error_event_address_is_not_specified">آدرس رویداد مشخص نشده است.</string>
     <string name="store_not_created">شما هنوز فروشگاهی نساخته‌اید.</string>
-    <string name="changes_needed">آگهی نیاز به تغییرات دارد.</string>
+    <string name="changes_needed">نیاز به تغییرات</string>
     <string name="item_deleted">محصول با موفقیت حذف شد.</string>
     <string name="error_uploading_event_banner">خطا در ارسال تصویر بنر رویداد.</string>
     <string name="error_getting_event_info">خطا در گرفتن اطلاعات رویداد.</string>

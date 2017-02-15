@@ -51,47 +51,17 @@
 
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/item_delete_container"
+                    android:id="@+id/item_edit_container"
                     android:clickable="true"
                     android:layout_toLeftOf="@id/item_image_in_list_container"
                     android:layout_alignParentBottom="true"
                     android:padding="5dp"
     >
         <com.mikepenz.iconics.view.IconicsImageView
-                android:id="@+id/item_delete_image_view"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                app:iiv_color="@color/super_extra_dark_red"
-                app:iiv_icon="gmd-close"
-                android:layout_alignParentRight="true"
-        />
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/default_text_view"
-                android:text="@string/delete_ad"
-                android:textSize="12sp"
-                android:textColor="@color/super_extra_dark_red"
-                android:layout_toLeftOf="@id/item_delete_image_view"
-                android:singleLine="true"
-                android:layout_marginRight="2dp"
-        />
-    </RelativeLayout>
-
-    <RelativeLayout android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/item_edit_container"
-                    android:clickable="true"
-                    android:layout_alignParentBottom="true"
-                    android:padding="5dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_alignParentLeft="true"
-    >
-        <com.mikepenz.iconics.view.IconicsImageView
                 android:id="@+id/item_edit_image_view"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                app:iiv_color="@color/amber_dark"
+                app:iiv_color="@color/extra_dark_green"
                 app:iiv_icon="gmd-edit"
                 android:layout_alignParentRight="true"
         />
@@ -101,8 +71,38 @@
                 style="@style/default_text_view"
                 android:text="@string/edit_ad"
                 android:textSize="12sp"
-                android:textColor="@color/amber_dark"
+                android:textColor="@color/extra_dark_green"
                 android:layout_toLeftOf="@id/item_edit_image_view"
+                android:layout_marginRight="2dp"
+        />
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_delete_container"
+                    android:clickable="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:padding="5dp"
+
+    >
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:id="@+id/item_delete_image_view"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:iiv_color="@color/amber_extra_dark"
+                app:iiv_icon="gmd-close"
+                android:layout_alignParentRight="true"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/default_text_view"
+                android:text="@string/delete_ad"
+                android:textSize="12sp"
+                android:textColor="@color/amber_extra_dark"
+                android:layout_toLeftOf="@id/item_delete_image_view"
+                android:singleLine="true"
                 android:layout_marginRight="2dp"
         />
     </RelativeLayout>
