@@ -361,8 +361,10 @@ public abstract class HonarnamaBaseActivity extends AppCompatActivity {
 
     /** This is our function to un-binds this activity from our service. */
     private void releaseUpdateService() {
-        unbindService(mUpdateConn);
-        mUpdateConn = null;
+        if (mUpdateConn != null) {
+            unbindService(mUpdateConn);
+            mUpdateConn = null;
+        }
         if (BuildConfig.DEBUG) {
             logD("releaseService(): unbound.");
         }
