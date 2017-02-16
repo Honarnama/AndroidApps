@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -65,6 +64,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -84,6 +84,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID = "categoryParentId";
     private static final String SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME = "categoryName";
     private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
+    private static final String SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE = "random_for_signature";
 
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
@@ -109,6 +110,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
     private Tracker mTracker;
 
     TextWatcher mTextWatcherToMarkDirty;
+    public int mRandSignature = 0;
 
     public synchronized static EditItemFragment getInstance() {
         if (mEditItemFragment == null) {
@@ -318,6 +320,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         if (savedInstanceState != null) {
             mDirty = savedInstanceState.getBoolean(SAVE_INSTANCE_STATE_KEY_DIRTY);
             mItemId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_ITEM_ID);
+            mRandSignature = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, 0);
             for (ImageSelector imageSelector : mItemImages) {
                 imageSelector.restore(savedInstanceState);
             }
@@ -342,6 +345,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
             }
 
         } else {
+            mRandSignature = 0;
             if (mItemId >= 0) {
                 new getItemAsync().execute();
             }
@@ -537,6 +541,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
         outState.putInt(SAVE_INSTANCE_STATE_KEY_CATEGORY_PARENT_ID, mCategoryParentId);
         outState.putString(SAVE_INSTANCE_STATE_KEY_CATEGORY_NAME, getTextInFragment(mChooseCategoryButton));
         outState.putBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE, (mMainContent.getVisibility() == View.VISIBLE));
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, mRandSignature);
     }
 
     public class getItemAsync extends AsyncTask<Void, Void, GetItemReply> {
@@ -685,6 +690,17 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                 }
             });
 
+            if (mRandSignature <= 0) {
+                Random r = new Random();
+                r.setSeed(System.currentTimeMillis());
+                mRandSignature = r.nextInt();
+            }
+
+            final StringSignature imageSignature = new StringSignature(mRandSignature + "");
+            if (BuildConfig.DEBUG) {
+                logD("signature out of ImageSelector: " + imageSignature);
+            }
+
             if (loadImages && activity != null && isAdded()) {
                 for (int i = 0; i < mItemImages.length; i++) {
                     if (!TextUtils.isEmpty(item.images[i])) {
@@ -699,11 +715,10 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                         if (!isAdded()) {
                             break;
                         }
+
                         Glide.with(activity).load(itemImage)
                                 .error(R.drawable.camera_insta)
-                                .skipMemoryCache(true)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                .signature(imageSignature)
                                 .into(new GlideDrawableImageViewTarget(mItemImages[i]) {
                                     @Override
                                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
@@ -713,6 +728,7 @@ public class EditItemFragment extends HonarnamaBaseFragment implements View.OnCl
                                         if (mItemImages[index] != null && isAdded()) {
                                             mItemImages[index].setFileSet(true);
                                             mItemImages[index].setLoadingURL(itemImage);
+                                            mItemImages[index].setRandSignature(mRandSignature);
                                         }
                                     }
 

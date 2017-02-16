@@ -140,7 +140,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private boolean mDirty = false;
     TextWatcher mTextWatcherToMarkDirty;
 
-    public int mRandSignature;
+    public int mRandSignature = 0;
 
     @Override
     public String getTitle() {
