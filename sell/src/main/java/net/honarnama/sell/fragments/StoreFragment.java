@@ -4,7 +4,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -94,6 +93,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
     private static final String SAVE_INSTANCE_STATE_KEY_CELL = "cell";
     private static final String SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE = "content_is_visible";
     private static final String SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS = "review_status";
+    private static final String SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE = "random_for_signature";
 
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
@@ -139,6 +139,8 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
 
     private boolean mDirty = false;
     TextWatcher mTextWatcherToMarkDirty;
+
+    public int mRandSignature;
 
     @Override
     public String getTitle() {
@@ -299,11 +301,13 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         reset();
 
         if (savedInstanceState != null) {
+
             mLogoImageView.restore(savedInstanceState);
             mBannerImageView.restore(savedInstanceState);
 
             mStoreId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_STORE_ID);
             mReviewStatus = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS);
+            mRandSignature = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, 0);
             setReviewInfo(mReviewStatus);
             mSelectedProvinceId = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_PROVINCE_ID);
             mSelectedProvinceName = savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_PROVINCE_NAME);
@@ -330,6 +334,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             addListenersToMakeDirty();
 
         } else {
+            mRandSignature = 0;
             new getStoreAsync().execute();
         }
 
@@ -628,8 +633,19 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
             }
 
             mReviewStatus = store.reviewStatus;
-
             setReviewInfo(store.reviewStatus);
+
+
+            if (mRandSignature <= 0) {
+                Random r = new Random();
+                r.setSeed(System.currentTimeMillis());
+                mRandSignature = r.nextInt();
+            }
+
+            final StringSignature imageSignature = new StringSignature(mRandSignature + "");
+            if (BuildConfig.DEBUG) {
+                logD("signature out of ImageSelector: " + imageSignature);
+            }
 
             if (loadImages && !TextUtils.isEmpty(store.logo) && activity != null && isAdded()) {
                 if (BuildConfig.DEBUG) {
@@ -639,9 +655,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 final String storeLogo = store.logo;
                 Glide.with(activity).load(storeLogo)
                         .error(R.drawable.default_logo_hand)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .signature(imageSignature)
                         .into(new GlideDrawableImageViewTarget(mLogoImageView) {
                             @Override
                             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
@@ -650,6 +664,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 if (mLogoImageView != null && isAdded()) {
                                     mLogoImageView.setFileSet(true);
                                     mLogoImageView.setLoadingURL(storeLogo);
+                                    mLogoImageView.setRandSignature(mRandSignature);
                                 }
                             }
 
@@ -669,11 +684,10 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                 }
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 final String storeBanner = store.banner;
+
                 Glide.with(activity).load(storeBanner)
                         .error(R.drawable.party_flags)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .signature(imageSignature)
                         .into(new GlideDrawableImageViewTarget(mBannerImageView) {
                             @Override
                             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
@@ -682,6 +696,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
                                 if (isAdded() && mBannerImageView != null) {
                                     mBannerImageView.setFileSet(true);
                                     mBannerImageView.setLoadingURL(storeBanner);
+                                    mBannerImageView.setRandSignature(mRandSignature);
                                 }
                             }
 
@@ -757,6 +772,7 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         outState.putString(SAVE_INSTANCE_STATE_KEY_CELL, getTextInFragment(mCellNumberEditText));
         outState.putBoolean(SAVE_INSTANCE_STATE_KEY_CONTENT_IS_VISIBLE, (mMainContent.getVisibility() == View.VISIBLE));
         outState.putInt(SAVE_INSTANCE_STATE_KEY_REVIEW_STATUS, mReviewStatus);
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, mRandSignature);
 
         if (BuildConfig.DEBUG) {
             Log.d("STOPPED_ACTIVITY", "onSaveInstanceState of SF. outState: " + outState);
@@ -1261,4 +1277,5 @@ public class StoreFragment extends HonarnamaBaseFragment implements View.OnClick
         addListenersToMakeDirty();
         dismissSnackbar();
     }
+
 }
