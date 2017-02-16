@@ -81,6 +81,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -116,6 +117,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     private static final String SAVE_INSTANCE_STATE_KEY_END_YEAR = "end_year";
     private static final String SAVE_INSTANCE_STATE_KEY_END_MONTH = "end_month";
     private static final String SAVE_INSTANCE_STATE_KEY_END_DAY = "end_day";
+
+    private static final String SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE = "random_for_signature";
 
     private EditText mNameEditText;
     private EditText mAddressEditText;
@@ -175,6 +178,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
     TextWatcher mTextWatcherToMarkDirty;
 
     private boolean mActive = true;
+
+    public int mRandSignature = 0;
 
     @Override
     public String getTitle() {
@@ -326,6 +331,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (savedInstanceState != null) {
             mBannerImageView.restore(savedInstanceState);
             mEventId = savedInstanceState.getLong(SAVE_INSTANCE_STATE_KEY_EVENT_ID);
+            mRandSignature = savedInstanceState.getInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, 0);
+
             setTextInFragment(mNameEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_NAME));
             setTextInFragment(mDescriptionEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_DESC));
             setTextInFragment(mAddressEditText, savedInstanceState.getString(SAVE_INSTANCE_STATE_KEY_ADDR));
@@ -381,6 +388,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             addListenersToMakeDirty();
 
         } else {
+            mRandSignature = 0;
             new getEventAsync().execute();
         }
 
@@ -1023,14 +1031,23 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
             mReviewStatus = event.reviewStatus;
             setReviewInfo(mReviewStatus);
 
+            if (mRandSignature <= 0) {
+                Random r = new Random();
+                r.setSeed(System.currentTimeMillis());
+                mRandSignature = r.nextInt();
+            }
+
+            final StringSignature imageSignature = new StringSignature(mRandSignature + "");
+            if (BuildConfig.DEBUG) {
+                logD("signature out of ImageSelector: " + imageSignature);
+            }
+
             if (loadImages && !TextUtils.isEmpty(event.banner) && activity != null && isAdded()) {
                 setVisibilityInFragment(mBannerProgressBar, View.VISIBLE);
                 final String eventBanner = event.banner;
                 Glide.with(activity).load(event.banner)
                         .error(R.drawable.party_flags)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .signature(imageSignature)
                         .into(new GlideDrawableImageViewTarget(mBannerImageView) {
                             @Override
                             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
@@ -1039,6 +1056,7 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
                                 if (isAdded() && mBannerImageView != null) {
                                     mBannerImageView.setFileSet(true);
                                     mBannerImageView.setLoadingURL(eventBanner);
+                                    mBannerImageView.setRandSignature(mRandSignature);
                                 }
                             }
 
@@ -1118,6 +1136,8 @@ public class EventManagerFragment extends HonarnamaBaseFragment implements View.
         if (mEndDate != null) {
             outState.putLong(SAVE_INSTANCE_STATE_KEY_END_DATE, mEndDate.getTime());
         }
+
+        outState.putInt(SAVE_INSTANCE_STATE_KEY_RAND_SIGNATURE, mRandSignature);
     }
 
     @Override
