@@ -28,6 +28,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -99,6 +100,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
     public int mRandSignature = 0;
 
+    public Bitmap mLoadedBitmap;
 
     public ImageSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -556,6 +558,8 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
     public void restore(Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
+
+            Log.d(DEBUG_TAG, "restore of IS");
             String prefix = "ImageSelector_" + mImageSelectorIndex;
 //            mChanged = true;
 
@@ -577,6 +581,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 
             String _mFinalImageUri = savedInstanceState.getString(prefix + "_mFinalImageUri");
             if (_mFinalImageUri != null) {
+                Log.d(DEBUG_TAG, "_mFinalImageUri is: " + _mFinalImageUri);
                 mFinalImageUri = Uri.parse(_mFinalImageUri);
                 if (mTempImageUriCrop != null) {
                     imageSelected(mTempImageUriCrop, true);
@@ -584,7 +589,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                     imageSelected(mSelectedImageUri, true);
                 }
             } else if (__mLoadingURL != null && __mLoadingURL.trim().length() > 0) {
-                Log.d(DEBUG_TAG, "restore of IS: __mLoadingURL: " + __mLoadingURL);
+                Log.d(DEBUG_TAG, "restore of IS: load with glide. image url: " + __mLoadingURL);
                 mLoadingURL = __mLoadingURL;
 
                 final StringSignature stringSignature = new StringSignature(mRandSignature + "");
@@ -598,11 +603,19 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
                             @Override
                             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                                 super.onResourceReady(resource, animation);
+                                if (mFinalImageUri != null) {
+                                    //fix glide delayed load bug result in replacing user selected image.
+                                    setImageURI(mFinalImageUri);
+                                }
                             }
 
                             @Override
                             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                 super.onLoadFailed(e, errorDrawable);
+                                if (mFinalImageUri != null) {
+                                    //fix glide delayed load bug result in replacing user selected image.
+                                    setImageURI(mFinalImageUri);
+                                }
                             }
                         });
 //                new AsyncTask<Void, Void, Void>() {
@@ -613,10 +626,9 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 //                                    with(mContext).
 //                                    load(mLoadingURL).
 //                                    asBitmap().
-////                                    diskCacheStrategy(DiskCacheStrategy.SOURCE).
-//        signature(stringSignature).
-//                                            into(-1, -1).
-//                                            get();
+//                                    signature(stringSignature).
+//                                    into(-1, -1).
+//                                    get();
 //                        } catch (final Exception e) {
 //                            Log.e(TAG, e.getMessage());
 //                        }
@@ -625,7 +637,7 @@ public class ImageSelector extends RoundedImageView implements View.OnClickListe
 //
 //                    @Override
 //                    protected void onPostExecute(Void dummy) {
-//                        if (mLoadedBitmap != null) {
+//                        if (mLoadedBitmap != null && mFinalImageUri == null) {
 //                            // The full bitmap should be available here
 //                            setImageBitmap(mLoadedBitmap);
 //                            Log.d(TAG, "Image loaded");
