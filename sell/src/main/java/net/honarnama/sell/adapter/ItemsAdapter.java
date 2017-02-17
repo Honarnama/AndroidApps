@@ -7,6 +7,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.crashlytics.android.Crashlytics;
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.parse.ImageSelector;
 
 import net.honarnama.GRPCUtils;
@@ -99,13 +100,16 @@ public class ItemsAdapter extends BaseAdapter {
 
         if (item.reviewStatus == HonarnamaProto.NOT_REVIEWED) {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
+            mViewHolder.rejectReasonIcon.setVisibility(View.GONE);
             mViewHolder.waitingToBeConfirmedTextView.setText(mContext.getString(R.string.waiting_to_be_confirmed));
         } else if (item.reviewStatus == HonarnamaProto.CHANGES_NEEDED) {
             mViewHolder.itemRowContainer.setBackgroundResource(R.drawable.red_borderd_background);
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.VISIBLE);
+            mViewHolder.rejectReasonIcon.setVisibility(View.GONE);
             mViewHolder.waitingToBeConfirmedTextView.setText(mContext.getString(R.string.changes_needed));
         } else {
             mViewHolder.waitingToBeConfirmedTextView.setVisibility(View.GONE);
+            mViewHolder.rejectReasonIcon.setVisibility(View.GONE);
         }
 
         String itemImage = "";
@@ -196,15 +200,17 @@ public class ItemsAdapter extends BaseAdapter {
         TextView waitingToBeConfirmedTextView;
         RelativeLayout itemRowContainer;
         RelativeLayout itemIcomLoadingPanel;
+        IconicsImageView rejectReasonIcon;
 
         public MyViewHolder(View view) {
             title = (TextView) view.findViewById(R.id.item_title_in_list);
             icon = (ImageSelector) view.findViewById(R.id.item_image_in_list);
             deleteContainer = (RelativeLayout) view.findViewById(R.id.item_delete_container);
             editContainer = (RelativeLayout) view.findViewById(R.id.item_edit_container);
-            waitingToBeConfirmedTextView = (TextView) view.findViewById(R.id.waiting_to_be_confirmed_text_view);
+            waitingToBeConfirmedTextView = (TextView) view.findViewById(R.id.review_status_text_view);
             itemRowContainer = (RelativeLayout) view.findViewById(R.id.item_row_container);
             itemIcomLoadingPanel = (RelativeLayout) view.findViewById(R.id.item_icon_loading_panel);
+            rejectReasonIcon = (IconicsImageView) view.findViewById(R.id.reject_reason_icon);
         }
     }
 

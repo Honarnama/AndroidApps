@@ -76,7 +76,7 @@
     <string name="getting_items">در حال گرفتن فهرست محصولات...</string>
     <string name="change_banner">تغییر بنر فروشگاه</string>
     <string name="change_event_banner">تغییر بنر رویداد</string>
-    <string name="waiting_to_be_confirmed">منتظر تایید ناظر</string>
+    <string name="waiting_to_be_confirmed">منتظر تایید</string>
     <string name="change_logo">تغییر لوگو</string>
     <string name="store_not_confirmed">فروشگاه شما تایید نشد.</string>
     <string name="event_not_confirmed">رویداد هنری شما تایید نشد.</string>
