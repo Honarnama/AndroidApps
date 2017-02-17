@@ -34,6 +34,8 @@
 -dontwarn sun.reflect.**
 -dontwarn android.test.**
 
+-dontwarn javax.lang.model.element.Modifier
+
 # Need to create channel through service provider.
 -keepnames class io.grpc.ManagedChannelProvider
 -keep class io.grpc.okhttp.OkHttpChannelProvider
@@ -48,6 +50,3 @@
   **[] $VALUES;
   public *;
 }
-
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
