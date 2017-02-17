@@ -10,8 +10,8 @@ android {
         applicationId "net.honarnama.browse"
         minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10001
-        versionName "1.0.1"
+        versionCode 10101
+        versionName "1.1.1"
     }
 
     buildTypes {
