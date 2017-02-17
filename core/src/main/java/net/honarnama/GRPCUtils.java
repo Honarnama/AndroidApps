@@ -1,5 +1,9 @@
 package net.honarnama;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.security.ProviderInstaller;
+
 import net.honarnama.base.BuildConfig;
 import net.honarnama.nano.AndroidClientInfo;
 import net.honarnama.nano.AuthServiceGrpc;
@@ -15,6 +19,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +33,8 @@ import io.grpc.ManagedChannelBuilder;
  */
 public class GRPCUtils {
 
-    private String mHost = BuildConfig.HOST;
+    private String mSecureHost = BuildConfig.SECURE_HOST;
+    private String mInsecureHost = BuildConfig.INSECURE_HOST;
     private int mSecurePort = BuildConfig.SECURE_PORT;
     private int mInsecurePort = BuildConfig.INSECURE_PORT;
     private ManagedChannel mChannel;
@@ -45,30 +51,29 @@ public class GRPCUtils {
     }
 
     private GRPCUtils() {
-//        boolean throughTLS = BuildConfig.SECURE_PORT > 0;
-//        if (throughTLS) {
-//            try {
-//                ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
-//            } catch (GooglePlayServicesRepairableException re) {
-//                Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", re);
-//                int sdk = android.os.Build.VERSION.SDK_INT;
-//                if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
-//                    throughTLS = false;
-//                }
-//            }
-//        }
-//        if (throughTLS) {
-//            mChannel = ManagedChannelBuilder.forAddress(mHost, mSecurePort)
-//                    .build();
-//        } else {
-//            mChannel = ManagedChannelBuilder.forAddress(mHost, mInsecurePort)
-//                    .usePlaintext(true)
-//                    .build();
-//        }
+        boolean throughTLS = true;
+        try {
+            ProviderInstaller.installIfNeeded(HonarnamaBaseApp.getInstance());
+        } catch (Exception ex) {
+            Log.i("GRPCUtils", "ProviderInstaller.installIfNeeded failed.", ex);
+            int sdk = android.os.Build.VERSION.SDK_INT;
+            if (sdk < android.os.Build.VERSION_CODES.LOLLIPOP) {
+                throughTLS = false;
+            }
+        }
+        // debug thro
+        if (BuildConfig.DEBUG) {
+            Log.i("GRPCUtils", "throughTLS: " + throughTLS);
+        }
 
-        mChannel = ManagedChannelBuilder.forAddress(mHost, mInsecurePort)
-                .usePlaintext(true)
-                .build();
+        if (throughTLS) {
+            mChannel = ManagedChannelBuilder.forAddress(mSecureHost, mSecurePort)
+                    .build();
+        } else {
+            mChannel = ManagedChannelBuilder.forAddress(mInsecureHost, mInsecurePort)
+                    .usePlaintext(true)
+                    .build();
+        }
     }
 
     public void close() throws InterruptedException {

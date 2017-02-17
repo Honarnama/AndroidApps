@@ -37,13 +37,15 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField 'String', 'HOST', '"honarnama.net"'
-            buildConfigField 'int', 'SECURE_PORT', "8000"
+            buildConfigField 'String', 'SECURE_HOST', '"api.honarnama.net"'
+            buildConfigField 'int', 'SECURE_PORT', "443"
+            buildConfigField 'String', 'INSECURE_HOST', '"honarnama.net"'
             buildConfigField 'int', 'INSECURE_PORT', "8001"
         }
         release {
-            buildConfigField 'String', 'HOST', '"honarnama.net"'
-            buildConfigField 'int', 'SECURE_PORT', "8000"
+            buildConfigField 'String', 'SECURE_HOST', '"api.honarnama.net"'
+            buildConfigField 'int', 'SECURE_PORT', "443"
+            buildConfigField 'String', 'INSECURE_HOST', '"honarnama.net"'
             buildConfigField 'int', 'INSECURE_PORT', "8001"
         }
     }
@@ -62,9 +64,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-analytics:8.3.0'
 
     provided 'javax.annotation:jsr250-api:1.0'
-    compile 'io.grpc:grpc-okhttp:1.0.3'
-    compile 'io.grpc:grpc-protobuf-nano:1.0.0'
-    compile 'io.grpc:grpc-stub:1.0.3'
+    compile 'io.grpc:grpc-okhttp:1.1.2'
+    compile 'io.grpc:grpc-protobuf-nano:1.1.2'
+    compile 'io.grpc:grpc-stub:1.1.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
 }
 
