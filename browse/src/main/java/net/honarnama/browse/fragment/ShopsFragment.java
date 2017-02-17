@@ -177,6 +177,7 @@ public class ShopsFragment extends HonarnamaBrowseFragment implements AdapterVie
     @Override
     public void onResume() {
         super.onResume();
+        changeFilterTitle();
         changeLocationFilterTitle();
     }
 
