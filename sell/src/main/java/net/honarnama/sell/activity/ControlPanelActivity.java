@@ -242,18 +242,7 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
             }
         }
         if (id == R.id.add_item_action) {
-            if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
-                mDrawer.closeDrawer(Gravity.RIGHT);
-            }
-            mEditItemFragment.reset(true);
-            resetMenuIcons();
-            selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM));
-            switchFragment(mEditItemFragment);
-
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Action")
-                    .setAction("AddItem")
-                    .build());
+            switchFragmentToNewItem();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -322,6 +311,23 @@ public class ControlPanelActivity extends HonarnamaSellActivity implements View.
             mCustomToolbarTitle.setText(fragment.getTitle());
         }
     }
+
+
+    public void switchFragmentToNewItem() {
+        if (mDrawer.isDrawerOpen(Gravity.RIGHT)) {
+            mDrawer.closeDrawer(Gravity.RIGHT);
+        }
+        mEditItemFragment.reset(true);
+        resetMenuIcons();
+        selectDrawerItem(mNavigationView.getMenu().getItem(ITEM_IDENTIFIER_ADD_ITEM));
+        switchFragment(mEditItemFragment);
+
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Action")
+                .setAction("AddItem")
+                .build());
+    }
+
 
     public void switchFragmentToEditItem(long itemId) {
         mEditItemFragment.setItemId(itemId);

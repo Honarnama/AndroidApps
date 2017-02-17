@@ -107,8 +107,7 @@ public class CPanelFragment extends HonarnamaBaseFragment implements View.OnClic
 
             case R.id.cpanel_new_item:
                 if (activity != null) {
-                    activity.resetMenuIcons();
-                    activity.switchFragment(EditItemFragment.getInstance());
+                    activity.switchFragmentToNewItem();
                 }
                 break;
 
