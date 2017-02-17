@@ -21,6 +21,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 
 import bolts.Task;
 import bolts.TaskCompletionSource;
@@ -64,17 +65,24 @@ public class Uploader {
             try {
                 final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
                 RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JPEG, mFile);
+
                 final Request request = new Request.Builder()
                         .url(mUploadUrl)
                         .put(requestBody)
                         .header("Content-Type", MEDIA_TYPE_JPEG.toString())
                         .header("Host", Uri.parse(mUploadUrl).getHost())
                         .build();
+
                 if (BuildConfig.DEBUG) {
                     Log.d(DEBUG_TAG, "Upload request: " + request.toString());
                 }
 
                 OkHttpClient okHttpClient = new OkHttpClient();
+
+                okHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
+                okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+                okHttpClient.setWriteTimeout(30, TimeUnit.SECONDS);
+
                 okHttpClient.setCache(null);
                 Call call = okHttpClient.newCall(request);
                 Response response = call.execute();
