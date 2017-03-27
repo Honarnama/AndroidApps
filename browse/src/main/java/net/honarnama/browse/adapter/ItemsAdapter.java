@@ -208,7 +208,9 @@ public class ItemsAdapter extends BaseAdapter {
     }
 
     public void addItems(ArrayList<Item> itemList) {
-        mItems.addAll(itemList);
+        if (mItems != null) {
+            mItems.addAll(itemList);
+        }
     }
 
     public void removeItem(int position) {
